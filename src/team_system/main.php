@@ -5,7 +5,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\PluginBase;
 
-class MainTeamSystem extends PluginBase
+class TeamSystem extends PluginBase
 {
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
