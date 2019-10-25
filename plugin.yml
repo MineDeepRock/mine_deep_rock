@@ -1,0 +1,13 @@
+name: MineDeepRock
+main: main
+version: 1.0.0
+api: 3.0.0
+
+permissions:
+  MineDeepRock:
+    default: false
+    description: "ベース"
+    children:
+      TeamSystem.Command:
+        default: true
+        description: "チームシステム"

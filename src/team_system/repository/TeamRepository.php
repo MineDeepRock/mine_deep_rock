@@ -1,10 +1,10 @@
 <?php
 
-namespace main_team_system\repository;
+namespace team_system\repository;
 
-use main_team_system\models\Team;
+use team_system\models\Team;
 
-class eamRepository
+class TeamRepository
 {
     public function create(Team $owner)
     {

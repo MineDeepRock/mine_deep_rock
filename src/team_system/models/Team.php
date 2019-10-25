@@ -1,6 +1,6 @@
 <?php
 
-namespace main_team_system\models;
+namespace team_system\models;
 
 class Team
 {

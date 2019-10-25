@@ -1,8 +1,8 @@
 <?php
 
 
-use main_team_system\models\Player;
-use main_team_system\models\Team;
+use team_system\models\Player;
+use team_system\models\Team;
 
 class TeamService implements iTeamService
 {
