@@ -1,12 +1,13 @@
 <?php
 
+namespace team_system\service;
 
 use team_system\models\Player;
 use team_system\models\Team;
 
 class TeamService implements iTeamService
 {
-    public function create(Player $owner){
+    public static function create(Player $owner){
 
         $createdTeam = new Team($owner);
 
@@ -14,13 +15,13 @@ class TeamService implements iTeamService
         return $createdTeam;
     }
 
-    public function breakup()
+    public static function breakup()
     {
         // TODO: Implement breakup() method.
     }
 }
 
 interface iTeamService {
-    public function create(Player $owner);
-    public function breakup();
+    public static function create(Player $owner);
+    public static function breakup();
 }
