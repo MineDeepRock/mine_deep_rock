@@ -5,6 +5,9 @@ namespace team_system\command;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
+use team_system\models\Player;
+use team_system\service\TeamService;
+
 
 class TeamSystemCommand extends Command
 {
@@ -16,7 +19,20 @@ class TeamSystemCommand extends Command
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
     {
-        $sender->sendMessage("Command");
+
+        if (count($args) == 0) {
+            $sender->sendMessage("/team [args]");
             return true;
         }
+
+        $player = new Player($sender->getName());
+        $method = $args[0];
+        switch ($method) {
+            case "create":
+                TeamService::create($player);
+                break;
+        }
+
+        return true;
+    }
 }
