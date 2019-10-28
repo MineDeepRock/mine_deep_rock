@@ -12,7 +12,8 @@ class TeamRepository
     public function __construct()
     {
 
-        $jsonData = file_get_contents("./sql.json");
+        //sql jsonへのパス
+        $jsonData = file_get_contents("D:\pmmp\plugins\mine_deep_rock\sql.json");
         $decodedJson = json_decode($jsonData, true);
 
         $host = $decodedJson["host"];
