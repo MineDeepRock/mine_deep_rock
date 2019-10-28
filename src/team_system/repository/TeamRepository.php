@@ -2,8 +2,7 @@
 
 namespace team_system\repository;
 
-use PDO;
-use PDOException;
+use mysqli;
 use team_system\models\Team;
 
 class TeamRepository
@@ -12,19 +11,21 @@ class TeamRepository
 
     public function __construct()
     {
-        define('DB_HOST', 'localhost');
-        define('DB_NAME', 'mine_deep_rock');
-        define('DB_USER', 'postgres');
-        define('DB_PASSWORD', 'postgres');
 
-        error_reporting(E_ALL & ~E_NOTICE);
+        $jsonData = file_get_contents("./sql.json");
+        $decodedJson = json_decode($jsonData, true);
 
-        try {
-            $this->db = new PDO('pgsql:host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            exit;
+        $host = $decodedJson["host"];
+        $user_name = $decodedJson["user_name"];
+        $password = $decodedJson["password"];
+        $db_name = $decodedJson["db_name"];
+
+        $this->db = new mysqli($host, $user_name, $password, $db_name);
+
+        if ($this->db->connect_error) {
+            $sql_error = $this->db->connect_error;
+            error_log($sql_error);
+            die($sql_error);
         }
     }
 
@@ -32,11 +33,18 @@ class TeamRepository
     {
 
         $id = $team->getId();
-        $ownerName = $team->getOwner()->getName();
+        $owner_name = $team->getOwner()->getName();
 
-        $this->db->query("insert into teams (id, owner_name) values ('db685e94a017', 'aaaa')");
+        $result = $this->db->query("INSERT INTO teams(id,owner_name) VALUES('{$id}','{$owner_name}')");
 
-        //TODO:データ保存処理
+        if (!$result) {
+            $sql_error = $this->db->error;
+            echo 'select failed';
+            error_log($sql_error);
+            die($sql_error);
+        }
+
+        return true;
     }
 
 }
