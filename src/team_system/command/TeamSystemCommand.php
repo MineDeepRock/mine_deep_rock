@@ -34,6 +34,7 @@ class TeamSystemCommand extends Command
         switch ($method) {
             case "create":
                 $this->service->create($player);
+                $sender->sendMessage("created");
                 break;
         }
 
