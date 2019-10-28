@@ -11,10 +11,14 @@ use team_system\service\TeamService;
 
 class TeamSystemCommand extends Command
 {
+    private $service;
+
     public function __construct(Plugin $owner)
     {
         parent::__construct("team", "", "");
         $this->setPermission("TeamSystem.Command");
+
+        $this->service = new TeamService();
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
@@ -29,7 +33,7 @@ class TeamSystemCommand extends Command
         $method = $args[0];
         switch ($method) {
             case "create":
-                TeamService::create($player);
+                $this->service->create($player);
                 break;
         }
 
