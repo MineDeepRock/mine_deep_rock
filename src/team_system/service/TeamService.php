@@ -4,24 +4,35 @@ namespace team_system\service;
 
 use team_system\models\Player;
 use team_system\models\Team;
+use team_system\repository\TeamRepository;
 
 class TeamService implements iTeamService
 {
-    public static function create(Player $owner){
+
+    private $repository;
+
+    public function __construct()
+    {
+        $this->repository = new TeamRepository();
+
+    }
+
+    public function create(Player $owner){
 
         $createdTeam = new Team($owner);
 
-        //TODO:データ保存処理
+        $this->repository->create($createdTeam);
+
         return $createdTeam;
     }
 
-    public static function breakup()
+    public function breakup()
     {
         // TODO: Implement breakup() method.
     }
 }
 
 interface iTeamService {
-    public static function create(Player $owner);
-    public static function breakup();
+    public function create(Player $owner);
+    public function breakup();
 }
