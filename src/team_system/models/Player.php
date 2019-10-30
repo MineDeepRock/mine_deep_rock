@@ -10,13 +10,11 @@ class Player
         return $this->name;
     }
 
-    public function __construct(string $name)
-    {
+    public function __construct(string $name) {
         $this->name = $name;
     }
 
-    public function toJson(): array
-    {
+    public function toJson(): array {
         return array(
             "name" => $this->name,
         );
