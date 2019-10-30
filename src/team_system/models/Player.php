@@ -6,7 +6,7 @@ class Player
 {
     private $name;
 
-    public function getName(){
+    public function getName(): string {
         return $this->name;
     }
 
@@ -15,7 +15,7 @@ class Player
         $this->name = $name;
     }
 
-    public function toJson()
+    public function toJson(): array
     {
         return array(
             "name" => $this->name,
