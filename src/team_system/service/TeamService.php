@@ -4,9 +4,10 @@ namespace team_system\service;
 
 use team_system\models\Player;
 use team_system\models\Team;
+use team_system\models\TeamId;
 use team_system\repository\TeamRepository;
 
-class TeamService implements iTeamService
+class TeamService
 {
 
     private $repository;
@@ -14,6 +15,10 @@ class TeamService implements iTeamService
     public function __construct() {
         $this->repository = new TeamRepository();
 
+    }
+
+    public function contain(TeamId $teamId): bool {
+        return $this->repository->contain($teamId);
     }
 
     public function create(Player $owner) {
@@ -28,11 +33,4 @@ class TeamService implements iTeamService
     public function breakup() {
         // TODO: Implement breakup() method.
     }
-}
-
-interface iTeamService
-{
-    public function create(Player $owner);
-
-    public function breakup();
 }

@@ -4,6 +4,7 @@ namespace team_system\repository;
 
 use mysqli;
 use team_system\models\Team;
+use team_system\models\TeamId;
 
 class TeamRepository
 {
@@ -29,6 +30,13 @@ class TeamRepository
         }
     }
 
+    public function contain(TeamId $teamId): bool {
+        //TODO:実装
+        $result = $this->db->query("SELECT * FROM teams WHERE id = '{$teamId}';");
+
+        echo $result;
+    }
+
     public function create(Team $team) {
 
         $id = $team->getId();
@@ -38,7 +46,6 @@ class TeamRepository
 
         if (!$result) {
             $sql_error = $this->db->error;
-            echo 'select failed';
             error_log($sql_error);
             die($sql_error);
         }
