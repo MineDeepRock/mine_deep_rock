@@ -8,6 +8,6 @@ permissions:
     default: false
     description: "ベース"
     children:
-      TeamSystem.Command:
+      Team.Command:
         default: true
         description: "チームシステム"

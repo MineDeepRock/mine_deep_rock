@@ -9,13 +9,13 @@ use team_system\models\Player;
 use team_system\service\TeamService;
 
 
-class TeamSystemCommand extends Command
+class TeamCommand extends Command
 {
     private $service;
 
     public function __construct(Plugin $owner) {
         parent::__construct("team", "", "");
-        $this->setPermission("TeamSystem.Command");
+        $this->setPermission("Team.Command");
 
         $this->service = new TeamService();
     }
