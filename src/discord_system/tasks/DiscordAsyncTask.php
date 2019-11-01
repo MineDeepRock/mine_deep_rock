@@ -1,6 +1,6 @@
 <?php
 
-namespace team_system\tasks;
+namespace discord_system\tasks;
 
 use pocketmine\Server;
 use pocketmine\scheduler\AsyncTask;
