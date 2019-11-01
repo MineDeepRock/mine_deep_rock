@@ -13,16 +13,14 @@ class TeamSystemCommand extends Command
 {
     private $service;
 
-    public function __construct(Plugin $owner)
-    {
+    public function __construct(Plugin $owner) {
         parent::__construct("team", "", "");
         $this->setPermission("TeamSystem.Command");
 
         $this->service = new TeamService();
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool
-    {
+    public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
         if (count($args) == 0) {
             $sender->sendMessage("/team [args]");

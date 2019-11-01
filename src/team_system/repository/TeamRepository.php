@@ -9,8 +9,7 @@ class TeamRepository
 {
     private $db;
 
-    public function __construct()
-    {
+    public function __construct() {
 
         //sql jsonへのパス
         $jsonData = file_get_contents("D:\pmmp\plugins\mine_deep_rock\sql.json");
@@ -30,8 +29,7 @@ class TeamRepository
         }
     }
 
-    public function create(Team $team)
-    {
+    public function create(Team $team) {
 
         $id = $team->getId();
         $owner_name = $team->getOwner()->getName();

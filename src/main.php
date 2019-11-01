@@ -6,8 +6,7 @@ use team_system\command\TeamSystemCommand;
 
 class Main extends PluginBase implements Listener
 {
-    function onEnable()
-    {
+    function onEnable() {
         $this->getServer()->getCommandMap()->register("team", new teamsystemcommand($this));
     }
 }

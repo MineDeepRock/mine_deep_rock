@@ -11,13 +11,12 @@ class TeamService implements iTeamService
 
     private $repository;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->repository = new TeamRepository();
 
     }
 
-    public function create(Player $owner){
+    public function create(Player $owner) {
 
         $createdTeam = new Team($owner);
 
@@ -26,13 +25,14 @@ class TeamService implements iTeamService
         return $createdTeam;
     }
 
-    public function breakup()
-    {
+    public function breakup() {
         // TODO: Implement breakup() method.
     }
 }
 
-interface iTeamService {
+interface iTeamService
+{
     public function create(Player $owner);
+
     public function breakup();
 }
