@@ -27,13 +27,25 @@ class Team
     }
 
     public function __construct(Player $owner) {
-        $this->id = uniqid();
+        $this->id = new TeamId();
         $this->owner = $owner;
     }
 }
 
-/*
- * id
- * owner
- * members
- */
+
+class TeamId
+{
+    private $id;
+
+    /**
+     * @return mixed
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    public function __construct() {
+        $this->id = uniqid();
+    }
+
+}
