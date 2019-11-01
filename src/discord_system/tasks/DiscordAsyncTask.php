@@ -36,6 +36,6 @@ class DiscordAsyncTask extends AsyncTask
         elseif (curl_getinfo($curl, CURLINFO_HTTP_CODE) === 204 OR $response === '') $success = true;
 
         $result = ['Response' => $response, 'Error' => $error, 'success' => $success];
-        $this->setResult($result, true);
+        $this->setResult($result);
     }
 }
