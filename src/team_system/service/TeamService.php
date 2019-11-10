@@ -17,7 +17,7 @@ class TeamService
 
     }
 
-    public function contain(TeamId $teamId): bool {
+    private function contain(TeamId $teamId): bool {
         return $this->repository->contain($teamId);
     }
 
