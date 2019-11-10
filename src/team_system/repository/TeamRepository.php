@@ -31,10 +31,9 @@ class TeamRepository
     }
 
     public function contain(TeamId $teamId): bool {
-        //TODO:実装
         $result = $this->db->query("SELECT * FROM teams WHERE id = '{$teamId}';");
 
-        echo $result;
+        return $result->num_rows >= 0;
     }
 
     public function create(Team $team) {
