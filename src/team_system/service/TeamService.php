@@ -17,17 +17,21 @@ class TeamService
 
     }
 
-    private function contain(TeamId $teamId): bool {
-        return $this->repository->contain($teamId);
+    private function contain(Player $owner): bool {
+        return $this->repository->contain($owner);
     }
 
     public function create(Player $owner) {
+
+        if ($this->contain($owner)) {
+            return false;
+        }
 
         $createdTeam = new Team($owner);
 
         $this->repository->create($createdTeam);
 
-        return $createdTeam;
+        return true;
     }
 
     public function breakup() {

@@ -3,9 +3,13 @@
 namespace team_system\repository;
 
 use mysqli;
+use team_system\models\Player;
 use team_system\models\Team;
 use team_system\models\TeamId;
 
+//こっちは条件分岐をほとんど書かない。
+//実行だけにしたい。
+//サービスが条件分岐をやる！
 class TeamRepository
 {
     private $db;
@@ -30,8 +34,8 @@ class TeamRepository
         }
     }
 
-    public function contain(TeamId $teamId): bool {
-        $result = $this->db->query("SELECT * FROM teams WHERE id = '{$teamId}';");
+    public function contain(Player $owner): bool {
+        $result = $this->db->query("SELECT * FROM teams WHERE owner_name = '{$owner->getName()}';");
 
         return $result->num_rows >= 0;
     }
