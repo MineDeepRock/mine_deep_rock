@@ -34,6 +34,10 @@ class TeamCommand extends Command
                 $this->service->create($player);
                 $sender->sendMessage("created");
                 break;
+            case "join":
+                $ownerName = $method = $args[1];
+                $this->service->join($player,$ownerName);
+                break;
         }
 
         return true;

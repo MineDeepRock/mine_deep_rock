@@ -21,17 +21,31 @@ class TeamService
         return $this->repository->contain($owner);
     }
 
-    public function create(Player $owner) {
+    public function create(Player $owner): void {
 
         if ($this->contain($owner)) {
-            return false;
+            //TODO
+        } else {
+            $createdTeam = Team::asNew($owner);
+
+            $this->repository->create($createdTeam);
         }
+    }
 
-        $createdTeam = new Team($owner);
+    public function join(Player $sender, String $ownerName): void {
 
-        $this->repository->create($createdTeam);
+        $team = $this->repository->search($ownerName);
 
-        return true;
+        if ($sender->getBelongTeamId() != null) {
+            //TODO
+        } else if ($team == null) {
+            //TODO
+        } else if ($team->isFull()) {
+            //TODO
+        } else {
+            $this->repository->join($sender, $team);
+            $sender->setBelongTeamId($team->getId());
+        }
     }
 
     public function breakup() {

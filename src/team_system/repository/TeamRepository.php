@@ -6,6 +6,7 @@ use mysqli;
 use team_system\models\Player;
 use team_system\models\Team;
 use team_system\models\TeamId;
+use function Sodium\add;
 
 //こっちは条件分岐をほとんど書かない。
 //実行だけにしたい。
@@ -34,15 +35,26 @@ class TeamRepository
         }
     }
 
+    public function getAll(): array {
+        $result = $this->db->query("SELECT * FROM teams;");
+
+        return $result->fetch_assoc();
+    }
+
+    public function search(String $ownerName): Team {
+        $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$ownerName}'");
+        return Team::fromJson($result->fetch_assoc());
+    }
+
     public function contain(Player $owner): bool {
         $result = $this->db->query("SELECT * FROM teams WHERE owner_name = '{$owner->getName()}';");
 
         return $result->num_rows >= 0;
     }
 
-    public function create(Team $team) {
+    public function create(Team $team): void {
 
-        $id = $team->getId();
+        $id = $team->getId()->value();
         $owner_name = $team->getOwner()->getName();
 
         $result = $this->db->query("INSERT INTO teams(id,owner_name) VALUES('{$id}','{$owner_name}')");
@@ -52,8 +64,19 @@ class TeamRepository
             error_log($sql_error);
             die($sql_error);
         }
-
-        return true;
     }
 
+    public function join(Player $sender, Team $team) {
+        $id = $team->getId()->value();
+        $senderName = $sender->getName();
+        $coworker = $team->setToEmptySlot($senderName);
+
+        $result = $this->db->query("UPDATE teams SET {$coworker}='{$senderName}' WHERE id='{$id}'");
+
+        if (!$result) {
+            $sql_error = $this->db->error;
+            error_log($sql_error);
+            die($sql_error);
+        }
+    }
 }
