@@ -3,7 +3,7 @@
 command  
 ↓  
 service  
-(条件分岐など、細かく)
+(条件分岐など、細かく)  
 ↓  
 repository  
 (DBとのやり取り、簡単に)
