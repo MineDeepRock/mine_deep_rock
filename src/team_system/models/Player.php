@@ -2,6 +2,8 @@
 
 namespace team_system\models;
 
+require "Team.php";
+
 class Player
 {
     private $name;
