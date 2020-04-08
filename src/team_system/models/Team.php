@@ -30,6 +30,18 @@ class Team
         }
     }
 
+    public function searchPlayerSlot(String $playerName): string {
+        if ($playerName = $this->first_coworker_name) {
+            return "first_coworker_name";
+
+        } else if ($playerName = $this->second_coworker_name) {
+            return "second_coworker_name";
+
+        } else {
+            return "third_coworker_name";
+        }
+    }
+
     public function __construct(TeamId $id, Player $owner, String $first_coworker_name = null, String $second_coworker_name = null, String $third_coworker_name = null) {
         $this->id = $id;
         $this->owner = $owner;
