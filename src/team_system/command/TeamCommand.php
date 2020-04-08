@@ -28,22 +28,26 @@ class TeamCommand extends Command
         }
 
         //TODO:PlayerデータはonJoin時に設定する。
+        //こいつのせいで今ほとんどうまくいきません
         $player = new Player($sender->getName());
         $method = $args[0];
         switch ($method) {
             case "create":
-                $this->service->create($player);
-                $sender->sendMessage("created");
+                $result = $this->service->create($player);
+                $message = $result->isSucceed()? "チームを作成しました" : $result->getValue()->getMessage();
+                $sender->sendMessage($message);
                 break;
             case "join":
                 $ownerName = $method = $args[1];
-                $this->service->join($player,$ownerName);
-                $sender->sendMessage("joined");
+                $result = $this->service->join($player,$ownerName);
+                $message = $result->isSucceed()? "チームに参加しました" : $result->getValue()->getMessage();
+                $sender->sendMessage($message);
                 break;
             case "quit":
                 $ownerName = $method = $args[1];
-                $this->service->quit($player,$ownerName);
-                $sender->sendMessage("quited");
+                $result = $this->service->quit($player,$ownerName);
+                $message = $result->isSucceed()? "チームを抜けました" : $result->getValue()->getMessage();
+                $sender->sendMessage($message);
                 break;
         }
 

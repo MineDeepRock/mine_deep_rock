@@ -1,6 +1,6 @@
 <?php
 
-Class RepositoryResult
+Class ServiceResult
 {
 
     private $isSucceed;
@@ -21,7 +21,7 @@ Class RepositoryResult
     }
 
     /**
-     * RepositoryResult constructor.
+     * ServiceResult constructor.
      * @param bool $isSucceed
      * @param $value
      */
@@ -31,9 +31,16 @@ Class RepositoryResult
     }
 }
 
-class RepositoryErrorMessage
+class ServiceErrorMessage
 {
     private $message;
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string {
+        return $this->message;
+    }
 
     public function __construct($message) {
         $this->message = $message;
