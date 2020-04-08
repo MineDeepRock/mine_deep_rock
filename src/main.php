@@ -2,6 +2,7 @@
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\plugin\PluginBase;
 use team_system\command\TeamCommand;
 use team_system\service\PlayerService;
@@ -22,5 +23,12 @@ class Main extends PluginBase implements Listener
     public function onJoin(PlayerJoinEvent $event) {
         $playerName = $event->getPlayer()->getName();
         $this->playerService->login($playerName);
+    }
+
+    public function onQuit(PlayerQuitEvent $event) {
+        $playerName = $event->getPlayer()->getName();
+        $player = $this->playerService->login($playerName);
+
+        $this->teamService->quit($player,$player->getBelongTeamId());
     }
 }
