@@ -1,6 +1,7 @@
 <?php
 
-Class RepositoryResult  {
+Class RepositoryResult
+{
 
     private $isSucceed;
     private $value;
@@ -27,5 +28,14 @@ Class RepositoryResult  {
     public function __construct(bool $isSucceed, $value) {
         $this->isSucceed = $isSucceed;
         $this->value = $value;
+    }
+}
+
+class RepositoryErrorMessage
+{
+    private $message;
+
+    public function __construct($message) {
+        $this->message = $message;
     }
 }
