@@ -6,7 +6,6 @@ use mysqli;
 use team_system\models\Player;
 use team_system\models\Team;
 use team_system\models\TeamId;
-use function Sodium\add;
 
 //こっちは条件分岐をほとんど書かない。
 //実行だけにしたい。
@@ -41,15 +40,18 @@ class TeamRepository
         return $result->fetch_assoc();
     }
 
-    public function search(String $ownerName): Team {
+    public function search(String $ownerName): ?Team {
+        if ($this->contain($ownerName)) {
+            return null;
+        }
         $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$ownerName}'");
         return Team::fromJson($result->fetch_assoc());
     }
 
-    public function contain(Player $owner): bool {
-        $result = $this->db->query("SELECT * FROM teams WHERE owner_name = '{$owner->getName()}';");
+    public function contain(String $ownerName): bool {
+        $result = $this->db->query("SELECT * FROM teams WHERE owner_name = '{$ownerName}';");
 
-        return $result->num_rows >= 0;
+        return $result->num_rows != 0;
     }
 
     public function create(Team $team): void {
@@ -66,12 +68,12 @@ class TeamRepository
         }
     }
 
-    public function join(Player $sender, Team $team) {
+    public function join(Player $sender, Team $team): void {
         $id = $team->getId()->value();
         $senderName = $sender->getName();
-        $coworker = $team->setToEmptySlot($senderName);
+        $coworkerSlot = $team->setToEmptySlot($senderName);
 
-        $result = $this->db->query("UPDATE teams SET {$coworker}='{$senderName}' WHERE id='{$id}'");
+        $result = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$senderName}' WHERE id='{$id}'");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -79,4 +81,19 @@ class TeamRepository
             die($sql_error);
         }
     }
+
+    public function quit(Player $sender, Team $team): void {
+        $id = $team->getId()->value();
+        $senderName = $sender->getName();
+        $coworkerSlot = $team->searchPlayerSlot($senderName);
+
+        $result = $this->db->query("UPDATE teams SET {$coworkerSlot}=NULL WHERE id='{$id}'");
+
+        if (!$result) {
+            $sql_error = $this->db->error;
+            error_log($sql_error);
+            die($sql_error);
+        }
+    }
+
 }
