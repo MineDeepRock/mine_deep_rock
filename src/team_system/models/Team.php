@@ -120,9 +120,9 @@ class TeamId
     private $id;
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function value() {
+    public function value(): string {
         return $this->id;
     }
 
