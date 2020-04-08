@@ -4,9 +4,11 @@ command
 ↓  
 service  
 (条件分岐など、細かく)  
+(pmmpとのやり取りはしない)  
 ↓  
 repository  
-(DBとのやり取り、簡単に)
+(DBとのやり取り、簡単に)  
+(pmmpとのやり取りはしない)  
 
 #### DB構成
 ###### teams  
