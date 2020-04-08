@@ -35,7 +35,7 @@ class TeamService
 
         if ($this->contain($owner)) {
             return new ServiceResult(false, new ServiceErrorMessage("すでにチームを作っています"));
-        } else if ($owner->getBelongTeamId() != null) {
+        } else if ($owner->getBelongTeamId()->value() !== null) {
             return new ServiceResult(false, new ServiceErrorMessage("すでに他のチームに参加しています"));
         } else {
             $createdTeam = Team::asNew($owner);
@@ -47,20 +47,20 @@ class TeamService
 
     /**
      * @param Player $sender
-     * @param String $ownerName
+     * @param String $nameOrId
      * @return ServiceResult
      */
     public
-    function join(Player $sender, String $ownerName): ServiceResult {
+    function join(Player $sender, String $nameOrId): ServiceResult {
 
-        $team = $this->repository->search($ownerName);
+        $team = $this->repository->searchAtOwnerName($nameOrId) === null ?? $this->repository->searchAtOwnerName($nameOrId);
 
-        if ($sender->getBelongTeamId() === $team->getId()) {
-            return new ServiceResult(false, new ServiceErrorMessage("すでにそのチームに参加しています"));
+        if ($team === null) {
+            return new ServiceResult(false, new ServiceErrorMessage("そのようなチームは存在しません"));
         } else if ($sender->getBelongTeamId() != null) {
             return new ServiceResult(false, new ServiceErrorMessage("あなたは他のチームに参加しています"));
-        } else if ($team == null) {
-            return new ServiceResult(false, new ServiceErrorMessage("そのようなチームは存在しません"));
+        } else if ($sender->getBelongTeamId() === $team->getId()) {
+            return new ServiceResult(false, new ServiceErrorMessage("すでにそのチームに参加しています"));
         } else if ($team->isFull()) {
             return new ServiceResult(false, new ServiceErrorMessage("そのチームは満員です"));
         } else {
@@ -73,23 +73,30 @@ class TeamService
 
     /**
      * @param Player $sender
-     * @param String $ownerName
+     * @param String $nameOrId
      * @return ServiceResult
      */
     public
-    function quit(Player $sender, String $ownerName): ServiceResult {
+    function quit(Player $sender, String $nameOrId): ServiceResult {
 
-        $team = $this->repository->search($ownerName);
+        $team = $this->repository->searchAtOwnerName($nameOrId) === null ?? $this->repository->searchAtOwnerName($nameOrId);
 
-        if ($sender->getBelongTeamId() == null) {
+        if ($team->getOwner() == $sender->getName()) {
+            return $this->exchangeOwner($sender);
+        } else if ($sender->getBelongTeamId() === null) {
             return new ServiceResult(false, new ServiceErrorMessage("あなたはチームに参加していません"));
-        } else if ($team == null) {
+        } else if ($team === null) {
             return new ServiceResult(false, new ServiceErrorMessage("そのようなチームは存在しません"));
         } else {
             $this->repository->quit($sender, $team);
             $sender->setBelongTeamId(null);
             return new ServiceResult(true, null);
         }
+    }
+
+    public function exchangeOwner(Player $sender, string $nextOwnerName = null): ServiceResult {
+        //TODO:$nextOwnerName == senderをチームから除去
+        //ownerを交代
     }
 
     public

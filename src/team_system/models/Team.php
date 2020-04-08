@@ -23,11 +23,11 @@ class Team
      * @return string
      */
     public function setToEmptySlot(String $coworkerName): string {
-        if ($this->first_coworker_name == null) {
+        if ($this->first_coworker_name === null) {
             $this->first_coworker_name = $coworkerName;
             return "first_coworker_name";
 
-        } else if ($this->second_coworker_name == null) {
+        } else if ($this->second_coworker_name === null) {
             $this->second_coworker_name = $coworkerName;
             return "second_coworker_name";
 
@@ -120,9 +120,9 @@ class TeamId
     private $id;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function value(): string {
+    public function value(): ?string {
         return $this->id;
     }
 
@@ -134,12 +134,13 @@ class TeamId
         return new TeamId();
     }
 
+
     /**
      * TeamId constructor.
      * @param String|null $id
      */
-    public function __construct(String $id = null) {
-        $this->id = $id ?? uniqid();
+    public function __construct(?String $id = "init") {
+        $this->id = $id === "init" ? uniqid() : $id;
     }
 
 }

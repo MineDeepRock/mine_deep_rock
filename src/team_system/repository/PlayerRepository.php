@@ -48,7 +48,7 @@ class PlayerRepository
 
     public function getData(string $name): ?Player {
         $result = $this->db->query("SELECT * FROM players WHERE name='{$name}'");
-        if ($result->num_rows == 0) {
+        if ($result->num_rows === 0) {
             return null;
         }
         return Player::fromJson($result->fetch_assoc());

@@ -43,14 +43,19 @@ class TeamRepository
         return $result->fetch_assoc();
     }
 
-    /**
-     * @param String $ownerName
-     * @return Team|null
-     */
-    public function search(String $ownerName): ?Team {
+    public function searchAtId(String $id): ?Team {
+
+        $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$id}'");
+        if ($result->num_rows === 0) {
+            return null;
+        }
+        return Team::fromJson($result->fetch_assoc());
+    }
+    
+    public function searchAtOwnerName(String $ownerName): ?Team {
 
         $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$ownerName}'");
-        if ($result->num_rows == 0) {
+        if ($result->num_rows === 0) {
             return null;
         }
         return Team::fromJson($result->fetch_assoc());
@@ -61,7 +66,7 @@ class TeamRepository
      * @return bool
      */
     public function contain(String $ownerName): bool {
-        return $this->search($ownerName) != null;
+        return $this->searchAtOwnerName($ownerName) != null;
     }
 
     /**

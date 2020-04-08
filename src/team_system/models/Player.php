@@ -48,7 +48,7 @@ class Player
         );
     }
 
-    public static function fromJson(array $json):Player {
+    public static function fromJson(array $json): Player {
         $name = $json["name"];
         $belongTeamId = $json["belong_team_id"];
 
