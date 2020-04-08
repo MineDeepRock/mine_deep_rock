@@ -27,6 +27,7 @@ class TeamCommand extends Command
             return true;
         }
 
+        //TODO:PlayerデータはonJoin時に設定する。
         $player = new Player($sender->getName());
         $method = $args[0];
         switch ($method) {
@@ -37,6 +38,12 @@ class TeamCommand extends Command
             case "join":
                 $ownerName = $method = $args[1];
                 $this->service->join($player,$ownerName);
+                $sender->sendMessage("joined");
+                break;
+            case "quit":
+                $ownerName = $method = $args[1];
+                $this->service->quit($player,$ownerName);
+                $sender->sendMessage("quited");
                 break;
         }
 

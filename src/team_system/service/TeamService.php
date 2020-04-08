@@ -48,6 +48,20 @@ class TeamService
         }
     }
 
+    public function quit(Player $sender, String $ownerName): void {
+
+        $team = $this->repository->search($ownerName);
+
+        if ($sender->getBelongTeamId() == null) {
+            //TODO
+        } else if ($team == null) {
+            //TODO
+        } else {
+            $this->repository->quit($sender, $team);
+            $sender->setBelongTeamId(null);
+        }
+    }
+
     public function breakup() {
         // TODO: Implement breakup() method.
     }
