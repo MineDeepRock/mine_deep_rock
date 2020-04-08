@@ -39,7 +39,6 @@ class TeamService
             return new ServiceResult(false, new ServiceErrorMessage("すでに他のチームに参加しています"));
         } else {
             $createdTeam = Team::asNew($owner);
-            $owner->setBelongTeamId($createdTeam->getId());
 
             $this->repository->create($createdTeam);
             return new ServiceResult(true, $createdTeam);
@@ -66,8 +65,8 @@ class TeamService
             return new ServiceResult(false, new ServiceErrorMessage("そのチームは満員です"));
         } else {
             $this->repository->join($sender, $team);
-            $sender->setBelongTeamId($team->getId());
-            //TODO:参加したチームデータを返すようにする
+
+            //TODO:参加したチームデータを返すようにする?
             return new ServiceResult(true, "参加しました");
         }
     }

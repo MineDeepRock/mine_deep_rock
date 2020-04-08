@@ -48,10 +48,11 @@ class TeamRepository
      * @return Team|null
      */
     public function search(String $ownerName): ?Team {
-        if (!$this->contain($ownerName)) {
+
+        $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$ownerName}'");
+        if ($result->num_rows == 0) {
             return null;
         }
-        $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$ownerName}'");
         return Team::fromJson($result->fetch_assoc());
     }
 
@@ -60,10 +61,7 @@ class TeamRepository
      * @return bool
      */
     public function contain(String $ownerName): bool {
-        $result = $this->db->query("SELECT * FROM teams WHERE owner_name = '{$ownerName}';");
-        print $result->num_rows;
-
-        return $result->num_rows == 1;
+        return $this->search($ownerName) != null;
     }
 
     /**
