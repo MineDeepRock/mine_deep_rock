@@ -14,7 +14,7 @@ class Player
     /**
      * @return TeamId
      */
-    public function getBelongTeamId():TeamId {
+    public function getBelongTeamId(): ?TeamId {
         return $this->belongTeamId;
     }
 
