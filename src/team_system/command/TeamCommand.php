@@ -44,6 +44,10 @@ class TeamCommand extends Command
             case "quit":
                 $this->quit($player, $sender);
                 break;
+            case "yield":
+                $nextOwnerName = count($args) == 1 ? "" : $args[1];
+                $this->yield($player, $sender, $nextOwnerName);
+                break;
         }
 
         return true;
@@ -72,7 +76,7 @@ class TeamCommand extends Command
     private function join(Player $player, CommandSender $sender, string $ownerName): void {
         $result = $this->teamService->join($player, $ownerName);
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player->getName(), $result->getValue()->getId);
+            $this->playerService->updateBelongTeamId($player->getName(), $result->getValue()->getId());
             $message = "チームに参加しました";
         } else {
             $message = $result->getValue()->getMessage();
@@ -87,11 +91,30 @@ class TeamCommand extends Command
     private function quit(Player $player, CommandSender $sender): void {
         $result = $this->teamService->quit($player, $player->getBelongTeamId()->value());
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player->getName(), $result->getValue()->getId);
+            $this->playerService->updateBelongTeamId($player->getName(), null);
             $message = "チームを抜けました";
         } else {
             $message = $result->getValue()->getMessage();
         }
         $sender->sendMessage($message);
     }
+
+    /**
+     * @param Player $player
+     * @param CommandSender $sender
+     * @param string|null $nextOwner
+     */
+    private function yield(Player $player, CommandSender $sender, string $nextOwner = null) {
+        $result = $this->teamService->yieldOwner($player, $nextOwner);
+        if ($nextOwner == null) {
+            $this->playerService->updateBelongTeamId($player->getName(), null);
+            $message = "譲る相手がいなかったので、チームを削除しました";
+        } else if ($result->isSucceed()) {
+            $message = "チームのオーナーを{$nextOwner}に譲りました";
+        } else {
+            $message = $result->getValue()->getMessage();
+        }
+        $sender->sendMessage($message);
+    }
+
 }

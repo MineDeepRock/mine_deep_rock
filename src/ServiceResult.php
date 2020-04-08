@@ -20,12 +20,13 @@ Class ServiceResult
         return $this->value;
     }
 
+
     /**
      * ServiceResult constructor.
      * @param bool $isSucceed
-     * @param $value
+     * @param null $value
      */
-    public function __construct(bool $isSucceed, $value) {
+    public function __construct(bool $isSucceed, $value = null) {
         $this->isSucceed = $isSucceed;
         $this->value = $value;
     }

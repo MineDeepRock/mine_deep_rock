@@ -51,7 +51,7 @@ class TeamRepository
         }
         return Team::fromJson($result->fetch_assoc());
     }
-    
+
     public function searchAtOwnerName(String $ownerName): ?Team {
 
         $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$ownerName}'");
@@ -93,7 +93,8 @@ class TeamRepository
     public function join(Player $sender, Team $team): void {
         $id = $team->getId()->value();
         $senderName = $sender->getName();
-        $coworkerSlot = $team->setToEmptySlot($senderName);
+        $coworkerSlot = $team->nextEmptySlot();
+        $team->setToEmptySlot($senderName);
 
         $result = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$senderName}' WHERE id='{$id}'");
 
@@ -111,9 +112,35 @@ class TeamRepository
     public function quit(Player $sender, Team $team): void {
         $id = $team->getId()->value();
         $senderName = $sender->getName();
-        $coworkerSlot = $team->searchPlayerSlot($senderName);
+        $coworkerSlot = $team->isWherePlayerSlot($senderName);
 
         $result = $this->db->query("UPDATE teams SET {$coworkerSlot}=NULL WHERE id='{$id}'");
+
+        if (!$result) {
+            $sql_error = $this->db->error;
+            error_log($sql_error);
+            die($sql_error);
+        }
+    }
+
+    public function yieldOwner(Player $currentOwner, string $nextOwnerName, string $coworkerSlot): void {
+        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwner}' WHERE owner_name='{$currentOwner}'");
+        if (!$setOwnerToCoworker) {
+            $sql_error = $this->db->error;
+            error_log($sql_error);
+            die($sql_error);
+        }
+
+        $exchangeOwnerResult = $this->db->query("UPDATE teams SET owner_name='{$nextOwnerName}' WHERE owner_name='{$currentOwner}'");
+        if (!$exchangeOwnerResult) {
+            $sql_error = $this->db->error;
+            error_log($sql_error);
+            die($sql_error);
+        }
+    }
+
+    public function delete(Player $owner): void {
+        $result = $this->db->query("DELETE FROM teams WHERE owner_name='{$owner->getName()}'");
 
         if (!$result) {
             $sql_error = $this->db->error;

@@ -11,28 +11,63 @@ class Team
     private $second_coworker_name;
     private $third_coworker_name;
 
+
+    /**
+     * @return array
+     */
+    public function getCoworkersName(): array {
+        $coworkers = [];
+        if ($this->first_coworker_name !== null) array_push($coworkers, $this->first_coworker_name);
+        if ($this->second_coworker_name !== null) array_push($coworkers, $this->second_coworker_name);
+        if ($this->third_coworker_name !== null) array_push($coworkers, $this->third_coworker_name);
+
+        return $coworkers;
+    }
+
     /**
      * @return bool
      */
     public function isFull(): bool {
-        return $this->first_coworker_name != null && $this->second_coworker_name != null && $this->third_coworker_name != null;
+        return count($this->getCoworkersName()) === 3;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isEmpty(): bool {
+        return count($this->getCoworkersName()) === 0;
     }
 
     /**
      * @param String $coworkerName
-     * @return string
+     * @return void
      */
-    public function setToEmptySlot(String $coworkerName): string {
-        if ($this->first_coworker_name === null) {
+    public function setToEmptySlot(String $coworkerName): void {
+        $emptySlot = $this->nextEmptySlot();
+        if ($emptySlot === "first_coworker_name") {
             $this->first_coworker_name = $coworkerName;
-            return "first_coworker_name";
 
-        } else if ($this->second_coworker_name === null) {
+        } else if ($emptySlot === "second_coworker_name") {
             $this->second_coworker_name = $coworkerName;
-            return "second_coworker_name";
 
         } else {
             $this->third_coworker_name = $coworkerName;
+        }
+    }
+
+
+    /**
+     * @return string
+     */
+    public function nextEmptySlot(): string {
+        if ($this->first_coworker_name === null) {
+            return "first_coworker_name";
+
+        } else if ($this->second_coworker_name === null) {
+            return "second_coworker_name";
+
+        } else {
             return "third_coworker_name";
         }
     }
@@ -41,7 +76,8 @@ class Team
      * @param String $playerName
      * @return string
      */
-    public function searchPlayerSlot(String $playerName): string {
+    //TODO:リネーム
+    public function isWherePlayerSlot(String $playerName): string {
         if ($playerName = $this->first_coworker_name) {
             return "first_coworker_name";
 
@@ -104,13 +140,6 @@ class Team
      */
     public function getOwner(): Player {
         return $this->owner;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCoworkerNames(): array {
-        return array($this->first_coworker_name, $this->second_coworker_name, $this->third_coworker_name);
     }
 }
 

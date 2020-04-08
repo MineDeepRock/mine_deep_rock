@@ -24,13 +24,6 @@ class Player
     }
 
     /**
-     * @param TeamId|null $belongTeamId
-     */
-    public function setBelongTeamId(?TeamId $belongTeamId): void {
-        $this->belongTeamId = $belongTeamId;
-    }
-
-    /**
      * Player constructor.
      * @param string $name
      */
@@ -53,7 +46,7 @@ class Player
         $belongTeamId = $json["belong_team_id"];
 
         $player = new Player($name);
-        $player->setBelongTeamId(new TeamId($belongTeamId));
+        $player->$belongTeamId = new TeamId($belongTeamId);
 
         return $player;
     }
