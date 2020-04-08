@@ -17,10 +17,17 @@ class TeamService
 
     }
 
+    /**
+     * @param Player $owner
+     * @return bool
+     */
     private function contain(Player $owner): bool {
         return $this->repository->contain($owner);
     }
 
+    /**
+     * @param Player $owner
+     */
     public function create(Player $owner): void {
 
         if ($this->contain($owner)) {
@@ -32,6 +39,10 @@ class TeamService
         }
     }
 
+    /**
+     * @param Player $sender
+     * @param String $ownerName
+     */
     public function join(Player $sender, String $ownerName): void {
 
         $team = $this->repository->search($ownerName);
@@ -48,6 +59,10 @@ class TeamService
         }
     }
 
+    /**
+     * @param Player $sender
+     * @param String $ownerName
+     */
     public function quit(Player $sender, String $ownerName): void {
 
         $team = $this->repository->search($ownerName);

@@ -34,12 +34,19 @@ class TeamRepository
         }
     }
 
+    /**
+     * @return array
+     */
     public function getAll(): array {
         $result = $this->db->query("SELECT * FROM teams;");
 
         return $result->fetch_assoc();
     }
 
+    /**
+     * @param String $ownerName
+     * @return Team|null
+     */
     public function search(String $ownerName): ?Team {
         if ($this->contain($ownerName)) {
             return null;
@@ -48,12 +55,19 @@ class TeamRepository
         return Team::fromJson($result->fetch_assoc());
     }
 
+    /**
+     * @param String $ownerName
+     * @return bool
+     */
     public function contain(String $ownerName): bool {
         $result = $this->db->query("SELECT * FROM teams WHERE owner_name = '{$ownerName}';");
 
         return $result->num_rows != 0;
     }
 
+    /**
+     * @param Team $team
+     */
     public function create(Team $team): void {
 
         $id = $team->getId()->value();
@@ -68,6 +82,10 @@ class TeamRepository
         }
     }
 
+    /**
+     * @param Player $sender
+     * @param Team $team
+     */
     public function join(Player $sender, Team $team): void {
         $id = $team->getId()->value();
         $senderName = $sender->getName();
@@ -82,6 +100,10 @@ class TeamRepository
         }
     }
 
+    /**
+     * @param Player $sender
+     * @param Team $team
+     */
     public function quit(Player $sender, Team $team): void {
         $id = $team->getId()->value();
         $senderName = $sender->getName();

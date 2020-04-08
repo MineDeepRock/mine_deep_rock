@@ -11,10 +11,17 @@ class Team
     private $second_coworker_name;
     private $third_coworker_name;
 
+    /**
+     * @return bool
+     */
     public function isFull(): bool {
         return $this->first_coworker_name != null && $this->second_coworker_name != null && $this->third_coworker_name != null;
     }
 
+    /**
+     * @param String $coworkerName
+     * @return string
+     */
     public function setToEmptySlot(String $coworkerName): string {
         if ($this->first_coworker_name == null) {
             $this->first_coworker_name = $coworkerName;
@@ -30,6 +37,10 @@ class Team
         }
     }
 
+    /**
+     * @param String $playerName
+     * @return string
+     */
     public function searchPlayerSlot(String $playerName): string {
         if ($playerName = $this->first_coworker_name) {
             return "first_coworker_name";
@@ -42,6 +53,14 @@ class Team
         }
     }
 
+    /**
+     * Team constructor.
+     * @param TeamId $id
+     * @param Player $owner
+     * @param String|null $first_coworker_name
+     * @param String|null $second_coworker_name
+     * @param String|null $third_coworker_name
+     */
     public function __construct(TeamId $id, Player $owner, String $first_coworker_name = null, String $second_coworker_name = null, String $third_coworker_name = null) {
         $this->id = $id;
         $this->owner = $owner;
@@ -50,11 +69,19 @@ class Team
         $this->third_coworker_name = $third_coworker_name;
     }
 
+    /**
+     * @param Player $owner
+     * @return Team
+     */
     public static function asNew(Player $owner) {
         $id = new TeamId();
         return new Team($id, $owner);
     }
 
+    /**
+     * @param array $json
+     * @return Team
+     */
     public static function fromJson(array $json): Team {
         $id = new TeamId($id = $json["id"]);
         $owner = new Player($json["owner_name"]);
@@ -99,10 +126,18 @@ class TeamId
         return $this->id;
     }
 
-    static function fromString(String $id) {
+    /**
+     * @param String $id
+     * @return TeamId
+     */
+    static function fromString(String $id): TeamId {
         return new TeamId();
     }
 
+    /**
+     * TeamId constructor.
+     * @param String|null $id
+     */
     public function __construct(String $id = null) {
         $this->id = $id ?? uniqid();
     }

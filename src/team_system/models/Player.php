@@ -7,6 +7,9 @@ class Player
     private $name;
     private $belongTeamId;
 
+    /**
+     * @return string
+     */
     public function getName(): string {
         return $this->name;
     }
@@ -25,10 +28,17 @@ class Player
         $this->belongTeamId = $belongTeamId;
     }
 
+    /**
+     * Player constructor.
+     * @param string $name
+     */
     public function __construct(string $name) {
         $this->name = $name;
     }
 
+    /**
+     * @return array
+     */
     public function toJson(): array {
         return array(
             "name" => $this->name,
