@@ -1,5 +1,6 @@
 <?php
 
+//帰ってくる結果に[成功か失敗か]の情報を含めたい場合は、ServiceResultを使う
 Class ServiceResult
 {
 
