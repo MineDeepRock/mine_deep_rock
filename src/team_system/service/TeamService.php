@@ -2,6 +2,7 @@
 
 namespace team_system\service;
 
+use Service;
 use ServiceErrorMessage;
 use ServiceResult;
 use team_system\models\Player;
@@ -9,9 +10,8 @@ use team_system\models\Team;
 use team_system\models\TeamId;
 use team_system\repository\TeamRepository;
 
-class TeamService
+class TeamService extends Service
 {
-
     private $repository;
 
     public function __construct() {
@@ -125,10 +125,5 @@ class TeamService
             return new ServiceResult(false, new ServiceErrorMessage("そのような名前のプレイヤーはチームにいません"));
         }
 
-    }
-
-    public
-    function breakup() {
-        // TODO: Implement breakup() method.
     }
 }

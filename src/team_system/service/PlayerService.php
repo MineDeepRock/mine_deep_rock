@@ -4,11 +4,12 @@
 namespace team_system\service;
 
 
+use Service;
 use team_system\models\Player;
 use team_system\models\TeamId;
 use team_system\repository\PlayerRepository;
 
-class PlayerService
+class PlayerService extends Service
 {
     private $repository;
 

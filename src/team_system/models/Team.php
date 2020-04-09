@@ -2,7 +2,9 @@
 
 namespace team_system\models;
 
-class Team
+use Entity;
+
+class Team extends Entity
 {
     private $id;
     private $owner;
@@ -10,7 +12,6 @@ class Team
     private $first_coworker_name;
     private $second_coworker_name;
     private $third_coworker_name;
-
 
     /**
      * @return array
@@ -38,24 +39,6 @@ class Team
     public function isEmpty(): bool {
         return count($this->getCoworkersName()) === 0;
     }
-
-    /**
-     * @param String $coworkerName
-     * @return void
-     */
-    public function setToEmptySlot(String $coworkerName): void {
-        $emptySlot = $this->nextEmptySlot();
-        if ($emptySlot === "first_coworker_name") {
-            $this->first_coworker_name = $coworkerName;
-
-        } else if ($emptySlot === "second_coworker_name") {
-            $this->second_coworker_name = $coworkerName;
-
-        } else {
-            $this->third_coworker_name = $coworkerName;
-        }
-    }
-
 
     /**
      * @return string

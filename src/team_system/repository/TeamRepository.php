@@ -3,35 +3,14 @@
 namespace team_system\repository;
 
 use mysqli;
+use Repository;
 use team_system\models\Team;
 
 //こっちは条件分岐をほとんど書かない。
 //実行だけにしたい。
 //サービスが条件分岐をやる！
-class TeamRepository
+class TeamRepository extends Repository
 {
-    private $db;
-
-    public function __construct() {
-
-        //sql jsonへのパス
-        $jsonData = file_get_contents("D:\pmmp\plugins\mine_deep_rock\sql.json");
-        $decodedJson = json_decode($jsonData, true);
-
-        $host = $decodedJson["host"];
-        $user_name = $decodedJson["user_name"];
-        $password = $decodedJson["password"];
-        $db_name = $decodedJson["db_name"];
-
-        $this->db = new mysqli($host, $user_name, $password, $db_name);
-
-        if ($this->db->connect_error) {
-            $sql_error = $this->db->connect_error;
-            error_log($sql_error);
-            die($sql_error);
-        }
-    }
-
     /**
      * @return array
      */
