@@ -155,8 +155,8 @@ class TeamId
         return $this->id;
     }
 
-    public static function asNew(String $id):TeamId {
-        return new TeamId($id);
+    public static function asNew():TeamId {
+        return new TeamId(uniqid());
     }
 
     /**
