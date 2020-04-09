@@ -27,12 +27,12 @@ class PlayerService
     }
 
     /**
-     * @param string $name
+     * @param Player $player
      * @param TeamId|null $teamId
      * @return Player
      */
-    public function updateBelongTeamId(string $name, ?TeamId $teamId): Player {
-        $this->repository->updateBelongTeamId($name, $teamId);
-        return $this->getData($name);
+    public function updateBelongTeamId(Player $player, ?TeamId $teamId): Player {
+        $this->repository->updateBelongTeamId($player->getName(), $teamId);
+        return $this->getData($player->getName());
     }
 }

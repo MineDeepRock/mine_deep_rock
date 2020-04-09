@@ -60,7 +60,7 @@ class TeamCommand extends Command
     private function create(Player $player, CommandSender $sender): void {
         $result = $this->teamService->create($player);
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player->getName(), $result->getValue()->getId());
+            $this->playerService->updateBelongTeamId($player, $result->getValue()->getId());
             $message = "チームを作成しました";
         } else {
             $message = $result->getValue()->getMessage();
@@ -76,7 +76,7 @@ class TeamCommand extends Command
     private function join(Player $player, CommandSender $sender, string $ownerName): void {
         $result = $this->teamService->join($player, $ownerName);
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player->getName(), $result->getValue()->getId());
+            $this->playerService->updateBelongTeamId($player, $result->getValue()->getId());
             $message = "チームに参加しました";
         } else {
             $message = $result->getValue()->getMessage();
@@ -91,7 +91,7 @@ class TeamCommand extends Command
     private function quit(Player $player, CommandSender $sender): void {
         $result = $this->teamService->quit($player, $player->getBelongTeamId()->value());
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player->getName(), null);
+            $this->playerService->updateBelongTeamId($player, null);
             $message = "チームを抜けました";
         } else {
             $message = $result->getValue()->getMessage();
@@ -107,7 +107,7 @@ class TeamCommand extends Command
     private function yield(Player $player, CommandSender $sender, string $nextOwner = null) {
         $result = $this->teamService->yieldOwner($player, $nextOwner);
         if ($nextOwner == null) {
-            $this->playerService->updateBelongTeamId($player->getName(), null);
+            $this->playerService->updateBelongTeamId($player, null);
             $message = "譲る相手がいなかったので、チームを削除しました";
         } else if ($result->isSucceed()) {
             $message = "チームのオーナーを{$nextOwner}に譲りました";
