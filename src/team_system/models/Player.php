@@ -46,7 +46,7 @@ class Player
         $belongTeamId = $json["belong_team_id"];
 
         $player = new Player($name);
-        $player->belongTeamId = new TeamId($belongTeamId);
+        $player->belongTeamId = $belongTeamId == null ? null : new TeamId($belongTeamId);
 
         return $player;
     }

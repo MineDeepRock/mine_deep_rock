@@ -110,7 +110,7 @@ class Team
      * @return Team
      */
     public static function asNew(Player $owner) {
-        $id = new TeamId();
+        $id = TeamId::asNew();
         return new Team($id, $owner);
     }
 
@@ -119,7 +119,7 @@ class Team
      * @return Team
      */
     public static function fromJson(array $json): Team {
-        $id = new TeamId($id = $json["id"]);
+        $id = new TeamId($json["id"]);
         $owner = new Player($json["owner_name"]);
         $first = $json["first_coworker_name"];
         $second = $json["second_coworker_name"];
@@ -155,12 +155,16 @@ class TeamId
         return $this->id;
     }
 
+    public static function asNew(String $id):TeamId {
+        return new TeamId($id);
+    }
+
     /**
      * TeamId constructor.
      * @param String|null $id
      */
-    public function __construct(?String $id = "init") {
-        $this->id = $id === "init" ? uniqid() : $id;
+    public function __construct(String $id) {
+        $this->id = $id;
     }
 
 }
