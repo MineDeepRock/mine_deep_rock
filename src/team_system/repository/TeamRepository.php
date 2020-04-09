@@ -3,7 +3,6 @@
 namespace team_system\repository;
 
 use mysqli;
-use team_system\models\Player;
 use team_system\models\Team;
 
 //こっちは条件分岐をほとんど書かない。
@@ -69,14 +68,11 @@ class TeamRepository
     }
 
     /**
-     * @param Team $team
+     * @param string $teamId
+     * @param string $owner_name
      */
-    public function create(Team $team): void {
-
-        $id = $team->getId()->value();
-        $owner_name = $team->getOwner()->getName();
-
-        $result = $this->db->query("INSERT INTO teams(id,owner_name) VALUES('{$id}','{$owner_name}')");
+    public function create(string $teamId, string $owner_name): void {
+        $result = $this->db->query("INSERT INTO teams(id,owner_name) VALUES('{$teamId}','{$owner_name}')");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -86,16 +82,14 @@ class TeamRepository
     }
 
     /**
-     * @param Player $sender
+     * @param string $playerName
      * @param Team $team
      */
-    public function join(Player $sender, Team $team): void {
+    public function join(string $playerName, Team $team): void {
         $id = $team->getId()->value();
-        $senderName = $sender->getName();
         $coworkerSlot = $team->nextEmptySlot();
-        $team->setToEmptySlot($senderName);
 
-        $result = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$senderName}' WHERE id='{$id}'");
+        $result = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$playerName}' WHERE id='{$id}'");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -105,14 +99,12 @@ class TeamRepository
     }
 
     /**
-     * @param Player $sender
+     * @param string $playerName
      * @param Team $team
      */
-    public function quit(Player $sender, Team $team): void {
+    public function quit(string $playerName, Team $team): void {
         $id = $team->getId()->value();
-        $senderName = $sender->getName();
-        $coworkerSlot = $team->isWherePlayerSlot($senderName);
-
+        $coworkerSlot = $team->isWherePlayerSlot($playerName);
         $result = $this->db->query("UPDATE teams SET {$coworkerSlot}=NULL WHERE id='{$id}'");
 
         if (!$result) {
@@ -122,15 +114,15 @@ class TeamRepository
         }
     }
 
-    public function yieldOwner(Player $currentOwner, string $nextOwnerName, string $coworkerSlot): void {
-        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwner->getName()}' WHERE owner_name='{$currentOwner->getName()}'");
+    public function yieldOwner(String $currentOwnerName, string $nextOwnerName, string $coworkerSlot): void {
+        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwnerName->getName()}' WHERE owner_name='{$currentOwnerName}'");
         if (!$setOwnerToCoworker) {
             $sql_error = $this->db->error;
             error_log($sql_error);
             die($sql_error);
         }
 
-        $exchangeOwnerResult = $this->db->query("UPDATE teams SET owner_name='{$nextOwnerName}' WHERE owner_name='{$currentOwner->getName()}'");
+        $exchangeOwnerResult = $this->db->query("UPDATE teams SET owner_name='{$nextOwnerName}' WHERE owner_name='{$currentOwnerName}'");
         if (!$exchangeOwnerResult) {
             $sql_error = $this->db->error;
             error_log($sql_error);
@@ -138,8 +130,8 @@ class TeamRepository
         }
     }
 
-    public function delete(Player $owner): void {
-        $result = $this->db->query("DELETE FROM teams WHERE owner_name='{$owner->getName()}'");
+    public function delete(String $ownerName): void {
+        $result = $this->db->query("DELETE FROM teams WHERE owner_name='{$ownerName}'");
 
         if (!$result) {
             $sql_error = $this->db->error;

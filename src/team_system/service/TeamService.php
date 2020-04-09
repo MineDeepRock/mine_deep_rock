@@ -48,7 +48,7 @@ class TeamService
         } else {
             $createdTeam = Team::asNew($owner);
 
-            $this->repository->create($createdTeam);
+            $this->repository->create($createdTeam->getId(), $owner->getName());
             return new ServiceResult(true, $createdTeam);
         }
     }
@@ -72,7 +72,7 @@ class TeamService
         } else if ($team->isFull()) {
             return new ServiceResult(false, new ServiceErrorMessage("そのチームは満員です"));
         } else {
-            $this->repository->join($sender, $team);
+            $this->repository->join($sender->getName(), $team);
 
             return new ServiceResult(true, $team);
         }
@@ -96,7 +96,7 @@ class TeamService
             return new ServiceResult(true);
 
         } else {
-            $this->repository->quit($sender, $team);
+            $this->repository->quit($sender->getName(), $team);
             return new ServiceResult(true);
         }
     }
