@@ -37,7 +37,7 @@ class Player
     public function toJson(): array {
         return array(
             "name" => $this->name,
-            "belong_Team_id" => $this->belongTeamId,
+            "belong_team_id" => $this->belongTeamId,
         );
     }
 
@@ -46,7 +46,7 @@ class Player
         $belongTeamId = $json["belong_team_id"];
 
         $player = new Player($name);
-        $player->$belongTeamId = new TeamId($belongTeamId);
+        $player->belongTeamId = new TeamId($belongTeamId);
 
         return $player;
     }
