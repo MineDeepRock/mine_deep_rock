@@ -22,6 +22,17 @@ class  TeamSystemTest extends TestCase
         $this->assertEquals(new Player("Bob"), $player);
     }
 
+    //存在しないチームに参加
+    public function testJoinNotExist() {
+        $playerService = new PlayerService();
+        $teamService = new TeamService();
+        $player = $playerService->getData($this->playerName);
+
+        $result = $teamService->join($player,"NotExist");
+        $this->assertEquals(false, $result->isSucceed());
+        $this->assertEquals("そのようなチームは存在しません", $result->getValue()->getMessage());
+    }
+
     //チーム作成
     //チーム検索
     public function testCreateTeam() {
@@ -50,4 +61,5 @@ class  TeamSystemTest extends TestCase
         $this->assertEquals(false, $result->isSucceed());
         $this->assertEquals("すでにチームを作っています", $result->getValue()->getMessage());
     }
+
 }
