@@ -27,16 +27,11 @@ class TeamService
         return $this->repository->contain($owner->getName());
     }
 
-
-    public function searchAtOwner(Player $owner): bool {
-        return $this->repository->contain($owner->getName());
-    }
-
-    public function findAtOwner(Player $owner): ?Team {
+    public function searchAtOwner(Player $owner): ?Team {
         return $this->repository->searchAtOwnerName($owner->getName());
     }
 
-    public function findAtId(TeamId $id): ?Team {
+    public function searchAtId(TeamId $id): ?Team {
         return $this->repository->searchAtId($id->value());
     }
 
