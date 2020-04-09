@@ -78,10 +78,10 @@ class Team
      */
     //TODO:リネーム
     public function isWherePlayerSlot(String $playerName): string {
-        if ($playerName = $this->first_coworker_name) {
+        if ($playerName === $this->first_coworker_name) {
             return "first_coworker_name";
 
-        } else if ($playerName = $this->second_coworker_name) {
+        } else if ($playerName === $this->second_coworker_name) {
             return "second_coworker_name";
 
         } else {
@@ -154,15 +154,6 @@ class TeamId
     public function value(): ?string {
         return $this->id;
     }
-
-    /**
-     * @param String $id
-     * @return TeamId
-     */
-    static function fromString(String $id): TeamId {
-        return new TeamId();
-    }
-
 
     /**
      * TeamId constructor.
