@@ -5,7 +5,6 @@ namespace team_system\repository;
 use mysqli;
 use team_system\models\Player;
 use team_system\models\Team;
-use team_system\models\TeamId;
 
 //こっちは条件分岐をほとんど書かない。
 //実行だけにしたい。
@@ -45,7 +44,7 @@ class TeamRepository
 
     public function searchAtId(String $id): ?Team {
 
-        $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$id}'");
+        $result = $this->db->query("SELECT * FROM teams WHERE id='{$id}'");
         if ($result->num_rows === 0) {
             return null;
         }
@@ -124,14 +123,14 @@ class TeamRepository
     }
 
     public function yieldOwner(Player $currentOwner, string $nextOwnerName, string $coworkerSlot): void {
-        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwner}' WHERE owner_name='{$currentOwner}'");
+        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwner->getName()}' WHERE owner_name='{$currentOwner->getName()}'");
         if (!$setOwnerToCoworker) {
             $sql_error = $this->db->error;
             error_log($sql_error);
             die($sql_error);
         }
 
-        $exchangeOwnerResult = $this->db->query("UPDATE teams SET owner_name='{$nextOwnerName}' WHERE owner_name='{$currentOwner}'");
+        $exchangeOwnerResult = $this->db->query("UPDATE teams SET owner_name='{$nextOwnerName}' WHERE owner_name='{$currentOwner->getName()}'");
         if (!$exchangeOwnerResult) {
             $sql_error = $this->db->error;
             error_log($sql_error);
