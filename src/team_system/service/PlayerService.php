@@ -16,32 +16,23 @@ class PlayerService
         $this->repository = new PlayerRepository();
     }
 
-    public function login(string $playerName):Player {
-        if ($this->exists($playerName)) {
-            return $this->getData($playerName);
-        } else {
-            return $this->register($playerName);
-        }
-    }
-
-    private function register(String $playerName):Player {
+    public function init(string $playerName):Player {
         $newPlayer = new Player($playerName);
-        $this->repository->register($newPlayer);
+        $this->repository->init($newPlayer);
         return $newPlayer;
     }
-
-    public function exists(string $name):bool {
-        return $this->repository->exists($name);
-    }
-
 
     public function getData(string $name): Player {
         return $this->repository->getData($name);
     }
 
-    public function updateBelongTeamId(string $name, TeamId $teamId): Player {
+    /**
+     * @param string $name
+     * @param TeamId|null $teamId
+     * @return Player
+     */
+    public function updateBelongTeamId(string $name, ?TeamId $teamId): Player {
         $this->repository->updateBelongTeamId($name, $teamId);
-        //TODO:変更したプレイヤーデータを返すようにする?
         return $this->getData($name);
     }
 }

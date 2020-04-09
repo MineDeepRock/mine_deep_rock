@@ -32,8 +32,18 @@ class PlayerRepository
         }
     }
 
-    public function register(Player $player) {
-        $result = $this->db->query("INSERT INTO players(name) VALUES('{$player->getName()}')");
+    public function init(Player $player) {
+        $playerName = $player->getName();
+        if ($this->exists($playerName)) {
+            $result = $this->db->query("DELETE FROM players WHERE name = '{$playerName}'");
+
+            if (!$result) {
+                $sql_error = $this->db->error;
+                error_log($sql_error);
+                die($sql_error);
+            }
+        }
+        $result = $this->db->query("INSERT INTO players(name) VALUES('{$playerName}')");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -54,8 +64,14 @@ class PlayerRepository
         return Player::fromJson($result->fetch_assoc());
     }
 
-    public function updateBelongTeamId(string $name, TeamId $teamId): void {
-        $result = $this->db->query("UPDATE players SET belong_team_id='{$teamId->value()}' WHERE name='{$name}'");
+    /**
+     * @param string $name
+     * @param TeamId|null $teamId
+     */
+    public function updateBelongTeamId(string $name, ?TeamId $teamId): void {
+        $newTeamId = $teamId == null ? null : $teamId->value();
+
+        $result = $this->db->query("UPDATE players SET belong_team_id='{$newTeamId}' WHERE name='{$name}'");
 
         if (!$result) {
             $sql_error = $this->db->error;

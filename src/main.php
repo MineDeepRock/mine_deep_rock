@@ -22,13 +22,16 @@ class Main extends PluginBase implements Listener
 
     public function onJoin(PlayerJoinEvent $event) {
         $playerName = $event->getPlayer()->getName();
-        $this->playerService->login($playerName);
+        $this->playerService->init($playerName);
+
     }
 
     public function onQuit(PlayerQuitEvent $event) {
         $playerName = $event->getPlayer()->getName();
         $player = $this->playerService->login($playerName);
+        $belongTeamId = $player->getBelongTeamId() == null ? "" : $player->getBelongTeamId()->value();
 
-        $this->teamService->quit($player,$player->getBelongTeamId());
+        $this->teamService->quit($player,$belongTeamId);
+
     }
 }
