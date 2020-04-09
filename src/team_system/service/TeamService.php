@@ -43,8 +43,10 @@ class TeamService extends Service
 
         if ($this->contain($owner)) {
             return new ServiceResult(false, new ServiceErrorMessage("すでにチームを作っています"));
+
         } else if ($owner->getBelongTeamId() !== null) {
             return new ServiceResult(false, new ServiceErrorMessage("すでに他のチームに参加しています"));
+
         } else {
             $createdTeam = Team::asNew($owner);
 
@@ -63,14 +65,21 @@ class TeamService extends Service
 
         $team = $this->repository->searchAtOwnerName($nameOrId) ?? $this->repository->searchAtId($nameOrId);
 
-        if ($team === null) {
+        if ($team === null)
             return new ServiceResult(false, new ServiceErrorMessage("そのようなチームは存在しません"));
-        } else if ($sender->getBelongTeamId() != null) {
+
+        $playerBelongTheTeam = $sender->getBelongTeamId() === $team->getId();
+        $playerBelongOtherTeam = !$playerBelongTheTeam && $sender->getBelongTeamId() != null;
+
+        if ($playerBelongTheTeam) {
             return new ServiceResult(false, new ServiceErrorMessage("あなたは他のチームに参加しています"));
-        } else if ($sender->getBelongTeamId() === $team->getId()) {
+
+        } else if ($playerBelongOtherTeam) {
             return new ServiceResult(false, new ServiceErrorMessage("すでにそのチームに参加しています"));
+
         } else if ($team->isFull()) {
             return new ServiceResult(false, new ServiceErrorMessage("そのチームは満員です"));
+
         } else {
             $this->repository->join($sender->getName(), $team);
 
@@ -102,9 +111,8 @@ class TeamService extends Service
     }
 
     public function yieldOwner(Player $currentOwner, string $nextOwnerName = null): ServiceResult {
-        if (!$this->repository->contain($currentOwner->getName())) {
+        if (!$this->repository->contain($currentOwner->getName()))
             return new ServiceResult(false, new ServiceErrorMessage("あなたはオーナで無いか、チームに入っていません"));
-        }
 
         $team = $this->repository->searchAtOwnerName($currentOwner->getName());
 
