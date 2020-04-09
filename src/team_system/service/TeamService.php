@@ -43,12 +43,12 @@ class TeamService
 
         if ($this->contain($owner)) {
             return new ServiceResult(false, new ServiceErrorMessage("すでにチームを作っています"));
-        } else if ($owner->getBelongTeamId()->value() !== null) {
+        } else if ($owner->getBelongTeamId() !== null) {
             return new ServiceResult(false, new ServiceErrorMessage("すでに他のチームに参加しています"));
         } else {
             $createdTeam = Team::asNew($owner);
 
-            $this->repository->create($createdTeam->getId(), $owner->getName());
+            $this->repository->create($createdTeam->getId()->value(), $owner->getName());
             return new ServiceResult(true, $createdTeam);
         }
     }
@@ -65,7 +65,7 @@ class TeamService
 
         if ($team === null) {
             return new ServiceResult(false, new ServiceErrorMessage("そのようなチームは存在しません"));
-        } else if ($sender->getBelongTeamId()->value() != null) {
+        } else if ($sender->getBelongTeamId() != null) {
             return new ServiceResult(false, new ServiceErrorMessage("あなたは他のチームに参加しています"));
         } else if ($sender->getBelongTeamId() === $team->getId()) {
             return new ServiceResult(false, new ServiceErrorMessage("すでにそのチームに参加しています"));
