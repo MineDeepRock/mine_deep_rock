@@ -37,4 +37,17 @@ class  TeamSystemTest extends TestCase
         $this->assertEquals($createdTeam, $teamService->searchAtId($createdTeam->getId()));
     }
 
+    //すでに作成済み
+    public function testAlreadyCreated() {
+
+        $playerService = new PlayerService();
+        $teamService = new TeamService();
+
+        $player = $playerService->getData($this->playerName);
+
+        $result = $teamService->create($player);
+
+        $this->assertEquals(false, $result->isSucceed());
+        $this->assertEquals("すでにチームを作っています", $result->getValue()->getMessage());
+    }
 }
