@@ -131,23 +131,22 @@ class TeamId
 {
     private $id;
 
-    /**
-     * @return string|null
-     */
     public function value(): ?string {
         return $this->id;
     }
 
-    public static function asNew():TeamId {
+    public static function asNew(): TeamId {
         return new TeamId(uniqid());
     }
 
-    /**
-     * TeamId constructor.
-     * @param String|null $id
-     */
     public function __construct(String $id) {
         $this->id = $id;
     }
 
+    public function equal(?TeamId $id): bool {
+        if ($id === null)
+            return false;
+
+        return $this->id === $id->value();
+    }
 }
