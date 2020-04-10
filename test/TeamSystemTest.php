@@ -14,6 +14,10 @@ class  TeamSystemTest extends TestCase
     private $secondPlayerName = "Steve";
     private $thirdPlayerName = "Alex";
 
+    private $otherTeamOwner = "OtherTeamOwner";
+
+    private $otherTeamPlayerName = "Ichiro";
+
     //参加時
     public function testInitPlayer() {
 
@@ -22,6 +26,9 @@ class  TeamSystemTest extends TestCase
         $service->init($this->firstPlayerName);
         $service->init($this->secondPlayerName);
         $service->init($this->thirdPlayerName);
+
+        $service->init($this->otherTeamOwner);
+        $service->init($this->otherTeamPlayerName);
 
         $player = $service->getData($this->teamOwner);
 
@@ -41,6 +48,10 @@ class  TeamSystemTest extends TestCase
     public function testCreateTeam() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
         $client->create($this->teamOwner, function ($message) {
+            $this->assertEquals("チームを作成しました", $message);
+        });
+
+        $client->create($this->otherTeamOwner, function ($message) {
             $this->assertEquals("チームを作成しました", $message);
         });
     }
@@ -72,6 +83,14 @@ class  TeamSystemTest extends TestCase
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
         $client->join($this->firstPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("すでにそのチームに参加しています", $message);
+        });
+    }
+
+    //満員
+    public function testJoinFullTeam() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->join($this->otherTeamPlayerName, $this->teamOwner, function ($message) {
+            $this->assertEquals("そのチームは満員です", $message);
         });
     }
 }
