@@ -56,4 +56,12 @@ class  TeamSystemTest extends TestCase
             $this->assertEquals("すでにチームを作っています", $message);
         });
     }
+
+    //すでに参加済み
+    public function testAlyreadyJoined() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->join($this->secondPlayerName, $this->firstPlayerName, function ($message) {
+            $this->assertEquals("すでにそのチームに参加しています", $message);
+        });
+    }
 }
