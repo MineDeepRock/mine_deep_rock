@@ -132,4 +132,12 @@ class  TeamSystemTest extends TestCase
             $this->assertEquals("あなたはオーナで無いか、チームに入っていません", $message);
         }, $this->secondPlayerName);
     }
+
+    //譲る相手がいない
+    public function testNotExistsNextOwner() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->yield($this->teamOwner, function ($message) {
+            $this->assertEquals("そのような名前のプレイヤーはチームにいません", $message);
+        }, "NotExists");
+    }
 }
