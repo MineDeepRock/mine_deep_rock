@@ -7,7 +7,6 @@ use ServiceErrorMessage;
 use ServiceResult;
 use team_system\models\Player;
 use team_system\models\Team;
-use team_system\models\TeamId;
 use team_system\repository\TeamRepository;
 
 class TeamService extends Service
@@ -27,13 +26,6 @@ class TeamService extends Service
         return $this->repository->contain($owner->getName());
     }
 
-    public function searchAtOwner(Player $owner): ?Team {
-        return $this->repository->searchAtOwnerName($owner->getName());
-    }
-
-    public function searchAtId(TeamId $id): ?Team {
-        return $this->repository->searchAtId($id->value());
-    }
 
     /**
      * @param Player $owner
