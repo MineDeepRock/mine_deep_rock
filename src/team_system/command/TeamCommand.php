@@ -5,22 +5,21 @@ namespace team_system\command;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
-use team_system\models\Player;
 use team_system\service\PlayerService;
 use team_system\service\TeamService;
+use team_system\TeamSystemClient;
 
 
 class TeamCommand extends Command
 {
-    private $teamService;
-    private $playerService;
+
+    private $client;
 
     public function __construct(Plugin $owner, TeamService $teamService, PlayerService $playerService) {
         parent::__construct("team", "", "");
         $this->setPermission("Team.Command");
 
-        $this->teamService = $teamService;
-        $this->playerService = $playerService;
+        $this->client = new TeamSystemClient($teamService,$playerService);
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
@@ -29,92 +28,26 @@ class TeamCommand extends Command
             $sender->sendMessage("/team [args]");
             return true;
         }
-
-        $player = $this->playerService->getData($sender->getName());
+        $playerName = $sender->getName();
         $method = $args[0];
-        //TODO:リファクタリング
         switch ($method) {
             case "create":
-                $this->create($player, $sender);
+                $this->client->create($playerName, function(){});
                 break;
             case "join":
                 $ownerName = count($args) == 1 ? "" : $args[1];
-                $this->join($player, $sender, $ownerName);
+                $this->client->join($playerName, $ownerName,function(){});
                 break;
             case "quit":
-                $this->quit($player, $sender);
+                $this->client->quit($playerName, function(){});
                 break;
             case "yield":
                 $nextOwnerName = count($args) == 1 ? "" : $args[1];
-                $this->yield($player, $sender, $nextOwnerName);
+                $this->client->yield($playerName, function(){}, $nextOwnerName);
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @param Player $player
-     * @param CommandSender $sender
-     */
-    private function create(Player $player, CommandSender $sender): void {
-        $result = $this->teamService->create($player);
-        if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player, $result->getValue()->getId());
-            $message = "チームを作成しました";
-        } else {
-            $message = $result->getValue()->getMessage();
-        }
-        $sender->sendMessage($message);
-    }
-
-    /**
-     * @param Player $player
-     * @param CommandSender $sender
-     * @param string $ownerName
-     */
-    private function join(Player $player, CommandSender $sender, string $ownerName): void {
-        $result = $this->teamService->join($player, $ownerName);
-        if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player, $result->getValue()->getId());
-            $message = "チームに参加しました";
-        } else {
-            $message = $result->getValue()->getMessage();
-        }
-        $sender->sendMessage($message);
-    }
-
-    /**
-     * @param Player $player
-     * @param CommandSender $sender
-     */
-    private function quit(Player $player, CommandSender $sender): void {
-        $result = $this->teamService->quit($player, $player->getBelongTeamId()->value());
-        if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player, null);
-            $message = "チームを抜けました";
-        } else {
-            $message = $result->getValue()->getMessage();
-        }
-        $sender->sendMessage($message);
-    }
-
-    /**
-     * @param Player $player
-     * @param CommandSender $sender
-     * @param string|null $nextOwner
-     */
-    private function yield(Player $player, CommandSender $sender, string $nextOwner = null) {
-        $result = $this->teamService->yieldOwner($player, $nextOwner);
-        if ($nextOwner == null) {
-            $this->playerService->updateBelongTeamId($player, null);
-            $message = "譲る相手がいなかったので、チームを削除しました";
-        } else if ($result->isSucceed()) {
-            $message = "チームのオーナーを{$nextOwner}に譲りました";
-        } else {
-            $message = $result->getValue()->getMessage();
-        }
-        $sender->sendMessage($message);
     }
 
 }

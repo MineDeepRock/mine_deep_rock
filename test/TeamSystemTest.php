@@ -1,65 +1,59 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use team_system\TeamSystemClient;
 use team_system\models\Player;
-use team_system\models\TeamId;
 use team_system\service\PlayerService;
 use team_system\service\TeamService;
 
-
 class  TeamSystemTest extends TestCase
 {
-    private $playerName = "Bob";
+    private $firstPlayerName = "Bob";
+
+    private $secondPlayerName = "Mike";
 
     //参加時
     public function testInitPlayer() {
 
         $service = new PlayerService();
-        $service->init($this->playerName);
+        $service->init($this->firstPlayerName);
+        $service->init($this->secondPlayerName);
 
-        $player = $service->getData($this->playerName);
+        $player = $service->getData($this->firstPlayerName);
 
         $this->assertEquals(new Player("Bob"), $player);
     }
 
     //存在しないチームに参加
     public function testJoinNotExist() {
-        $playerService = new PlayerService();
-        $teamService = new TeamService();
-        $player = $playerService->getData($this->playerName);
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
 
-        $result = $teamService->join($player,"NotExist");
-        $this->assertEquals(false, $result->isSucceed());
-        $this->assertEquals("そのようなチームは存在しません", $result->getValue()->getMessage());
+        $client->join($this->firstPlayerName, "NotExist", function ($message) {
+            $this->assertEquals("そのようなチームは存在しません", $message);
+        });
     }
 
     //チーム作成
-    //チーム検索
     public function testCreateTeam() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->create($this->firstPlayerName, function ($message) {
+            $this->assertEquals("チームを作成しました", $message);
+        });
+    }
 
-        $playerService = new PlayerService();
-        $teamService = new TeamService();
-
-        $player = $playerService->getData($this->playerName);
-
-        $createdTeam = $teamService->create($player)->getValue();
-
-        $this->assertEquals($createdTeam, $teamService->searchAtOwner($player));
-        $this->assertEquals($createdTeam, $teamService->searchAtId($createdTeam->getId()));
+    //チームに参加
+    public function testJoin() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->join($this->secondPlayerName, $this->firstPlayerName, function ($message) {
+            $this->assertEquals("チームに参加しました", $message);
+        });
     }
 
     //すでに作成済み
     public function testAlreadyCreated() {
-
-        $playerService = new PlayerService();
-        $teamService = new TeamService();
-
-        $player = $playerService->getData($this->playerName);
-
-        $result = $teamService->create($player);
-
-        $this->assertEquals(false, $result->isSucceed());
-        $this->assertEquals("すでにチームを作っています", $result->getValue()->getMessage());
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->create($this->firstPlayerName, function ($message) {
+            $this->assertEquals("すでにチームを作っています", $message);
+        });
     }
-
 }
