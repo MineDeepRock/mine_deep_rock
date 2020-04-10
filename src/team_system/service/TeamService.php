@@ -110,7 +110,7 @@ class TeamService extends Service
         $team = $this->repository->searchAtOwnerName($currentOwner->getName());
 
         if ($team->isEmpty()) {
-            $this->repository->delete($currentOwner);
+            $this->repository->delete($currentOwner->getName());
             return new ServiceResult(true);
 
         } else if ($nextOwnerName === null) {
