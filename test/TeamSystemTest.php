@@ -8,20 +8,24 @@ use team_system\service\TeamService;
 
 class  TeamSystemTest extends TestCase
 {
-    private $firstPlayerName = "Bob";
+    private $teamOwner = "TeamOwner";
 
-    private $secondPlayerName = "Mike";
+    private $firstPlayerName = "Mike";
+    private $secondPlayerName = "Steve";
+    private $thirdPlayerName = "Alex";
 
     //参加時
     public function testInitPlayer() {
 
         $service = new PlayerService();
+        $service->init($this->teamOwner);
         $service->init($this->firstPlayerName);
         $service->init($this->secondPlayerName);
+        $service->init($this->thirdPlayerName);
 
-        $player = $service->getData($this->firstPlayerName);
+        $player = $service->getData($this->teamOwner);
 
-        $this->assertEquals(new Player("Bob"), $player);
+        $this->assertEquals(new Player("TeamOwner"), $player);
     }
 
     //存在しないチームに参加
@@ -36,7 +40,7 @@ class  TeamSystemTest extends TestCase
     //チーム作成
     public function testCreateTeam() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
-        $client->create($this->firstPlayerName, function ($message) {
+        $client->create($this->teamOwner, function ($message) {
             $this->assertEquals("チームを作成しました", $message);
         });
     }
@@ -44,7 +48,13 @@ class  TeamSystemTest extends TestCase
     //チームに参加
     public function testJoin() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
-        $client->join($this->secondPlayerName, $this->firstPlayerName, function ($message) {
+        $client->join($this->firstPlayerName, $this->teamOwner, function ($message) {
+            $this->assertEquals("チームに参加しました", $message);
+        });
+        $client->join($this->secondPlayerName, $this->teamOwner, function ($message) {
+            $this->assertEquals("チームに参加しました", $message);
+        });
+        $client->join($this->thirdPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("チームに参加しました", $message);
         });
     }
@@ -52,15 +62,15 @@ class  TeamSystemTest extends TestCase
     //すでに作成済み
     public function testAlreadyCreated() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
-        $client->create($this->firstPlayerName, function ($message) {
+        $client->create($this->teamOwner, function ($message) {
             $this->assertEquals("すでにチームを作っています", $message);
         });
     }
 
-    //すでに参加済み
-    public function testAlyreadyJoined() {
+    //すでにそのチームに参加している
+    public function testAlreadyJoined() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
-        $client->join($this->secondPlayerName, $this->firstPlayerName, function ($message) {
+        $client->join($this->firstPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("すでにそのチームに参加しています", $message);
         });
     }
