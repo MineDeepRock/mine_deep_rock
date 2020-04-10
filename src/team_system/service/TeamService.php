@@ -60,22 +60,23 @@ class TeamService extends Service
         if ($team === null)
             return new ServiceResult(false, new ServiceErrorMessage("そのようなチームは存在しません"));
 
-        $playerBelongTheTeam = $sender->getBelongTeamId() === $team->getId();
-        $playerBelongOtherTeam = !$playerBelongTheTeam && $sender->getBelongTeamId() != null;
-
-        if ($playerBelongTheTeam) {
-            return new ServiceResult(false, new ServiceErrorMessage("あなたは他のチームに参加しています"));
-
-        } else if ($playerBelongOtherTeam) {
-            return new ServiceResult(false, new ServiceErrorMessage("すでにそのチームに参加しています"));
-
-        } else if ($team->isFull()) {
+        if ($team->isFull())
             return new ServiceResult(false, new ServiceErrorMessage("そのチームは満員です"));
 
-        } else {
+        if ($sender->getBelongTeamId() === null) {
             $this->repository->join($sender->getName(), $team);
 
             return new ServiceResult(true, $team);
+        }
+
+        $playerBelongTheTeam = $sender->getBelongTeamId()->equal($team->getId());
+
+        if ($playerBelongTheTeam) {
+            return new ServiceResult(false, new ServiceErrorMessage("すでにそのチームに参加しています"));
+
+        } else {
+            return new ServiceResult(false, new ServiceErrorMessage("あなたは他のチームに参加しています"));
+
         }
     }
 
