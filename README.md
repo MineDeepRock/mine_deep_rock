@@ -21,6 +21,7 @@
 # プラグインについて
 DBは**mysql**  
 ライブラリは**mysqli** 
- 
+
+###### [**アーキテクチャ**](https://github.com/suinua/mine_deep_rock/tree/master/architecture.md)
 ###### [**チームシステム**](https://github.com/suinua/mine_deep_rock/tree/master/src/team_system/about.md)
 
