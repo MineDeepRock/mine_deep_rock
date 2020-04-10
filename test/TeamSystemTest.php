@@ -140,4 +140,20 @@ class  TeamSystemTest extends TestCase
             $this->assertEquals("そのような名前のプレイヤーはチームにいません", $message);
         }, "NotExists");
     }
+
+    //チームを抜ける
+    public function testQuitTeam() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->quit($this->otherTeamPlayerName,function ($message) {
+            $this->assertEquals("チームを抜けました", $message);
+        });
+    }
+
+    //チームに自分しかいない
+    public function testNotExistsCoworker() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->yield($this->otherTeamOwner, function ($message) {
+            $this->assertEquals("譲る相手がいなかったので、チームを削除しました", $message);
+        });
+    }
 }
