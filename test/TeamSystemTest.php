@@ -65,7 +65,8 @@ class  TeamSystemTest extends TestCase
         $client->join($this->secondPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("チームに参加しました", $message);
         });
-        $client->join($this->thirdPlayerName, $this->teamOwner, function ($message) {
+
+        $client->join($this->otherTeamPlayerName, $this->otherTeamOwner, function ($message) {
             $this->assertEquals("チームに参加しました", $message);
         });
     }
@@ -83,6 +84,19 @@ class  TeamSystemTest extends TestCase
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
         $client->join($this->firstPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("すでにそのチームに参加しています", $message);
+        });
+    }
+
+    //すでに他のチームに参加
+    public function testAlreadyJoinedOtherTeam() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->join($this->otherTeamPlayerName, $this->teamOwner, function ($message) {
+            $this->assertEquals("あなたは他のチームに参加しています", $message);
+        });
+
+        //チームを満員にする
+        $client->join($this->thirdPlayerName, $this->teamOwner, function ($message) {
+            $this->assertEquals("チームに参加しました", $message);
         });
     }
 
