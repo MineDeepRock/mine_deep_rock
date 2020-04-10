@@ -18,6 +18,9 @@ class  TeamSystemTest extends TestCase
 
     private $otherTeamPlayerName = "Ichiro";
 
+    private $freePlayerName = "FreeMan";
+
+
     //参加時
     public function testInitPlayer() {
 
@@ -29,6 +32,8 @@ class  TeamSystemTest extends TestCase
 
         $service->init($this->otherTeamOwner);
         $service->init($this->otherTeamPlayerName);
+
+        $service->init($this->freePlayerName);
 
         $player = $service->getData($this->teamOwner);
 
@@ -110,5 +115,21 @@ class  TeamSystemTest extends TestCase
         $client->join($this->otherTeamPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("そのチームは満員です", $message);
         });
+    }
+
+    //チームに参加していない
+    public function testNotBelongTeam() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->yield($this->freePlayerName, function ($message) {
+            $this->assertEquals("あなたはオーナで無いか、チームに入っていません", $message);
+        }, $this->secondPlayerName);
+    }
+
+    //オーナーじゃないのに譲る
+    public function testNotOwner() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->yield($this->firstPlayerName, function ($message) {
+            $this->assertEquals("あなたはオーナで無いか、チームに入っていません", $message);
+        }, $this->secondPlayerName);
     }
 }
