@@ -10,9 +10,9 @@ class  TeamSystemTest extends TestCase
 {
     private $teamOwner = "TeamOwner";
 
-    private $firstPlayerName = "Mike";
-    private $secondPlayerName = "Steve";
-    private $thirdPlayerName = "Alex";
+    private $firstPlayerName = "first";
+    private $secondPlayerName = "second";
+    private $thirdPlayerName = "third";
 
     private $otherTeamOwner = "OtherTeamOwner";
 
@@ -166,10 +166,18 @@ class  TeamSystemTest extends TestCase
         });
     }
 
+    //チームを譲る
+    public function testYield() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->yield($this->teamOwner, function ($message) {
+            $this->assertEquals("チームのオーナーを{$this->secondPlayerName}に譲りました", $message);
+        },$this->secondPlayerName);
+    }
+
     //オーナーがチームを抜ける
     public function testOwnerQuitTeam() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
-        $client->quit($this->teamOwner, function ($message) {
+        $client->quit($this->secondPlayerName, function ($message) {
             $this->assertEquals("チームを抜けました", $message);
         });
     }
