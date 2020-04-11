@@ -1,6 +1,6 @@
 <?php
 
-namespace team_system\repository;
+namespace team_system\repositories;
 
 use mysqli;
 use Repository;

@@ -4,8 +4,8 @@
 namespace team_system;
 
 use Client;
-use team_system\service\MemberService;
-use team_system\service\TeamService;
+use team_system\services\MemberService;
+use team_system\services\TeamService;
 
 class TeamSystemClient extends Client
 {

@@ -1,13 +1,13 @@
 <?php
 
 
-namespace team_system\service;
+namespace team_system\services;
 
 
 use Service;
 use team_system\models\Member;
 use team_system\models\TeamId;
-use team_system\repository\MemberRepository;
+use team_system\repositories\MemberRepository;
 
 class MemberService extends Service
 {

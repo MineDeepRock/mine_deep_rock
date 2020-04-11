@@ -5,8 +5,8 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\plugin\PluginBase;
 use team_system\command\TeamCommand;
-use team_system\service\MemberService;
-use team_system\service\TeamService;
+use team_system\services\MemberService;
+use team_system\services\TeamService;
 
 class Main extends PluginBase implements Listener
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace team_system\service;
+namespace team_system\services;
 
 use Service;
 use ServiceErrorMessage;
@@ -8,7 +8,7 @@ use ServiceResult;
 use team_system\models\Member;
 use team_system\models\Team;
 use team_system\models\TeamId;
-use team_system\repository\TeamRepository;
+use team_system\repositories\TeamRepository;
 
 class TeamService extends Service
 {

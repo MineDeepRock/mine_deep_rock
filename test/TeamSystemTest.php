@@ -3,8 +3,8 @@
 use PHPUnit\Framework\TestCase;
 use team_system\TeamSystemClient;
 use team_system\models\Member;
-use team_system\service\MemberService;
-use team_system\service\TeamService;
+use team_system\services\MemberService;
+use team_system\services\TeamService;
 
 class  TeamSystemTest extends TestCase
 {

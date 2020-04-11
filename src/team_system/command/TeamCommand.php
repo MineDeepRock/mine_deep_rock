@@ -5,8 +5,8 @@ namespace team_system\command;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
-use team_system\service\MemberService;
-use team_system\service\TeamService;
+use team_system\services\MemberService;
+use team_system\services\TeamService;
 use team_system\TeamSystemClient;
 
 
