@@ -150,7 +150,7 @@ class  TeamSystemTest extends TestCase
         }, "NotExists");
     }
 
-    //チームに入ってないのに抜ける
+    //チームを抜ける
     public function testQuitTeam() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
         $client->quit($this->otherTeamPlayerName, function ($message) {
@@ -163,6 +163,14 @@ class  TeamSystemTest extends TestCase
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
         $client->yield($this->otherTeamOwner, function ($message) {
             $this->assertEquals("譲る相手がいなかったので、チームを削除しました", $message);
+        });
+    }
+
+    //オーナーがチームを抜ける
+    public function testOwnerQuitTeam() {
+        $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        $client->quit($this->teamOwner, function ($message) {
+            $this->assertEquals("チームを抜けました", $message);
         });
     }
 }
