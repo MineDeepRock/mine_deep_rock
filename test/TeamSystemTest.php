@@ -22,6 +22,7 @@ class  TeamSystemTest extends TestCase
 
 
     //参加時
+    //初期化
     public function testInitPlayer() {
 
         $service = new PlayerService();
@@ -85,6 +86,8 @@ class  TeamSystemTest extends TestCase
     }
 
     //すでにそのチームに参加している
+    //参加
+    //作成
     public function testAlreadyJoined() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
         $client->join($this->firstPlayerName, $this->teamOwner, function ($message) {
@@ -102,27 +105,33 @@ class  TeamSystemTest extends TestCase
         $client->join($this->otherTeamPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("あなたは他のチームに参加しています", $message);
         });
-
-        //チームを満員にする
-        $client->join($this->thirdPlayerName, $this->teamOwner, function ($message) {
-            $this->assertEquals("チームに参加しました", $message);
-        });
     }
 
     //満員
     public function testJoinFullTeam() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
+        //チームを満員にする
+        $client->join($this->thirdPlayerName, $this->teamOwner, function ($message) {
+            $this->assertEquals("チームに参加しました", $message);
+        });
+
         $client->join($this->otherTeamPlayerName, $this->teamOwner, function ($message) {
             $this->assertEquals("そのチームは満員です", $message);
         });
     }
 
     //チームに参加していない
+    //チームを譲る
+    //チームを抜ける
     public function testNotBelongTeam() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
         $client->yield($this->freePlayerName, function ($message) {
             $this->assertEquals("あなたはオーナで無いか、チームに入っていません", $message);
         }, $this->secondPlayerName);
+
+        $client->quit($this->freePlayerName, function ($message) {
+            $this->assertEquals("あなたはチームに参加していません", $message);
+        });
     }
 
     //オーナーじゃないのに譲る
@@ -141,10 +150,10 @@ class  TeamSystemTest extends TestCase
         }, "NotExists");
     }
 
-    //チームを抜ける
+    //チームに入ってないのに抜ける
     public function testQuitTeam() {
         $client = new TeamSystemClient(new TeamService(), new PlayerService());
-        $client->quit($this->otherTeamPlayerName,function ($message) {
+        $client->quit($this->otherTeamPlayerName, function ($message) {
             $this->assertEquals("チームを抜けました", $message);
         });
     }
