@@ -7,6 +7,7 @@ use ServiceErrorMessage;
 use ServiceResult;
 use team_system\models\Player;
 use team_system\models\Team;
+use team_system\models\TeamId;
 use team_system\repository\TeamRepository;
 
 class TeamService extends Service
@@ -24,6 +25,16 @@ class TeamService extends Service
      */
     public function contain(Player $owner): bool {
         return $this->repository->contain($owner->getName());
+    }
+
+    private function searchAtOwner(Player $owner): ?Team {
+        return $this->repository->searchAtOwnerName($owner->getName());
+    }
+
+    private function searchAtId(?TeamId $id): ?Team {
+        if ($id === null)
+            return null;
+        return $this->repository->searchAtId($id->value());
     }
 
 
@@ -49,13 +60,13 @@ class TeamService extends Service
 
     /**
      * @param Player $sender
-     * @param String $nameOrId
+     * @param String $ownerName
      * @return ServiceResult
      */
     public
-    function join(Player $sender, String $nameOrId): ServiceResult {
+    function join(Player $sender, String $ownerName): ServiceResult {
 
-        $team = $this->repository->searchAtOwnerName($nameOrId) ?? $this->repository->searchAtId($nameOrId);
+        $team = $this->repository->searchAtOwnerName($ownerName);
 
         if ($team === null)
             return new ServiceResult(false, new ServiceErrorMessage("そのようなチームは存在しません"));
@@ -80,15 +91,16 @@ class TeamService extends Service
         }
     }
 
+
     /**
      * @param Player $sender
-     * @param String $nameOrId
+     * @param TeamId|null $teamId
      * @return ServiceResult
      */
     public
-    function quit(Player $sender, String $nameOrId): ServiceResult {
+    function quit(Player $sender, ?TeamId $teamId): ServiceResult {
 
-        $team = $this->repository->searchAtOwnerName($nameOrId) ?? $this->repository->searchAtId($nameOrId);
+        $team = $this->searchAtId($teamId);
 
         if ($team === null) {
             return new ServiceResult(false, new ServiceErrorMessage("あなたはチームに参加していません"));
@@ -107,7 +119,7 @@ class TeamService extends Service
         if (!$this->repository->contain($currentOwner->getName()))
             return new ServiceResult(false, new ServiceErrorMessage("あなたはオーナで無いか、チームに入っていません"));
 
-        $team = $this->repository->searchAtOwnerName($currentOwner->getName());
+        $team = $this->searchAtOwner($currentOwner);
 
         if ($team->isEmpty()) {
             $this->repository->delete($currentOwner->getName());

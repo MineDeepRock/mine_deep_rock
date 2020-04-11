@@ -46,7 +46,7 @@ class TeamSystemClient extends Client
     public function quit(string $playerName, $whenSucceed): void {
         $player = $this->playerService->getData($playerName);
 
-        $result = $this->teamService->quit($player, $player->getBelongTeamId()->value());
+        $result = $this->teamService->quit($player, $player->getBelongTeamId());
         if ($result->isSucceed()) {
             $this->playerService->updateBelongTeamId($player, null);
             $message = "チームを抜けました";
