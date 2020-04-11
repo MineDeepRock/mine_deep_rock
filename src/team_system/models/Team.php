@@ -7,22 +7,22 @@ use Entity;
 class Team extends Entity
 {
     private $id;
-    private $owner;
+    private $leaderName;
 
-    private $first_coworker_name;
-    private $second_coworker_name;
-    private $third_coworker_name;
+    private $firstMemberName;
+    private $secondMemberName;
+    private $thirdMemberName;
 
     /**
      * @return array
      */
     public function getCoworkersName(): array {
-        $coworkers = [];
-        if ($this->first_coworker_name !== null) array_push($coworkers, $this->first_coworker_name);
-        if ($this->second_coworker_name !== null) array_push($coworkers, $this->second_coworker_name);
-        if ($this->third_coworker_name !== null) array_push($coworkers, $this->third_coworker_name);
+        $members = [];
+        if ($this->firstMemberName !== null) array_push($members, $this->firstMemberName);
+        if ($this->secondMemberName !== null) array_push($members, $this->secondMemberName);
+        if ($this->thirdMemberName !== null) array_push($members, $this->thirdMemberName);
 
-        return $coworkers;
+        return $members;
     }
 
     /**
@@ -44,57 +44,54 @@ class Team extends Entity
      * @return string
      */
     public function nextEmptySlot(): string {
-        if ($this->first_coworker_name === null) {
-            return "first_coworker_name";
+        if ($this->firstMemberName === null) {
+            return "first_member_name";
 
-        } else if ($this->second_coworker_name === null) {
-            return "second_coworker_name";
+        } else if ($this->secondMemberName === null) {
+            return "second_member_name";
 
         } else {
-            return "third_coworker_name";
+            return "third_member_name";
         }
     }
 
     /**
-     * @param string $playerName
+     * @param string $memberName
      * @return string
      */
     //TODO:リネーム
-    public function isWherePlayerSlot(string $playerName): string {
-        if ($playerName === $this->first_coworker_name) {
-            return "first_coworker_name";
+    public function getMemberSlot(string $memberName): string {
+        if ($memberName === $this->firstMemberName) {
+            return "first_member_name";
 
-        } else if ($playerName === $this->second_coworker_name) {
-            return "second_coworker_name";
+        } else if ($memberName === $this->secondMemberName) {
+            return "second_member_name";
 
         } else {
-            return "third_coworker_name";
+            return "third_member_name";
         }
     }
 
     /**
      * Team constructor.
      * @param TeamId $id
-     * @param Player $owner
-     * @param String|null $first_coworker_name
-     * @param String|null $second_coworker_name
-     * @param String|null $third_coworker_name
+     * @param string $leaderName
+     * @param String|null $firstMemberName
+     * @param String|null $secondMemberName
+     * @param String|null $thirdMemberName
      */
-    public function __construct(TeamId $id, Player $owner, String $first_coworker_name = null, String $second_coworker_name = null, String $third_coworker_name = null) {
+    public function __construct(TeamId $id, string $leaderName, String $firstMemberName = null, String $secondMemberName = null, String $thirdMemberName = null) {
         $this->id = $id;
-        $this->owner = $owner;
-        $this->first_coworker_name = $first_coworker_name;
-        $this->second_coworker_name = $second_coworker_name;
-        $this->third_coworker_name = $third_coworker_name;
+        $this->leaderName = $leaderName;
+        $this->firstMemberName = $firstMemberName;
+        $this->secondMemberName = $secondMemberName;
+        $this->thirdMemberName = $thirdMemberName;
     }
 
-    /**
-     * @param Player $owner
-     * @return Team
-     */
-    public static function asNew(Player $owner) {
+
+    public static function asNew(string $leaderName) {
         $id = TeamId::asNew();
-        return new Team($id, $owner);
+        return new Team($id, $leaderName);
     }
 
     /**
@@ -103,12 +100,12 @@ class Team extends Entity
      */
     public static function fromJson(array $json): Team {
         $id = new TeamId($json["id"]);
-        $owner = new Player($json["owner_name"]);
-        $first = $json["first_coworker_name"];
-        $second = $json["second_coworker_name"];
-        $third = $json["third_coworker_name"];
+        $leader = $json["leader_name"];
+        $first = $json["first_member_name"];
+        $second = $json["second_member_name"];
+        $third = $json["third_member_name"];
 
-        return new Team($id, $owner, $first, $second, $third);
+        return new Team($id, $leader, $first, $second, $third);
     }
 
     /**
@@ -119,10 +116,10 @@ class Team extends Entity
     }
 
     /**
-     * @return Player
+     * @return string
      */
-    public function getOwner(): Player {
-        return $this->owner;
+    public function getLeaderName(): string {
+        return $this->leaderName;
     }
 }
 

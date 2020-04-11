@@ -6,7 +6,7 @@ use Entity;
 
 require "Team.php";
 
-class Player extends Entity
+class Member extends Entity
 {
     private $name;
     private $belongTeamId;
@@ -43,13 +43,13 @@ class Player extends Entity
         );
     }
 
-    public static function fromJson(array $json): Player {
+    public static function fromJson(array $json): Member {
         $name = $json["name"];
         $belongTeamId = $json["belong_team_id"];
 
-        $player = new Player($name);
-        $player->belongTeamId = $belongTeamId == null ? null : new TeamId($belongTeamId);
+        $member = new Member($name);
+        $member->belongTeamId = $belongTeamId == null ? null : new TeamId($belongTeamId);
 
-        return $player;
+        return $member;
     }
 }

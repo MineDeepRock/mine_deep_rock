@@ -29,9 +29,9 @@ class TeamRepository extends Repository
         return Team::fromJson($result->fetch_assoc());
     }
 
-    public function searchAtOwnerName(String $ownerName): ?Team {
+    public function searchAtLeaderName(String $leaderName): ?Team {
 
-        $result = $this->db->query("SELECT * FROM teams WHERE owner_name='{$ownerName}'");
+        $result = $this->db->query("SELECT * FROM teams WHERE leader_name='{$leaderName}'");
         if ($result->num_rows === 0) {
             return null;
         }
@@ -39,19 +39,19 @@ class TeamRepository extends Repository
     }
 
     /**
-     * @param String $ownerName
+     * @param String $leaderName
      * @return bool
      */
-    public function contain(String $ownerName): bool {
-        return $this->searchAtOwnerName($ownerName) != null;
+    public function contain(String $leaderName): bool {
+        return $this->searchAtLeaderName($leaderName) != null;
     }
 
     /**
      * @param string $teamId
-     * @param string $owner_name
+     * @param string $leader_name
      */
-    public function create(string $teamId, string $owner_name): void {
-        $result = $this->db->query("INSERT INTO teams(id,owner_name) VALUES('{$teamId}','{$owner_name}')");
+    public function create(string $teamId, string $leader_name): void {
+        $result = $this->db->query("INSERT INTO teams(id,leader_name) VALUES('{$teamId}','{$leader_name}')");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -61,14 +61,14 @@ class TeamRepository extends Repository
     }
 
     /**
-     * @param string $playerName
+     * @param string $memberName
      * @param Team $team
      */
-    public function join(string $playerName, Team $team): void {
+    public function join(string $memberName, Team $team): void {
         $id = $team->getId()->value();
-        $coworkerSlot = $team->nextEmptySlot();
+        $memberSlot = $team->nextEmptySlot();
 
-        $result = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$playerName}' WHERE id='{$id}'");
+        $result = $this->db->query("UPDATE teams SET {$memberSlot}='{$memberName}' WHERE id='{$id}'");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -78,13 +78,13 @@ class TeamRepository extends Repository
     }
 
     /**
-     * @param string $playerName
+     * @param string $memberName
      * @param Team $team
      */
-    public function quit(string $playerName, Team $team): void {
+    public function quit(string $memberName, Team $team): void {
         $id = $team->getId()->value();
-        $coworkerSlot = $team->isWherePlayerSlot($playerName);
-        $result = $this->db->query("UPDATE teams SET {$coworkerSlot}=NULL WHERE id='{$id}'");
+        $memberSlot = $team->getMemberSlot($memberName);
+        $result = $this->db->query("UPDATE teams SET {$memberSlot}=NULL WHERE id='{$id}'");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -93,24 +93,24 @@ class TeamRepository extends Repository
         }
     }
 
-    public function yieldOwner(String $currentOwnerName, string $nextOwnerName, string $coworkerSlot): void {
-        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwnerName}' WHERE owner_name='{$currentOwnerName}'");
-        if (!$setOwnerToCoworker) {
+    public function yieldLeader(String $currentLeaderName, string $nextLeaderName, string $memberSlot): void {
+        $makeMemberLeader = $this->db->query("UPDATE teams SET {$memberSlot}='{$currentLeaderName}' WHERE leader_name='{$currentLeaderName}'");
+        if (!$makeMemberLeader) {
             $sql_error = $this->db->error;
             error_log($sql_error);
             die($sql_error);
         }
 
-        $exchangeOwnerResult = $this->db->query("UPDATE teams SET owner_name='{$nextOwnerName}' WHERE owner_name='{$currentOwnerName}'");
-        if (!$exchangeOwnerResult) {
+        $exchangeLeaderResult = $this->db->query("UPDATE teams SET leader_name='{$nextLeaderName}' WHERE leader_name='{$currentLeaderName}'");
+        if (!$exchangeLeaderResult) {
             $sql_error = $this->db->error;
             error_log($sql_error);
             die($sql_error);
         }
     }
 
-    public function delete(String $ownerName): void {
-        $result = $this->db->query("DELETE FROM teams WHERE owner_name='{$ownerName}'");
+    public function delete(String $leaderName): void {
+        $result = $this->db->query("DELETE FROM teams WHERE leader_name='{$leaderName}'");
 
         if (!$result) {
             $sql_error = $this->db->error;

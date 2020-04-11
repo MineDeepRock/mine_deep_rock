@@ -5,7 +5,7 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\plugin\PluginBase;
 use team_system\command\TeamCommand;
-use team_system\service\PlayerService;
+use team_system\service\MemberService;
 use team_system\service\TeamService;
 
 class Main extends PluginBase implements Listener
@@ -14,7 +14,7 @@ class Main extends PluginBase implements Listener
     private $teamService;
 
     function onEnable() {
-        $this->playerService = new PlayerService();
+        $this->playerService = new MemberService();
         $this->teamService = new TeamService();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("team", new TeamCommand($this,$this->teamService,$this->playerService));

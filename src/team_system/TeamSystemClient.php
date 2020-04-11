@@ -4,25 +4,25 @@
 namespace team_system;
 
 use Client;
-use team_system\service\PlayerService;
+use team_system\service\MemberService;
 use team_system\service\TeamService;
 
 class TeamSystemClient extends Client
 {
     private $teamService;
-    private $playerService;
+    private $memberService;
 
-    public function __construct(TeamService $teamService, PlayerService $playerService) {
+    public function __construct(TeamService $teamService, MemberService $memberService) {
         $this->teamService = $teamService;
-        $this->playerService = $playerService;
+        $this->memberService = $memberService;
     }
 
-    public function create(string $playerName, $whenSucceed): void {
-        $player = $this->playerService->getData($playerName);
+    public function create(string $memberName, $whenSucceed): void {
+        $member = $this->memberService->getData($memberName);
 
-        $result = $this->teamService->create($player);
+        $result = $this->teamService->create($member);
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player, $result->getValue()->getId());
+            $this->memberService->updateBelongTeamId($member, $result->getValue()->getId());
             $message = "チームを作成しました";
         } else {
             $message = $result->getValue()->getMessage();
@@ -30,12 +30,12 @@ class TeamSystemClient extends Client
         $whenSucceed($message);
     }
 
-    public function join(string $playerName, string $ownerName,$whenSucceed): void {
-        $player = $this->playerService->getData($playerName);
+    public function join(string $memberName, string $leaderName,$whenSucceed): void {
+        $member = $this->memberService->getData($memberName);
 
-        $result = $this->teamService->join($player, $ownerName);
+        $result = $this->teamService->join($member, $leaderName);
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player, $result->getValue()->getId());
+            $this->memberService->updateBelongTeamId($member, $result->getValue()->getId());
             $message = "チームに参加しました";
         } else {
             $message = $result->getValue()->getMessage();
@@ -43,12 +43,12 @@ class TeamSystemClient extends Client
         $whenSucceed($message);
     }
 
-    public function quit(string $playerName, $whenSucceed): void {
-        $player = $this->playerService->getData($playerName);
+    public function quit(string $memberName, $whenSucceed): void {
+        $member = $this->memberService->getData($memberName);
 
-        $result = $this->teamService->quit($player, $player->getBelongTeamId());
+        $result = $this->teamService->quit($member, $member->getBelongTeamId());
         if ($result->isSucceed()) {
-            $this->playerService->updateBelongTeamId($player, null);
+            $this->memberService->updateBelongTeamId($member, null);
             $message = "チームを抜けました";
         } else {
             $message = $result->getValue()->getMessage();
@@ -56,16 +56,16 @@ class TeamSystemClient extends Client
         $whenSucceed($message);
     }
 
-    public function yield(string $playerName, $whenSucceed,string $nextOwner = null) {
-        $player = $this->playerService->getData($playerName);
+    public function yield(string $memberName, $whenSucceed,string $nextLeader = null) {
+        $member = $this->memberService->getData($memberName);
 
-        $result = $this->teamService->yieldOwner($player, $nextOwner);
+        $result = $this->teamService->yieldLeader($member, $nextLeader);
 
-        if ($nextOwner == null) {
-            $this->playerService->updateBelongTeamId($player, null);
+        if ($nextLeader == null) {
+            $this->memberService->updateBelongTeamId($member, null);
             $message = "譲る相手がいなかったので、チームを削除しました";
         } else if ($result->isSucceed()) {
-            $message = "チームのオーナーを{$nextOwner}に譲りました";
+            $message = "チームのオーナーを{$nextLeader}に譲りました";
         } else {
             $message = $result->getValue()->getMessage();
         }
