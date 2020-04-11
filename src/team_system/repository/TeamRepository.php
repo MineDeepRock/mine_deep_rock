@@ -94,7 +94,7 @@ class TeamRepository extends Repository
     }
 
     public function yieldOwner(String $currentOwnerName, string $nextOwnerName, string $coworkerSlot): void {
-        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwnerName->getName()}' WHERE owner_name='{$currentOwnerName}'");
+        $setOwnerToCoworker = $this->db->query("UPDATE teams SET {$coworkerSlot}='{$currentOwnerName}' WHERE owner_name='{$currentOwnerName}'");
         if (!$setOwnerToCoworker) {
             $sql_error = $this->db->error;
             error_log($sql_error);

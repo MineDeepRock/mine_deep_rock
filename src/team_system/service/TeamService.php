@@ -105,9 +105,8 @@ class TeamService extends Service
         if ($team === null) {
             return new ServiceResult(false, new ServiceErrorMessage("あなたはチームに参加していません"));
 
-        } else if ($team->getOwner() == $sender->getName()) {
-            $this->yieldOwner($sender);
-            return new ServiceResult(true);
+        } else if ($team->getOwner()->getName() === $sender->getName()) {
+            return $this->yieldOwner($sender);
 
         } else {
             $this->repository->quit($sender->getName(), $team);
@@ -127,11 +126,11 @@ class TeamService extends Service
 
         } else if ($nextOwnerName === null) {
             $nextOwnerName = $team->getCoworkersName()[0];
-            $this->repository->yieldOwner($currentOwner, $nextOwnerName, $team->isWherePlayerSlot($nextOwnerName));
+            $this->repository->yieldOwner($currentOwner->getName(), $nextOwnerName, $team->isWherePlayerSlot($nextOwnerName));
             return new ServiceResult(true);
 
         } else if (in_array($nextOwnerName, $team->getCoworkersName())) {
-            $this->repository->yieldOwner($currentOwner, $nextOwnerName, $team->isWherePlayerSlot($nextOwnerName));
+            $this->repository->yieldOwner($currentOwner->getName(), $nextOwnerName, $team->isWherePlayerSlot($nextOwnerName));
             return new ServiceResult(true);
 
         } else {
