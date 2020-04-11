@@ -56,11 +56,11 @@ class Team extends Entity
     }
 
     /**
-     * @param String $playerName
+     * @param string $playerName
      * @return string
      */
     //TODO:リネーム
-    public function isWherePlayerSlot(String $playerName): string {
+    public function isWherePlayerSlot(string $playerName): string {
         if ($playerName === $this->first_coworker_name) {
             return "first_coworker_name";
 

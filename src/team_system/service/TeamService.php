@@ -106,7 +106,12 @@ class TeamService extends Service
             return new ServiceResult(false, new ServiceErrorMessage("あなたはチームに参加していません"));
 
         } else if ($team->getOwner()->getName() === $sender->getName()) {
-            return $this->yieldOwner($sender);
+            $this->yieldOwner($sender);
+
+            //譲ったあとのTeamデータ
+            $team = $this->searchAtId($teamId);
+            $this->repository->quit($sender->getName(), $team);
+            return new ServiceResult(true);
 
         } else {
             $this->repository->quit($sender->getName(), $team);
