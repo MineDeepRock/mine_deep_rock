@@ -5,6 +5,9 @@ namespace gun_system\models;
 
 
 use Entity;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\scheduler\Task;
+use pocketmine\scheduler\TaskScheduler;
 
 abstract class Gun extends Entity
 {
@@ -17,8 +20,13 @@ abstract class Gun extends Entity
     private $range;
 
     private $lastShootDate;
+    private $onReloading;
 
-    public function __construct(float $damage, GunRate $rate, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range) {
+    //TODO:
+    //非同期処理のためにある。なくしたい。
+    private $scheduler;
+
+    public function __construct(float $damage, GunRate $rate, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, TaskScheduler $scheduler) {
         $this->damage = $damage;
         $this->rate = $rate;
         $this->bulletCapacity = $bulletCapacity;
@@ -28,19 +36,38 @@ abstract class Gun extends Entity
         $this->range = $range;
 
         $this->lastShootDate = microtime(true);
+        $this->onReloading = false;
+        $this->scheduler = $scheduler;
     }
 
-    public function shoot(): bool {
-        $canShoot = (microtime(true) - $this->lastShootDate) >= $this->rate->getPerSecond();
-        if ($canShoot) {
+    public function canShoot(): bool {
+        $onCoolTime = (microtime(true) - $this->lastShootDate) <= $this->rate->getPerSecond();
+        return !$onCoolTime && !$this->onReloading;
+    }
+
+    public function shoot(): ?string {
+        if ($this->currentBullet === 0) {
+            $this->reload();
+            return "リロード";
+
+        } else if ($this->canShoot()) {
             $this->lastShootDate = microtime(true);
             $this->currentBullet--;
-            return true;
+            return "残弾:" . $this->currentBullet;
+
         }
-        return false;
+
+        return null;
     }
 
-    public function reload() {
+    public function reload(): void {
+        $this->onReloading = true;
+        $run = function () { $this->onReloading = false; };
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(
+            function (int $currentTick) use ($run): void {
+                ($run)();
+            }
+        ), 20 * $this->reloadDuration->getSecond());
         $this->currentBullet = $this->bulletCapacity;
     }
 
