@@ -14,6 +14,7 @@ abstract class Gun extends Entity
 {
     private $damage;
     private $rate;
+    private $bulletSpeed;
     private $bulletCapacity;
     private $currentBullet;
     private $reaction;
@@ -27,9 +28,10 @@ abstract class Gun extends Entity
     //非同期処理のためにある。なくしたい。
     private $scheduler;
 
-    public function __construct(float $damage, GunRate $rate, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, TaskScheduler $scheduler) {
+    public function __construct(float $damage, GunRate $rate,BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, TaskScheduler $scheduler) {
         $this->damage = $damage;
         $this->rate = $rate;
+        $this->bulletSpeed = $bulletSpeed;
         $this->bulletCapacity = $bulletCapacity;
         $this->currentBullet = $bulletCapacity;
         $this->reaction = $reaction;
@@ -79,6 +81,24 @@ abstract class Gun extends Entity
     public function getCurrentBullet(): int {
         return $this->currentBullet;
     }
+}
+
+class BulletSpeed
+{
+    private $perSecondBlock;
+
+    public function __construct($perSecondBlock) {
+
+        $this->perSecondBlock = $perSecondBlock;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPerSecondBlock() {
+        return $this->perSecondBlock;
+    }
+
 }
 
 class GunRate

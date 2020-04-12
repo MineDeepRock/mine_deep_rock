@@ -32,7 +32,7 @@ class Bullet
                 new FloatTag("", $player->pitch)
             ]),
         ]);
-        $projectile = Entity::createEntity("egg", $player->getLevel(), $nbt, $player);
+        $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
         $f = 1.5;
         $projectile->setMotion($projectile->getMotion()->multiply($f));
         $projectile->spawnToAll();

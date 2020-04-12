@@ -7,7 +7,6 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
-use pocketmine\item\Stick;
 use pocketmine\plugin\PluginBase;
 use team_system\pmmp\command\TeamCommand;
 use team_system\services\MemberService;
@@ -23,7 +22,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("team", new TeamCommand($this, $this->teamSystemClient));
 
-        ItemFactory::registerItem(new ItemHandGun(Item::STICK,"HandGun",$this->getScheduler()), true);
+        ItemFactory::registerItem(new ItemHandGun(Item::STICK,$this->getScheduler()), true);
         Item::addCreativeItem(Item::get(Item::STICK));
     }
 
