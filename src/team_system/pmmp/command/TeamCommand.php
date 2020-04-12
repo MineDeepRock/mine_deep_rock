@@ -1,12 +1,10 @@
 <?php
 
-namespace team_system\command;
+namespace team_system\pmmp\command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
-use team_system\services\MemberService;
-use team_system\services\TeamService;
 use team_system\TeamSystemClient;
 
 
