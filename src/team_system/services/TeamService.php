@@ -94,13 +94,12 @@ class TeamService extends Service
 
     /**
      * @param Member $sender
-     * @param TeamId|null $teamId
      * @return ServiceResult
      */
     public
-    function quit(Member $sender, ?TeamId $teamId): ServiceResult {
+    function quit(Member $sender): ServiceResult {
 
-        $team = $this->searchAtId($teamId);
+        $team = $this->searchAtId($sender->getBelongTeamId());
 
         if ($team === null) {
             return new ServiceResult(false, new ServiceErrorMessage("あなたはチームに参加していません"));
@@ -109,7 +108,7 @@ class TeamService extends Service
             $this->yieldLeader($sender);
 
             //譲ったあとのTeamデータ
-            $team = $this->searchAtId($teamId);
+            $team = $this->searchAtId($team->getId());
             $this->repository->quit($sender->getName(), $team);
             return new ServiceResult(true);
 

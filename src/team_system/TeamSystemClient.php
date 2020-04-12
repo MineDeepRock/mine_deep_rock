@@ -46,7 +46,7 @@ class TeamSystemClient extends Client
     public function quit(string $memberName, $whenSucceed): void {
         $member = $this->memberService->getData($memberName);
 
-        $result = $this->teamService->quit($member, $member->getBelongTeamId());
+        $result = $this->teamService->quit($member);
         if ($result->isSucceed()) {
             $this->memberService->updateBelongTeamId($member, null);
             $message = "チームを抜けました";
@@ -70,5 +70,14 @@ class TeamSystemClient extends Client
             $message = $result->getValue()->getMessage();
         }
         $whenSucceed($message);
+    }
+
+    public function onJoin(string $playerName){
+        $this->memberService->init($playerName);
+    }
+
+    public function onLeave(string $playerName){
+        $member = $this->memberService->getData($playerName);
+        $this->teamService->quit($member);
     }
 }

@@ -15,11 +15,11 @@ class TeamCommand extends Command
 
     private $client;
 
-    public function __construct(Plugin $owner, TeamService $teamService, MemberService $playerService) {
+    public function __construct(Plugin $owner, TeamSystemClient $teamSystemClient) {
         parent::__construct("team", "", "");
         $this->setPermission("Team.Command");
 
-        $this->client = new TeamSystemClient($teamService,$playerService);
+        $this->client = $teamSystemClient;
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
