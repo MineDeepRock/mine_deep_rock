@@ -13,7 +13,7 @@ use pocketmine\Player;
 
 class Bullet
 {
-    static function spawn(Player $player){
+    static function spawn(Player $player,float $speed){
         $aimPos = $player->getDirectionVector();
 
         $nbt = new CompoundTag("", [
@@ -33,8 +33,7 @@ class Bullet
             ]),
         ]);
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
-        $f = 1.5;
-        $projectile->setMotion($projectile->getMotion()->multiply($f));
+        $projectile->setMotion($projectile->getMotion()->multiply($speed));
         $projectile->spawnToAll();
     }
 }

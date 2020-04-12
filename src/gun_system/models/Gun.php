@@ -81,22 +81,29 @@ abstract class Gun extends Entity
     public function getCurrentBullet(): int {
         return $this->currentBullet;
     }
+
+    /**
+     * @return BulletSpeed
+     */
+    public function getBulletSpeed(): BulletSpeed {
+        return $this->bulletSpeed;
+    }
 }
 
 class BulletSpeed
 {
-    private $perSecondBlock;
+    private $value;
 
-    public function __construct($perSecondBlock) {
+    public function __construct(float $value) {
 
-        $this->perSecondBlock = $perSecondBlock;
+        $this->value = $value;
     }
 
     /**
      * @return mixed
      */
-    public function getPerSecondBlock() {
-        return $this->perSecondBlock;
+    public function getValue() {
+        return $this->value;
     }
 
 }

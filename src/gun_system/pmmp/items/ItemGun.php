@@ -20,7 +20,7 @@ abstract class ItemGun extends Item
     public function shoot(Player $player) {
 
         $message = $this->gun->shoot(function () use ($player) {
-            Bullet::spawn($player);
+            Bullet::spawn($player,$this->gun->getBulletSpeed()->getValue());
         });
 
         if ($message !== null)
