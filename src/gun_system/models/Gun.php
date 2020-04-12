@@ -16,9 +16,6 @@ abstract class Gun extends Entity
     private $reloadDuration;
     private $range;
 
-    private $onShoot;
-    private $onReload;
-
     public function __construct(float $damage, GunRate $rate, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range) {
         $this->damage = $damage;
         $this->rate = $rate;
@@ -31,23 +28,17 @@ abstract class Gun extends Entity
 
     public function shoot() {
         $this->currentBullet--;
-
-        ($this->onShoot)();
     }
 
     public function reload() {
         $this->currentBullet = $this->bulletCapacity;
-
-        ($this->onReload)();
     }
 
-    public function listenOnShoot($function) {
-        $this->onShoot = $function;
-    }
-
-    public function listenOnReload($function) {
-        $this->onReload = $function;
-
+    /**
+     * @return int
+     */
+    public function getCurrentBullet(): int {
+        return $this->currentBullet;
     }
 }
 
