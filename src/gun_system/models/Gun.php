@@ -16,6 +16,8 @@ abstract class Gun extends Entity
     private $reloadDuration;
     private $range;
 
+    private $lastShootDate;
+
     public function __construct(float $damage, GunRate $rate, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range) {
         $this->damage = $damage;
         $this->rate = $rate;
@@ -24,10 +26,18 @@ abstract class Gun extends Entity
         $this->reaction = $reaction;
         $this->reloadDuration = $reloadDuration;
         $this->range = $range;
+
+        $this->lastShootDate = microtime(true);
     }
 
-    public function shoot() {
-        $this->currentBullet--;
+    public function shoot(): bool {
+        $canShoot = (microtime(true) - $this->lastShootDate) >= $this->rate->getPerSecond();
+        if ($canShoot) {
+            $this->lastShootDate = microtime(true);
+            $this->currentBullet--;
+            return true;
+        }
+        return false;
     }
 
     public function reload() {

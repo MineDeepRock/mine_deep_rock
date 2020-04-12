@@ -17,9 +17,9 @@ class ItemHandGun extends Item
     }
 
     public function shoot(Player $player){
-        $this->gun->shoot();
-
-        $player->sendWhisper("GunSystem","残弾:".$this->gun->getCurrentBullet());
+        $result = $this->gun->shoot();
+        if ($result)
+            $player->sendWhisper("GunSystem","残弾:".$this->gun->getCurrentBullet());
     }
 
     public function reload(Player $player){
