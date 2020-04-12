@@ -23,7 +23,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("team", new TeamCommand($this, $this->teamSystemClient));
 
-        ItemFactory::registerItem(new ItemHandGun(Item::STICK,"HandGun"), true);
+        ItemFactory::registerItem(new ItemHandGun(Item::STICK,"HandGun",$this->getScheduler()), true);
         Item::addCreativeItem(Item::get(Item::STICK));
     }
 
