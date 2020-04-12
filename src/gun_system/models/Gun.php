@@ -4,6 +4,7 @@
 namespace gun_system\models;
 
 
+use Closure;
 use Entity;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\Task;
@@ -45,7 +46,7 @@ abstract class Gun extends Entity
         return !$onCoolTime && !$this->onReloading;
     }
 
-    public function shoot(): ?string {
+    public function shoot(Closure $onSucceed): ?string {
         if ($this->currentBullet === 0) {
             $this->reload();
             return "リロード";
@@ -53,6 +54,7 @@ abstract class Gun extends Entity
         } else if ($this->canShoot()) {
             $this->lastShootDate = microtime(true);
             $this->currentBullet--;
+            $onSucceed();
             return "残弾:" . $this->currentBullet;
 
         }
@@ -78,7 +80,6 @@ abstract class Gun extends Entity
         return $this->currentBullet;
     }
 }
-
 
 class GunRate
 {
