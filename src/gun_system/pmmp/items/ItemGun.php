@@ -13,7 +13,7 @@ abstract class ItemGun extends Item
 {
     private $gun;
 
-    public function __construct(int $id, string $name,Gun $gun) {
+    public function __construct(int $id, string $name, Gun $gun) {
         $this->gun = $gun;
         parent::__construct($id, 0, $name);
     }
@@ -21,7 +21,7 @@ abstract class ItemGun extends Item
     public function shoot(Player $player) {
 
         $message = $this->gun->shoot(function () use ($player) {
-            Bullet::spawn($player,$this->gun->getBulletSpeed()->getValue());
+            Bullet::spawn($player, $this->gun->getBulletSpeed()->getValue());
             $this->doReaction($player);
         });
 
@@ -29,7 +29,7 @@ abstract class ItemGun extends Item
             $player->sendWhisper("GunSystem", $message);
     }
 
-    public function doReaction(Player $player) {
+    public function doReaction(Player $player): void {
         //TODO:バランス調整
         $playerPosition = $player->getLocation();
         $dir = -$playerPosition->getYaw() - 90.0;

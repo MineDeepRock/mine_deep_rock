@@ -18,7 +18,7 @@ class Bullet
 
         $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
-                new DoubleTag("", $player->x+0.5),
+                new DoubleTag("", $player->x),
                 new DoubleTag("", $player->y + $player->getEyeHeight()),
                 new DoubleTag("", $player->z)
             ]),
