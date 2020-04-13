@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "header": {
+    "name": "MineDeepRock",
+    "description": "MineDeepRock ResourcePack",
+    "uuid": "d80ca0d7-6f5a-45f6-0cb9-6ddb84cb0ed2",
+    "version": [1,0,0]
+  },
+  "modules": [{
+    "description": "MineDeepRock ResourcePack",
+    "type": "resources",
+    "uuid": "d80ca0d7-6f5a-45f6-0cb9-6ddb84cb0ed2",
+    "version":[1,0,0]
+  }]
+}
