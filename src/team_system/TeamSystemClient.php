@@ -11,10 +11,12 @@ class TeamSystemClient extends Client
 {
     private $teamService;
     private $memberService;
+    private $notifier;
 
-    public function __construct(TeamService $teamService, MemberService $memberService) {
+    public function __construct(TeamService $teamService, MemberService $memberService,TeamSystemNotifier $notifier) {
         $this->teamService = $teamService;
         $this->memberService = $memberService;
+        $this->notifier = $notifier;
     }
 
     public function create(string $memberName, $whenSucceed): void {
