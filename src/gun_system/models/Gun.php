@@ -7,7 +7,6 @@ namespace gun_system\models;
 use Closure;
 use Entity;
 use pocketmine\scheduler\ClosureTask;
-use pocketmine\scheduler\Task;
 use pocketmine\scheduler\TaskScheduler;
 
 abstract class Gun extends Entity
@@ -20,6 +19,7 @@ abstract class Gun extends Entity
     private $reaction;
     private $reloadDuration;
     private $range;
+    private $Precision;
 
     private $lastShootDate;
     private $onReloading;
@@ -28,7 +28,7 @@ abstract class Gun extends Entity
     //非同期処理のためにある。なくしたい。
     private $scheduler;
 
-    public function __construct(float $damage, GunRate $rate,BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, TaskScheduler $scheduler) {
+    public function __construct(float $damage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $accurate, TaskScheduler $scheduler) {
         $this->damage = $damage;
         $this->rate = $rate;
         $this->bulletSpeed = $bulletSpeed;
@@ -41,10 +41,11 @@ abstract class Gun extends Entity
         $this->lastShootDate = microtime(true);
         $this->onReloading = false;
         $this->scheduler = $scheduler;
+        $this->Precision = $accurate;
     }
 
-    public function canShoot(): bool {
-        $onCoolTime = (microtime(true) - $this->lastShootDate) <= $this->rate->getPerSecond();
+    private function canShoot(): bool {
+        $onCoolTime = (microtime(true) - $this->lastShootDate) <= (1 / $this->rate->getPerSecond());
         return !$onCoolTime && !$this->onReloading;
     }
 
@@ -95,7 +96,32 @@ abstract class Gun extends Entity
     public function getReaction(): float {
         return $this->reaction;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPrecision(): GunPrecision {
+        return $this->Precision;
+    }
 }
+
+class GunPrecision
+{
+    private $percent;
+
+    public function __construct(float $percent) {
+
+        $this->percent = $percent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue() {
+        return $this->percent;
+    }
+}
+
 
 class BulletSpeed
 {

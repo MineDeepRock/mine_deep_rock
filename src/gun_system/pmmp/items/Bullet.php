@@ -13,7 +13,7 @@ use pocketmine\Player;
 
 class Bullet
 {
-    static function spawn(Player $player,float $speed){
+    static function spawn(Player $player, float $speed, float $precision) {
         $aimPos = $player->getDirectionVector();
 
         $nbt = new CompoundTag("", [
@@ -23,9 +23,9 @@ class Bullet
                 new DoubleTag("", $player->z)
             ]),
             "Motion" => new ListTag("Motion", [
-                new DoubleTag("", $aimPos->x),
-                new DoubleTag("", $aimPos->y),
-                new DoubleTag("", $aimPos->z)
+                new DoubleTag("", $aimPos->x + rand(-(100 - $precision), (100 - $precision)) / 200),
+                new DoubleTag("", $aimPos->y + rand(-(100 - $precision), (100 - $precision)) / 200),
+                new DoubleTag("", $aimPos->z + rand(-(100 - $precision), (100 - $precision)) / 200)
             ]),
             "Rotation" => new ListTag("Rotation", [
                 new FloatTag("", $player->yaw),
