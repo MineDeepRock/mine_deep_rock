@@ -88,6 +88,13 @@ abstract class Gun extends Entity
     public function getBulletSpeed(): BulletSpeed {
         return $this->bulletSpeed;
     }
+
+    /**
+     * @return float
+     */
+    public function getReaction(): float {
+        return $this->reaction;
+    }
 }
 
 class BulletSpeed
