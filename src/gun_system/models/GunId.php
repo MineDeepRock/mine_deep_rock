@@ -6,5 +6,7 @@ namespace gun_system\models;
 
 class GunId
 {
-    public const DESERT_EAGLE = 288;
+    public const DESERT_EAGLE = 256;
+    public const M1911 = 269;
+    public const P08 = 273;
 }

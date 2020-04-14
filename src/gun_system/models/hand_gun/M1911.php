@@ -10,10 +10,9 @@ use gun_system\models\GunRate;
 use gun_system\models\ReloadDuration;
 use pocketmine\scheduler\TaskScheduler;
 
-
-class DesertEagle extends HandGun
+class M1911 extends HandGun
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(10, new GunRate(0.7), new BulletSpeed(8), 8, 4, new ReloadDuration(3), 10, new GunPrecision(95), $scheduler);
+        parent::__construct(5, new GunRate(3), new BulletSpeed(5), 8, 1, new ReloadDuration(2), 10, new GunPrecision(90), $scheduler);
     }
 }
