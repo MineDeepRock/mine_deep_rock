@@ -2,14 +2,16 @@
 
 use gun_system\GunSystemClient;
 use gun_system\models\GunId;
-use gun_system\pmmp\items\ItemHandGun;
+use gun_system\pmmp\items\hand_gun\ItemDesertEagle;
+use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
@@ -35,8 +37,8 @@ class Main extends PluginBase implements Listener
 
         $this->gunSystemClient = new GunSystemClient();
 
-        ItemFactory::registerItem(new ItemHandGun($this->getScheduler()), true);
-        Item::addCreativeItem(Item::get(GunId::HAND_GUN));
+        ItemFactory::registerItem(new ItemDesertEagle($this->getScheduler()), true);
+        Item::addCreativeItem(Item::get(GunId::DESERT_EAGLE));
     }
 
     //GunSystem
@@ -62,6 +64,15 @@ class Main extends PluginBase implements Listener
         if ($event instanceof EntityDamageByEntityEvent) {
             if ($event->getCause() == EntityDamageByEntityEvent::CAUSE_PROJECTILE)
                 $this->gunSystemClient->sendDamageByShooting($event->getDamager(), $event);
+        }
+    }
+
+    public function onSneak(PlayerToggleSneakEvent $event) {
+        $player = $event->getPlayer();
+        if ($player->isSneaking()) {
+            $player->removeEffect(Effect::SLOWNESS);
+        } else {
+            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS),null,5));
         }
     }
 

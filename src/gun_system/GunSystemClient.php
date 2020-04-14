@@ -5,7 +5,7 @@ namespace gun_system;
 
 
 use Client;
-use gun_system\models\HandGun;
+use gun_system\models\Gun;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
@@ -13,18 +13,15 @@ use pocketmine\Player;
 class GunSystemClient extends Client
 {
     public function tryShooting(Item $item, Player $player): void {
-        Item::STICK;
-        switch ($item->getName()) {
-            case "HandGun":
-                $item->shoot($player);
+        if (is_subclass_of($item,"gun_system\pmmp\items\ItemGun")) {
+            $item->shoot($player);
         }
     }
 
-    public function sendDamageByShooting(Player $attacker,EntityDamageEvent $event){
+    public function sendDamageByShooting(Player $attacker, EntityDamageEvent $event) {
         $weapon = $attacker->getInventory()->getItemInHand();
-        switch ($weapon->getId()){
-            case HandGun::getId();
-                $event->setBaseDamage($weapon->getGunData()->getAttackPower());
+        if (is_subclass_of($weapon,"gun_system\pmmp\items\ItemGun")) {
+            $event->setBaseDamage($weapon->getGunData()->getAttackPower());
         }
     }
 
