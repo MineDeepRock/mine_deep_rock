@@ -2,7 +2,10 @@
 
 use gun_system\GunSystemClient;
 use gun_system\models\GunId;
+use gun_system\pmmp\items\assault_rifle\ItemM1Grand;
 use gun_system\pmmp\items\hand_gun\ItemDesertEagle;
+use gun_system\pmmp\items\hand_gun\ItemM1911;
+use gun_system\pmmp\items\hand_gun\ItemP08;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -39,6 +42,15 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new ItemDesertEagle($this->getScheduler()), true);
         Item::addCreativeItem(Item::get(GunId::DESERT_EAGLE));
+
+        ItemFactory::registerItem(new ItemM1911($this->getScheduler()), true);
+        Item::addCreativeItem(Item::get(GunId::M1911));
+
+        ItemFactory::registerItem(new ItemP08($this->getScheduler()), true);
+        Item::addCreativeItem(Item::get(GunId::P08));
+
+        ItemFactory::registerItem(new ItemM1Grand($this->getScheduler()), true);
+        Item::addCreativeItem(Item::get(GunId::M1Garand));
     }
 
     //GunSystem
