@@ -6,10 +6,13 @@ use gun_system\pmmp\items\assault_rifle\ItemM1Grand;
 use gun_system\pmmp\items\hand_gun\ItemDesertEagle;
 use gun_system\pmmp\items\hand_gun\ItemM1911;
 use gun_system\pmmp\items\hand_gun\ItemP08;
+use gun_system\pmmp\items\shotgun\ItemM1897;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
+use pocketmine\entity\projectile\Egg;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -51,6 +54,9 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new ItemM1Grand($this->getScheduler()), true);
         Item::addCreativeItem(Item::get(GunId::M1Garand));
+
+        ItemFactory::registerItem(new ItemM1897($this->getScheduler()), true);
+        Item::addCreativeItem(Item::get(GunId::M1897));
     }
 
     //GunSystem
@@ -72,10 +78,10 @@ class Main extends PluginBase implements Listener
 
     }
 
-    public function onDamageByShooting(EntityDamageEvent $event) {
-        if ($event instanceof EntityDamageByEntityEvent) {
-            if ($event->getCause() == EntityDamageByEntityEvent::CAUSE_PROJECTILE)
-                $this->gunSystemClient->sendDamageByShooting($event->getDamager(), $event);
+    public function onBulletHit(ProjectileHitEntityEvent $event) {
+        $entity = $event->getEntity();
+        if($entity instanceof Egg) {
+            $this->gunSystemClient->sendDamageByShooting($entity->getOwningEntity(), $event->getEntityHit());
         }
     }
 

@@ -9,6 +9,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
 
 //TODO:場所ちがくね？
@@ -17,7 +18,7 @@ class Bullet
     static function spawn(Player $player, float $speed, float $precision) {
         $aimPos = $player->getDirectionVector();
 
-        $nbt = new CompoundTag($player->getName(), [
+        $nbt = new CompoundTag( "", [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $player->x),
                 new DoubleTag("", $player->y + $player->getEyeHeight()),
@@ -33,6 +34,7 @@ class Bullet
                 new FloatTag("", $player->pitch)
             ]),
         ]);
+
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
         $projectile->setMotion($projectile->getMotion()->multiply($speed));
         $projectile->spawnToAll();
