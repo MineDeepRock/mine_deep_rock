@@ -17,7 +17,7 @@ class Bullet
     static function spawn(Player $player, float $speed, float $precision) {
         $aimPos = $player->getDirectionVector();
 
-        $nbt = new CompoundTag("", [
+        $nbt = new CompoundTag($player->getName(), [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $player->x),
                 new DoubleTag("", $player->y + $player->getEyeHeight()),

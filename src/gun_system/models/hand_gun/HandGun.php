@@ -13,5 +13,7 @@ use pocketmine\scheduler\TaskScheduler;
 
 abstract class HandGun extends Gun
 {
-    public function __construct(float $attackPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $accurate, TaskScheduler $scheduler) { parent::__construct($attackPower, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $range, $accurate, $scheduler); }
+    public function __construct(float $attackPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $accurate, TaskScheduler $scheduler) {
+        parent::__construct($attackPower, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $range, $accurate, $scheduler);
+    }
 }

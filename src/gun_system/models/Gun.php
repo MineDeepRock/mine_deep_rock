@@ -11,7 +11,6 @@ use pocketmine\scheduler\TaskScheduler;
 
 abstract class Gun extends ValueObject
 {
-    static function getId(): int {}
 
     private $attackPower;
     private $rate;

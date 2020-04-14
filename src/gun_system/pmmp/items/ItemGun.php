@@ -11,7 +11,7 @@ use pocketmine\Player;
 
 abstract class ItemGun extends Item
 {
-    private $gun;
+    protected $gun;
 
     public function __construct(int $id, string $name, Gun $gun) {
         $this->gun = $gun;

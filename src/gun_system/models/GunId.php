@@ -11,4 +11,6 @@ class GunId
     public const P08 = 273;
 
     public const M1Garand = 257;
+
+    public const M1897 = 258;
 }
