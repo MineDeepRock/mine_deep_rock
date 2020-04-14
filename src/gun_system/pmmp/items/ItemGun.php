@@ -8,6 +8,7 @@ use gun_system\models\Gun;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use pocketmine\scheduler\TaskScheduler;
 
 abstract class ItemGun extends Item
 {
@@ -18,10 +19,10 @@ abstract class ItemGun extends Item
         parent::__construct($id, 0, $name);
     }
 
-    public function shoot(Player $player) {
+    public function shoot(Player $player,TaskScheduler $scheduler) {
 
-        $message = $this->gun->shoot(function () use ($player) {
-            Bullet::spawn($player, $this->gun->getBulletSpeed()->getValue(), $this->gun->getPrecision()->getValue());
+        $message = $this->gun->shoot(function () use ($player,$scheduler) {
+            Bullet::spawn($player, $this->gun->getBulletSpeed()->getValue(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(),$scheduler);
             $this->doReaction($player);
         });
 

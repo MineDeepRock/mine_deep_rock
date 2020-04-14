@@ -9,13 +9,14 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\scheduler\TaskScheduler;
 
 //TODO:場所ちがくね？
 class Bullet
 {
-    static function spawn(Player $player, float $speed, float $precision) {
+    static function spawn(Player $player, float $speed, float $precision,int $range,TaskScheduler $scheduler) {
         $aimPos = $player->getDirectionVector();
 
         $nbt = new CompoundTag( "", [
@@ -38,5 +39,12 @@ class Bullet
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
         $projectile->setMotion($projectile->getMotion()->multiply($speed));
         $projectile->spawnToAll();
+        $scheduler->scheduleDelayedTask(new ClosureTask(
+            function (int $currentTick) use ($projectile) : void {
+                if (!$projectile->isClosed())
+                    $projectile->close();
+            }
+            //TODO:速さからrangeを飛ぶ時間を求め。代入する。
+        ), 2 * $range);
     }
 }

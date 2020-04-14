@@ -66,7 +66,7 @@ class Main extends PluginBase implements Listener
             if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
                 $player = $event->getPlayer();
                 $item = $event->getPlayer()->getInventory()->getItemInHand();
-                $this->gunSystemClient->tryShooting($item, $player);
+                $this->gunSystemClient->tryShooting($item, $player,$this->getScheduler());
             }
         }
     }
@@ -74,7 +74,7 @@ class Main extends PluginBase implements Listener
     public function onTouch(PlayerInteractEvent $event) {
         $player = $event->getPlayer();
         $item = $event->getItem();
-        $this->gunSystemClient->tryShooting($item, $player);
+        $this->gunSystemClient->tryShooting($item, $player,$this->getScheduler());
 
     }
 

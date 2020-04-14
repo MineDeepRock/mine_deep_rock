@@ -9,12 +9,13 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
+use pocketmine\scheduler\TaskScheduler;
 
 class GunSystemClient extends Client
 {
-    public function tryShooting(Item $item, Player $player): void {
+    public function tryShooting(Item $item, Player $player, TaskScheduler $scheduler): void {
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            $item->shoot($player);
+            $item->shoot($player,$scheduler);
         }
     }
 
