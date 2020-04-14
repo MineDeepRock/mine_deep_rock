@@ -24,10 +24,8 @@ class Main extends PluginBase implements Listener
 {
     private $teamSystemClient;
     private $gunSystemClient;
-    
-    function onEnable() {
-        $this->usersDevice = array();
 
+    function onEnable() {
         $this->teamSystemClient = new TeamSystemClient(new TeamService(), new MemberService(), new TeamSystemNotifier(function () {
             //TODO:
         }));
