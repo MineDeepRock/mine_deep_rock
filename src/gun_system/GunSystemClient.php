@@ -20,7 +20,7 @@ class GunSystemClient extends Client
         }
     }
 
-    public function damageByShooting(Player $attacker,EntityDamageEvent $event){
+    public function sendDamageByShooting(Player $attacker,EntityDamageEvent $event){
         $weapon = $attacker->getInventory()->getItemInHand();
         switch ($weapon->getId()){
             case HandGun::getId();

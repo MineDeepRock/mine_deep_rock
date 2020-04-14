@@ -5,6 +5,7 @@ use gun_system\models\GunId;
 use gun_system\pmmp\items\ItemHandGun;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -57,12 +58,12 @@ class Main extends PluginBase implements Listener
 
     }
 
-    public function onDamage(EntityDamageEvent $event) {
+    public function onDamageByShooting(EntityDamageEvent $event) {
         if ($event instanceof EntityDamageByEntityEvent) {
-            $this->gunSystemClient->damageByShooting($event->getDamager(), $event);
+            if ($event->getCause() == EntityDamageByEntityEvent::CAUSE_PROJECTILE)
+                $this->gunSystemClient->sendDamageByShooting($event->getDamager(), $event);
         }
     }
-
 
     //TeamSystem
     public function onJoin(PlayerJoinEvent $event) {
