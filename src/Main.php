@@ -1,10 +1,9 @@
 <?php
 
+use gun_system\GunSystemClient;
 use gun_system\pmmp\items\ItemHandGun;
-use pocketmine\entity\projectile\Egg;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -21,39 +20,36 @@ use team_system\TeamSystemNotifier;
 class Main extends PluginBase implements Listener
 {
     private $teamSystemClient;
+    private $gunSystemClient;
 
     function onEnable() {
-        $this->teamSystemClient = new TeamSystemClient(new TeamService(), new MemberService(),new TeamSystemNotifier(function (){
+        $this->teamSystemClient = new TeamSystemClient(new TeamService(), new MemberService(), new TeamSystemNotifier(function () {
             //TODO:
         }));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("team", new TeamCommand($this, $this->teamSystemClient));
 
-        ItemFactory::registerItem(new ItemHandGun(Item::STICK, $this->getScheduler()), true);
+        $this->gunSystemClient = new GunSystemClient();
+
+        ItemFactory::registerItem(new ItemHandGun($this->getScheduler()), true);
         Item::addCreativeItem(Item::get(Item::STICK));
     }
 
+    //GunSystem
     public function onTouch(PlayerInteractEvent $event) {
         $player = $event->getPlayer();
         $item = $event->getItem();
-        $itemName = $event->getItem()->getName();
-        switch ($itemName) {
-            case "HandGun":
-                $item->shoot($player);
-        }
+        $this->gunSystemClient->tryShooting($item, $player);
     }
 
     public function onDamage(EntityDamageEvent $event) {
         if ($event instanceof EntityDamageByEntityEvent) {
-            $damager = $event->getDamager();
-            if ($damager->getInventory()->getItemInHand()->getId() == Item::STICK) {
-                //武器ごとに条件分岐
-                //TODO
-                $event->setBaseDamage(5);
-            }
+            $this->gunSystemClient->damageByShooting($event->getDamager(), $event);
         }
     }
 
+
+    //TeamSystem
     public function onJoin(PlayerJoinEvent $event) {
         $playerName = $event->getPlayer()->getName();
 
