@@ -5,11 +5,11 @@ namespace gun_system\models;
 
 
 use Closure;
-use Entity;
+use ValueObject;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
-abstract class Gun extends Entity
+abstract class Gun extends ValueObject
 {
     private $damage;
     private $rate;

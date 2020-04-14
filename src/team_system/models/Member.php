@@ -2,11 +2,11 @@
 
 namespace team_system\models;
 
-use Entity;
+use ValueObject;
 
 require "Team.php";
 
-class Member extends Entity
+class Member extends ValueObject
 {
     private $name;
     private $belongTeamId;

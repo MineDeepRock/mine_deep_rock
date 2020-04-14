@@ -2,9 +2,9 @@
 
 namespace team_system\models;
 
-use Entity;
+use ValueObject;
 
-class Team extends Entity
+class Team extends ValueObject
 {
     private $id;
     private $leaderName;
