@@ -24,9 +24,7 @@ class Main extends PluginBase implements Listener
 {
     private $teamSystemClient;
     private $gunSystemClient;
-
-    private $usersDevice;
-
+    
     function onEnable() {
         $this->usersDevice = array();
 
