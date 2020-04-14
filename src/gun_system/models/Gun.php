@@ -111,6 +111,13 @@ abstract class Gun extends ValueObject
     public function getAttackPower(): float {
         return $this->attackPower;
     }
+
+    /**
+     * @return int
+     */
+    public function getRange(): int {
+        return $this->range;
+    }
 }
 
 class GunPrecision
