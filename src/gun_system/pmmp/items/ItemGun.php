@@ -46,4 +46,11 @@ abstract class ItemGun extends Item
     public function reload(Player $player) {
         $this->gun->reload();
     }
+
+    /**
+     * @return Gun
+     */
+    public function getGunData(): Gun {
+        return $this->gun;
+    }
 }
