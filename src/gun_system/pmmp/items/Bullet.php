@@ -11,6 +11,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 
+//TODO:場所ちがくね？
 class Bullet
 {
     static function spawn(Player $player, float $speed, float $precision) {
