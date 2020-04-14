@@ -1,6 +1,10 @@
 <?php
 
-
+/*
+Serviceから呼び出される。
+DBとのやり取りのみ行う。
+Serviceが細かな処理をし、Repositoryはできるだけ簡素にする。
+ */
 abstract class Repository
 {
     protected $db;
