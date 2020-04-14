@@ -13,6 +13,8 @@ abstract class Gun extends ValueObject
 {
 
     private $attackPower;
+    
+    //マインクラフトの雪玉は１秒で27ブロック
     private $rate;
     private $bulletSpeed;
     private $bulletCapacity;
@@ -140,18 +142,18 @@ class GunPrecision
 
 class BulletSpeed
 {
-    private $value;
+    private $perSecond;
 
-    public function __construct(float $value) {
+    public function __construct(float $perSecond) {
 
-        $this->value = $value;
+        $this->perSecond = $perSecond;
     }
 
     /**
      * @return mixed
      */
-    public function getValue() {
-        return $this->value;
+    public function getPerSecond() {
+        return $this->perSecond;
     }
 
 }

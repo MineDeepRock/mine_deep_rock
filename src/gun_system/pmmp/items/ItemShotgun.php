@@ -16,7 +16,7 @@ abstract class ItemShotgun extends ItemGun
         $message = $this->gun->shoot(function () use ($player, $scheduler) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
-                Bullet::spawn($player, $this->gun->getBulletSpeed()->getValue(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+                Bullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
                 $i++;
             }
             $this->doReaction($player);

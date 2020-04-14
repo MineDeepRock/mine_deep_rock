@@ -37,14 +37,14 @@ class Bullet
         ]);
 
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
-        $projectile->setMotion($projectile->getMotion()->multiply($speed));
+        $projectile->setMotion($projectile->getMotion()->multiply($speed/27));
+        //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();
         $scheduler->scheduleDelayedTask(new ClosureTask(
             function (int $currentTick) use ($projectile) : void {
                 if (!$projectile->isClosed())
                     $projectile->close();
             }
-            //TODO:速さからrangeを飛ぶ時間を求め。代入する。
-        ), 2 * $range);
+        ), 20 * ($range/$speed));
     }
 }

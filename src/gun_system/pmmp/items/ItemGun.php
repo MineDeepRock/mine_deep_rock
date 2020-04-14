@@ -22,7 +22,7 @@ abstract class ItemGun extends Item
     public function shoot(Player $player,TaskScheduler $scheduler) {
 
         $message = $this->gun->shoot(function () use ($player,$scheduler) {
-            Bullet::spawn($player, $this->gun->getBulletSpeed()->getValue(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(),$scheduler);
+            Bullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(),$scheduler);
             $this->doReaction($player);
         });
 
