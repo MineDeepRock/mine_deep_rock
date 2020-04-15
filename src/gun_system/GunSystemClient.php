@@ -6,7 +6,6 @@ namespace gun_system;
 
 use Client;
 use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
@@ -20,7 +19,6 @@ class GunSystemClient extends Client
     }
 
     public function sendDamageByShooting(Player $attacker, Entity $entity) {
-        var_dump($entity->getId());
         $weapon = $attacker->getInventory()->getItemInHand();
         if (is_subclass_of($weapon, "gun_system\pmmp\items\ItemGun")) {
             $entity->setHealth($entity->getHealth() - $weapon->getGunData()->getAttackPower() );
