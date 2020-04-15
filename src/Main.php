@@ -57,7 +57,7 @@ class Main extends PluginBase implements Listener
         Item::addCreativeItem(Item::get(GunId::P08));
 
         ItemFactory::registerItem(new ItemM1Grand($this->getScheduler()), true);
-        Item::addCreativeItem(Item::get(GunId::M1Garand));
+        Item::addCreativeItem(Item::get(GunId::M1GARAND));
 
         ItemFactory::registerItem(new ItemM1897($this->getScheduler()), true);
         Item::addCreativeItem(Item::get(GunId::M1897));

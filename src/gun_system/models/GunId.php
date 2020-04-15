@@ -12,7 +12,7 @@ class GunId
     public const M1911 = ItemIds::STONE_SHOVEL;
     public const P08 = ItemIds::WOODEN_SHOVEL;
 
-    public const M1Garand = ItemIds::IRON_PICKAXE;
+    public const M1GARAND = ItemIds::IRON_PICKAXE;
 
     public const M1897 = ItemIds::IRON_AXE;
 

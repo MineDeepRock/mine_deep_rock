@@ -12,6 +12,6 @@ use pocketmine\scheduler\TaskScheduler;
 class ItemM1Grand extends ItemAssaultRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(GunId::M1Garand, "M1Garand", new M1Garand($scheduler));
+        parent::__construct(GunId::M1GARAND, "M1Garand", new M1Garand($scheduler));
     }
 }
