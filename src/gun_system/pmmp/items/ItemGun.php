@@ -35,12 +35,11 @@ abstract class ItemGun extends Item
         $playerPosition = $player->getLocation();
         $dir = -$playerPosition->getYaw() - 90.0;
         $pitch = -$playerPosition->getPitch() - 180.0;
-        $xd = cos(deg2rad($dir)) * cos(deg2rad($pitch));
-        $yd = sin(deg2rad($pitch));
-        $zd = -sin(deg2rad($dir)) * cos(deg2rad($pitch));
+        $xd = $this->gun->getReaction() *  cos(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
+        $zd =  $this->gun->getReaction() * -sin(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
 
-        $vec = new Vector3($xd, $yd, $zd);
-        $vec->multiply($this->gun->getReaction() / 3);
+        $vec = new Vector3($xd, 0, $zd);
+        $vec->multiply(3);
         $player->setMotion($vec);
     }
 
