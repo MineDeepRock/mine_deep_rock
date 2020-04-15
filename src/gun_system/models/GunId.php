@@ -15,4 +15,6 @@ class GunId
     public const M1Garand = ItemIds::IRON_PICKAXE;
 
     public const M1897 = ItemIds::IRON_AXE;
+
+    public const GEHENNA = ItemIds::IRON_HOE;
 }
