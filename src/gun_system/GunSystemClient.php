@@ -21,7 +21,7 @@ class GunSystemClient extends Client
     public function sendDamageByShooting(Player $attacker, Entity $entity) {
         $weapon = $attacker->getInventory()->getItemInHand();
         if (is_subclass_of($weapon, "gun_system\pmmp\items\ItemGun")) {
-            $entity->setHealth($entity->getHealth() - $weapon->getGunData()->getAttackPower());
+            $entity->setHealth($entity->getHealth() - $weapon->getGunData()->getBulletPower());
         }
     }
 
