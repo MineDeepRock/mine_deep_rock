@@ -21,7 +21,7 @@ abstract class Gun extends ValueObject
     private $reaction;
     private $reloadDuration;
     private $range;
-    private $Precision;
+    private $precision;
 
     private $lastShootDate;
     private $onReloading;
@@ -30,7 +30,7 @@ abstract class Gun extends ValueObject
     //非同期処理のためにある。なくしたい。
     private $scheduler;
 
-    public function __construct(GunType $type, float $bulletPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $accurate, TaskScheduler $scheduler) {
+    public function __construct(GunType $type, float $bulletPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->type = $type;
 
         $this->bulletPower = $bulletPower;
@@ -45,7 +45,7 @@ abstract class Gun extends ValueObject
         $this->lastShootDate = microtime(true);
         $this->onReloading = false;
         $this->scheduler = $scheduler;
-        $this->Precision = $accurate;
+        $this->precision = $precision;
     }
 
     private function canShoot(): bool {
@@ -113,7 +113,7 @@ abstract class Gun extends ValueObject
      * @return mixed
      */
     public function getPrecision(): GunPrecision {
-        return $this->Precision;
+        return $this->precision;
     }
 
     /**
