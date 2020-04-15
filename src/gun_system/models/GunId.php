@@ -4,13 +4,15 @@
 namespace gun_system\models;
 
 
+use pocketmine\item\ItemIds;
+
 class GunId
 {
-    public const DESERT_EAGLE = 256;
-    public const M1911 = 269;
-    public const P08 = 273;
+    public const DESERT_EAGLE = ItemIds::IRON_SHOVEL;
+    public const M1911 = ItemIds::STONE_SHOVEL;
+    public const P08 = ItemIds::WOODEN_SHOVEL;
 
-    public const M1Garand = 257;
+    public const M1Garand = ItemIds::IRON_PICKAXE;
 
-    public const M1897 = 258;
+    public const M1897 = ItemIds::IRON_AXE;
 }
