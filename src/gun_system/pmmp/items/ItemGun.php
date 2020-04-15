@@ -5,6 +5,8 @@ namespace gun_system\pmmp\items;
 
 
 use gun_system\models\Gun;
+use gun_system\models\GunType;
+use gun_system\pmmp\entity\EntityBullet;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -19,15 +21,21 @@ abstract class ItemGun extends Item
         parent::__construct($id, 0, $name);
     }
 
-    public function shoot(Player $player,TaskScheduler $scheduler) {
+    public function shoot(Player $player, TaskScheduler $scheduler): void {
+        if ($this->getBulletAmount($player) === 0) {
+            $player->sendWhisper("GunSystem", "残弾がありません");
+        } else {
+            $message = $this->gun->shoot(function () use ($player, $scheduler) {
+                EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+                $this->doReaction($player);
+            });
 
-        $message = $this->gun->shoot(function () use ($player,$scheduler) {
-            Bullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(),$scheduler);
-            $this->doReaction($player);
-        });
+            if ($this->gun->getCurrentBullet() === 0)
+                $this->reload($player);
 
-        if ($message !== null)
-            $player->sendWhisper("GunSystem", $message);
+            if ($message !== null)
+                $player->sendWhisper("GunSystem", $message);
+        }
     }
 
     public function doReaction(Player $player): void {
@@ -35,8 +43,8 @@ abstract class ItemGun extends Item
         $playerPosition = $player->getLocation();
         $dir = -$playerPosition->getYaw() - 90.0;
         $pitch = -$playerPosition->getPitch() - 180.0;
-        $xd = $this->gun->getReaction() *  cos(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
-        $zd =  $this->gun->getReaction() * -sin(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
+        $xd = $this->gun->getReaction() * cos(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
+        $zd = $this->gun->getReaction() * -sin(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
 
         $vec = new Vector3($xd, 0, $zd);
         $vec->multiply(3);
@@ -44,7 +52,52 @@ abstract class ItemGun extends Item
     }
 
     public function reload(Player $player) {
-        $this->gun->reload();
+        $remainingBullet = $this->getBulletAmount($player);
+        if ($remainingBullet === 0) {
+            $player->sendWhisper("GunSystem", "残弾がありません");
+
+        } else {
+            //TODO:リファクタリング
+            $this->gun->reload($remainingBullet, function ($consumedBullets) use ($player) {
+                $inventoryContents = $player->getInventory()->getContents();
+
+                $bullets = $this->getBullets($player);
+
+                $inventoryContents = array_diff($inventoryContents, $bullets);
+                $bullet = end($bullets);
+                $bullet->setCount($bullet->getCount() - $consumedBullets);
+
+                $bulletKey = array_keys($bullets)[0];
+                $bullets[$bulletKey] = $bullet;
+
+                $player->getInventory()->setContents($inventoryContents + $bullets);
+            }, function () use ($player) {
+                $player->sendWhisper("GunSystem", "リロードが完了しました");
+            });
+        }
+    }
+
+    protected function getBullets(Player $player): array {
+        $inventoryContents = $player->getInventory()->getContents();
+
+        $bullets = array_filter($inventoryContents, function ($item) {
+            if (is_subclass_of($item, "gun_system\pmmp\items\ItemBullet")) {
+                return $item->getBullet()->getSupportType()->equal($this->gun->getType());
+            }
+            return false;
+        });
+
+        return $bullets;
+    }
+
+    protected function getBulletAmount(Player $player): int {
+        $bullets = $this->getBullets($player);
+
+        $bulletsAmount = array_sum(array_map(function ($bullet) {
+            return $bullet->getCount();
+        }, $bullets));
+
+        return $bulletsAmount;
     }
 
     /**

@@ -1,8 +1,12 @@
 <?php
 
 use gun_system\GunSystemClient;
+use gun_system\models\BulletId;
 use gun_system\models\GunId;
 use gun_system\pmmp\items\assault_rifle\ItemM1Grand;
+use gun_system\pmmp\items\bullet\ItemAssaultRifleBullet;
+use gun_system\pmmp\items\bullet\ItemHandGunBullet;
+use gun_system\pmmp\items\bullet\ItemShotgunBullet;
 use gun_system\pmmp\items\hand_gun\ItemDesertEagle;
 use gun_system\pmmp\items\hand_gun\ItemM1911;
 use gun_system\pmmp\items\hand_gun\ItemP08;
@@ -57,6 +61,16 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new ItemM1897($this->getScheduler()), true);
         Item::addCreativeItem(Item::get(GunId::M1897));
+
+        ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::ASSAULT_RIFLE));
+
+        ItemFactory::registerItem(new ItemHandGunBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::HAND_GUN));
+
+        ItemFactory::registerItem(new ItemShotgunBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::SHOTGUN));
+
     }
 
     //GunSystem

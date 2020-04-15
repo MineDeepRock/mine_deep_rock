@@ -11,6 +11,7 @@ use pocketmine\scheduler\TaskScheduler;
 
 abstract class Gun extends ValueObject
 {
+    private $type;
 
     private $attackPower;
     private $rate;
@@ -29,7 +30,9 @@ abstract class Gun extends ValueObject
     //非同期処理のためにある。なくしたい。
     private $scheduler;
 
-    public function __construct(float $attackPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $accurate, TaskScheduler $scheduler) {
+    public function __construct(GunType $type, float $attackPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $accurate, TaskScheduler $scheduler) {
+        $this->type = $type;
+
         $this->attackPower = $attackPower;
         $this->rate = $rate;
         $this->bulletSpeed = $bulletSpeed;
@@ -51,30 +54,38 @@ abstract class Gun extends ValueObject
     }
 
     public function shoot(Closure $onSucceed): ?string {
-        if ($this->currentBullet === 0) {
-            $this->reload();
-            return "リロード";
-
-        } else if ($this->canShoot()) {
+        if ($this->canShoot()) {
             $this->lastShootDate = microtime(true);
             $this->currentBullet--;
             $onSucceed();
             return "残弾:" . $this->currentBullet;
-
         }
 
         return null;
     }
 
-    public function reload(): void {
+    public function reload(int $remainingBullet, Closure $onStarted, Closure $onFinished): void {
+        //アイテム消費が先
+        if ($this->bulletCapacity > $remainingBullet) {
+            $onStarted($this->currentBullet = $this->bulletCapacity);
+        } else {
+            $onStarted($this->currentBullet = $this->bulletCapacity);
+        }
+
+
         $this->onReloading = true;
-        $run = function () { $this->onReloading = false; };
         $this->scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($run): void {
-                ($run)();
+            function (int $currentTick) use ($remainingBullet,$onFinished): void {
+                //アイテム消費されたら、リロードがはじまる
+                if ($this->bulletCapacity > $remainingBullet) {
+                    $this->currentBullet = $remainingBullet;
+                } else {
+                    $this->currentBullet = $this->bulletCapacity;
+                }
+                $onFinished();
+                $this->onReloading = false;
             }
         ), 20 * $this->reloadDuration->getSecond());
-        $this->currentBullet = $this->bulletCapacity;
     }
 
     /**
@@ -124,6 +135,13 @@ abstract class Gun extends ValueObject
      */
     public function getBulletCapacity(): int {
         return $this->bulletCapacity;
+    }
+
+    /**
+     * @return GunType
+     */
+    public function getType(): GunType {
+        return $this->type;
     }
 }
 

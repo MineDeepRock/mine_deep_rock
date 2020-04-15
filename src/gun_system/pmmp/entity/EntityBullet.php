@@ -1,7 +1,7 @@
 <?php
 
 
-namespace gun_system\pmmp\items;
+namespace gun_system\pmmp\entity;
 
 
 use pocketmine\entity\Entity;
@@ -14,7 +14,7 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
 //TODO:場所ちがくね？
-class Bullet
+class EntityBullet
 {
     static function spawn(Player $player, float $speed, float $precision,int $range,TaskScheduler $scheduler) {
         $aimPos = $player->getDirectionVector();
