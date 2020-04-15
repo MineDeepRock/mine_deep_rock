@@ -13,8 +13,6 @@ abstract class Gun extends ValueObject
 {
 
     private $attackPower;
-    
-    //マインクラフトの雪玉は１秒で27ブロック
     private $rate;
     private $bulletSpeed;
     private $bulletCapacity;
