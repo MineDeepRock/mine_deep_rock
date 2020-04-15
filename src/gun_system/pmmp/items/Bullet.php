@@ -45,6 +45,6 @@ class Bullet
                 if (!$projectile->isClosed())
                     $projectile->close();
             }
-        ), 20 * ($range/$speed));
+        ), 20 * ($range/$speed)*2);
     }
 }
