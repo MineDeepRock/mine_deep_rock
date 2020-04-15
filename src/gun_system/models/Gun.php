@@ -13,7 +13,7 @@ abstract class Gun extends ValueObject
 {
     private $type;
 
-    private $bulletPower;
+    private $bulletDamage;
     private $rate;
     private $bulletSpeed;
     private $bulletCapacity;
@@ -33,7 +33,7 @@ abstract class Gun extends ValueObject
     public function __construct(GunType $type, float $bulletPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->type = $type;
 
-        $this->bulletPower = $bulletPower;
+        $this->bulletDamage = $bulletPower;
         $this->rate = $rate;
         $this->bulletSpeed = $bulletSpeed;
         $this->bulletCapacity = $bulletCapacity;
@@ -119,8 +119,8 @@ abstract class Gun extends ValueObject
     /**
      * @return float
      */
-    public function getBulletPower(): float {
-        return $this->bulletPower;
+    public function getBulletDamage(): float {
+        return $this->bulletDamage;
     }
 
     /**
