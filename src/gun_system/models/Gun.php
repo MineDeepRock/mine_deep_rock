@@ -5,11 +5,10 @@ namespace gun_system\models;
 
 
 use Closure;
-use gun_system\models\attachment\scope\Scope;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
-abstract class Gun 
+abstract class Gun
 {
     private $type;
 
@@ -53,15 +52,19 @@ abstract class Gun
         return !$onCoolTime && !$this->onReloading;
     }
 
-    public function shoot(Closure $onSucceed): ?string {
+    public function isReloading(): bool {
+        return $this->onReloading;
+    }
+
+    public function shoot(Closure $onSucceed): bool {
         if ($this->canShoot()) {
             $this->lastShootDate = microtime(true);
             $this->currentBullet--;
             $onSucceed();
-            return "残弾:" . $this->currentBullet;
+            return true;
         }
 
-        return null;
+        return false;
     }
 
     public function reload(int $remainingBullet, Closure $onStarted, Closure $onFinished): void {
@@ -75,7 +78,7 @@ abstract class Gun
 
         $this->onReloading = true;
         $this->scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($remainingBullet,$onFinished): void {
+            function (int $currentTick) use ($remainingBullet, $onFinished): void {
                 //アイテム消費されたら、リロードがはじまる
                 if ($this->bulletCapacity > $remainingBullet) {
                     $this->currentBullet = $remainingBullet;

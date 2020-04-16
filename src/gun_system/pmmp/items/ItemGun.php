@@ -5,7 +5,6 @@ namespace gun_system\pmmp\items;
 
 
 use gun_system\models\Gun;
-use gun_system\models\GunType;
 use gun_system\pmmp\entity\EntityBullet;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
@@ -21,21 +20,32 @@ abstract class ItemGun extends Item
         parent::__construct($id, 0, $name);
     }
 
-    public function shoot(Player $player, TaskScheduler $scheduler): void {
-        if ($this->getBulletAmount($player) === 0) {
-            $player->sendWhisper("GunSystem", "残弾がありません");
-        } else {
-            $message = $this->gun->shoot(function () use ($player, $scheduler) {
-                EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
-                $this->doReaction($player);
-            });
-
-            if ($this->gun->getCurrentBullet() === 0)
-                $this->reload($player);
-
-            if ($message !== null)
-                $player->sendWhisper("GunSystem", $message);
+    public function shoot(Player $player, TaskScheduler $scheduler): bool {
+        if ($this->gun->isReloading()) {
+            $player->sendPopup("リロード中");
+            return false;
         }
+
+        if ($this->getBulletAmount($player) === 0) {
+            $player->sendPopup("残弾がありません");
+            return false;
+        }
+
+        $result = $this->gun->shoot(function () use ($player, $scheduler) {
+            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+            $this->doReaction($player);
+        });
+
+        if ($result)
+            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+
+        if ($this->gun->getCurrentBullet() === 0){
+            //TODO:ここじゃない
+            $player->sendPopup("リロード");
+            $this->reload($player);
+        }
+
+        return true;
     }
 
     public function doReaction(Player $player): void {
@@ -54,7 +64,7 @@ abstract class ItemGun extends Item
     public function reload(Player $player) {
         $remainingBullet = $this->getBulletAmount($player);
         if ($remainingBullet === 0) {
-            $player->sendWhisper("GunSystem", "残弾がありません");
+            $player->sendPopup("残弾がありません");
 
         } else {
             //TODO:リファクタリング
@@ -72,7 +82,7 @@ abstract class ItemGun extends Item
 
                 $player->getInventory()->setContents($inventoryContents + $bullets);
             }, function () use ($player) {
-                $player->sendWhisper("GunSystem", "リロードが完了しました");
+                $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             });
         }
     }
