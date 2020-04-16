@@ -1,19 +1,18 @@
 <?php
 
 
-namespace gun_system\models\attachment\scope;
+namespace gun_system\models\attachment;
 
 
-use gun_system\models\attachment\Attachment;
-use gun_system\models\attachment\AttachmentType;
+use gun_system\models\GunType;
 
 abstract class Scope extends Attachment
 {
     private $magnification;
 
-    public function __construct(string $name,Magnification $magnification) {
+    public function __construct(string $name,Magnification $magnification,GunType $supportGunType) {
         $this->magnification = $magnification;
-        parent::__construct($name, AttachmentType::Scope());
+        parent::__construct($name, AttachmentType::Scope(),$supportGunType);
     }
 
     /**

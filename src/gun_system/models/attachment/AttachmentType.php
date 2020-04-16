@@ -19,4 +19,8 @@ class AttachmentType
     public static function Scope():AttachmentType {
         return new AttachmentType("Scope");
     }
+
+    public static function Barrel():AttachmentType {
+        return new AttachmentType("Barrel");
+    }
 }
