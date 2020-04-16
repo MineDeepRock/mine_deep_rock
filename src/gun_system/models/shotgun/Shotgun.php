@@ -17,9 +17,9 @@ abstract class Shotgun extends Gun
 {
     private $pellets;
 
-    public function __construct(int $pellets, float $bulletPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(int $pellets, float $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->pellets = $pellets;
-        parent::__construct(GunType::Shotgun(),$bulletPower, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $range, $precision, $scheduler);
+        parent::__construct(GunType::Shotgun(),$bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $range, $precision, $scheduler);
     }
 
     /**

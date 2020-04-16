@@ -6,11 +6,10 @@ namespace gun_system\models;
 
 use Closure;
 use gun_system\models\attachment\scope\Scope;
-use ValueObject;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
-abstract class Gun extends ValueObject
+abstract class Gun 
 {
     private $type;
 
@@ -27,16 +26,14 @@ abstract class Gun extends ValueObject
     private $lastShootDate;
     private $onReloading;
 
-    private $scope;
-
     //TODO:
     //非同期処理のためにある。なくしたい。
     private $scheduler;
 
-    public function __construct(GunType $type, float $bulletPower, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(GunType $type, float $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->type = $type;
 
-        $this->bulletDamage = $bulletPower;
+        $this->bulletDamage = $bulletDamage;
         $this->rate = $rate;
         $this->bulletSpeed = $bulletSpeed;
         $this->bulletCapacity = $bulletCapacity;
@@ -146,11 +143,6 @@ abstract class Gun extends ValueObject
     public function getType(): GunType {
         return $this->type;
     }
-
-    /**
-     * @param Scope $scope
-     */
-    abstract public function setScope(Scope $scope): void ;
 }
 
 class GunPrecision
