@@ -17,18 +17,18 @@ abstract class Gun
     private $rate;
     private $bulletSpeed;
     private $bulletCapacity;
-    private $currentBullet;
+    protected $currentBullet;
     private $reaction;
     private $reloadDuration;
     private $range;
     private $precision;
 
-    private $lastShootDate;
+    protected $lastShootDate;
     private $onReloading;
 
     //TODO:
     //非同期処理のためにある。なくしたい。
-    private $scheduler;
+    protected $scheduler;
     private $shootingTaskHandler;
 
     public function __construct(GunType $type, float $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
@@ -53,7 +53,7 @@ abstract class Gun
         return $this->onReloading;
     }
 
-    private function onCoolTime(): bool {
+    protected function onCoolTime(): bool {
         return (microtime(true) - $this->lastShootDate) <= (1 / $this->rate->getPerSecond());
     }
 

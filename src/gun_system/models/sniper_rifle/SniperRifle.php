@@ -4,6 +4,7 @@
 namespace gun_system\models\sniper_rifle;
 
 
+use Closure;
 use gun_system\models\BulletSpeed;
 use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
@@ -18,4 +19,13 @@ class SniperRifle extends Gun
         parent::__construct(GunType::SniperRifle(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $range, $precision, $scheduler);
     }
 
+    public function shoot(Closure $onSucceed): void {
+        if ($this->getCurrentBullet() !== 0 && !$this->isReloading()) {
+            if (!$this->onCoolTime()) {
+                $this->lastShootDate = microtime(true);
+                $this->currentBullet--;
+                $onSucceed($this->scheduler);
+            }
+        }
+    }
 }

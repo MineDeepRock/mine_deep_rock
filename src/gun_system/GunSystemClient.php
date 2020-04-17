@@ -5,17 +5,22 @@ namespace gun_system;
 
 
 use Client;
+use gun_system\models\sniper_rifle\SniperRifle;
 use gun_system\pmmp\items\ItemGun;
+use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\scheduler\TaskScheduler;
 
 class GunSystemClient extends Client
 {
     public function tryShooting(Item $item, Player $player): void {
-        if ($item instanceof ItemGun) {
-            $item->shoot($player);
+        if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+            if ($item instanceof ItemSniperRifle) {
+                $item->aim($player);
+            } else {
+                $item->shoot($player);
+            }
         }
     }
 

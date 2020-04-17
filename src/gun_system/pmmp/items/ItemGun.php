@@ -14,7 +14,7 @@ use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-class ItemGun extends Tool
+abstract class ItemGun extends Tool
 {
     protected $gun;
 
@@ -45,21 +45,11 @@ class ItemGun extends Tool
             return false;
         }
 
-        if ($this->gun->getType()->equal(GunType::Shotgun())) {
-            $this->gun->shoot(function ($scheduler) use ($player) {
-                $i = 0;
-                while ($i < $this->gun->getPellets()) {
-                    EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
-                    $i++;
-                }
-            });
-        } else if ($this->gun->getType()->getTypeText() === [GunType::AssaultRifle()->getTypeText(), GunType::HandGun()->getTypeText()]) {
-            $this->gun->shoot(function ($scheduler) use ($player) {
-                EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
-                $this->doReaction($player);
-                $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-            });
-        }
+        $this->gun->shoot(function ($scheduler) use ($player) {
+            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+            $this->doReaction($player);
+            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+        });
 
         return true;
     }
@@ -97,6 +87,7 @@ class ItemGun extends Tool
         $bullets = array_filter($inventoryContents, function ($item) {
             if (is_subclass_of($item, "gun_system\pmmp\items\ItemBullet")) {
                 return $item->getBullet()->getSupportType()->equal($this->gun->getType());
+
             }
             return false;
         });
