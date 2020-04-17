@@ -34,4 +34,11 @@ class GunType
     public static function SMG():GunType {
         return new GunType("SMG");
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTypeText() {
+        return $this->type;
+    }
 }
