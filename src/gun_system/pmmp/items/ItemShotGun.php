@@ -4,7 +4,6 @@
 namespace gun_system\pmmp\items;
 
 
-use gun_system\models\GunType;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\entity\EntityBullet;
 use pocketmine\Player;
@@ -37,5 +36,9 @@ class ItemShotGun extends ItemGun
         });
 
         return true;
+    }
+
+    public function playShootingSound(Player $player): void {
+        //TODO:サウンドの追加
     }
 }

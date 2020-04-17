@@ -6,7 +6,6 @@ namespace gun_system\pmmp\items;
 
 use gun_system\models\BulletId;
 use gun_system\models\Gun;
-use gun_system\models\GunType;
 use gun_system\pmmp\entity\EntityBullet;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
@@ -27,6 +26,8 @@ abstract class ItemGun extends Tool
         return 100;
     }
 
+    abstract public function playShootingSound(Player $player): void;
+
     public function onReleaseUsing(Player $player): bool {
         $this->gun->cancelShooting();
         return true;
@@ -46,6 +47,7 @@ abstract class ItemGun extends Tool
         }
 
         $this->gun->shoot(function ($scheduler) use ($player) {
+            $this->playShootingSound($player);
             EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
             $this->doReaction($player);
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());

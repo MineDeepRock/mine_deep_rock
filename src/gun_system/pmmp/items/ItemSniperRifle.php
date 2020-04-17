@@ -48,4 +48,8 @@ class ItemSniperRifle extends ItemGun
 
         return true;
     }
+
+    public function playShootingSound(Player $player): void {
+        //TODO:サウンドの追加
+    }
 }
