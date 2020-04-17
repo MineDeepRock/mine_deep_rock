@@ -65,6 +65,7 @@ abstract class Gun
     public function shoot(Closure $onSucceed): void {
         if ($this->currentBullet !== 0 && !$this->onReloading) {
             if ($this->onCoolTime()) {
+                //TODO:バグ修正
                 $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
                     $this->lastShootDate = microtime(true);
                     $this->currentBullet--;
