@@ -2,20 +2,13 @@
 
 use gun_system\GunSystemClient;
 use gun_system\models\BulletId;
-use gun_system\models\GunId;
-use gun_system\pmmp\items\assault_rifle\ItemM1Grand;
+use gun_system\pmmp\command\GunCommand;
 use gun_system\pmmp\items\bullet\ItemAssaultRifleBullet;
 use gun_system\pmmp\items\bullet\ItemHandGunBullet;
 use gun_system\pmmp\items\bullet\ItemShotgunBullet;
-use gun_system\pmmp\items\hand_gun\ItemDesertEagle;
-use gun_system\pmmp\items\hand_gun\ItemM1911;
-use gun_system\pmmp\items\hand_gun\ItemP08;
-use gun_system\pmmp\items\shotgun\ItemM1897;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\projectile\Egg;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -44,23 +37,9 @@ class Main extends PluginBase implements Listener
         }));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("team", new TeamCommand($this, $this->teamSystemClient));
+        $this->getServer()->getCommandMap()->register("gun", new GunCommand($this,$this->getScheduler()));
 
         $this->gunSystemClient = new GunSystemClient();
-
-        ItemFactory::registerItem(new ItemDesertEagle($this->getScheduler()), true);
-        Item::addCreativeItem(Item::get(GunId::DESERT_EAGLE));
-
-        ItemFactory::registerItem(new ItemM1911($this->getScheduler()), true);
-        Item::addCreativeItem(Item::get(GunId::M1911));
-
-        ItemFactory::registerItem(new ItemP08($this->getScheduler()), true);
-        Item::addCreativeItem(Item::get(GunId::P08));
-
-        ItemFactory::registerItem(new ItemM1Grand($this->getScheduler()), true);
-        Item::addCreativeItem(Item::get(GunId::M1GARAND));
-
-        ItemFactory::registerItem(new ItemM1897($this->getScheduler()), true);
-        Item::addCreativeItem(Item::get(GunId::M1897));
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::ASSAULT_RIFLE));
@@ -70,8 +49,8 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new ItemShotgunBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::SHOTGUN));
-
     }
+
 
     //GunSystem
     public function onTouchAir(DataPacketReceiveEvent $event) {
@@ -101,6 +80,7 @@ class Main extends PluginBase implements Listener
 
     public function onSneak(PlayerToggleSneakEvent $event) {
         $player = $event->getPlayer();
+
         if ($player->isSneaking()) {
             $player->removeEffect(Effect::SLOWNESS);
         } else {

@@ -6,19 +6,26 @@ namespace gun_system\pmmp\items;
 
 use gun_system\models\BulletId;
 use gun_system\models\Gun;
+use gun_system\models\GunType;
 use gun_system\pmmp\entity\EntityBullet;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
+use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 
-abstract class ItemGun extends Item
+class ItemGun extends Tool
 {
     protected $gun;
 
-    public function __construct(int $id, string $name, Gun $gun) {
+    public function __construct(string $name, Gun $gun) {
         $this->gun = $gun;
-        parent::__construct($id, 0, $name);
+        parent::__construct(ItemIds::BOW, 0, $name);
+    }
+
+    public function getMaxDurability(): int {
+        return 100;
     }
 
     public function shoot(Player $player, TaskScheduler $scheduler): bool {
@@ -32,10 +39,20 @@ abstract class ItemGun extends Item
             return false;
         }
 
-        $result = $this->gun->shoot(function () use ($player, $scheduler) {
-            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
-            $this->doReaction($player);
-        });
+        if ($this->gun->getType() === GunType::Shotgun()) {
+            $result = $this->gun->shoot(function () use ($player, $scheduler) {
+                $i = 0;
+                while ($i < $this->gun->getPellets()) {
+                    EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+                    $i++;
+                }
+            });
+        } else {
+            $result = $this->gun->shoot(function () use ($player, $scheduler) {
+                EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+                $this->doReaction($player);
+            });
+        }
 
         if ($result)
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
@@ -69,7 +86,7 @@ abstract class ItemGun extends Item
 
         } else {
             $this->gun->reload($remainingBullet, function ($consumedBullets) use ($player) {
-                $player->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()),0,$consumedBullets));
+                $player->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
             }, function () use ($player) {
                 $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             });

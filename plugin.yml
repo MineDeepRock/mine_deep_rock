@@ -11,3 +11,6 @@ permissions:
       Team.Command:
         default: true
         description: "チームシステム"
+      Gun.Command:
+        default: true
+        description: "ガンシステム"
