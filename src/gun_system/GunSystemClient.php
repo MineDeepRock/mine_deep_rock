@@ -13,9 +13,9 @@ use pocketmine\scheduler\TaskScheduler;
 
 class GunSystemClient extends Client
 {
-    public function tryShooting(Item $item, Player $player, TaskScheduler $scheduler): void {
+    public function tryShooting(Item $item, Player $player): void {
         if ($item instanceof ItemGun) {
-            $item->shoot($player, $scheduler);
+            $item->shoot($player);
         }
     }
 

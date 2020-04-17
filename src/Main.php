@@ -68,7 +68,7 @@ class Main extends PluginBase implements Listener
         if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR, PlayerInteractEvent::RIGHT_CLICK_BLOCK])) {
             $player = $event->getPlayer();
             $item = $event->getItem();
-            $this->gunSystemClient->tryShooting($item, $player, $this->getScheduler());
+            $this->gunSystemClient->tryShooting($item, $player);
         }
     }
 

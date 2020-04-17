@@ -13,7 +13,6 @@ use pocketmine\item\ItemIds;
 use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
-use pocketmine\scheduler\TaskScheduler;
 
 class ItemGun extends Tool
 {
@@ -33,7 +32,7 @@ class ItemGun extends Tool
         return true;
     }
 
-    public function shoot(Player $player, TaskScheduler $scheduler): bool {
+    public function shoot(Player $player): bool {
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
@@ -47,7 +46,7 @@ class ItemGun extends Tool
         }
 
         if ($this->gun->getType()->equal(GunType::Shotgun())) {
-            $this->gun->shoot(function () use ($player, $scheduler) {
+            $this->gun->shoot(function ($scheduler) use ($player) {
                 $i = 0;
                 while ($i < $this->gun->getPellets()) {
                     EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
@@ -55,7 +54,7 @@ class ItemGun extends Tool
                 }
             });
         } else if ($this->gun->getType()->getTypeText() === [GunType::AssaultRifle()->getTypeText(), GunType::HandGun()->getTypeText()]) {
-            $this->gun->shoot(function () use ($player, $scheduler) {
+            $this->gun->shoot(function ($scheduler) use ($player) {
                 EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
                 $this->doReaction($player);
                 $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());

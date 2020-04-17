@@ -68,7 +68,7 @@ abstract class Gun
                 $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
                     $this->lastShootDate = microtime(true);
                     $this->currentBullet--;
-                    $onSucceed();
+                    $onSucceed($this->scheduler);
                     if ($this->currentBullet == 0)
                         $this->cancelShooting();
                 }), 20 * ((1 / $this->rate->getPerSecond()) - (microtime(true) - $this->lastShootDate)), 20 * (1 / $this->rate->getPerSecond()));
@@ -76,13 +76,13 @@ abstract class Gun
             } else {
                 $this->lastShootDate = microtime(true);
                 $this->currentBullet--;
-                $onSucceed();
+                $onSucceed($this->scheduler);
 
                 if ($this->currentBullet !== 0) {
                     $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
                         $this->lastShootDate = microtime(true);
                         $this->currentBullet--;
-                        $onSucceed();
+                        $onSucceed($this->scheduler);
                         if ($this->currentBullet == 0)
                             $this->cancelShooting();
                     }), 20 * (1 / $this->rate->getPerSecond()), 20 * (1 / $this->rate->getPerSecond()));
