@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\items;
 
 
+use gun_system\models\BulletId;
 use gun_system\models\Gun;
 use gun_system\pmmp\entity\EntityBullet;
 use pocketmine\item\Item;
@@ -39,7 +40,7 @@ abstract class ItemGun extends Item
         if ($result)
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
 
-        if ($this->gun->getCurrentBullet() === 0){
+        if ($this->gun->getCurrentBullet() === 0) {
             //TODO:ここじゃない
             $player->sendPopup("リロード");
             $this->reload($player);
@@ -67,20 +68,8 @@ abstract class ItemGun extends Item
             $player->sendPopup("残弾がありません");
 
         } else {
-            //TODO:リファクタリング
             $this->gun->reload($remainingBullet, function ($consumedBullets) use ($player) {
-                $inventoryContents = $player->getInventory()->getContents();
-
-                $bullets = $this->getBullets($player);
-
-                $inventoryContents = array_diff($inventoryContents, $bullets);
-                $bullet = end($bullets);
-                $bullet->setCount($bullet->getCount() - $consumedBullets);
-
-                $bulletKey = array_keys($bullets)[0];
-                $bullets[$bulletKey] = $bullet;
-
-                $player->getInventory()->setContents($inventoryContents + $bullets);
+                $player->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()),0,$consumedBullets));
             }, function () use ($player) {
                 $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             });
