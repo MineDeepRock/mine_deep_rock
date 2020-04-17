@@ -13,6 +13,6 @@ use pocketmine\scheduler\TaskScheduler;
 class M1897 extends Shotgun
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(12,8.4, new GunRate(2.3), new BulletSpeed(45), 5, 7.5, new ReloadDuration(2), 12, new GunPrecision(90), $scheduler);
+        parent::__construct(12,8.4, new GunRate(1), new BulletSpeed(45), 5, 7.5, new ReloadDuration(2), 12, new GunPrecision(80), $scheduler);
     }
 }
