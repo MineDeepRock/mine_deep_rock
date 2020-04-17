@@ -23,6 +23,8 @@ class BulletId
                 return self::ASSAULT_RIFLE;
             case GunType::LMG()->getTypeText():
                 return self::LMG;
+            case GunType::Shotgun()->getTypeText():
+                return self::SHOTGUN;
             case GunType::SniperRifle()->getTypeText():
                 return self::SNIPER_RIFLE;
             case GunType::SMG()->getTypeText():
