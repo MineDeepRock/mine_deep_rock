@@ -37,7 +37,7 @@ class Main extends PluginBase implements Listener
         }));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("team", new TeamCommand($this, $this->teamSystemClient));
-        $this->getServer()->getCommandMap()->register("gun", new GunCommand($this,$this->getScheduler()));
+        $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler()));
 
         $this->gunSystemClient = new GunSystemClient();
 
@@ -53,27 +53,28 @@ class Main extends PluginBase implements Listener
 
 
     //GunSystem
-    public function onTouchAir(DataPacketReceiveEvent $event) {
-        $packet = $event->getPacket();
-        if ($packet instanceof LevelSoundEventPacket) {
-            if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
-                $player = $event->getPlayer();
-                $item = $event->getPlayer()->getInventory()->getItemInHand();
-                $this->gunSystemClient->tryShooting($item, $player,$this->getScheduler());
-            }
-        }
-    }
+    //public function onTouchAir(DataPacketReceiveEvent $event) {
+    //    $packet = $event->getPacket();
+    //    if ($packet instanceof LevelSoundEventPacket) {
+    //        if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
+    //            $player = $event->getPlayer();
+    //            $item = $event->getPlayer()->getInventory()->getItemInHand();
+    //            $this->gunSystemClient->tryShooting($item, $player,$this->getScheduler());
+    //        }
+    //    }
+    //}
 
     public function onTouch(PlayerInteractEvent $event) {
-        $player = $event->getPlayer();
-        $item = $event->getItem();
-        $this->gunSystemClient->tryShooting($item, $player,$this->getScheduler());
-
+        if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR, PlayerInteractEvent::RIGHT_CLICK_BLOCK])) {
+            $player = $event->getPlayer();
+            $item = $event->getItem();
+            $this->gunSystemClient->tryShooting($item, $player, $this->getScheduler());
+        }
     }
 
     public function onBulletHit(ProjectileHitEntityEvent $event) {
         $entity = $event->getEntity();
-        if($entity instanceof Egg) {
+        if ($entity instanceof Egg) {
             $this->gunSystemClient->sendDamageByShooting($entity->getOwningEntity(), $event->getEntityHit());
         }
     }
@@ -84,7 +85,7 @@ class Main extends PluginBase implements Listener
         if ($player->isSneaking()) {
             $player->removeEffect(Effect::SLOWNESS);
         } else {
-            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS),null,5));
+            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, 5));
         }
     }
 

@@ -28,39 +28,38 @@ class ItemGun extends Tool
         return 100;
     }
 
+    public function onReleaseUsing(Player $player): bool {
+        $this->gun->cancelShooting();
+        return true;
+    }
+
     public function shoot(Player $player, TaskScheduler $scheduler): bool {
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
         }
 
-        if ($this->getBulletAmount($player) === 0) {
-            $player->sendPopup("残弾がありません");
+        if ($this->gun->getCurrentBullet() === 0) {
+            $player->sendPopup("リロード");//TODO:ここじゃない
+            $this->reload($player);
+
             return false;
         }
 
-        if ($this->gun->getType() === GunType::Shotgun()) {
-            $result = $this->gun->shoot(function () use ($player, $scheduler) {
+        if ($this->gun->getType()->equal(GunType::Shotgun())) {
+            $this->gun->shoot(function () use ($player, $scheduler) {
                 $i = 0;
                 while ($i < $this->gun->getPellets()) {
                     EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
                     $i++;
                 }
             });
-        } else {
-            $result = $this->gun->shoot(function () use ($player, $scheduler) {
+        } else if ($this->gun->getType()->getTypeText() === [GunType::AssaultRifle()->getTypeText(), GunType::HandGun()->getTypeText()]) {
+            $this->gun->shoot(function () use ($player, $scheduler) {
                 EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
                 $this->doReaction($player);
+                $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             });
-        }
-
-        if ($result)
-            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-
-        if ($this->gun->getCurrentBullet() === 0) {
-            //TODO:ここじゃない
-            $player->sendPopup("リロード");
-            $this->reload($player);
         }
 
         return true;

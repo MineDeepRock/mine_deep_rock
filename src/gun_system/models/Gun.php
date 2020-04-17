@@ -6,6 +6,7 @@ namespace gun_system\models;
 
 use Closure;
 use pocketmine\scheduler\ClosureTask;
+use pocketmine\scheduler\TaskHandler;
 use pocketmine\scheduler\TaskScheduler;
 
 abstract class Gun
@@ -28,6 +29,7 @@ abstract class Gun
     //TODO:
     //非同期処理のためにある。なくしたい。
     private $scheduler;
+    private $shootingTaskHandler;
 
     public function __construct(GunType $type, float $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->type = $type;
@@ -47,24 +49,47 @@ abstract class Gun
         $this->precision = $precision;
     }
 
-    private function canShoot(): bool {
-        $onCoolTime = (microtime(true) - $this->lastShootDate) <= (1 / $this->rate->getPerSecond());
-        return !$onCoolTime && !$this->onReloading;
-    }
-
     public function isReloading(): bool {
         return $this->onReloading;
     }
 
-    public function shoot(Closure $onSucceed): bool {
-        if ($this->canShoot()) {
-            $this->lastShootDate = microtime(true);
-            $this->currentBullet--;
-            $onSucceed();
-            return true;
-        }
+    private function onCoolTime(): bool {
+        return (microtime(true) - $this->lastShootDate) <= (1 / $this->rate->getPerSecond());
+    }
 
-        return false;
+    public function cancelShooting(): void {
+        if ($this->shootingTaskHandler !== null)
+            $this->shootingTaskHandler->cancel();
+    }
+
+    public function shoot(Closure $onSucceed): void {
+        if ($this->currentBullet !== 0 && !$this->onReloading) {
+            if ($this->onCoolTime()) {
+                $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
+                    $this->lastShootDate = microtime(true);
+                    $this->currentBullet--;
+                    $onSucceed();
+                    if ($this->currentBullet == 0)
+                        $this->cancelShooting();
+                }), 20 * ((1 / $this->rate->getPerSecond()) - (microtime(true) - $this->lastShootDate)), 20 * (1 / $this->rate->getPerSecond()));
+
+            } else {
+                $this->lastShootDate = microtime(true);
+                $this->currentBullet--;
+                $onSucceed();
+
+                if ($this->currentBullet !== 0) {
+                    $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
+                        $this->lastShootDate = microtime(true);
+                        $this->currentBullet--;
+                        $onSucceed();
+                        if ($this->currentBullet == 0)
+                            $this->cancelShooting();
+                    }), 20 * (1 / $this->rate->getPerSecond()), 20 * (1 / $this->rate->getPerSecond()));
+                }
+
+            }
+        }
     }
 
     public function reload(int $remainingBullet, Closure $onStarted, Closure $onFinished): void {
@@ -85,8 +110,8 @@ abstract class Gun
                 } else {
                     $this->currentBullet = $this->bulletCapacity;
                 }
-                $onFinished();
                 $this->onReloading = false;
+                $onFinished();
             }
         ), 20 * $this->reloadDuration->getSecond());
     }
