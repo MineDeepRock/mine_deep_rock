@@ -16,8 +16,12 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
+use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
+use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\plugin\PluginBase;
 use team_system\pmmp\command\TeamCommand;
 use team_system\services\MemberService;
@@ -55,22 +59,33 @@ class Main extends PluginBase implements Listener
 
 
     //GunSystem
-    //public function onTouchAir(DataPacketReceiveEvent $event) {
-    //    $packet = $event->getPacket();
-    //    if ($packet instanceof LevelSoundEventPacket) {
-    //        if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
-    //            $player = $event->getPlayer();
-    //            $item = $event->getPlayer()->getInventory()->getItemInHand();
-    //            $this->gunSystemClient->tryShooting($item, $player,$this->getScheduler());
-    //        }
-    //    }
-    //}
+    //空中を右クリック,Tapで一発だけ射撃
+    public function tryShootingOnce(DataPacketReceiveEvent $event) {
+        $packet = $event->getPacket();
+        if ($packet instanceof LevelSoundEventPacket) {
+            if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
+                $player = $event->getPlayer();
+                $item = $event->getPlayer()->getInventory()->getItemInHand();
+                $this->gunSystemClient->tryShootingOnce($item, $player, $this->getScheduler());
+            }
+        }
+    }
 
-    public function onTouch(PlayerInteractEvent $event) {
-        if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR, PlayerInteractEvent::RIGHT_CLICK_BLOCK])) {
+    //空中を右クリックwin10,tap長押しで射撃
+    public function tryShooting(PlayerInteractEvent $event) {
+        if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR])) {
             $player = $event->getPlayer();
             $item = $event->getItem();
             $this->gunSystemClient->tryShooting($item, $player);
+        }
+    }
+
+    //地面を左クリックでリロードwin10
+    public function tryReloading(PlayerInteractEvent $event) {
+        if (in_array($event->getAction(), [PlayerInteractEvent::LEFT_CLICK_BLOCK])) {
+            $player = $event->getPlayer();
+            $item = $event->getItem();
+            $this->gunSystemClient->tryReloading($item, $player);
         }
     }
 

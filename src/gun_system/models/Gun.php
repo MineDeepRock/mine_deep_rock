@@ -62,6 +62,14 @@ abstract class Gun
             $this->shootingTaskHandler->cancel();
     }
 
+    public function shootOnce(Closure $onSucceed) {
+        if ($this->currentBullet !== 0 && !$this->onReloading && !$this->onCoolTime()) {
+            $this->lastShootDate = microtime(true);
+            $this->currentBullet--;
+            $onSucceed($this->scheduler);
+        }
+    }
+
     public function shoot(Closure $onSucceed): void {
         if ($this->currentBullet !== 0 && !$this->onReloading) {
             if ($this->onCoolTime()) {
@@ -95,12 +103,7 @@ abstract class Gun
 
     public function reload(int $remainingBullet, Closure $onStarted, Closure $onFinished): void {
         //アイテム消費が先
-        if ($this->bulletCapacity > $remainingBullet) {
-            $onStarted($this->currentBullet = $this->bulletCapacity);
-        } else {
-            $onStarted($this->currentBullet = $this->bulletCapacity);
-        }
-
+        $onStarted($this->bulletCapacity - $this->currentBullet);
 
         $this->onReloading = true;
         $this->scheduler->scheduleDelayedTask(new ClosureTask(

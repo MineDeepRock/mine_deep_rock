@@ -12,18 +12,13 @@ class ItemSniperRifle extends ItemGun
 {
     public function __construct(string $name, SniperRifle $gun) { parent::__construct($name, $gun); }
 
-    private $isAiming;
-
     public function onReleaseUsing(Player $player): bool {
-        $this->isAiming = false;
-        $this->shoot($player);
+        $this->shootOnce($player);
 
         return true;
     }
 
     public function aim(Player $player): bool {
-        $this->isAiming = true;
-
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
@@ -39,7 +34,7 @@ class ItemSniperRifle extends ItemGun
         return true;
     }
 
-    public function shoot(Player $player): bool {
+    public function shootOnce(Player $player): bool {
         $this->gun->shoot(function ($scheduler) use ($player) {
             EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
             $this->doReaction($player);

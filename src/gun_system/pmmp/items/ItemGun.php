@@ -45,7 +45,7 @@ abstract class ItemGun extends Tool
         return true;
     }
 
-    public function shoot(Player $player): bool {
+    public function shootOnce(Player $player){
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
@@ -54,7 +54,26 @@ abstract class ItemGun extends Tool
         if ($this->gun->getCurrentBullet() === 0) {
             $player->sendPopup("リロード");//TODO:ここじゃない
             $this->reload($player);
+            return false;
+        }
+        $this->gun->shootOnce(function ($scheduler) use ($player) {
+            $this->playShootingSound($player);
+            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+            $this->doReaction($player);
+            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+        });
 
+        return true;
+    }
+
+    public function shoot(Player $player): bool {
+        if ($this->gun->isReloading()) {
+            $player->sendPopup("リロード中");
+            return false;
+        }
+
+        if ($this->gun->getCurrentBullet() === 0) {
+            $this->reload($player);
             return false;
         }
 
@@ -87,6 +106,7 @@ abstract class ItemGun extends Tool
             $player->sendPopup("残弾がありません");
 
         } else {
+            $player->sendPopup("リロード");
             $this->gun->reload($remainingBullet, function ($consumedBullets) use ($player) {
                 $player->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
             }, function () use ($player) {
