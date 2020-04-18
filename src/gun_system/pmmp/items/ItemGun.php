@@ -45,7 +45,7 @@ abstract class ItemGun extends Tool
         return true;
     }
 
-    public function shootOnce(Player $player){
+    public function shootOnce(Player $player) {
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
@@ -102,7 +102,11 @@ abstract class ItemGun extends Tool
 
     public function reload(Player $player) {
         $remainingBullet = $this->getBulletAmount($player);
-        if ($remainingBullet === 0) {
+
+        if ($this->gun->getCurrentBullet() === $this->gun->getBulletCapacity()) {
+            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+
+        } else if ($remainingBullet === 0) {
             $player->sendPopup("残弾がありません");
 
         } else {
