@@ -44,12 +44,9 @@ class ItemSniperRifle extends ItemGun
             EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
             $this->doReaction($player);
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->playShootingSound($player);
         });
 
         return true;
-    }
-
-    public function playShootingSound(Player $player): void {
-        //TODO:サウンドの追加
     }
 }

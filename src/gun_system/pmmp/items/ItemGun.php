@@ -7,10 +7,12 @@ namespace gun_system\pmmp\items;
 use gun_system\models\BulletId;
 use gun_system\models\Gun;
 use gun_system\pmmp\entity\EntityBullet;
+use gun_system\pmmp\GunSounds;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
 abstract class ItemGun extends Tool
@@ -26,7 +28,17 @@ abstract class ItemGun extends Tool
         return 100;
     }
 
-    abstract public function playShootingSound(Player $player): void;
+    public function playShootingSound(Player $player): void {
+        $soundName = GunSounds::shootSoundFromGunType($this->gun->getType())->getTypeText();
+        $packet = new PlaySoundPacket();
+        $packet->x = $player->x;
+        $packet->y = $player->y;
+        $packet->z = $player->z;
+        $packet->volume = 3;
+        $packet->pitch = 2;
+        $packet->soundName = $soundName;
+        $player->sendDataPacket($packet);
+    }
 
     public function onReleaseUsing(Player $player): bool {
         $this->gun->cancelShooting();

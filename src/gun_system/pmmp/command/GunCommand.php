@@ -11,7 +11,6 @@ use gun_system\models\hand_gun\P08;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\Gehenna;
 use gun_system\pmmp\items\ItemAssaultRifle;
-use gun_system\pmmp\items\ItemGun;
 use gun_system\pmmp\items\ItemHandGun;
 use gun_system\pmmp\items\ItemShotGun;
 use gun_system\pmmp\items\ItemSniperRifle;

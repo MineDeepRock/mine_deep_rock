@@ -33,12 +33,9 @@ class ItemShotGun extends ItemGun
                 $i++;
             }
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->playShootingSound($player);
         });
 
         return true;
-    }
-
-    public function playShootingSound(Player $player): void {
-        //TODO:サウンドの追加
     }
 }
