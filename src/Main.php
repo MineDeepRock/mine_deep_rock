@@ -11,17 +11,19 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\projectile\Egg;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
+use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\inventory\PlayerInventory;
+use pocketmine\inventory\transaction\action\DropItemAction;
+use pocketmine\inventory\transaction\action\SlotChangeAction;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
-use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
-use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\plugin\PluginBase;
 use team_system\pmmp\command\TeamCommand;
 use team_system\services\MemberService;
@@ -80,12 +82,29 @@ class Main extends PluginBase implements Listener
         }
     }
 
-    //地面を左クリックでリロードwin10
-    public function tryReloading(PlayerInteractEvent $event) {
-        if (in_array($event->getAction(), [PlayerInteractEvent::LEFT_CLICK_BLOCK])) {
-            $player = $event->getPlayer();
-            $item = $event->getItem();
-            $this->gunSystemClient->tryReloading($item, $player);
+    //銃を捨てるでリロード
+    public function tryReloading(InventoryTransactionEvent $event): void {
+        $player = $event->getTransaction()->getSource();
+        $actions = array_values($event->getTransaction()->getActions());
+
+        $dropItemActions = array_values(array_filter($actions, function ($item) {
+            return $item instanceof DropItemAction;
+        }));
+        $slotChangeActions = array_values(array_filter($actions, function ($item) {
+            return $item instanceof SlotChangeAction;
+        }));
+
+
+        if (count($dropItemActions) !== 0 && count($slotChangeActions) !== 0) {
+            $slotChangeAction = $slotChangeActions[0];
+            $inventory = $slotChangeAction->getInventory();
+            if ($inventory instanceof PlayerInventory) {
+                $item = $inventory->getItemInHand();
+                if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+                    $this->gunSystemClient->tryReloading($item, $player);
+                    $event->setCancelled();
+                }
+            }
         }
     }
 

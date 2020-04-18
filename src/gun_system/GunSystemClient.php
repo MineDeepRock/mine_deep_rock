@@ -30,9 +30,7 @@ class GunSystemClient extends Client
     }
 
     public function tryReloading(Item $item, Player $player): void {
-        if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            $item->reload($player);
-        }
+        $item->reload($player);
     }
 
     public function sendDamageByShooting(Player $attacker, Entity $entity) {
