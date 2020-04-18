@@ -66,29 +66,7 @@ class GunCommand extends Command
             case "Gehenna":
                 $player->getInventory()->setItemInHand(new ItemSniperRifle("Gehenna", new Gehenna($this->scheduler)));
                 break;
-            case "rotate":
-                $player->setRotation(
-                    $player->getYaw()+10,
-                    $player->getPitch()+10
-                );
-
-                $pk = new MovePlayerPacket();
-                $pk->entityRuntimeId = $player->getId();
-                $pk->position = new Vector3(
-                    $player->getX(),
-                    $player->getY(),
-                    $player->getZ()
-                );
-                $pk->yaw = $player->getYaw();
-                $pk->pitch = $player->getPitch();
-                $pk->headYaw = $player->getYaw();
-                $pk->mode = MovePlayerPacket::MODE_TELEPORT;
-
-                $player->sendDataPacket($pk);
-                break;
-
         }
-
         return true;
     }
 
