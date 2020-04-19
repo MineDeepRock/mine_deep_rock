@@ -33,10 +33,12 @@ class GunSystemClient extends Client
         $item->reload($player);
     }
 
-    public function sendDamageByShooting(Player $attacker, Entity $entity) {
-        $weapon = $attacker->getInventory()->getItemInHand();
-        if ($weapon instanceof ItemGun) {
-            $entity->setHealth($entity->getHealth() - ($weapon->getGunData()->getBulletDamage() * 20 / 100));
+    public function sendDamageByShooting(?Player $attacker, Entity $entity) {
+        if ($attacker !== null) {
+            $weapon = $attacker->getInventory()->getItemInHand();
+            if ($weapon instanceof ItemGun) {
+                $entity->setHealth($entity->getHealth() - ($weapon->getGunData()->getBulletDamage() * 20 / 100));
+            }
         }
     }
 
