@@ -66,7 +66,10 @@ abstract class ItemGun extends Tool
         return true;
     }
 
-    public function shoot(Player $player): bool {
+    public function shoot(?Player $player): bool {
+        if ($player === null)
+            return false;
+
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
