@@ -10,9 +10,9 @@ use gun_system\models\GunRate;
 use gun_system\models\ReloadDuration;
 use pocketmine\scheduler\TaskScheduler;
 
-class M1Garand extends AssaultRifle
+class M1907_SL extends AssaultRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(7, new GunRate(3.5), new BulletSpeed(50), 8, 1, new ReloadDuration(5), 18, new GunPrecision(95), $scheduler);
+        parent::__construct(42, new GunRate(2.5), new BulletSpeed(57), 20, 1, new ReloadDuration(2.3), 25, new GunPrecision(95), $scheduler);
     }
 }

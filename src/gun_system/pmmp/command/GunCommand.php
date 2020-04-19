@@ -4,20 +4,21 @@
 namespace gun_system\pmmp\command;
 
 
+use gun_system\models\assault_rifle\M1907_SL;
 use gun_system\models\assault_rifle\M1Garand;
 use gun_system\models\hand_gun\DesertEagle;
 use gun_system\models\hand_gun\M1911;
 use gun_system\models\hand_gun\P08;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\Gehenna;
+use gun_system\models\sub_machine_gun\MP18;
 use gun_system\pmmp\items\ItemAssaultRifle;
 use gun_system\pmmp\items\ItemHandGun;
 use gun_system\pmmp\items\ItemShotGun;
+use gun_system\pmmp\items\ItemSubMachineGun;
 use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\plugin\Plugin;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -53,8 +54,8 @@ class GunCommand extends Command
                 break;
 
             //AssaultRifle
-            case "M1Garand":
-                $player->getInventory()->setItemInHand(new ItemAssaultRifle("M1Garand", new M1Garand($this->scheduler)));
+            case "M1907_SL":
+                $player->getInventory()->setItemInHand(new ItemAssaultRifle("M1907_SL", new M1907_SL($this->scheduler)));
                 break;
 
             //Shotgun
@@ -66,6 +67,12 @@ class GunCommand extends Command
             case "Gehenna":
                 $player->getInventory()->setItemInHand(new ItemSniperRifle("Gehenna", new Gehenna($this->scheduler)));
                 break;
+
+            //SMG
+            case "MP18":
+                $player->getInventory()->setItemInHand(new ItemSubMachineGun("MP18", new MP18($this->scheduler)));
+                break;
+
         }
         return true;
     }
