@@ -12,7 +12,7 @@ class ItemShotGun extends ItemGun
 {
     public function __construct(string $name, Shotgun $gun) { parent::__construct($name, $gun); }
 
-    public function shootOnce(Player $player){
+    public function shootOnce(?Player $player){
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
@@ -37,7 +37,7 @@ class ItemShotGun extends ItemGun
         return true;
     }
 
-    public function shoot(Player $player): bool {
+    public function shoot(?Player $player): bool {
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;

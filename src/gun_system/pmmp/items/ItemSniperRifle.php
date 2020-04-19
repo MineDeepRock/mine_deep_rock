@@ -34,7 +34,9 @@ class ItemSniperRifle extends ItemGun
         return true;
     }
 
-    public function shootOnce(Player $player): bool {
+    public function shootOnce(?Player $player) {
+        if ($player === null)
+            return false;
         $this->gun->shoot(function ($scheduler) use ($player) {
             EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
             $this->doReaction($player);

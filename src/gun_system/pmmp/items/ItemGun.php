@@ -45,7 +45,10 @@ abstract class ItemGun extends Tool
         return true;
     }
 
-    public function shootOnce(Player $player) {
+    public function shootOnce(?Player $player) {
+        if ($player === null)
+            return false;
+
         if ($this->gun->isReloading()) {
             $player->sendPopup("リロード中");
             return false;
@@ -91,16 +94,18 @@ abstract class ItemGun extends Tool
     }
 
     public function doReaction(Player $player): void {
-        //TODO:バランス調整
-        $playerPosition = $player->getLocation();
-        $dir = -$playerPosition->getYaw() - 90.0;
-        $pitch = -$playerPosition->getPitch() - 180.0;
-        $xd = $this->gun->getReaction() * $this->gun->getReaction() * cos(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
-        $zd = $this->gun->getReaction() * $this->gun->getReaction() * -sin(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
+        if ($this->gun->getReaction() !== 0){
+            //TODO:バランス調整
+            $playerPosition = $player->getLocation();
+            $dir = -$playerPosition->getYaw() - 90.0;
+            $pitch = -$playerPosition->getPitch() - 180.0;
+            $xd = $this->gun->getReaction() * $this->gun->getReaction() * cos(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
+            $zd = $this->gun->getReaction() * $this->gun->getReaction() * -sin(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
 
-        $vec = new Vector3($xd, 0, $zd);
-        $vec->multiply(3);
-        $player->setMotion($vec);
+            $vec = new Vector3($xd, 0, $zd);
+            $vec->multiply(3);
+            $player->setMotion($vec);
+        }
     }
 
     public function reload(Player $player) {
