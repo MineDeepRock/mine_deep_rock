@@ -8,7 +8,7 @@ use pocketmine\item\ItemIds;
 
 class BulletId
 {
-    public const HAND_GUN = ItemIds::SUGARCANE;
+    public const HAND_GUN = ItemIds::PAPER;
     public const ASSAULT_RIFLE = ItemIds::GLOWSTONE_DUST;
     public const LMG = ItemIds::CLAY;
     public const SHOTGUN = ItemIds::BRICK;
