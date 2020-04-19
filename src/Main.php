@@ -10,6 +10,7 @@ use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
+use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\Egg;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
@@ -61,6 +62,8 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new ItemSubMachineGunBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::SMG));
+
+        Entity::registerEntity(\gun_system\pmmp\entity\Egg::class, true, ['Egg', 'minecraft:egg']);
     }
 
 

@@ -5,6 +5,13 @@ namespace gun_system\pmmp\entity;
 
 
 use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Throwable;
+use pocketmine\event\entity\ProjectileHitEvent;
+use pocketmine\item\Egg;
+use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
+use pocketmine\level\Level;
+use pocketmine\level\particle\ItemBreakParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
@@ -16,10 +23,10 @@ use pocketmine\scheduler\TaskScheduler;
 //TODO:場所ちがくね？
 class EntityBullet
 {
-    static function spawn(Player $player, float $speed, float $precision,int $range,TaskScheduler $scheduler) {
+    static function spawn(Player $player, float $speed, float $precision, int $range, TaskScheduler $scheduler) {
         $aimPos = $player->getDirectionVector();
 
-        $nbt = new CompoundTag( "", [
+        $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $player->x),
                 new DoubleTag("", $player->y + $player->getEyeHeight()),
@@ -37,7 +44,7 @@ class EntityBullet
         ]);
 
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
-        $projectile->setMotion($projectile->getMotion()->multiply($speed/27.8));
+        $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8));
         //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();
         $scheduler->scheduleDelayedTask(new ClosureTask(
@@ -45,6 +52,7 @@ class EntityBullet
                 if (!$projectile->isClosed())
                     $projectile->close();
             }
-        ), 20 * ($range/$speed)*2);
+        ), 20 * ($range / $speed) * 2);
     }
 }
+
