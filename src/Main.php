@@ -121,11 +121,13 @@ class Main extends PluginBase implements Listener
 
     public function onSneak(PlayerToggleSneakEvent $event) {
         $player = $event->getPlayer();
-
-        if ($player->isSneaking()) {
-            $player->removeEffect(Effect::SLOWNESS);
-        } else {
-            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, 5));
+        $item = $player->getInventory()->getItemInHand();
+        if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+            if ($player->isSneaking()) {
+                $player->removeEffect(Effect::SLOWNESS);
+            } else {
+                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, 5));
+            }
         }
     }
 
