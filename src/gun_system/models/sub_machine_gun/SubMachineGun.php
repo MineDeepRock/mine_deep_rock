@@ -16,8 +16,8 @@ use pocketmine\scheduler\TaskScheduler;
 
 class SubMachineGun extends Gun
 {
-    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
-        parent::__construct(GunType::SMG(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $effectiveRange, $precision, $scheduler);
+    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+        parent::__construct(GunType::SMG(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, 0.0, $reloadDuration, $effectiveRange, $precision, $scheduler);
     }
 
 }

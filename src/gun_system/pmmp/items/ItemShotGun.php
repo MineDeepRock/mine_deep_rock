@@ -54,7 +54,7 @@ class ItemShotGun extends ItemGun
         $this->gun->shoot(function ($scheduler) use ($player) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
-                EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+                EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
                 $i++;
             }
             $this->doReaction($player);

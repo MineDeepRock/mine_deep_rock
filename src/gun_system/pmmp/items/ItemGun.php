@@ -85,7 +85,7 @@ abstract class ItemGun extends Tool
 
         $this->gun->shoot(function ($scheduler) use ($player) {
             $this->playShootingSound($player);
-            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
             $this->doReaction($player);
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
@@ -94,7 +94,7 @@ abstract class ItemGun extends Tool
     }
 
     public function doReaction(Player $player): void {
-        if ($this->gun->getReaction() !== 0){
+        if ($this->gun->getReaction() !== 0.0){
             //TODO:バランス調整
             $playerPosition = $player->getLocation();
             $dir = -$playerPosition->getYaw() - 90.0;
