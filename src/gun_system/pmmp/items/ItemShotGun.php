@@ -29,6 +29,7 @@ class ItemShotGun extends ItemGun
                 EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
                 $i++;
             }
+            $this->doReaction($player);
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             $this->playShootingSound($player);
         });
@@ -56,6 +57,7 @@ class ItemShotGun extends ItemGun
                 EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
                 $i++;
             }
+            $this->doReaction($player);
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             $this->playShootingSound($player);
         });
