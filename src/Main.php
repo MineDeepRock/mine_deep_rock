@@ -117,7 +117,7 @@ class Main extends PluginBase implements Listener
 
     public function onBulletHit(ProjectileHitEntityEvent $event) {
         $entity = $event->getEntity();
-        if ($entity instanceof Egg) {
+        if ($entity instanceof \gun_system\pmmp\entity\Egg) {
             $this->gunSystemClient->sendDamageByShooting($entity->getOwningEntity(), $event->getEntityHit());
         }
     }
