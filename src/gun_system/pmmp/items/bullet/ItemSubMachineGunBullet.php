@@ -11,6 +11,6 @@ use gun_system\pmmp\items\ItemBullet;
 class ItemSubMachineGunBullet extends ItemBullet
 {
     public function __construct() {
-        parent::__construct(BulletId::SHOTGUN, "SubMachineGunBullet",new SubMachineGunBullet());
+        parent::__construct(BulletId::SMG, "SubMachineGunBullet",new SubMachineGunBullet());
     }
 }
