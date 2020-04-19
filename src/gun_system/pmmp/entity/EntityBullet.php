@@ -37,7 +37,7 @@ class EntityBullet
         ]);
 
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
-        $projectile->setMotion($projectile->getMotion()->multiply($speed/27));
+        $projectile->setMotion($projectile->getMotion()->multiply($speed/27.8));
         //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();
         $scheduler->scheduleDelayedTask(new ClosureTask(
