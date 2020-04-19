@@ -38,7 +38,7 @@ class ItemSniperRifle extends ItemGun
         if ($player === null)
             return false;
         $this->gun->shoot(function ($scheduler) use ($player) {
-            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $this->gun->getRange(), $scheduler);
+            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
             $this->doReaction($player);
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             $this->playShootingSound($player);

@@ -23,7 +23,7 @@ use pocketmine\scheduler\TaskScheduler;
 //TODO:場所ちがくね？
 class EntityBullet
 {
-    static function spawn(Player $player, float $speed, float $precision, int $range, TaskScheduler $scheduler) {
+    static function spawn(Player $player, float $speed, float $precision, TaskScheduler $scheduler) {
         $aimPos = $player->getDirectionVector();
 
         $nbt = new CompoundTag("", [
@@ -52,7 +52,7 @@ class EntityBullet
                 if (!$projectile->isClosed())
                     $projectile->close();
             }
-        ), 20 * ($range / $speed) * 2);
+        ), 20 * 50);
     }
 }
 

@@ -5,7 +5,9 @@ namespace gun_system\models\shotgun;
 
 
 use Closure;
+use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
+use gun_system\models\EffectiveRange;
 use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
@@ -17,9 +19,9 @@ abstract class Shotgun extends Gun
 {
     private $pellets;
 
-    public function __construct(int $pellets, float $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->pellets = $pellets;
-        parent::__construct(GunType::Shotgun(),$bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $range, $precision, $scheduler);
+        parent::__construct(GunType::Shotgun(),$bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $effectiveRange, $precision, $scheduler);
     }
 
     /**

@@ -20,8 +20,10 @@ abstract class Gun
     protected $currentBullet;
     private $reaction;
     private $reloadDuration;
-    private $range;
+    private $effectiveRange;
     private $precision;
+
+    private $damageCurve;
 
     protected $lastShootDate;
     private $onReloading;
@@ -31,7 +33,7 @@ abstract class Gun
     protected $scheduler;
     private $shootingTaskHandler;
 
-    public function __construct(GunType $type, float $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, int $range, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->type = $type;
 
         $this->bulletDamage = $bulletDamage;
@@ -41,12 +43,37 @@ abstract class Gun
         $this->currentBullet = $bulletCapacity;
         $this->reaction = $reaction;
         $this->reloadDuration = $reloadDuration;
-        $this->range = $range;
+        $this->effectiveRange = $effectiveRange;
 
         $this->lastShootDate = microtime(true);
         $this->onReloading = false;
         $this->scheduler = $scheduler;
         $this->precision = $precision;
+
+        $maxDamage = $this->bulletDamage->getMaxDamage();
+        $minDamage = $this->bulletDamage->getMinDamage();
+
+        $effectiveRangeStart = $effectiveRange->getStart();
+        $effectiveRangeEnd = $effectiveRange->getEnd();
+
+        $maxDamageRange = array_fill(0, $effectiveRangeEnd, $maxDamage);
+        for ($i = 0; $i <= $maxDamage - $minDamage; ++$i)
+            array_push($maxDamageRange, $maxDamage - $i);
+        $minDamageRange = array_fill($effectiveRangeEnd + ($maxDamage - $minDamage), 100 - ($effectiveRangeEnd + ($maxDamage - $minDamage)), $minDamage);
+
+        $range = $maxDamageRange + $minDamageRange;
+
+        if ($effectiveRangeStart !== 0) {
+            foreach ($range as $key => $value) {
+                if ($key < $effectiveRangeStart) {
+                    $this->damageCurve[$key] = $minDamage;
+                } else {
+                    $this->damageCurve[$key] = $value;
+                }
+            }
+        } else {
+            $this->damageCurve = $range;
+        }
     }
 
     public function isReloading(): bool {
@@ -96,7 +123,6 @@ abstract class Gun
                             $this->cancelShooting();
                     }), 20 * (1 / $this->rate->getPerSecond()), 20 * (1 / $this->rate->getPerSecond()));
                 }
-
             }
         }
     }
@@ -149,20 +175,6 @@ abstract class Gun
     }
 
     /**
-     * @return float
-     */
-    public function getBulletDamage(): float {
-        return $this->bulletDamage;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRange(): int {
-        return $this->range;
-    }
-
-    /**
      * @return int
      */
     public function getBulletCapacity(): int {
@@ -174,6 +186,64 @@ abstract class Gun
      */
     public function getType(): GunType {
         return $this->type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDamageCurve(): array {
+        return $this->damageCurve;
+    }
+}
+
+
+class EffectiveRange
+{
+    private $start;
+    private $end;
+
+    public function __construct(int $start, int $end) {
+        $this->start = $start;
+        $this->end = $end;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStart(): int {
+        return $this->start;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEnd(): int {
+        return $this->end;
+    }
+}
+
+class BulletDamage
+{
+    private $maxDamage;
+    private $minDamage;
+
+    public function __construct(int $maxDamage, int $minDamage) {
+        $this->maxDamage = $maxDamage;
+        $this->minDamage = $minDamage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxDamage(): int {
+        return $this->maxDamage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinDamage(): int {
+        return $this->minDamage;
     }
 }
 
