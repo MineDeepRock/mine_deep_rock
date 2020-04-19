@@ -4,11 +4,8 @@
 namespace gun_system\pmmp\command;
 
 
-use gun_system\models\assault_rifle\M1907_SL;
-use gun_system\models\assault_rifle\M1Garand;
-use gun_system\models\hand_gun\DesertEagle;
-use gun_system\models\hand_gun\M1911;
-use gun_system\models\hand_gun\P08;
+use gun_system\models\assault_rifle\M1907SL;
+use gun_system\models\hand_gun\Mle1903;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\Gehenna;
 use gun_system\models\sub_machine_gun\MP18;
@@ -43,19 +40,13 @@ class GunCommand extends Command
         $method = $args[0];
         switch ($method) {
             //Handgun
-            case "DesertEagle":
-                $player->getInventory()->setItemInHand(new ItemHandGun("DesertEagle", new DesertEagle($this->scheduler)));
-                break;
-            case "P08":
-                $player->getInventory()->setItemInHand(new ItemHandGun("P08", new P08($this->scheduler)));
-                break;
-            case "M1911":
-                $player->getInventory()->setItemInHand(new ItemHandGun("M1911", new M1911($this->scheduler)));
+            case "Mle1903":
+                $player->getInventory()->setItemInHand(new ItemHandGun("DesertEagle", new Mle1903($this->scheduler)));
                 break;
 
             //AssaultRifle
-            case "M1907_SL":
-                $player->getInventory()->setItemInHand(new ItemAssaultRifle("M1907_SL", new M1907_SL($this->scheduler)));
+            case "M1907SL":
+                $player->getInventory()->setItemInHand(new ItemAssaultRifle("M1907_SL", new M1907SL($this->scheduler)));
                 break;
 
             //Shotgun

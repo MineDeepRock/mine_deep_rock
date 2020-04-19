@@ -1,7 +1,7 @@
 <?php
 
 
-namespace gun_system\models\hand_gun;
+namespace gun_system\models\assault_rifle;
 
 
 use gun_system\models\BulletSpeed;
@@ -10,10 +10,9 @@ use gun_system\models\GunRate;
 use gun_system\models\ReloadDuration;
 use pocketmine\scheduler\TaskScheduler;
 
-
-class DesertEagle extends HandGun
+class M1907SL extends AssaultRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(10, new GunRate(0.7), new BulletSpeed(40), 8, 7, new ReloadDuration(3), 13, new GunPrecision(95), $scheduler);
+        parent::__construct(42, new GunRate(2.5), new BulletSpeed(57), 20, 1, new ReloadDuration(2.3), 25, new GunPrecision(95), $scheduler);
     }
 }
