@@ -12,5 +12,5 @@ use pocketmine\Player;
 class ItemAssaultRifle extends ItemGun
 {
 
-    public function __construct(string $name, AssaultRifle $gun) { parent::__construct($name, $gun); }
+    public function __construct(string $name, AssaultRifle $gun, Player $owner) { parent::__construct($name, $gun, $owner); }
 }

@@ -9,10 +9,10 @@ use pocketmine\Player;
 
 class ItemSniperRifle extends ItemGun
 {
-    public function __construct(string $name, SniperRifle $gun) { parent::__construct($name, $gun); }
+    public function __construct(string $name, SniperRifle $gun, Player $player) { parent::__construct($name, $gun, $player); }
 
     public function onReleaseUsing(Player $player): bool {
-        $this->tryShootingOnce($player);
+        $this->tryShootingOnce();
 
         return true;
     }
@@ -27,7 +27,7 @@ class ItemSniperRifle extends ItemGun
         }
 
         if ($this->gun->getCurrentBullet() === 0) {
-            $this->reload($player);
+            $this->reload();
             return false;
         }
         return true;

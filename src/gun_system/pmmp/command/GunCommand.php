@@ -45,54 +45,54 @@ class GunCommand extends Command
         switch ($method) {
             //Handgun
             case "Mle1903":
-                $item = new ItemHandGun("Mle1903", new Mle1903($this->scheduler));
+                $item = new ItemHandGun("Mle1903", new Mle1903($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;
 
             //AssaultRifle
             case "M1907SL":
-                $item = new ItemAssaultRifle("M1907SL", new M1907SL($this->scheduler));
+                $item = new ItemAssaultRifle("M1907SL", new M1907SL($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;
 
             //Shotgun
             case "M1897":
-                $item = new ItemShotGun("M1897", new M1897($this->scheduler));
+                $item = new ItemShotGun("M1897", new M1897($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;
 
             //SniperRifle
             case "SMLEMK3":
-                $item = new ItemSniperRifle("SMLEMK3", new SMLEMK3($this->scheduler));
+                $item = new ItemSniperRifle("SMLEMK3", new SMLEMK3($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;
 
             //SMG
             case "MP18":
-                $item = new ItemSubMachineGun("MP18", new MP18($this->scheduler));
+                $item = new ItemSubMachineGun("MP18", new MP18($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;
 
             case "Automatico":
-                $item = new ItemSubMachineGun("Automatico", new Automatico($this->scheduler));
+                $item = new ItemSubMachineGun("Automatico", new Automatico($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;
 
             //LMG
             case "LewisGun":
-                $item = new ItemLightMachineGun("LewisGun", new LewisGun($this->scheduler));
+                $item = new ItemLightMachineGun("LewisGun", new LewisGun($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;
 
             case "ParabellumMG14":
-                $item = new ItemLightMachineGun("ParabellumMG14", new ParabellumMG14($this->scheduler));
+                $item = new ItemLightMachineGun("ParabellumMG14", new ParabellumMG14($this->scheduler),$player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($item);
                 break;

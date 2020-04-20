@@ -17,9 +17,12 @@ use pocketmine\Player;
 
 abstract class ItemGun extends Tool
 {
+    protected $owner;
+
     protected $gun;
 
-    public function __construct(string $name, Gun $gun) {
+    public function __construct(string $name, Gun $gun, Player $owner) {
+        $this->owner = $owner;
         $this->gun = $gun;
         parent::__construct(ItemIds::BOW, 0, $name);
     }
@@ -28,16 +31,16 @@ abstract class ItemGun extends Tool
         return 100;
     }
 
-    public function playShootingSound(Player $player): void {
+    public function playShootingSound(): void {
         $soundName = GunSounds::shootSoundFromGunType($this->gun->getType())->getTypeText();
         $packet = new PlaySoundPacket();
-        $packet->x = $player->x;
-        $packet->y = $player->y;
-        $packet->z = $player->z;
+        $packet->x = $this->owner->x;
+        $packet->y = $this->owner->y;
+        $packet->z = $this->owner->z;
         $packet->volume = 3;
         $packet->pitch = 2;
         $packet->soundName = $soundName;
-        $player->sendDataPacket($packet);
+        $this->owner->sendDataPacket($packet);
     }
 
     public function onReleaseUsing(Player $player): bool {
@@ -45,67 +48,60 @@ abstract class ItemGun extends Tool
         return true;
     }
 
-    public function tryShootingOnce(?Player $player) {
-        if ($player === null)
-            return false;
-
+    public function tryShootingOnce() {
         if ($this->gun->isReloading()) {
-            $player->sendPopup("リロード中");
+            $this->owner->sendPopup("リロード中");
             return false;
         }
 
         if ($this->gun->getCurrentBullet() === 0) {
-            $player->sendPopup("リロード");//TODO:ここじゃない
-            $this->reload($player);
+            $this->owner->sendPopup("リロード");//TODO:ここじゃない
+            $this->reload();
             return false;
         }
 
-        $this->shootOnce($player);
+        $this->shootOnce();
 
         return true;
     }
 
-    public function tryShooting(?Player $player): bool {
-        if ($player === null)
-            return false;
-
+    public function tryShooting(): bool {
         if ($this->gun->isReloading()) {
-            $player->sendPopup("リロード中");
+            $this->owner->sendPopup("リロード中");
             return false;
         }
 
         if ($this->gun->getCurrentBullet() === 0) {
-            $this->reload($player);
+            $this->reload();
             return false;
         }
 
-        $this->shoot($player);
+        $this->shoot();
 
         return true;
     }
 
-    protected function shoot(Player $player): void {
-        $this->gun->shoot(function ($scheduler) use ($player) {
-            $this->playShootingSound($player);
-            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
-            $this->doReaction($player);
-            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+    protected function shoot(): void {
+        $this->gun->tryShooting(function ($scheduler) {
+            $this->playShootingSound();
+            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+            $this->doReaction();
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
     }
 
-    protected function shootOnce(Player $player): void {
-        $this->gun->shootOnce(function ($scheduler) use ($player) {
-            $this->playShootingSound($player);
-            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
-            $this->doReaction($player);
-            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+    protected function shootOnce(): void {
+        $this->gun->tryShootingOnce(function ($scheduler)  {
+            $this->playShootingSound();
+            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+            $this->doReaction();
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
     }
 
-    public function doReaction(Player $player): void {
+    public function doReaction(): void {
         if ($this->gun->getReaction() !== 0.0) {
-            //TODO:バランス調整
-            $playerPosition = $player->getLocation();
+            $playerPosition = $this->owner->getLocation();
             $dir = -$playerPosition->getYaw() - 90.0;
             $pitch = -$playerPosition->getPitch() - 180.0;
             $xd = $this->gun->getReaction() * $this->gun->getReaction() * cos(deg2rad($dir)) * cos(deg2rad($pitch)) / 6;
@@ -113,31 +109,31 @@ abstract class ItemGun extends Tool
 
             $vec = new Vector3($xd, 0, $zd);
             $vec->multiply(3);
-            $player->setMotion($vec);
+            $this->owner->setMotion($vec);
         }
     }
 
-    public function reload(Player $player) {
-        $remainingBullet = $this->getBulletAmount($player);
+    public function reload() {
+        $remainingBullet = $this->getBulletAmount();
 
         if ($this->gun->getCurrentBullet() === $this->gun->getBulletCapacity()) {
-            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
 
         } else if ($remainingBullet === 0) {
-            $player->sendPopup("残弾がありません");
+            $this->owner->sendPopup("残弾がありません");
 
         } else {
-            $player->sendPopup("リロード");
-            $this->gun->reload($remainingBullet, function ($consumedBullets) use ($player) {
-                $player->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
-            }, function () use ($player) {
-                $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->owner->sendPopup("リロード");
+            $this->gun->reload($remainingBullet, function ($consumedBullets)  {
+                $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
+            }, function () {
+                $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             });
         }
     }
 
-    protected function getBullets(Player $player): array {
-        $inventoryContents = $player->getInventory()->getContents();
+    protected function getBullets(): array {
+        $inventoryContents = $this->owner->getInventory()->getContents();
 
         $bullets = array_filter($inventoryContents, function ($item) {
             if (is_subclass_of($item, "gun_system\pmmp\items\ItemBullet")) {
@@ -150,8 +146,8 @@ abstract class ItemGun extends Tool
         return $bullets;
     }
 
-    protected function getBulletAmount(Player $player): int {
-        $bullets = $this->getBullets($player);
+    protected function getBulletAmount(): int {
+        $bullets = $this->getBullets();
 
         $bulletsAmount = array_sum(array_map(function ($bullet) {
             return $bullet->getCount();

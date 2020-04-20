@@ -9,7 +9,9 @@ use pocketmine\Player;
 
 class ItemLightMachineGun extends ItemGun
 {
-    public function __construct(string $name, LightMachineGun $gun) { parent::__construct($name, $gun); }
+    public function __construct(string $name, LightMachineGun $gun, Player $player) {
+        parent::__construct($name, $gun, $player);
+    }
 
     public function tryShootingOnce(?Player $player): bool {
         if ($this->gun->onOverheat()) {
