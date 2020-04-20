@@ -89,6 +89,12 @@ abstract class Gun
             $this->shootingTaskHandler->cancel();
     }
 
+    public function delayShooting(int $second, Closure $onSucceed) {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($onSucceed) {
+            $this->shoot($onSucceed);
+        }), 20 * $second);
+    }
+
     public function tryShootingOnce(Closure $onSucceed): bool {
         if ($this->currentBullet === 0)
             return false;
@@ -105,35 +111,31 @@ abstract class Gun
             return false;
         if ($this->onReloading)
             return false;
+
+        if ($this->onCoolTime()) {
+            $this->delayShooting((1 / $this->rate->getPerSecond()) - (microtime(true) - $this->lastShootDate), $onSucceed);
+            return true;
+        }
+
         $this->shoot($onSucceed);
         return true;
     }
 
-    protected function shootOnce(Closure $onSucceed):void{
+    protected function shootOnce(Closure $onSucceed): void {
         $this->lastShootDate = microtime(true);
         $this->currentBullet--;
         $onSucceed($this->scheduler);
     }
 
     protected function shoot(Closure $onSucceed): void {
-        if ($this->onCoolTime()) {
-            $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
-                $this->lastShootDate = microtime(true);
-                $this->currentBullet--;
-                $onSucceed($this->scheduler);
-                if ($this->currentBullet == 0)
-                    $this->cancelShooting();
-            }), 20 * ((1 / $this->rate->getPerSecond()) - (microtime(true) - $this->lastShootDate)), 20 * (1 / $this->rate->getPerSecond()));
-        } else {
-            $this->shootingTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
-                $this->lastShootDate = microtime(true);
-                $this->currentBullet--;
-                $onSucceed($this->scheduler);
-                if ($this->currentBullet == 0)
-                    $this->cancelShooting();
-            }), 20 * (1 / $this->rate->getPerSecond()));
-            //TODO:ここDelay入れれば持ち替え時間実装できる
-        }
+        $this->shootingTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
+            $this->lastShootDate = microtime(true);
+            $this->currentBullet--;
+            $onSucceed($this->scheduler);
+            if ($this->currentBullet == 0)
+                $this->cancelShooting();
+        }), 20 * (1 / $this->rate->getPerSecond()));
+        //TODO:ここDelay入れれば持ち替え時間実装できる
     }
 
     public function reload(int $remainingBullet, Closure $onStarted, Closure $onFinished): void {
