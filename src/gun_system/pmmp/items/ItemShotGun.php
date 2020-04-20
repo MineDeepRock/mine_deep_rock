@@ -12,17 +12,7 @@ class ItemShotGun extends ItemGun
 {
     public function __construct(string $name, Shotgun $gun) { parent::__construct($name, $gun); }
 
-    public function shootOnce(?Player $player){
-        if ($this->gun->isReloading()) {
-            $player->sendPopup("リロード中");
-            return false;
-        }
-
-        if ($this->gun->getCurrentBullet() === 0) {
-            $player->sendPopup("リロード");//TODO:ここじゃない
-            $this->reload($player);
-            return false;
-        }
+    protected function shootOnce(Player $player): void {
         $this->gun->shootOnce(function ($scheduler) use ($player) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
@@ -33,24 +23,9 @@ class ItemShotGun extends ItemGun
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             $this->playShootingSound($player);
         });
-
-        return true;
     }
 
-    public function shoot(?Player $player): bool {
-        if ($this->gun->isReloading()) {
-            $player->sendPopup("リロード中");
-            return false;
-        }
-
-        if ($this->gun->getCurrentBullet() === 0) {
-            $player->sendPopup("リロード");//TODO:ここじゃない
-            $this->reload($player);
-
-            return false;
-        }
-
-
+    protected function shoot(Player $player): void {
         $this->gun->shoot(function ($scheduler) use ($player) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
@@ -61,7 +36,5 @@ class ItemShotGun extends ItemGun
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             $this->playShootingSound($player);
         });
-
-        return true;
     }
 }

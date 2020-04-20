@@ -45,7 +45,7 @@ abstract class ItemGun extends Tool
         return true;
     }
 
-    public function shootOnce(?Player $player) {
+    public function tryShootingOnce(?Player $player) {
         if ($player === null)
             return false;
 
@@ -59,17 +59,13 @@ abstract class ItemGun extends Tool
             $this->reload($player);
             return false;
         }
-        $this->gun->shootOnce(function ($scheduler) use ($player) {
-            $this->playShootingSound($player);
-            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
-            $this->doReaction($player);
-            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-        });
+
+        $this->shootOnce($player);
 
         return true;
     }
 
-    public function shoot(?Player $player): bool {
+    public function tryShooting(?Player $player): bool {
         if ($player === null)
             return false;
 
@@ -83,18 +79,31 @@ abstract class ItemGun extends Tool
             return false;
         }
 
+        $this->shoot($player);
+
+        return true;
+    }
+
+    protected function shoot(Player $player): void {
         $this->gun->shoot(function ($scheduler) use ($player) {
             $this->playShootingSound($player);
             EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
             $this->doReaction($player);
             $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
+    }
 
-        return true;
+    protected function shootOnce(Player $player): void {
+        $this->gun->shootOnce(function ($scheduler) use ($player) {
+            $this->playShootingSound($player);
+            EntityBullet::spawn($player, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+            $this->doReaction($player);
+            $player->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+        });
     }
 
     public function doReaction(Player $player): void {
-        if ($this->gun->getReaction() !== 0.0){
+        if ($this->gun->getReaction() !== 0.0) {
             //TODO:バランス調整
             $playerPosition = $player->getLocation();
             $dir = -$playerPosition->getYaw() - 90.0;

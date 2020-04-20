@@ -6,12 +6,15 @@ namespace gun_system\pmmp\command;
 
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\hand_gun\Mle1903;
+use gun_system\models\light_machine_gun\LewisGun;
+use gun_system\models\light_machine_gun\ParabellumMG14;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\Automatico;
 use gun_system\models\sub_machine_gun\MP18;
 use gun_system\pmmp\items\ItemAssaultRifle;
 use gun_system\pmmp\items\ItemHandGun;
+use gun_system\pmmp\items\ItemLightMachineGun;
 use gun_system\pmmp\items\ItemShotGun;
 use gun_system\pmmp\items\ItemSubMachineGun;
 use gun_system\pmmp\items\ItemSniperRifle;
@@ -81,6 +84,18 @@ class GunCommand extends Command
                 $player->getInventory()->setItemInHand($item);
                 break;
 
+            //LMG
+            case "LewisGun":
+                $item = new ItemLightMachineGun("LewisGun", new LewisGun($this->scheduler));
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($item);
+                break;
+
+            case "ParabellumMG14":
+                $item = new ItemLightMachineGun("ParabellumMG14", new ParabellumMG14($this->scheduler));
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($item);
+                break;
         }
         return true;
     }

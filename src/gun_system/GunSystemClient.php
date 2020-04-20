@@ -16,7 +16,7 @@ class GunSystemClient extends Client
 {
     public function tryShootingOnce(Item $item, Player $player): void {
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            $item->shootOnce($player);
+            $item->tryShootingOnce($player);
         }
     }
 
@@ -25,7 +25,7 @@ class GunSystemClient extends Client
             if ($item instanceof ItemSniperRifle) {
                 $item->aim($player);
             } else {
-                $item->shoot($player);
+                $item->tryShooting($player);
             }
         }
     }
