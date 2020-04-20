@@ -6,6 +6,8 @@ namespace gun_system\pmmp\items;
 
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\entity\EntityBullet;
+use gun_system\pmmp\GunSounds;
+use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
 class ItemShotGun extends ItemGun
@@ -35,6 +37,19 @@ class ItemShotGun extends ItemGun
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             $this->playShootingSound();
+            $this->playPumpActionSound();
         });
+    }
+
+    private function playPumpActionSound(): void {
+        $soundName = GunSounds::ShotgunPumpAction()->getText();
+        $packet = new PlaySoundPacket();
+        $packet->x = $this->owner->x;
+        $packet->y = $this->owner->y;
+        $packet->z = $this->owner->z;
+        $packet->volume = 3;
+        $packet->pitch = 2;
+        $packet->soundName = $soundName;
+        $this->owner->sendDataPacket($packet);
     }
 }

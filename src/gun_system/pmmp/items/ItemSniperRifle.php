@@ -5,6 +5,8 @@ namespace gun_system\pmmp\items;
 
 
 use gun_system\models\sniper_rifle\SniperRifle;
+use gun_system\pmmp\GunSounds;
+use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
 class ItemSniperRifle extends ItemGun
@@ -27,6 +29,20 @@ class ItemSniperRifle extends ItemGun
             $this->reload();
             return false;
         }
+
+        $this->playCockingSound();
         return true;
+    }
+
+    private function playCockingSound(): void {
+        $soundName = GunSounds::SniperRifleCocking()->getText();
+        $packet = new PlaySoundPacket();
+        $packet->x = $this->owner->x;
+        $packet->y = $this->owner->y;
+        $packet->z = $this->owner->z;
+        $packet->volume = 3;
+        $packet->pitch = 2;
+        $packet->soundName = $soundName;
+        $this->owner->sendDataPacket($packet);
     }
 }

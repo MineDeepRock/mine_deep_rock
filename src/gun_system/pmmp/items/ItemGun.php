@@ -32,7 +32,7 @@ abstract class ItemGun extends Tool
     }
 
     public function playShootingSound(): void {
-        $soundName = GunSounds::shootSoundFromGunType($this->gun->getType())->getTypeText();
+        $soundName = GunSounds::shootSoundFromGunType($this->gun->getType())->getText();
         $packet = new PlaySoundPacket();
         $packet->x = $this->owner->x;
         $packet->y = $this->owner->y;
@@ -42,6 +42,31 @@ abstract class ItemGun extends Tool
         $packet->soundName = $soundName;
         $this->owner->sendDataPacket($packet);
     }
+
+    public function playStartReloadingSound(): void {
+        $soundName = GunSounds::startReloadingSoundFromGunType($this->gun->getType())->getText();
+        $packet = new PlaySoundPacket();
+        $packet->x = $this->owner->x;
+        $packet->y = $this->owner->y;
+        $packet->z = $this->owner->z;
+        $packet->volume = 3;
+        $packet->pitch = 2;
+        $packet->soundName = $soundName;
+        $this->owner->sendDataPacket($packet);
+    }
+
+    public function playEndReloadingSound(): void {
+        $soundName = GunSounds::endReloadingSoundFromGunType($this->gun->getType())->getText();
+        $packet = new PlaySoundPacket();
+        $packet->x = $this->owner->x;
+        $packet->y = $this->owner->y;
+        $packet->z = $this->owner->z;
+        $packet->volume = 3;
+        $packet->pitch = 2;
+        $packet->soundName = $soundName;
+        $this->owner->sendDataPacket($packet);
+    }
+
 
     public function onReleaseUsing(Player $player): bool {
         $this->gun->cancelShooting();
@@ -123,10 +148,12 @@ abstract class ItemGun extends Tool
             $this->owner->sendPopup("残弾がありません");
 
         } else {
+            $this->playStartReloadingSound();
             $this->owner->sendPopup("リロード");
             $this->gun->reload($remainingBullet, function ($consumedBullets)  {
                 $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
             }, function () {
+                $this->playEndReloadingSound();
                 $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             });
         }

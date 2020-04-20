@@ -8,10 +8,10 @@ use gun_system\models\GunType;
 
 class GunSounds
 {
-    private $type;
+    private $text;
 
-    public function __construct($type) {
-        $this->type = $type;
+    public function __construct($text) {
+        $this->text = $text;
     }
 
     public static function HandGunShoot(): GunSounds {
@@ -38,8 +38,68 @@ class GunSounds
         return new GunSounds("gun.smg.shoot");
     }
 
+    public static function HandGunStartReloading(): GunSounds {
+        return new GunSounds("gun.handgun.reload.start");
+    }
 
-    public static function shootSoundFromGunType(GunType $gunType) {
+    public static function AssaultRifleStartReloading(): GunSounds {
+        return new GunSounds("gun.assaultrifle.reload.start");
+    }
+
+    public static function LMGStartReloading(): GunSounds {
+        return new GunSounds("gun.lmg.reload.start");
+    }
+
+    public static function ShotgunStartReloading(): GunSounds {
+        return new GunSounds("gun.shotgun.reload.start");
+    }
+
+    public static function SniperRifleStartReloading(): GunSounds {
+        return new GunSounds("gun.sniperrifle.reload.start");
+    }
+
+    public static function SMGStartReloading(): GunSounds {
+        return new GunSounds("gun.smg.reload.start");
+    }
+
+    public static function HandGunEndReloading(): GunSounds {
+        return new GunSounds("gun.handgun.reload.end");
+    }
+
+    public static function AssaultRifleEndReloading(): GunSounds {
+        return new GunSounds("gun.assaultrifle.reload.end");
+    }
+
+    public static function LMGEndReloading(): GunSounds {
+        return new GunSounds("gun.lmg.reload.end");
+    }
+
+    public static function ShotgunEndReloading(): GunSounds {
+        return new GunSounds("gun.shotgun.reload.end");
+    }
+
+    public static function SniperRifleEndReloading(): GunSounds {
+        return new GunSounds("gun.sniperrifle.reload.end");
+    }
+
+    public static function SMGEndReloading(): GunSounds {
+        return new GunSounds("gun.smg.reload.end");
+    }
+
+    public static function ShotgunPumpAction(): GunSounds {
+        return new GunSounds("gun.shotgun.pumpaction");
+    }
+
+    public static function SniperRifleCocking(): GunSounds {
+        return new GunSounds("gun.sniperrifle.cocking");
+    }
+
+    //TODO:実装
+    public static function outOfBullet(): GunSounds {
+        return new GunSounds("gun.outofbullet");
+    }
+
+    public static function shootSoundFromGunType(GunType $gunType): GunSounds {
         switch ($gunType->getTypeText()) {
             case "HandGun":
                 return self::HandGunShoot();
@@ -56,10 +116,44 @@ class GunSounds
         }
     }
 
+    public static function startReloadingSoundFromGunType(GunType $gunType): GunSounds {
+        switch ($gunType->getTypeText()) {
+            case "HandGun":
+                return self::HandGunStartReloading();
+            case "AssaultRifle":
+                return self::AssaultRifleStartReloading();
+            case "LMG":
+                return self::LMGStartReloading();
+            case "Shotgun":
+                return self::ShotgunStartReloading();
+            case "SniperRifle":
+                return self::SniperRifleStartReloading();
+            case "SMG":
+                return self::SMGStartReloading();
+        }
+    }
+
+    public static function endReloadingSoundFromGunType(GunType $gunType): GunSounds {
+        switch ($gunType->getTypeText()) {
+            case "HandGun":
+                return self::HandGunEndReloading();
+            case "AssaultRifle":
+                return self::AssaultRifleEndReloading();
+            case "LMG":
+                return self::LMGEndReloading();
+            case "Shotgun":
+                return self::ShotgunEndReloading();
+            case "SniperRifle":
+                return self::SniperRifleEndReloading();
+            case "SMG":
+                return self::SMGEndReloading();
+        }
+    }
+
     /**
      * @return mixed
      */
-    public function getTypeText() {
-        return $this->type;
+    public function getText() {
+        return $this->text;
     }
 }
