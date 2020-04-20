@@ -132,6 +132,7 @@ abstract class Gun
     }
 
     protected function shootOnce(Closure $onSucceed): void {
+
         if (!$this->isShooting) {
             $this->lastShootDate = microtime(true);
             $this->currentBullet--;
@@ -146,14 +147,24 @@ abstract class Gun
         if ($this->delayShootingTaskHandler !== null)
             $this->delayShootingTaskHandler->cancel();
 
-        $this->shootingTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
-            $this->lastShootDate = microtime(true);
-            $this->currentBullet--;
-            $onSucceed($this->scheduler);
-            if ($this->currentBullet === 0)
-                $this->cancelShooting();
-        }), 20 * (1 / $this->rate->getPerSecond()));
-        //TODO:ここDelay入れれば持ち替え時間実装できる
+        if (GunType::LMG()->equal($this->type)) {
+            //発射までにヨッコラショする時間ディレイ！！
+            $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
+                $this->lastShootDate = microtime(true);
+                $this->currentBullet--;
+                $onSucceed($this->scheduler);
+                if ($this->currentBullet === 0)
+                    $this->cancelShooting();
+            }),20 * 0.5 ,20 * (1 / $this->rate->getPerSecond()));
+        } else {
+            $this->shootingTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
+                $this->lastShootDate = microtime(true);
+                $this->currentBullet--;
+                $onSucceed($this->scheduler);
+                if ($this->currentBullet === 0)
+                    $this->cancelShooting();
+            }), 20 * (1 / $this->rate->getPerSecond()));
+        }
     }
 
     public function reload(int $remainingBullet, Closure $onStarted, Closure $onFinished): void {
