@@ -9,26 +9,14 @@ use pocketmine\Player;
 
 class ItemLightMachineGun extends ItemGun
 {
-    public function __construct(string $name, LightMachineGun $gun, Player $player) {
-        parent::__construct($name, $gun, $player);
-    }
-
-    public function tryShootingOnce(?Player $player): bool {
-        if ($this->gun->onOverheat()) {
-            $player->sendPopup("オーバーヒート");
-            $this->gun->doCoolDown();
-            return false;
-        }
-
-        return parent::tryShootingOnce($player);
-    }
-
-    public function tryShooting(?Player $player): bool {
-        if ($this->gun->onOverheat()) {
-            $player->sendPopup("オーバーヒート");
-            $this->gun->doCoolDown();
-            return false;
-        }
-        return parent::tryShooting($player);
+    public function __construct(string $name, LightMachineGun $gun, Player $owner) {
+        parent::__construct($name, $gun, $owner);
+        $gun->setOnOverheated(function() use ($owner){
+            //TODO:バグ何故か表示されない
+            $owner->sendPopup("オーバーヒート");
+        });
+        $gun->setOnFinishOverheat(function() use ($owner){
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+        });
     }
 }

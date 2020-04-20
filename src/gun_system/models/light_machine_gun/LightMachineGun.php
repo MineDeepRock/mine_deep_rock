@@ -19,63 +19,88 @@ use pocketmine\scheduler\TaskScheduler;
 class LightMachineGun extends Gun
 {
     private $overheatGauge;
-    private $onOverheat;
+    private $isOverheat;
     private $overheatRate;
+
+    private $onOverheated;
+    private $onFinishOverheat;
 
     public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, 0.0, $reloadDuration, $effectiveRange, $precision, $scheduler);
-
         $this->overheatGauge = new OverheatGauge(function () {
             $this->cancelShooting();
-            $this->onOverheat = true;
+            $this->isOverheat = true;
+            ($this->onOverheated)();
 
-            $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick): void {
-                $this->onOverheat = false;
+            $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
+                $this->isOverheat = false;
+                ($this->onFinishOverheat)();
+                $this->overheatGauge->reset();
             }), 20 * 2);
+
         }, function () {
-            $this->onOverheat = false;
+            $this->isOverheat = false;
         });
 
-        $this->onOverheat = false;
+        $this->isOverheat = false;
         $this->overheatRate = $overheatRate;
 
         if ($this->overheatRate->getPerShoot() !== 0) {
             $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick): void {
-                $this->overheatGauge->down($this->overheatRate);
+                $this->overheatGauge->down(34);
             }), 20 * 1);
         }
     }
 
+    public function tryShootingOnce(Closure $onSucceed): bool {
+        if ($this->isOverheat)
+            return false;
+
+        $func = function () use ($onSucceed) {
+            $this->overheatGauge->raise($this->overheatRate);
+            $onSucceed($this->scheduler);
+        };
+        return parent::tryShootingOnce($func);
+    }
+
+    public function tryShooting(Closure $onSucceed): bool {
+        if ($this->isOverheat)
+            return false;
+
+        $func = function () use ($onSucceed) {
+            $this->overheatGauge->raise($this->overheatRate);
+            $onSucceed($this->scheduler);
+        };
+
+        return parent::tryShooting($func);
+    }
+
     /**
-     * @return OverheatGauge
+     * @param mixed $onFinishOverheat
      */
-    public function getOverheatGauge(): OverheatGauge {
-        return $this->overheatGauge;
+    public function setOnFinishOverheat($onFinishOverheat): void {
+        $this->onFinishOverheat = $onFinishOverheat;
     }
 
-    public function doCoolDown(): void {
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
-            $this->overheatGauge->reset();
-        }), 20 * 1);
-    }
-
-    public function shootOnce(Closure $onSucceed) {
+    protected function shootOnce(Closure $onSucceed): void {
         if ($this->overheatRate->getPerShoot() !== 0)
             $this->overheatGauge->raise($this->overheatRate);
+
         parent::shootOnce($onSucceed);
     }
 
-    public function shoot(Closure $onSucceed): void {
+    protected function shoot(Closure $onSucceed): void {
         if ($this->overheatRate->getPerShoot() !== 0)
             $this->overheatGauge->raise($this->overheatRate);
+
         parent::shoot($onSucceed);
     }
 
     /**
-     * @return bool
+     * @param Closure $onOverheated
      */
-    public function onOverheat(): bool {
-        return $this->onOverheat;
+    public function setOnOverheated(Closure $onOverheated): void {
+        $this->onOverheated = $onOverheated;
     }
 }
 
@@ -115,9 +140,10 @@ class OverheatGauge
         }
     }
 
-    public function down(OverheatRate $value): void {
-        if ($this->gauge !== 0)
-            $this->gauge -= $value->getPerShoot();
+    public function down(int $value): void {
+        $this->gauge -= $value;
+        if ($this->gauge < 0)
+            $this->gauge = 0;
     }
 
     public function reset(): void {

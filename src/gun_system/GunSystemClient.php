@@ -14,24 +14,24 @@ use pocketmine\Player;
 
 class GunSystemClient extends Client
 {
-    public function tryShootingOnce(Item $item, Player $player): void {
+    public function tryShootingOnce(Item $item): void {
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            $item->tryShootingOnce($player);
+            $item->tryShootingOnce();
         }
     }
 
-    public function tryShooting(Item $item, Player $player): void {
+    public function tryShooting(Item $item): void {
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
             if ($item instanceof ItemSniperRifle) {
-                $item->aim($player);
+                $item->aim();
             } else {
-                $item->tryShooting($player);
+                $item->tryShooting();
             }
         }
     }
 
-    public function tryReloading(Item $item, Player $player): void {
-        $item->reload($player);
+    public function tryReloading(Item $item): void {
+        $item->reload();
     }
 
     public function sendDamageByShooting(?Player $attacker, Entity $entity) {

@@ -75,7 +75,7 @@ class Main extends PluginBase implements Listener
             if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
                 $player = $event->getPlayer();
                 $item = $event->getPlayer()->getInventory()->getItemInHand();
-                $this->gunSystemClient->tryShootingOnce($item, $player, $this->getScheduler());
+                $this->gunSystemClient->tryShootingOnce($item, $this->getScheduler());
             }
         }
     }
@@ -85,7 +85,7 @@ class Main extends PluginBase implements Listener
         if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR])) {
             $player = $event->getPlayer();
             $item = $event->getItem();
-            $this->gunSystemClient->tryShooting($item, $player);
+            $this->gunSystemClient->tryShooting($item);
         }
     }
 
@@ -108,7 +108,7 @@ class Main extends PluginBase implements Listener
             if ($inventory instanceof PlayerInventory) {
                 $item = $inventory->getItemInHand();
                 if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-                    $this->gunSystemClient->tryReloading($item, $player);
+                    $this->gunSystemClient->tryReloading($item);
                     $event->setCancelled();
                 }
             }
