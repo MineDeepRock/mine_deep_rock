@@ -12,7 +12,13 @@ use pocketmine\Player;
 
 class ItemShotGun extends ItemGun
 {
-    public function __construct(string $name, Shotgun $gun, Player $owner) { parent::__construct($name, $gun, $owner); }
+    public function __construct(string $name, Shotgun $gun, Player $owner) {
+        parent::__construct($name, $gun, $owner);
+
+        $gun->setWhenEndCoolTime(function () {
+            $this->playPumpActionSound();
+        });
+    }
 
     protected function shootOnce(): void {
         $this->gun->tryShootingOnce(function ($scheduler) {
@@ -37,7 +43,6 @@ class ItemShotGun extends ItemGun
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
             $this->playShootingSound();
-            $this->playPumpActionSound();
         });
     }
 
@@ -47,7 +52,7 @@ class ItemShotGun extends ItemGun
         $packet->x = $this->owner->x;
         $packet->y = $this->owner->y;
         $packet->z = $this->owner->z;
-        $packet->volume = 3;
+        $packet->volume = 5;
         $packet->pitch = 2;
         $packet->soundName = $soundName;
         $this->owner->sendDataPacket($packet);

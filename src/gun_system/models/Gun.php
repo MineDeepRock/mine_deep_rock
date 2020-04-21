@@ -29,6 +29,8 @@ abstract class Gun
 
     private $isShooting;
 
+    private $whenEndCoolTime;
+
     //TODO:
     //非同期処理のためにある。なくしたい。
     protected $scheduler;
@@ -83,8 +85,10 @@ abstract class Gun
 
     public function ontoCoolTime(): void {
         $this->onCoolTime = true;
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function () {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick):void {
             $this->onCoolTime = false;
+            if ($this->whenEndCoolTime !== null)
+                ($this->whenEndCoolTime)();
         }), 20 * 1 / $this->rate->getPerSecond());
     }
 
@@ -259,6 +263,13 @@ abstract class Gun
      */
     public function getReloadDuration(): ReloadDuration {
         return $this->reloadDuration;
+    }
+
+    /**
+     * @param Closure $whenEndCoolTime
+     */
+    public function setWhenEndCoolTime(Closure $whenEndCoolTime): void {
+        $this->whenEndCoolTime = $whenEndCoolTime;
     }
 }
 

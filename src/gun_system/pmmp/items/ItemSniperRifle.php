@@ -11,7 +11,13 @@ use pocketmine\Player;
 
 class ItemSniperRifle extends ItemGun
 {
-    public function __construct(string $name, SniperRifle $gun, Player $owner) { parent::__construct($name, $gun, $owner); }
+    public function __construct(string $name, SniperRifle $gun, Player $owner) {
+        parent::__construct($name, $gun, $owner);
+
+        $gun->setWhenEndCoolTime(function () {
+            $this->playCockingSound();
+        });
+    }
 
     public function onReleaseUsing(Player $player): bool {
         $this->tryShootingOnce();
@@ -30,7 +36,6 @@ class ItemSniperRifle extends ItemGun
             return false;
         }
 
-        $this->playCockingSound();
         return true;
     }
 
@@ -40,7 +45,7 @@ class ItemSniperRifle extends ItemGun
         $packet->x = $this->owner->x;
         $packet->y = $this->owner->y;
         $packet->z = $this->owner->z;
-        $packet->volume = 3;
+        $packet->volume = 6;
         $packet->pitch = 2;
         $packet->soundName = $soundName;
         $this->owner->sendDataPacket($packet);
