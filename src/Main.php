@@ -5,6 +5,7 @@ use gun_system\models\BulletId;
 use gun_system\pmmp\command\GunCommand;
 use gun_system\pmmp\items\bullet\ItemAssaultRifleBullet;
 use gun_system\pmmp\items\bullet\ItemHandGunBullet;
+use gun_system\pmmp\items\bullet\ItemLightMachineGunBullet;
 use gun_system\pmmp\items\bullet\ItemShotgunBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
@@ -62,6 +63,9 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new ItemSubMachineGunBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::SMG));
+
+        ItemFactory::registerItem(new ItemLightMachineGunBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::LMG));
 
         Entity::registerEntity(\gun_system\pmmp\entity\Egg::class, true, ['Egg', 'minecraft:egg']);
     }
