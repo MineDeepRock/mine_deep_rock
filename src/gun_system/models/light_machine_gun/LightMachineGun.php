@@ -13,6 +13,7 @@ use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
 use gun_system\models\ReloadDuration;
+use gun_system\models\Response;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -52,9 +53,9 @@ class LightMachineGun extends Gun
         }
     }
 
-    public function tryShootingOnce(Closure $onSucceed): bool {
+    public function tryShootingOnce(Closure $onSucceed): Response {
         if ($this->isOverheat)
-            return false;
+            return new Response(false,"オーバーヒート中");
 
         $func = function () use ($onSucceed) {
             $this->overheatGauge->raise($this->overheatRate);
@@ -63,9 +64,9 @@ class LightMachineGun extends Gun
         return parent::tryShootingOnce($func);
     }
 
-    public function tryShooting(Closure $onSucceed): bool {
+    public function tryShooting(Closure $onSucceed): Response {
         if ($this->isOverheat)
-            return false;
+            return new Response(false,"オーバーヒート中");
 
         $func = function () use ($onSucceed) {
             $this->overheatGauge->raise($this->overheatRate);

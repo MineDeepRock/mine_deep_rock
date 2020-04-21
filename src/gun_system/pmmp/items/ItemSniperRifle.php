@@ -12,30 +12,20 @@ use pocketmine\Player;
 class ItemSniperRifle extends ItemGun
 {
     public function __construct(string $name, SniperRifle $gun, Player $owner) {
-        parent::__construct($name, $gun, $owner);
-
-        $gun->setWhenEndCoolTime(function () {
+        $gun->setWhenBecomeReady(function(){
             $this->playCockingSound();
         });
+
+        parent::__construct($name, $gun, $owner);
     }
 
     public function onReleaseUsing(Player $player): bool {
-        $this->tryShootingOnce();
+        $this->shootOnce();
 
         return true;
     }
 
     public function aim(): bool {
-        if ($this->gun->isReloading()) {
-            $this->owner->sendPopup("リロード中");
-            return false;
-        }
-
-        if ($this->gun->getCurrentBullet() === 0) {
-            $this->reload();
-            return false;
-        }
-
         return true;
     }
 

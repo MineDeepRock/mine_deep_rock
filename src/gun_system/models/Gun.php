@@ -24,12 +24,11 @@ abstract class Gun
 
     private $damageCurve;
 
-    private $onReloading;
-    private $onCoolTime;
+    protected $onReloading;
+    protected $onCoolTime;
 
     private $isShooting;
-
-    private $whenEndCoolTime;
+    private $whenBecomeReady;
 
     //TODO:
     //非同期処理のためにある。なくしたい。
@@ -79,16 +78,13 @@ abstract class Gun
         }
     }
 
-    public function isReloading(): bool {
-        return $this->onReloading;
-    }
-
     public function ontoCoolTime(): void {
         $this->onCoolTime = true;
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick):void {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
+            if ($this->whenBecomeReady !== null)
+                ($this->whenBecomeReady)();
+
             $this->onCoolTime = false;
-            if ($this->whenEndCoolTime !== null)
-                ($this->whenEndCoolTime)();
         }), 20 * 1 / $this->rate->getPerSecond());
     }
 
@@ -106,41 +102,41 @@ abstract class Gun
         }), 20 * $second);
     }
 
-    public function tryShootingOnce(Closure $onSucceed): bool {
+    public function tryShootingOnce(Closure $onSucceed): Response {
         if ($this->currentBullet === 0)
-            return false;
+            return new Response(false, "マガジンに弾がありません");
         if ($this->onReloading)
-            return false;
+            return new Response(false, "リロード中");
         if ($this->onCoolTime)
-            return false;
+            return new Response(false);
 
         $this->shootOnce($onSucceed);
-        return true;
-    }
-
-    public function tryShooting(Closure $onSucceed): bool {
-        if ($this->currentBullet === 0)
-            return false;
-        if ($this->onReloading)
-            return false;
-
-        if ($this->onCoolTime) {
-            //TODO: 1/rate - (now-lastShootDate)
-            $this->delayShooting(1 / $this->rate->getPerSecond(), $onSucceed);
-            return true;
-        }
-
-        $this->shoot($onSucceed);
-        return true;
+        return new Response(false);
     }
 
     protected function shootOnce(Closure $onSucceed): void {
         $this->ontoCoolTime();
-
         if (!$this->isShooting) {
             $this->currentBullet--;
             $onSucceed($this->scheduler);
         }
+    }
+
+    public function tryShooting(Closure $onSucceed): Response {
+        if ($this->currentBullet === 0)
+            return new Response(false, "マガジンに弾がありません");
+
+        if ($this->onReloading)
+            return new Response(false, "リロード中");
+
+        if ($this->onCoolTime) {
+            //TODO: 1/rate - (now-lastShootDate)
+            $this->delayShooting(1 / $this->rate->getPerSecond(), $onSucceed);
+            return new Response(true);
+        }
+
+        $this->shoot($onSucceed);
+        return new Response(true);
     }
 
     protected function shoot(Closure $onSucceed): void {
@@ -169,16 +165,30 @@ abstract class Gun
         }
     }
 
-    public function reload(int $remainingBullet, Closure $onStarted, Closure $onFinished): void {
-        //アイテム消費が先
-        $onStarted($this->bulletCapacity - $this->currentBullet);
+    public function tryReload(int $inventoryBullets, Closure $onStarted, Closure $onFinished): Response {
+        if ($inventoryBullets === $this->bulletCapacity)
+            return new Response(false, $this->currentBullet . "/" . $this->bulletCapacity);
+
+        if ($this->onReloading)
+            return new Response(false, "リロード中");
+
+        if ($inventoryBullets === 0)
+            return new Response(false, "残弾がありません");
 
         $this->onReloading = true;
+        $consumedBullets = $this->bulletCapacity - $this->currentBullet;
+        $onStarted($consumedBullets);
+        $this->reload($inventoryBullets, $onFinished);
+
+        return new Response(true);
+    }
+
+    protected function reload(int $inventoryBullets, Closure $onFinished): void {
         $this->scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($remainingBullet, $onFinished): void {
-                //アイテム消費されたら、リロードがはじまる
-                if ($this->bulletCapacity > $remainingBullet) {
-                    $this->currentBullet = $remainingBullet;
+            function (int $currentTick) use ($inventoryBullets, $onFinished): void {
+                $empty = $this->bulletCapacity - $this->currentBullet;
+                if ($empty > $inventoryBullets) {
+                    $this->currentBullet += $inventoryBullets;
                 } else {
                     $this->currentBullet = $this->bulletCapacity;
                 }
@@ -266,10 +276,35 @@ abstract class Gun
     }
 
     /**
-     * @param Closure $whenEndCoolTime
+     * @param mixed $whenBecomeReady
      */
-    public function setWhenEndCoolTime(Closure $whenEndCoolTime): void {
-        $this->whenEndCoolTime = $whenEndCoolTime;
+    public function setWhenBecomeReady($whenBecomeReady): void {
+        $this->whenBecomeReady = $whenBecomeReady;
+    }
+}
+
+class Response
+{
+    private $isSuccess;
+    private $message;
+
+    public function __construct(bool $isSuccess, string $message = "") {
+        $this->isSuccess = $isSuccess;
+        $this->message = $message;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuccess(): bool {
+        return $this->isSuccess;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string {
+        return $this->message;
     }
 }
 

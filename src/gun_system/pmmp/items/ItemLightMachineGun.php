@@ -13,18 +13,18 @@ class ItemLightMachineGun extends ItemGun
 {
     public function __construct(string $name, LightMachineGun $gun, Player $owner) {
         parent::__construct($name, $gun, $owner);
-        $gun->setOnOverheated(function() use ($owner){
+        $gun->setOnOverheated(function () use ($owner) {
             $this->playOverheatSound();
             //TODO:バグ何故か表示されない
             $owner->sendPopup("オーバーヒート");
         });
-        $gun->setOnFinishOverheat(function() use ($owner){
+        $gun->setOnFinishOverheat(function () use ($owner) {
             $this->playReadySound();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
     }
 
-    protected function shoot(): void {
+    public function shoot(): void {
         $this->playReadySound();
 
         parent::shoot();

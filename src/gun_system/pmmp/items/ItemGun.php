@@ -73,55 +73,28 @@ abstract class ItemGun extends Tool
         return true;
     }
 
-    public function tryShootingOnce() {
-        if ($this->gun->isReloading()) {
-            $this->owner->sendPopup("リロード中");
-            return false;
-        }
-
-        if ($this->gun->getCurrentBullet() === 0) {
-            $this->owner->sendPopup("リロード");//TODO:ここじゃない
-            $this->reload();
-            return false;
-        }
-
-        $this->shootOnce();
-
-        return true;
-    }
-
-    public function tryShooting(): bool {
-        if ($this->gun->isReloading()) {
-            $this->owner->sendPopup("リロード中");
-            return false;
-        }
-
-        if ($this->gun->getCurrentBullet() === 0) {
-            $this->reload();
-            return false;
-        }
-
-        $this->shoot();
-
-        return true;
-    }
-
-    protected function shoot(): void {
-        $this->gun->tryShooting(function ($scheduler) {
+    public function shoot(): void {
+        $result = $this->gun->tryShooting(function ($scheduler) {
             $this->playShootingSound();
             EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
+
+        if (!$result->isSuccess())
+            $this->owner->sendPopup($result->getMessage());
     }
 
-    protected function shootOnce(): void {
-        $this->gun->tryShootingOnce(function ($scheduler)  {
+    public function shootOnce(): void {
+        $result = $this->gun->tryShootingOnce(function ($scheduler) {
             $this->playShootingSound();
             EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
+
+        if (!$result->isSuccess())
+            $this->owner->sendPopup($result->getMessage());
     }
 
     public function doReaction(): void {
@@ -139,37 +112,30 @@ abstract class ItemGun extends Tool
     }
 
     public function reload() {
-        $remainingBullet = $this->getBulletAmount();
+        $inventoryBullets = $this->getBulletAmount();
 
-        if ($this->gun->getCurrentBullet() === $this->gun->getBulletCapacity()) {
-            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-
-        } else if ($remainingBullet === 0) {
-            $this->owner->sendPopup("残弾がありません");
-
-        } else {
+        $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
             $this->playStartReloadingSound();
             $this->owner->sendPopup("リロード");
-            $this->gun->reload($remainingBullet, function ($consumedBullets)  {
-                $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
-            }, function () {
-                $this->playEndReloadingSound();
-                $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-            });
-        }
+            $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
+        }, function () {
+            $this->playEndReloadingSound();
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getBulletCapacity());
+        });
+
+        if (!$result->isSuccess())
+            $this->owner->sendPopup($result->getMessage());
     }
+
 
     protected function getBullets(): array {
         $inventoryContents = $this->owner->getInventory()->getContents();
 
         $bullets = array_filter($inventoryContents, function ($item) {
-            if (is_subclass_of($item, "gun_system\pmmp\items\ItemBullet")) {
+            if (is_subclass_of($item, "gun_system\pmmp\items\ItemBullet"))
                 return $item->getBullet()->getSupportType()->equal($this->gun->getType());
-
-            }
             return false;
         });
-
         return $bullets;
     }
 

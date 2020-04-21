@@ -16,7 +16,7 @@ class GunSystemClient extends Client
 {
     public function tryShootingOnce(Item $item): void {
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            $item->tryShootingOnce();
+            $item->shootOnce();
         }
     }
 
@@ -25,13 +25,15 @@ class GunSystemClient extends Client
             if ($item instanceof ItemSniperRifle) {
                 $item->aim();
             } else {
-                $item->tryShooting();
+                $item->shoot();
             }
         }
     }
 
     public function tryReloading(Item $item): void {
-        $item->reload();
+        if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+            $item->reload();
+        }
     }
 
     public function sendDamageByShooting(?Player $attacker, Entity $entity) {

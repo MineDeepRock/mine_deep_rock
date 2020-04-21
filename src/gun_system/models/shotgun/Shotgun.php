@@ -13,15 +13,48 @@ use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
 use gun_system\models\ReloadDuration;
+use gun_system\models\Response;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
 abstract class Shotgun extends Gun
 {
     private $pellets;
+    private $reloadTaskTaskHandler;
 
     public function __construct(int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->pellets = $pellets;
-        parent::__construct(GunType::Shotgun(),$bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $effectiveRange, $precision, $scheduler);
+        parent::__construct(GunType::Shotgun(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $effectiveRange, $precision, $scheduler);
+    }
+
+    public function cancelReloading() {
+        $this->onReloading = false;
+        if ($this->reloadTaskTaskHandler !== null)
+            $this->reloadTaskTaskHandler->cancel();
+    }
+
+    public function tryShooting(Closure $onSucceed): Response {
+        $this->cancelReloading();
+        return parent::tryShooting($onSucceed);
+    }
+
+    public function tryShootingOnce(Closure $onSucceed): Response {
+        $this->cancelReloading();
+        return parent::tryShootingOnce($onSucceed);
+    }
+
+
+    protected function reload(int $remainingBullet,Closure $onPushed): void {
+        $this->onReloading = true;
+
+        $this->reloadTaskTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(
+            function (int $currentTick) use ($remainingBullet,$onPushed): void {
+                $this->currentBullet++;
+                $onPushed();
+                if ($this->currentBullet === $this->getBulletCapacity())
+                    $this->cancelReloading();
+            }
+        ), 20 * 1 * $this->getReloadDuration()->getSecond());
     }
 
     /**
