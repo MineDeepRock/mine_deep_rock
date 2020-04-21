@@ -20,6 +20,10 @@ class AttachmentType
         return new AttachmentType("Scope");
     }
 
+    public static function Bullet():AttachmentType {
+        return new AttachmentType("Bullet");
+    }
+
     public static function Magazine():AttachmentType {
         return new AttachmentType("Magazine");
     }

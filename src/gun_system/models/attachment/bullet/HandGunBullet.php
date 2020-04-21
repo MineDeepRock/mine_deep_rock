@@ -8,6 +8,6 @@ use gun_system\models\GunType;
 
 class HandGunBullet extends Bullet
 {
-    public function __construct() { parent::__construct(GunType::HandGun()); }
+    public function __construct() { parent::__construct("HandGunBullet",GunType::HandGun()); }
 
 }

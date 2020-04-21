@@ -4,15 +4,16 @@
 namespace gun_system\models\attachment\bullet;
 
 
+use gun_system\models\attachment\Attachment;
+use gun_system\models\attachment\AttachmentType;
 use gun_system\models\GunType;
-use ValueObject;
 
-abstract class Bullet extends ValueObject
+abstract class Bullet extends Attachment
 {
     private $supportType;
 
-    public function __construct(GunType $supportType) {
-        $this->supportType = $supportType;
+    public function __construct(string $name, GunType $supportGunType) {
+        parent::__construct($name, AttachmentType::Bullet(), $supportGunType);
     }
 
     /**

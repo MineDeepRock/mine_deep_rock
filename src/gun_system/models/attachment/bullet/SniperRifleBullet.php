@@ -8,5 +8,5 @@ use gun_system\models\GunType;
 
 class SniperRifleBullet extends Bullet
 {
-    public function __construct() { parent::__construct(GunType::SniperRifle()); }
+    public function __construct() { parent::__construct("SniperRifleBullet",GunType::SniperRifle()); }
 }
