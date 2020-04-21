@@ -4,7 +4,6 @@
 namespace gun_system\models\light_machine_gun;
 
 
-use Closure;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
