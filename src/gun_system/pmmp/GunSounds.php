@@ -99,6 +99,14 @@ class GunSounds
         return new GunSounds("gun.outofbullet");
     }
 
+    public static function LMGReady(): GunSounds {
+        return new GunSounds("gun.lmg.ready");
+    }
+
+    public static function LMGOverheat(): GunSounds {
+        return new GunSounds("gun.lmg.overheat");
+    }
+
     public static function shootSoundFromGunType(GunType $gunType): GunSounds {
         switch ($gunType->getTypeText()) {
             case "HandGun":
