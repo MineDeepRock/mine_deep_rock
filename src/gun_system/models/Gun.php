@@ -123,11 +123,11 @@ abstract class Gun
     }
 
     public function tryShooting(Closure $onSucceed): Response {
-        if ($this->currentBullet === 0)
-            return new Response(false, "マガジンに弾がありません");
-
         if ($this->onReloading)
             return new Response(false, "リロード中");
+
+        if ($this->currentBullet === 0)
+            return new Response(false, "マガジンに弾がありません");
 
         if ($this->onCoolTime) {
             //TODO: 1/rate - (now-lastShootDate)
@@ -166,7 +166,7 @@ abstract class Gun
     }
 
     public function tryReload(int $inventoryBullets, Closure $onStarted, Closure $onFinished): Response {
-        if ($inventoryBullets === $this->bulletCapacity)
+        if ($this->currentBullet === $this->bulletCapacity)
             return new Response(false, $this->currentBullet . "/" . $this->bulletCapacity);
 
         if ($this->onReloading)
