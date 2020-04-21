@@ -36,7 +36,7 @@ class ItemLightMachineGun extends ItemGun
         $packet->x = $this->owner->x;
         $packet->y = $this->owner->y;
         $packet->z = $this->owner->z;
-        $packet->volume = 10;
+        $packet->volume = 30;
         $packet->pitch = 2;
         $packet->soundName = $soundName;
         $this->owner->sendDataPacket($packet);
