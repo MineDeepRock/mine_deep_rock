@@ -1,11 +1,10 @@
 <?php
 
 
-namespace gun_system\models\bullet;
+namespace gun_system\models\attachment\bullet;
 
 
 
-use gun_system\models\bullet\Bullet;
 use gun_system\models\GunType;
 
 class AssaultRifleBullet extends Bullet

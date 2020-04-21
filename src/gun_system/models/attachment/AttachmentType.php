@@ -20,7 +20,11 @@ class AttachmentType
         return new AttachmentType("Scope");
     }
 
-    public static function Barrel():AttachmentType {
-        return new AttachmentType("Barrel");
+    public static function Magazine():AttachmentType {
+        return new AttachmentType("Magazine");
+    }
+
+    public static function Muzzle():AttachmentType {
+        return new AttachmentType("Muzzle");
     }
 }

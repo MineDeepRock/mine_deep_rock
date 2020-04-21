@@ -4,9 +4,8 @@
 namespace gun_system\pmmp\items\bullet;
 
 
-use gun_system\models\bullet\AssaultRifleBullet;
+use gun_system\models\attachment\bullet\AssaultRifleBullet;
 use gun_system\models\BulletId;
-use gun_system\pmmp\items\ItemBullet;
 
 class ItemAssaultRifleBullet extends ItemBullet
 {

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace gun_system\pmmp\items;
+namespace gun_system\pmmp\items\bullet;
 
 
-use gun_system\models\bullet\Bullet;
+use gun_system\models\attachment\bullet\Bullet;
 use pocketmine\item\Item;
 
 abstract class ItemBullet extends Item

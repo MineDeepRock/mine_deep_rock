@@ -4,9 +4,8 @@
 namespace gun_system\pmmp\items\bullet;
 
 
-use gun_system\models\bullet\HandGunBullet;
+use gun_system\models\attachment\bullet\HandGunBullet;
 use gun_system\models\BulletId;
-use gun_system\pmmp\items\ItemBullet;
 
 class ItemHandGunBullet extends ItemBullet
 {
