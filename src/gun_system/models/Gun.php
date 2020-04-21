@@ -145,11 +145,12 @@ abstract class Gun
             $this->shootingTaskHandler->cancel();
         if ($this->delayShootingTaskHandler !== null)
             $this->delayShootingTaskHandler->cancel();
-        $this->ontoCoolTime();
 
         if (GunType::LMG()->equal($this->type)) {
             //発射までにヨッコラショする時間ディレイ！！
             $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
+                //TODO:あんまりよくない
+                $this->ontoCoolTime();
                 $this->currentBullet--;
                 $onSucceed($this->scheduler);
                 if ($this->currentBullet === 0)
@@ -157,6 +158,8 @@ abstract class Gun
             }), 20 * 0.5, 20 * (1 / $this->rate->getPerSecond()));
         } else {
             $this->shootingTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
+                //TODO:あんまりよくない
+                $this->ontoCoolTime();
                 $this->currentBullet--;
                 $onSucceed($this->scheduler);
                 if ($this->currentBullet === 0)
