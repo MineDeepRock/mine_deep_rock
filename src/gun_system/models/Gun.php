@@ -103,15 +103,15 @@ abstract class Gun
     }
 
     public function tryShootingOnce(Closure $onSucceed): Response {
-        if ($this->currentBullet === 0)
-            return new Response(false, "マガジンに弾がありません");
         if ($this->onReloading)
             return new Response(false, "リロード中");
+        if ($this->currentBullet === 0)
+            return new Response(false, "マガジンに弾がありません");
         if ($this->onCoolTime)
             return new Response(false);
 
         $this->shootOnce($onSucceed);
-        return new Response(false);
+        return new Response(true);
     }
 
     protected function shootOnce(Closure $onSucceed): void {
@@ -125,10 +125,8 @@ abstract class Gun
     public function tryShooting(Closure $onSucceed): Response {
         if ($this->onReloading)
             return new Response(false, "リロード中");
-
         if ($this->currentBullet === 0)
             return new Response(false, "マガジンに弾がありません");
-
         if ($this->onCoolTime) {
             //TODO: 1/rate - (now-lastShootDate)
             $this->delayShooting(1 / $this->rate->getPerSecond(), $onSucceed);
@@ -291,7 +289,7 @@ class Response
     private $isSuccess;
     private $message;
 
-    public function __construct(bool $isSuccess, string $message = "") {
+    public function __construct(bool $isSuccess, ?string $message = null) {
         $this->isSuccess = $isSuccess;
         $this->message = $message;
     }
