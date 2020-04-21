@@ -234,6 +234,34 @@ abstract class Gun
     public function getDamageCurve(): array {
         return $this->damageCurve;
     }
+
+    /**
+     * @return BulletDamage
+     */
+    public function getBulletDamage(): BulletDamage {
+        return $this->bulletDamage;
+    }
+
+    /**
+     * @return EffectiveRange
+     */
+    public function getEffectiveRange(): EffectiveRange {
+        return $this->effectiveRange;
+    }
+
+    /**
+     * @return GunRate
+     */
+    public function getRate(): GunRate {
+        return $this->rate;
+    }
+
+    /**
+     * @return ReloadDuration
+     */
+    public function getReloadDuration(): ReloadDuration {
+        return $this->reloadDuration;
+    }
 }
 
 
