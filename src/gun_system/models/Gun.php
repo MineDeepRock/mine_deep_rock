@@ -51,12 +51,15 @@ abstract class Gun
         $this->onReloading = false;
         $this->scheduler = $scheduler;
         $this->precision = $precision;
+        $this->initDamageCurve();
+    }
 
+    private function initDamageCurve(): void {
         $maxDamage = $this->bulletDamage->getMaxDamage();
         $minDamage = $this->bulletDamage->getMinDamage();
 
-        $effectiveRangeStart = $effectiveRange->getStart();
-        $effectiveRangeEnd = $effectiveRange->getEnd();
+        $effectiveRangeStart = $this->effectiveRange->getStart();
+        $effectiveRangeEnd = $this->effectiveRange->getEnd();
 
         $maxDamageRange = array_fill(0, $effectiveRangeEnd, $maxDamage);
         for ($i = 0; $i <= $maxDamage - $minDamage; ++$i)
