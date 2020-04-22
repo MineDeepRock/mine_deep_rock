@@ -12,7 +12,9 @@ use pocketmine\item\Egg;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\Level;
+use pocketmine\level\particle\CriticalParticle;
 use pocketmine\level\particle\ItemBreakParticle;
+use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
@@ -24,14 +26,14 @@ use pocketmine\scheduler\TaskScheduler;
 //TODO:場所ちがくね？
 class EntityBullet
 {
-    static function spawn(Player $player, float $speed, GunPrecision $precision, TaskScheduler $scheduler,$isArrow = false) {
+    static function spawn(Player $player, float $speed, GunPrecision $precision, TaskScheduler $scheduler, $isArrow = false) {
         $aimPos = $player->getDirectionVector();
-        $value = $player->isSneaking() ? $precision->getADS() : $precision->getHipShooting() ;
+        $value = $player->isSneaking() ? $precision->getADS() : $precision->getHipShooting();
 
         $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $player->x),
-                new DoubleTag("", $player->y + $player->getEyeHeight()),
+                new DoubleTag("", $player->y + $player->getEyeHeight() - 0.3),
                 new DoubleTag("", $player->z)
             ]),
             "Motion" => new ListTag("Motion", [
@@ -47,14 +49,28 @@ class EntityBullet
 
         $projectile = $isArrow ? Entity::createEntity("Arrow", $player->getLevel(), $nbt, $player) : Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
         $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8));
+
+        $handle = $scheduler->scheduleRepeatingTask(new ClosureTask(
+            function (int $currentTick) use ($projectile) : void {
+                if (!$projectile->isClosed()){
+                    $projectile->getLevel()->addParticle(new CriticalParticle(new Vector3(
+                        $projectile->getX(),
+                        $projectile->getY(),
+                        $projectile->getZ()
+                    ),1));
+                }
+            }
+        ), 2);
+
         //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();
         $scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($projectile) : void {
+            function (int $currentTick) use ($projectile,$handle) : void {
+                $handle->cancel();
                 if (!$projectile->isClosed())
                     $projectile->close();
             }
-        ), 20 * 10);
+        ), 20 * 5);
     }
 }
 
