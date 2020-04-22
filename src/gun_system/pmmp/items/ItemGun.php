@@ -133,13 +133,14 @@ abstract class ItemGun extends Tool
         $inventoryContents = $this->owner->getInventory()->getContents();
 
         $bullets = array_filter($inventoryContents, function ($item) {
-            if (is_subclass_of($item, "gun_system\pmmp\items\ItemBullet"))
+            if (is_subclass_of($item, "gun_system\pmmp\items\bullet\ItemBullet")){
                 if ($this->gun->getType()->equal(GunType::Shotgun())) {
-                    return $item->getBullet()->getSupportType()->equal($this->gun->getType())
+                    return $item->getBullet()->getSupportGunType()->equal($this->gun->getType())
                         && $item->getBullet()->getBulletType()->equal($this->gun->getBulletType());
                 } else {
-                    return $item->getBullet()->getSupportType()->equal($this->gun->getType());
+                    return $item->getBullet()->getSupportGunType()->equal($this->gun->getType());
                 }
+            }
             return false;
         });
         return $bullets;

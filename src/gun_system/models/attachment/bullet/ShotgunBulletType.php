@@ -39,4 +39,11 @@ class ShotgunBulletType
         }
         return self::Buckshot();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTypeText() {
+        return $this->type;
+    }
 }

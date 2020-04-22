@@ -16,4 +16,11 @@ abstract class Attachment
         $this->type = $type;
         $this->supportGunType = $supportGunType;
     }
+
+    /**
+     * @return GunType
+     */
+    public function getSupportGunType(): GunType {
+        return $this->supportGunType;
+    }
 }

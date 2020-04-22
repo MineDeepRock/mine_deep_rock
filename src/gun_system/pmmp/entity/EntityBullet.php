@@ -23,7 +23,7 @@ use pocketmine\scheduler\TaskScheduler;
 //TODO:場所ちがくね？
 class EntityBullet
 {
-    static function spawn(Player $player, float $speed, float $precision, TaskScheduler $scheduler) {
+    static function spawn(Player $player, float $speed, float $precision, TaskScheduler $scheduler,$isArrow = false) {
         $aimPos = $player->getDirectionVector();
 
         $nbt = new CompoundTag("", [
@@ -43,7 +43,7 @@ class EntityBullet
             ]),
         ]);
 
-        $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
+        $projectile = $isArrow ? Entity::createEntity("Arrow", $player->getLevel(), $nbt, $player) : Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
         $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8));
         //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();
@@ -52,7 +52,7 @@ class EntityBullet
                 if (!$projectile->isClosed())
                     $projectile->close();
             }
-        ), 20 * 50);
+        ), 20 * 10);
     }
 }
 

@@ -4,6 +4,7 @@
 namespace gun_system\models;
 
 
+use gun_system\models\attachment\bullet\ShotgunBulletType;
 use pocketmine\item\ItemIds;
 
 class BulletId
@@ -16,9 +17,20 @@ class BulletId
 
     public const BUCK_SHOT = ItemIds::BRICK;
     public const SLUG = ItemIds::NETHER_BRICK;
-    public const DART = ItemIds::NETHER_WART;
+    public const DART = ItemIds::LEATHER;
 
-    public static function fromGunType(GunType $gunType): int {
+    public static function fromGunType(GunType $gunType,ShotgunBulletType $shotgunBulletType = null): int {
+        if ($gunType->equal(GunType::Shotgun())){
+            switch ($shotgunBulletType->getTypeText()){
+                case ShotgunBulletType::Buckshot()->getTypeText():
+                    return self::BUCK_SHOT;
+                case ShotgunBulletType::Slug()->getTypeText():
+                    return self::SLUG;
+                case ShotgunBulletType::Dart()->getTypeText():
+                    return self::DART;
+            }
+        }
+
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():
                 return self::HAND_GUN;
@@ -26,8 +38,6 @@ class BulletId
                 return self::ASSAULT_RIFLE;
             case GunType::LMG()->getTypeText():
                 return self::LMG;
-            case GunType::Shotgun()->getTypeText()://TODO
-                return self::BUCK_SHOT;
             case GunType::SniperRifle()->getTypeText():
                 return self::SNIPER_RIFLE;
             case GunType::SMG()->getTypeText():

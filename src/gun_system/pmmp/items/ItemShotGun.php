@@ -68,14 +68,13 @@ class ItemShotGun extends ItemGun
         }
     }
 
-    //TODO:これオーバーライドすんの微妙
     public function reload() {
         $inventoryBullets = $this->getBulletAmount();
 
         $this->playStartReloadingSound();
         $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
             $this->owner->sendPopup("リロード");
-            $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
+            $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType(), $this->gun->getBulletType()), 0, $consumedBullets));
         }, function () {
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getBulletCapacity());
             $this->playReloadSound();
