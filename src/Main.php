@@ -137,13 +137,11 @@ class Main extends PluginBase implements Listener
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            if ($item instanceof ItemAssaultRifle){
-                if ($player->isSneaking()) {
-                    $player->removeEffect(Effect::SLOWNESS);
-                } else {
-                    $effectLevel =  $item->getGunData()->getScope()->getMagnification()->getValue();
-                    $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null,$effectLevel));
-                }
+            if ($player->isSneaking()) {
+                $player->removeEffect(Effect::SLOWNESS);
+            } else {
+                $effectLevel = $item->getGunData()->getScope()->getMagnification()->getValue();
+                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel));
             }
         }
     }

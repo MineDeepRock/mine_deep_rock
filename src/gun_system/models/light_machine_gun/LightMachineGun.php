@@ -5,6 +5,7 @@ namespace gun_system\models\light_machine_gun;
 
 
 use Closure;
+use gun_system\models\assault_rifle\attachiment\scope\AssaultRifleScope;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
@@ -12,6 +13,9 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
+use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
+use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
+use gun_system\models\light_machine_gun\attachment\scope\LightMachineGunScope;
 use gun_system\models\ReloadDuration;
 use gun_system\models\Response;
 use pocketmine\scheduler\ClosureTask;
@@ -19,6 +23,8 @@ use pocketmine\scheduler\TaskScheduler;
 
 class LightMachineGun extends Gun
 {
+    private $scope;
+
     private $overheatGauge;
     private $isOverheat;
     private $overheatRate;
@@ -27,6 +33,7 @@ class LightMachineGun extends Gun
     private $onFinishOverheat;
 
     public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+        $this->setScope(new IronSightForLMG());
         parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, 0.0, $reloadDuration, $effectiveRange, $precision, $scheduler);
         $this->overheatGauge = new OverheatGauge(function () {
             $this->cancelShooting();
@@ -53,9 +60,23 @@ class LightMachineGun extends Gun
         }
     }
 
+    /**
+     * @return LightMachineGunScope
+     */
+    public function getScope(): LightMachineGunScope {
+        return $this->scope;
+    }
+
+    /**
+     * @param LightMachineGunScope $scope
+     */
+    public function setScope(LightMachineGunScope $scope): void {
+        $this->scope = $scope;
+    }
+
     public function tryShootingOnce(Closure $onSucceed): Response {
         if ($this->isOverheat)
-            return new Response(false,"オーバーヒート中");
+            return new Response(false, "オーバーヒート中");
 
         $func = function () use ($onSucceed) {
             $this->overheatGauge->raise($this->overheatRate);
@@ -66,7 +87,7 @@ class LightMachineGun extends Gun
 
     public function tryShooting(Closure $onSucceed): Response {
         if ($this->isOverheat)
-            return new Response(false,"オーバーヒート中");
+            return new Response(false, "オーバーヒート中");
 
         $func = function () use ($onSucceed) {
             $this->overheatGauge->raise($this->overheatRate);

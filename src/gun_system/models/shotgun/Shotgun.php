@@ -13,18 +13,26 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
+use gun_system\models\hand_gun\attachment\scope\HandGunScope;
+use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\ReloadDuration;
 use gun_system\models\Response;
+use gun_system\models\shotgun\attachment\scope\IronSightForSG;
+use gun_system\models\shotgun\attachment\scope\ShotgunScope;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
 abstract class Shotgun extends Gun
 {
+    private $scope;
+
     private $bulletType;
     private $pellets;
     private $reloadTaskTaskHandler;
 
     public function __construct(ShotgunBulletType $bulletType,int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+        $this->setScope(new IronSightForSG());
+
         $this->bulletType = $bulletType;
         $this->pellets = $pellets;
 
@@ -83,5 +91,19 @@ abstract class Shotgun extends Gun
      */
     public function getPellets(): int {
         return $this->pellets;
+    }
+
+    /**
+     * @return ShotgunScope
+     */
+    public function getScope() :ShotgunScope {
+        return $this->scope;
+    }
+
+    /**
+     * @param ShotgunScope $scope
+     */
+    public function setScope(ShotgunScope $scope): void {
+        $this->scope = $scope;
     }
 }
