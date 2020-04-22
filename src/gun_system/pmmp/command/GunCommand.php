@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\command;
 
 
+use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
 use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
@@ -68,6 +69,9 @@ class GunCommand extends Command
         $gun = $player->getInventory()->getItemInHand();
         if ($gun instanceof ItemAssaultRifle) {
             switch ($name){
+                case "IronSight":
+                    $gun->setScope(new IronSightForAR());
+                    break;
                 case "2xScope":
                     $gun->setScope(new TwoFoldScopeForAR());
                     break;

@@ -37,7 +37,7 @@ abstract class AssaultRifle extends Gun
     /**
      * @param AssaultRifleScope $scope
      */
-    public function setScope($scope): void {
+    public function setScope(AssaultRifleScope $scope): void {
         $this->scope = $scope;
     }
 
