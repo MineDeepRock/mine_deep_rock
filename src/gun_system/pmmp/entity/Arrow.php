@@ -39,7 +39,7 @@ class Arrow extends Projectile
 
         if($this->blockHit !== null){
             $this->collideTicks += $tickDiff;
-            if($this->collideTicks > 100){
+            if($this->collideTicks > 40){
                 $this->flagForDespawn();
                 $hasUpdate = true;
             }
@@ -51,6 +51,8 @@ class Arrow extends Projectile
     }
 
     protected function onHit(ProjectileHitEvent $event) : void{
+        if (!$this->isClosed())
+            $this->close();
     }
 
     protected function onHitBlock(Block $blockHit, RayTraceResult $hitResult) : void{
