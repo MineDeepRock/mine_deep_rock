@@ -28,6 +28,7 @@ use pocketmine\inventory\transaction\action\DropItemAction;
 use pocketmine\inventory\transaction\action\SlotChangeAction;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
+use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\plugin\PluginBase;
 use team_system\pmmp\command\TeamCommand;
@@ -122,6 +123,22 @@ class Main extends PluginBase implements Listener
                     $this->gunSystemClient->tryReloading($item);
                     $event->setCancelled();
                 }
+            }
+        }
+    }
+
+    //プレイヤーから半径3ブロック未満の地面tapでリロード
+    public function tryReloadingForTap(PlayerInteractEvent $event) {
+        if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_BLOCK])) {
+            $player = $event->getPlayer();
+            $touchedBlockPos = new Vector3(
+                $event->getBlock()->getX(),
+                $event->getBlock()->getY(),
+                $event->getBlock()->getZ()
+            );
+            if ($player->getPosition()->distance($touchedBlockPos) < 3){
+                $item = $event->getItem();
+                $this->gunSystemClient->tryReloading($item);
             }
         }
     }
