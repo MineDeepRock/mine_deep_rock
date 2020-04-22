@@ -128,7 +128,7 @@ class OverheatGauge
     private $onOverheated;
     private $onReset;
 
-    public function __construct(\Closure $onOverheated, \Closure $onReset) {
+    public function __construct(Closure $onOverheated, Closure $onReset) {
         $this->gauge = 0;
         $this->onOverheated = $onOverheated;
         $this->onReset = $onReset;
