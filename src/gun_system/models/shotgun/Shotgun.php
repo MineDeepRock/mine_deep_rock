@@ -27,6 +27,17 @@ abstract class Shotgun extends Gun
     public function __construct(ShotgunBulletType $bulletType,int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->bulletType = $bulletType;
         $this->pellets = $pellets;
+
+        if ($this->bulletType->equal(ShotgunBulletType::Slug())) {
+            $bulletDamage = new BulletDamage($bulletDamage->getMaxDamage() * $this->pellets,$bulletDamage->getMinDamage() * $this->pellets);
+            $effectiveRange = new EffectiveRange($effectiveRange->getStart(),$effectiveRange->getEnd()+10);
+            $this->pellets = 1;
+        } else if($this->bulletType->equal(ShotgunBulletType::Dart())) {
+            $bulletDamage = new BulletDamage($bulletDamage->getMaxDamage() - 3,$bulletDamage->getMinDamage() - 3);
+            $effectiveRange = new EffectiveRange($effectiveRange->getStart(),$effectiveRange->getEnd()+10);
+            $this->pellets = $pellets + 3;
+        }
+
         parent::__construct(GunType::Shotgun(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $effectiveRange, $precision, $scheduler);
     }
 

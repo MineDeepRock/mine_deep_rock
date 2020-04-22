@@ -61,7 +61,11 @@ class ItemShotGun extends ItemGun
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
 
         } else if ($bulletType->equal(ShotgunBulletType::Dart())) {
-            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler, true);
+            $i = 0;
+            while ($i < $this->gun->getPellets()) {
+                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler,true);
+                $i++;
+            }
             $this->doReaction();
             $this->playShootingSound();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());

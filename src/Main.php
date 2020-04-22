@@ -4,15 +4,16 @@ use gun_system\GunSystemClient;
 use gun_system\models\BulletId;
 use gun_system\pmmp\command\GunCommand;
 use gun_system\pmmp\items\bullet\ItemAssaultRifleBullet;
+use gun_system\pmmp\items\bullet\ItemBuckShotBullet;
+use gun_system\pmmp\items\bullet\ItemDartBullet;
 use gun_system\pmmp\items\bullet\ItemHandGunBullet;
 use gun_system\pmmp\items\bullet\ItemLightMachineGunBullet;
-use gun_system\pmmp\items\bullet\ItemShotgunBullet;
+use gun_system\pmmp\items\bullet\ItemSlugBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
-use pocketmine\entity\projectile\Egg;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
@@ -55,8 +56,12 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new ItemHandGunBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::HAND_GUN));
 
-        ItemFactory::registerItem(new ItemShotgunBullet(), true);
-        Item::addCreativeItem(Item::get(BulletId::SHOTGUN));
+        ItemFactory::registerItem(new ItemBuckShotBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::BUCK_SHOT));
+        ItemFactory::registerItem(new ItemSlugBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::SLUG));
+        ItemFactory::registerItem(new ItemDartBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::DART));
 
         ItemFactory::registerItem(new ItemSniperRifleBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::SNIPER_RIFLE));
@@ -68,6 +73,7 @@ class Main extends PluginBase implements Listener
         Item::addCreativeItem(Item::get(BulletId::LMG));
 
         Entity::registerEntity(\gun_system\pmmp\entity\Egg::class, true, ['Egg', 'minecraft:egg']);
+        Entity::registerEntity(\gun_system\pmmp\entity\Arrow::class, true, ['Arrow', 'minecraft:arrow']);
     }
 
 
@@ -121,7 +127,7 @@ class Main extends PluginBase implements Listener
 
     public function onBulletHit(ProjectileHitEntityEvent $event) {
         $entity = $event->getEntity();
-        if ($entity instanceof \gun_system\pmmp\entity\Egg) {
+        if ($entity instanceof \gun_system\pmmp\entity\Egg || $entity instanceof \gun_system\pmmp\entity\Arrow) {
             $this->gunSystemClient->sendDamageByShooting($entity->getOwningEntity(), $event->getEntityHit());
         }
     }

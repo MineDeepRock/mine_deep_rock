@@ -12,14 +12,14 @@ abstract class Gun
 {
     private $type;
 
-    private $bulletDamage;
+    protected $bulletDamage;
     private $rate;
     private $bulletSpeed;
     private $bulletCapacity;
     protected $currentBullet;
     private $reaction;
     private $reloadDuration;
-    private $effectiveRange;
+    protected $effectiveRange;
     private $precision;
 
     private $damageCurve;
@@ -301,10 +301,11 @@ class Response
         return $this->isSuccess;
     }
 
+
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMessage(): string {
+    public function getMessage(): ?string {
         return $this->message;
     }
 }
