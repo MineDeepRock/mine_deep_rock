@@ -6,6 +6,7 @@ namespace gun_system\pmmp\items;
 
 use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\BulletId;
+use gun_system\models\shotgun\attachment\scope\ShotgunScope;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\entity\EntityBullet;
 use gun_system\pmmp\GunSounds;
@@ -23,6 +24,9 @@ class ItemShotGun extends ItemGun
         });
     }
 
+    public function setScope(ShotgunScope $scope): void {
+        $this->gun->setScope($scope);
+    }
 
     public function shootOnce(): void {
         $this->gun->cancelReloading();

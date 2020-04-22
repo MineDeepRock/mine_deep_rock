@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\items;
 
 
+use gun_system\models\sniper_rifle\attachment\scope\SniperRifleScope;
 use gun_system\models\sniper_rifle\SniperRifle;
 use gun_system\pmmp\GunSounds;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
@@ -17,6 +18,10 @@ class ItemSniperRifle extends ItemGun
         });
 
         parent::__construct($name, $gun, $owner);
+    }
+
+    public function setScope(SniperRifleScope $scope): void {
+        $this->gun->setScope($scope);
     }
 
     public function onReleaseUsing(Player $player): bool {

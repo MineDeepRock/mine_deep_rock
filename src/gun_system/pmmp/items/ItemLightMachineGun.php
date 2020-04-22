@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\items;
 
 
+use gun_system\models\light_machine_gun\attachment\scope\LightMachineGunScope;
 use gun_system\models\light_machine_gun\LightMachineGun;
 use gun_system\pmmp\GunSounds;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
@@ -28,6 +29,10 @@ class ItemLightMachineGun extends ItemGun
         $this->playReadySound();
 
         parent::shoot();
+    }
+
+    public function setScope(LightMachineGunScope $scope): void {
+        $this->gun->setScope($scope);
     }
 
     private function playOverheatSound(): void {

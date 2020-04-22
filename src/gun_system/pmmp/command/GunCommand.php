@@ -8,11 +8,16 @@ use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
 use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
+use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
 use gun_system\models\hand_gun\Mle1903;
+use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\M1897;
+use gun_system\models\sniper_rifle\attachment\scope\IronSightForSR;
 use gun_system\models\sniper_rifle\SMLEMK3;
+use gun_system\models\sub_machine_gun\attachment\scope\IronSightForSMG;
 use gun_system\models\sub_machine_gun\Automatico;
 use gun_system\models\sub_machine_gun\MP18;
 use gun_system\pmmp\items\ItemAssaultRifle;
@@ -66,6 +71,7 @@ class GunCommand extends Command
         return true;
     }
 
+    //TODO:リファクタ
     public function attachment(Player $player, string $name) {
         $gun = $player->getInventory()->getItemInHand();
         if ($gun instanceof ItemAssaultRifle) {
@@ -75,6 +81,36 @@ class GunCommand extends Command
                     break;
                 case "2xScope":
                     $gun->setScope(new TwoFoldScopeForAR());
+                    break;
+            }
+        } else if ($gun instanceof ItemHandGun){
+            switch ($name){
+                case "IronSight":
+                    $gun->setScope(new IronSightForHG());
+                    break;
+            }
+        } else if ($gun instanceof ItemLightMachineGun){
+            switch ($name){
+                case "IronSight":
+                    $gun->setScope(new IronSightForLMG());
+                    break;
+            }
+        } else if ($gun instanceof ItemShotGun){
+            switch ($name){
+                case "IronSight":
+                    $gun->setScope(new IronSightForSG());
+                    break;
+            }
+        } else if ($gun instanceof ItemSniperRifle){
+            switch ($name){
+                case "IronSight":
+                    $gun->setScope(new IronSightForSR());
+                    break;
+            }
+        } else if ($gun instanceof ItemSubMachineGun){
+            switch ($name){
+                case "IronSight":
+                    $gun->setScope(new IronSightForSMG());
                     break;
             }
         }
