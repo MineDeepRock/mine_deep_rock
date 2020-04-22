@@ -147,6 +147,7 @@ abstract class Gun
         if ($this->delayShootingTaskHandler !== null)
             $this->delayShootingTaskHandler->cancel();
 
+
         if (GunType::LMG()->equal($this->type)) {
             //発射までにヨッコラショする時間ディレイ！！
             $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
@@ -366,19 +367,28 @@ class BulletDamage
 
 class GunPrecision
 {
-    private $percent;
+    private $percentADS;
+    private $percentHipShooting;
 
-    public function __construct(float $percent) {
-
-        $this->percent = $percent;
+    public function __construct(float $percentADS, float $percentHipShooting) {
+        $this->percentADS = $percentADS;
+        $this->percentHipShooting = $percentHipShooting;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getValue() {
-        return $this->percent;
+    public function getADS(): float {
+        return $this->percentADS;
     }
+
+    /**
+     * @return float
+     */
+    public function getHipShooting(): float {
+        return $this->percentHipShooting;
+    }
+
 }
 
 

@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\entity;
 
 
+use gun_system\models\GunPrecision;
 use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\event\entity\ProjectileHitEvent;
@@ -23,8 +24,9 @@ use pocketmine\scheduler\TaskScheduler;
 //TODO:場所ちがくね？
 class EntityBullet
 {
-    static function spawn(Player $player, float $speed, float $precision, TaskScheduler $scheduler,$isArrow = false) {
+    static function spawn(Player $player, float $speed, GunPrecision $precision, TaskScheduler $scheduler,$isArrow = false) {
         $aimPos = $player->getDirectionVector();
+        $value = $player->isSneaking() ? $precision->getADS() : $precision->getHipShooting() ;
 
         $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
@@ -33,9 +35,9 @@ class EntityBullet
                 new DoubleTag("", $player->z)
             ]),
             "Motion" => new ListTag("Motion", [
-                new DoubleTag("", $aimPos->x + rand(-(100 - $precision), (100 - $precision)) / 200),
-                new DoubleTag("", $aimPos->y + rand(-(100 - $precision), (100 - $precision)) / 200),
-                new DoubleTag("", $aimPos->z + rand(-(100 - $precision), (100 - $precision)) / 200)
+                new DoubleTag("", $aimPos->x + rand(-(100 - $value), (100 - $value)) / 200),
+                new DoubleTag("", $aimPos->y + rand(-(100 - $value), (100 - $value)) / 200),
+                new DoubleTag("", $aimPos->z + rand(-(100 - $value), (100 - $value)) / 200)
             ]),
             "Rotation" => new ListTag("Rotation", [
                 new FloatTag("", $player->yaw),

@@ -77,7 +77,7 @@ abstract class ItemGun extends Tool
     public function shoot(): void {
         $result = $this->gun->tryShooting(function ($scheduler) {
             $this->playShootingSound();
-            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler);
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });
@@ -89,7 +89,7 @@ abstract class ItemGun extends Tool
     public function shootOnce(): void {
         $result = $this->gun->tryShootingOnce(function ($scheduler) {
             $this->playShootingSound();
-            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler);
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
         });

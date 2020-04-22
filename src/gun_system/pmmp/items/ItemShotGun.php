@@ -47,7 +47,7 @@ class ItemShotGun extends ItemGun
         if ($bulletType->equal(ShotgunBulletType::Buckshot())) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
-                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler);
                 $i++;
             }
             $this->doReaction();
@@ -55,7 +55,7 @@ class ItemShotGun extends ItemGun
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
 
         } else if ($bulletType->equal(ShotgunBulletType::Slug())) {
-            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler);
             $this->doReaction();
             $this->playShootingSound();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
@@ -63,7 +63,7 @@ class ItemShotGun extends ItemGun
         } else if ($bulletType->equal(ShotgunBulletType::Dart())) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
-                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler,true);
+                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler,true);
                 $i++;
             }
             $this->doReaction();
