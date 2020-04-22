@@ -11,9 +11,12 @@ class BulletId
     public const HAND_GUN = ItemIds::PAPER;
     public const ASSAULT_RIFLE = ItemIds::GLOWSTONE_DUST;
     public const LMG = ItemIds::FLINT;
-    public const SHOTGUN = ItemIds::BRICK;
     public const SNIPER_RIFLE = ItemIds::SUGAR;
     public const SMG = ItemIds::RABBIT_FOOT;
+
+    public const BUCK_SHOT = ItemIds::BRICK;
+    public const SLUG = ItemIds::NETHER_BRICK;
+    public const DART = ItemIds::NETHER_WART;
 
     public static function fromGunType(GunType $gunType): int {
         switch ($gunType->getTypeText()) {
@@ -23,8 +26,8 @@ class BulletId
                 return self::ASSAULT_RIFLE;
             case GunType::LMG()->getTypeText():
                 return self::LMG;
-            case GunType::Shotgun()->getTypeText():
-                return self::SHOTGUN;
+            case GunType::Shotgun()->getTypeText()://TODO
+                return self::BUCK_SHOT;
             case GunType::SniperRifle()->getTypeText():
                 return self::SNIPER_RIFLE;
             case GunType::SMG()->getTypeText():

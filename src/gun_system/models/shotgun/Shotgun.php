@@ -5,6 +5,7 @@ namespace gun_system\models\shotgun;
 
 
 use Closure;
+use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
@@ -19,10 +20,12 @@ use pocketmine\scheduler\TaskScheduler;
 
 abstract class Shotgun extends Gun
 {
+    private $bulletType;
     private $pellets;
     private $reloadTaskTaskHandler;
 
-    public function __construct(int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(ShotgunBulletType $bulletType,int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+        $this->bulletType = $bulletType;
         $this->pellets = $pellets;
         parent::__construct(GunType::Shotgun(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $effectiveRange, $precision, $scheduler);
     }
@@ -41,6 +44,13 @@ abstract class Shotgun extends Gun
     public function tryShootingOnce(Closure $onSucceed): Response {
         $this->cancelReloading();
         return parent::tryShootingOnce($onSucceed);
+    }
+
+    /**
+     * @return ShotgunBulletType
+     */
+    public function getBulletType(): ShotgunBulletType {
+        return $this->bulletType;
     }
 
 

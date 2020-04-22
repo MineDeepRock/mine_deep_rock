@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\items;
 
 
+use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\BulletId;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\entity\EntityBullet;
@@ -26,14 +27,7 @@ class ItemShotGun extends ItemGun
     public function shootOnce(): void {
         $this->gun->cancelReloading();
         $result = $this->gun->tryShootingOnce(function ($scheduler) {
-            $i = 0;
-            while ($i < $this->gun->getPellets()) {
-                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
-                $i++;
-            }
-            $this->doReaction();
-            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-            $this->playShootingSound();
+            $this->onSuccess($scheduler);
         });
         if (!$result->isSuccess())
             $this->owner->sendPopup($result->getMessage());
@@ -42,6 +36,15 @@ class ItemShotGun extends ItemGun
     public function shoot(): void {
         $this->gun->cancelReloading();
         $result = $this->gun->tryShooting(function ($scheduler) {
+            $this->onSuccess($scheduler);
+        });
+        if (!$result->isSuccess())
+            $this->owner->sendPopup($result->getMessage());
+    }
+
+    private function onSuccess($scheduler): void {
+        $bulletType = $this->gun->getBulletType();
+        if ($bulletType->equal(ShotgunBulletType::Buckshot())) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
                 EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
@@ -50,9 +53,19 @@ class ItemShotGun extends ItemGun
             $this->doReaction();
             $this->playShootingSound();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-        });
-        if (!$result->isSuccess())
-            $this->owner->sendPopup($result->getMessage());
+
+        } else if ($bulletType->equal(ShotgunBulletType::Slug())) {
+            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler);
+            $this->doReaction();
+            $this->playShootingSound();
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+
+        } else if ($bulletType->equal(ShotgunBulletType::Dart())) {
+            EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision()->getValue(), $scheduler, true);
+            $this->doReaction();
+            $this->playShootingSound();
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+        }
     }
 
     //TODO:これオーバーライドすんの微妙

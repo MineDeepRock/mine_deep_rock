@@ -6,6 +6,7 @@ namespace gun_system\pmmp\items;
 
 use gun_system\models\BulletId;
 use gun_system\models\Gun;
+use gun_system\models\GunType;
 use gun_system\pmmp\entity\EntityBullet;
 use gun_system\pmmp\GunSounds;
 use pocketmine\item\Item;
@@ -133,7 +134,12 @@ abstract class ItemGun extends Tool
 
         $bullets = array_filter($inventoryContents, function ($item) {
             if (is_subclass_of($item, "gun_system\pmmp\items\ItemBullet"))
-                return $item->getBullet()->getSupportType()->equal($this->gun->getType());
+                if ($this->gun->getType()->equal(GunType::Shotgun())) {
+                    return $item->getBullet()->getSupportType()->equal($this->gun->getType())
+                        && $item->getBullet()->getBulletType()->equal($this->gun->getBulletType());
+                } else {
+                    return $item->getBullet()->getSupportType()->equal($this->gun->getType());
+                }
             return false;
         });
         return $bullets;

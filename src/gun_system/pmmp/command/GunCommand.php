@@ -5,6 +5,7 @@ namespace gun_system\pmmp\command;
 
 
 use gun_system\models\assault_rifle\M1907SL;
+use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\hand_gun\Mle1903;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\ParabellumMG14;
@@ -61,7 +62,8 @@ class GunCommand extends Command
 
             //Shotgun
             case "M1897":
-                $item = new ItemShotGun("M1897", new M1897($this->scheduler), $player);
+                $bulletType = count($args) < 2 ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($args[1]);
+                $item = new ItemShotGun("M1897", new M1897($bulletType,$this->scheduler), $player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
