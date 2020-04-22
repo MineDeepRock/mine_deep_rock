@@ -10,7 +10,7 @@ use gun_system\models\GunType;
 
 class AssaultRifleScope extends Scope
 {
-   public function __construct(string $name, Magnification $magnification, GunType $supportGunType) {
+   public function __construct(string $name, Magnification $magnification) {
        parent::__construct($name, $magnification, GunType::AssaultRifle());
    }
 }

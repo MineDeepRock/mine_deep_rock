@@ -14,11 +14,11 @@ abstract class Gun
 
     protected $bulletDamage;
     private $rate;
-    private $bulletSpeed;
-    private $bulletCapacity;
+    protected $bulletSpeed;
+    protected $bulletCapacity;
     protected $currentBullet;
     private $reaction;
-    private $reloadDuration;
+    protected $reloadDuration;
     protected $effectiveRange;
     private $precision;
 

@@ -16,10 +16,10 @@ abstract class Scope extends Attachment
     }
 
     /**
-     * @param mixed $magnification
+     * @return Magnification
      */
-    public function setMagnification(Magnification $magnification): void {
-        $this->magnification = $magnification;
+    public function getMagnification(): Magnification {
+        return $this->magnification;
     }
 }
 

@@ -11,6 +11,7 @@ use gun_system\pmmp\items\bullet\ItemLightMachineGunBullet;
 use gun_system\pmmp\items\bullet\ItemSlugBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
+use gun_system\pmmp\items\ItemAssaultRifle;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
@@ -136,10 +137,13 @@ class Main extends PluginBase implements Listener
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            if ($player->isSneaking()) {
-                $player->removeEffect(Effect::SLOWNESS);
-            } else {
-                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, 5));
+            if ($item instanceof ItemAssaultRifle){
+                if ($player->isSneaking()) {
+                    $player->removeEffect(Effect::SLOWNESS);
+                } else {
+                    $effectLevel =  $item->getGunData()->getScope()->getMagnification()->getValue();
+                    $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null,$effectLevel));
+                }
             }
         }
     }

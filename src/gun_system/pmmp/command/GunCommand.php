@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\command;
 
 
+use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\hand_gun\Mle1903;
@@ -22,6 +23,7 @@ use gun_system\pmmp\items\ItemSubMachineGun;
 use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\utils\TextFormat;
@@ -45,7 +47,36 @@ class GunCommand extends Command
         }
         $player = $sender->getServer()->getPlayer($sender->getName());
         $method = $args[0];
-        switch ($method) {
+        if ($method === "give") {
+            if (count($args) < 2) {
+                $sender->sendMessage("/gun give [name] [bullet:onlyShotgun]");
+                return true;
+            }
+            $this->give($player, $args[1]);
+        } else if ($method === "attachment") {
+            if (count($args) < 2) {
+                $sender->sendMessage("/gun attachment [name]");
+                return true;
+            }
+            $this->attachment($player,$args[1]);
+        }
+
+        return true;
+    }
+
+    public function attachment(Player $player, string $name) {
+        $gun = $player->getInventory()->getItemInHand();
+        if ($gun instanceof ItemAssaultRifle) {
+            switch ($name){
+                case "2xScope":
+                    $gun->setScope(new TwoFoldScopeForAR());
+                    break;
+            }
+        }
+    }
+
+    public function give(Player $player, string $name, string $bulletName = null) {
+        switch ($name) {
             //Handgun
             case "Mle1903":
                 $item = new ItemHandGun("Mle1903", new Mle1903($this->scheduler), $player);
@@ -62,8 +93,8 @@ class GunCommand extends Command
 
             //Shotgun
             case "M1897":
-                $bulletType = count($args) < 2 ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($args[1]);
-                $item = new ItemShotGun("M1897", new M1897($bulletType,$this->scheduler), $player);
+                $bulletType = $bulletName === null ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($bulletName);
+                $item = new ItemShotGun("M1897", new M1897($bulletType, $this->scheduler), $player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
@@ -101,9 +132,7 @@ class GunCommand extends Command
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
         }
-        return true;
     }
-
 
     public function setItemDescription(ItemGun $item): ItemGun {
         $gun = $item->getGunData();
