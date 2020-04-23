@@ -60,7 +60,7 @@ class EntityBullet
                     ),1));
                 }
             }
-        ), 2);
+        ), 1);
 
         //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();
