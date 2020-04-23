@@ -14,7 +14,7 @@ use gun_system\models\GunRate;
 use gun_system\models\GunType;
 use gun_system\models\hand_gun\attachment\scope\HandGunScope;
 use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
-use gun_system\models\ReloadDuration;
+use gun_system\models\ReloadDetail;
 use pocketmine\scheduler\TaskScheduler;
 
 abstract class HandGun extends Gun
@@ -22,9 +22,9 @@ abstract class HandGun extends Gun
     private $scope;
     private $magazine;
 
-    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDetail $reloadDetail, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->setScope(new IronSightForHG());
-        parent::__construct(GunType::HandGun(),$bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDuration, $effectiveRange, $precision, $scheduler);
+        parent::__construct(GunType::HandGun(),$bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDetail, $effectiveRange, $precision, $scheduler);
     }
 
 
@@ -45,8 +45,8 @@ abstract class HandGun extends Gun
      * @param HandGunMagazine $magazine
      */
     public function setMagazine(HandGunMagazine $magazine): void {
-        $this->bulletCapacity += $magazine->getAdditionalBullets();
-        $this->reloadDuration = new ReloadDuration($this->reloadDuration->getSecond() + $magazine->getAdditionalReloadTime());
-        $this->magazine = $magazine;
+        //$this->bulletCapacity += $magazine->getAdditionalBullets();
+        //$this->reloadDuration = new ReloadDuration($this->reloadDuration->getSecond() + $magazine->getAdditionalReloadTime());
+        //$this->magazine = $magazine;
     }
 }

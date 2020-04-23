@@ -251,7 +251,7 @@ class GunCommand extends Command
             TextFormat::RESET . "レート" . TextFormat::GRAY . $rate->getPerSecond(),
             TextFormat::RESET . "マガジンキャパ" . TextFormat::GRAY . $gun->getBulletCapacity(),
             TextFormat::RESET . "反動" . TextFormat::GRAY . $gun->getReaction(),
-            TextFormat::RESET . "リロード時間" . TextFormat::GRAY . $gun->getReloadDuration()->getSecond(),
+            TextFormat::RESET . "リロード時間" . TextFormat::GRAY . $gun->getReloadDetail()->getSecondOfClip(),//TODO
             TextFormat::RESET . "精度" . TextFormat::GRAY . "ADS:" . $gun->getPrecision()->getADS()."腰撃ち:".$gun->getPrecision()->getHipShooting(),
         ]);
     }

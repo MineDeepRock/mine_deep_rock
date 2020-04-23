@@ -18,7 +18,7 @@ abstract class Gun
     protected $bulletCapacity;
     protected $currentBullet;
     private $reaction;
-    protected $reloadDuration;
+    protected $reloadDetail;
     protected $effectiveRange;
     protected $precision;
 
@@ -30,13 +30,14 @@ abstract class Gun
     private $isShooting;
     private $whenBecomeReady;
 
-    //TODO:
-    //非同期処理のためにある。なくしたい。
+    //非同期処理のためにある。
     protected $scheduler;
     protected $shootingTaskHandler;
     protected $delayShootingTaskHandler;
+    protected $reloadTaskTaskHandler;
+    protected $reloadTask2TaskHandler;
 
-    public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDetail $reloadDetail, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->type = $type;
 
         $this->bulletDamage = $bulletDamage;
@@ -45,7 +46,7 @@ abstract class Gun
         $this->bulletCapacity = $bulletCapacity;
         $this->currentBullet = $bulletCapacity;
         $this->reaction = $reaction;
-        $this->reloadDuration = $reloadDuration;
+        $this->reloadDetail = $reloadDetail;
         $this->effectiveRange = $effectiveRange;
 
         $this->onReloading = false;
@@ -81,6 +82,14 @@ abstract class Gun
         }
     }
 
+    public function cancelReloading() {
+        $this->onReloading = false;
+        if ($this->reloadTaskTaskHandler !== null)
+            $this->reloadTaskTaskHandler->cancel();
+        if ($this->reloadTask2TaskHandler !== null)
+            $this->reloadTask2TaskHandler->cancel();
+    }
+
     public function ontoCoolTime(): void {
         $this->onCoolTime = true;
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
@@ -106,12 +115,15 @@ abstract class Gun
     }
 
     public function tryShootingOnce(Closure $onSucceed): Response {
+        if (!$this->reloadDetail->isMagazineType())
+            $this->cancelReloading();
+
         if ($this->onReloading)
             return new Response(false, "リロード中");
         if ($this->currentBullet === 0)
             return new Response(false, "マガジンに弾がありません");
         if ($this->onCoolTime)
-            return new Response(false,"");
+            return new Response(false, "");
 
         $this->shootOnce($onSucceed);
         return new Response(true);
@@ -126,6 +138,9 @@ abstract class Gun
     }
 
     public function tryShooting(Closure $onSucceed, bool $isADS): Response {
+        if (!$this->reloadDetail->isMagazineType())
+            $this->cancelReloading();
+
         if ($this->onReloading)
             return new Response(false, "リロード中");
         if ($this->currentBullet === 0)
@@ -185,21 +200,53 @@ abstract class Gun
     }
 
     protected function reload(int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
-        $consumedBullets = $this->bulletCapacity - $this->currentBullet;
-        $onStarted($consumedBullets);
+        //一般的なマガジンタイプ
+        if ($this->reloadDetail->isMagazineType()) {
+            $this->scheduler->scheduleDelayedTask(new ClosureTask(
+                function (int $currentTick) use ($inventoryBullets,$onStarted, $onFinished): void {
+                    $empty = $this->bulletCapacity - $this->currentBullet;
 
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($inventoryBullets, $onFinished): void {
-                $empty = $this->bulletCapacity - $this->currentBullet;
-                if ($empty > $inventoryBullets) {
-                    $this->currentBullet += $inventoryBullets;
-                } else {
-                    $this->currentBullet = $this->bulletCapacity;
+                    if ($empty > $inventoryBullets) {
+                        $this->currentBullet += $inventoryBullets;
+                        $onStarted($inventoryBullets);
+                    } else {
+                        $this->currentBullet = $this->bulletCapacity;
+                        $onStarted($empty);
+                    }
+                    $this->onReloading = false;
+                    $onFinished();
                 }
-                $this->onReloading = false;
-                $onFinished();
+            ), 20 * $this->reloadDetail->getSecondOfClip());
+
+            //１発ずつリロードするタイプ
+        } else {
+            $clipCapacity = $this->reloadDetail->getClipCapacity();
+            $emptySlot = $this->bulletCapacity - $this->currentBullet;
+
+            if ($inventoryBullets >= $clipCapacity && $emptySlot >= $clipCapacity && $clipCapacity !== 0) {
+                $this->reloadTask2TaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($inventoryBullets, $clipCapacity, $onStarted, $onFinished): void {
+                    $this->currentBullet += $clipCapacity;
+                    $inventoryBullets = $onStarted($clipCapacity);
+                    $onFinished();
+                    if ($inventoryBullets < $clipCapacity)
+                        $this->reloadTask2TaskHandler->cancel();
+                    if (($this->bulletCapacity - $this->currentBullet) < $clipCapacity)
+                        $this->reloadTask2TaskHandler->cancel();
+                }), 20 * $this->reloadDetail->getSecondOfClip());
             }
-        ), 20 * $this->reloadDuration->getSecond());
+
+            if ($this->currentBullet !== $this->bulletCapacity) {
+                $this->reloadTaskTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($inventoryBullets, $clipCapacity, $onStarted, $onFinished): void {
+                    $this->currentBullet++;
+                    $inventoryBullets = $onStarted(1);
+                    $onFinished();
+                    if ($inventoryBullets === 0)
+                        $this->cancelReloading();
+                    if ($this->currentBullet === $this->getBulletCapacity())
+                        $this->cancelReloading();
+                }), 20 * $this->reloadDetail->getSecondOfOne());
+            }
+        }
     }
 
     /**
@@ -273,10 +320,10 @@ abstract class Gun
     }
 
     /**
-     * @return ReloadDuration
+     * @return ReloadDetail
      */
-    public function getReloadDuration(): ReloadDuration {
-        return $this->reloadDuration;
+    public function getReloadDetail(): ReloadDetail {
+        return $this->reloadDetail;
     }
 
     /**
@@ -425,18 +472,44 @@ class GunRate
     }
 }
 
-class ReloadDuration
+class ReloadDetail
 {
-    private $second;
+    private $clipCapacity;
 
-    public function __construct(float $second) {
-        $this->second = $second;
+    private $secondOfClip;
+    private $secondOfOne;
+
+    private $isMagazineType;
+
+    public function __construct(bool $isMagazineType,int $clipCapacity, float $secondOfClip, float $secondOfOne = 0) {
+        $this->clipCapacity = $clipCapacity;
+        $this->secondOfClip = $secondOfClip;
+        $this->secondOfOne = $secondOfOne;
+        $this->isMagazineType = $isMagazineType;
+    }
+
+    public function isMagazineType(): bool {
+        return $this->isMagazineType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getClipCapacity(): int {
+        return $this->clipCapacity;
     }
 
     /**
      * @return float
      */
-    public function getSecond(): float {
-        return $this->second;
+    public function getSecondOfClip(): float {
+        return $this->secondOfClip;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSecondOfOne(): float {
+        return $this->secondOfOne;
     }
 }

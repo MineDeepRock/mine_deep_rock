@@ -12,7 +12,6 @@ use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\entity\EntityBullet;
 use gun_system\pmmp\GunSounds;
 use pocketmine\item\Item;
-use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
 class ItemShotGun extends ItemGun
@@ -84,7 +83,6 @@ class ItemShotGun extends ItemGun
     public function reload() {
         $inventoryBullets = $this->getBulletAmount();
 
-        $this->playStartReloadingSound();
         $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType(), $this->gun->getBulletType()), 0, $consumedBullets));
             return $this->getBulletAmount();

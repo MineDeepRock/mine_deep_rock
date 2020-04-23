@@ -9,12 +9,12 @@ use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
-use gun_system\models\ReloadDuration;
+use gun_system\models\ReloadDetail;
 use pocketmine\scheduler\TaskScheduler;
 
 class M1907SL extends AssaultRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new BulletDamage(42,23), new GunRate(5), new BulletSpeed(570), 20, 0, new ReloadDuration(2.3), new EffectiveRange(0,25), new GunPrecision(95,90), $scheduler);
+        parent::__construct(new BulletDamage(42,23), new GunRate(5), new BulletSpeed(570), 20, 0, new ReloadDetail(true,20,2.3), new EffectiveRange(0,25), new GunPrecision(95,90), $scheduler);
     }
 }

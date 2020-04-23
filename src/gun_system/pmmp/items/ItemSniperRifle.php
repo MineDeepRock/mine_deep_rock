@@ -9,7 +9,6 @@ use gun_system\models\sniper_rifle\attachment\scope\SniperRifleScope;
 use gun_system\models\sniper_rifle\SniperRifle;
 use gun_system\pmmp\GunSounds;
 use pocketmine\item\Item;
-use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
 class ItemSniperRifle extends ItemGun

@@ -5,7 +5,6 @@ namespace gun_system\models\light_machine_gun;
 
 
 use Closure;
-use gun_system\models\assault_rifle\attachiment\scope\AssaultRifleScope;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
@@ -13,10 +12,9 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
-use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
 use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\LightMachineGunScope;
-use gun_system\models\ReloadDuration;
+use gun_system\models\ReloadDetail;
 use gun_system\models\Response;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
@@ -32,9 +30,9 @@ class LightMachineGun extends Gun
     private $onOverheated;
     private $onFinishOverheat;
 
-    public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, ReloadDetail $reloadDetail, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->setScope(new IronSightForLMG());
-        parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, 0.0, $reloadDuration, $effectiveRange, $precision, $scheduler);
+        parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, 0.0, $reloadDetail, $effectiveRange, $precision, $scheduler);
         $this->overheatGauge = new OverheatGauge(function () {
             $this->cancelShooting();
             $this->isOverheat = true;

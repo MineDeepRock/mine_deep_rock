@@ -33,17 +33,17 @@ abstract class ItemGun extends Tool
 
     public function playShootingSound(): void {
         $soundName = GunSounds::shootSoundFromGunType($this->gun->getType())->getText();
-        GunSounds::playAround($this->owner,$soundName);
+        GunSounds::playAround($this->owner, $soundName);
     }
 
     public function playStartReloadingSound(): void {
         $soundName = GunSounds::startReloadingSoundFromGunType($this->gun->getType())->getText();
-        GunSounds::play($this->owner,$soundName);
+        GunSounds::play($this->owner, $soundName);
     }
 
     public function playEndReloadingSound(): void {
         $soundName = GunSounds::endReloadingSoundFromGunType($this->gun->getType())->getText();
-        GunSounds::play($this->owner,$soundName);
+        GunSounds::play($this->owner, $soundName);
     }
 
     public function onReleaseUsing(Player $player): bool {
@@ -57,7 +57,7 @@ abstract class ItemGun extends Tool
             EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler);
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-        },$this->owner->isSneaking());
+        }, $this->owner->isSneaking());
 
         if (!$result->isSuccess())
             $this->owner->sendPopup($result->getMessage());
@@ -94,11 +94,11 @@ abstract class ItemGun extends Tool
 
         $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
             $this->playStartReloadingSound();
-            $this->owner->sendPopup("リロード");
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
+            return $this->getBulletAmount();
         }, function () {
-            $this->playEndReloadingSound();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getBulletCapacity());
+            $this->playEndReloadingSound();
         });
 
         if (!$result->isSuccess())
@@ -110,7 +110,7 @@ abstract class ItemGun extends Tool
         $inventoryContents = $this->owner->getInventory()->getContents();
 
         $bullets = array_filter($inventoryContents, function ($item) {
-            if (is_subclass_of($item, "gun_system\pmmp\items\bullet\ItemBullet")){
+            if (is_subclass_of($item, "gun_system\pmmp\items\bullet\ItemBullet")) {
                 if ($this->gun->getType()->equal(GunType::Shotgun())) {
                     return $item->getBullet()->getSupportGunType()->equal($this->gun->getType())
                         && $item->getBullet()->getBulletType()->equal($this->gun->getBulletType());
