@@ -10,10 +10,8 @@ use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForSmG
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForAR;
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForHG;
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForSMG;
-use gun_system\models\assault_rifle\attachiment\scope\EightFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\FourFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
-use gun_system\models\assault_rifle\attachiment\scope\TwelveFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
@@ -21,7 +19,6 @@ use gun_system\models\hand_gun\attachment\scope\FourFoldScopeForHG;
 use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
 use gun_system\models\hand_gun\attachment\scope\TwoFoldScopeForHG;
 use gun_system\models\hand_gun\Mle1903;
-use gun_system\models\light_machine_gun\attachment\scope\EightFoldScopeForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\FourFoldScopeForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
@@ -30,10 +27,8 @@ use gun_system\models\light_machine_gun\ParabellumMG14;
 use gun_system\models\shotgun\attachment\muzzle\FullChoke;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\M1897;
-use gun_system\models\sniper_rifle\attachment\scope\EightFoldScopeForSR;
 use gun_system\models\sniper_rifle\attachment\scope\FourFoldScopeForSR;
 use gun_system\models\sniper_rifle\attachment\scope\IronSightForSR;
-use gun_system\models\sniper_rifle\attachment\scope\TwelveFoldScopeForSR;
 use gun_system\models\sniper_rifle\attachment\scope\TwoFoldScopeForSR;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\attachment\scope\FourFoldScopeForSMG;
@@ -106,12 +101,6 @@ class GunCommand extends Command
                 case "4xScope":
                     $gun->setScope(new FourFoldScopeForAR());
                     break;
-                case "8xScope":
-                    $gun->setScope(new EightFoldScopeForAR());
-                    break;
-                case "12xScope":
-                    $gun->setScope(new TwelveFoldScopeForAR());
-                    break;
                 case "ExpansionMagazine":
                     $gun->setMagazine(new ExpansionMagazineForAR());
                     break;
@@ -149,9 +138,6 @@ class GunCommand extends Command
                 case "4xScope":
                     $gun->setScope(new FourFoldScopeForLMG());
                     break;
-                case "8xScope":
-                    $gun->setScope(new EightFoldScopeForLMG());
-                    break;
             }
         } else if ($gun instanceof ItemShotGun){
             switch ($name){
@@ -172,12 +158,6 @@ class GunCommand extends Command
                     break;
                 case "4xScope":
                     $gun->setScope(new FourFoldScopeForSR());
-                    break;
-                case "8xScope":
-                    $gun->setScope(new EightFoldScopeForSR());
-                    break;
-                case "12xScope":
-                    $gun->setScope(new TwelveFoldScopeForSR());
                     break;
             }
         } else if ($gun instanceof ItemSubMachineGun){

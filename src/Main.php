@@ -136,7 +136,7 @@ class Main extends PluginBase implements Listener
                 $event->getBlock()->getY(),
                 $event->getBlock()->getZ()
             );
-            if ($player->getPosition()->distance($touchedBlockPos) < 3){
+            if ($player->getPosition()->distance($touchedBlockPos) < 3) {
                 $item = $event->getItem();
                 $this->gunSystemClient->tryReloading($item);
             }
@@ -153,10 +153,10 @@ class Main extends PluginBase implements Listener
     public function onSneak(PlayerToggleSneakEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
-        if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            if ($player->isSneaking()) {
-                $player->removeEffect(Effect::SLOWNESS);
-            } else {
+        if ($player->isSneaking()) {
+            $player->removeEffect(Effect::SLOWNESS);
+        } else {
+            if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
                 $effectLevel = $item->getGunData()->getScope()->getMagnification()->getValue();
                 $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel));
             }
