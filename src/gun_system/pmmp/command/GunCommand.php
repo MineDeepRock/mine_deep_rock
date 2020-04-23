@@ -29,7 +29,9 @@ use gun_system\models\sniper_rifle\attachment\scope\IronSightForSR;
 use gun_system\models\sniper_rifle\attachment\scope\TwelveFoldScopeForSR;
 use gun_system\models\sniper_rifle\attachment\scope\TwoFoldScopeForSR;
 use gun_system\models\sniper_rifle\SMLEMK3;
+use gun_system\models\sub_machine_gun\attachment\scope\FourFoldScopeForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\IronSightForSMG;
+use gun_system\models\sub_machine_gun\attachment\scope\TwoFoldScopeForSMG;
 use gun_system\models\sub_machine_gun\Automatico;
 use gun_system\models\sub_machine_gun\MP18;
 use gun_system\pmmp\items\ItemAssaultRifle;
@@ -159,6 +161,12 @@ class GunCommand extends Command
             switch ($name){
                 case "IronSight":
                     $gun->setScope(new IronSightForSMG());
+                    break;
+                case "2xScope":
+                    $gun->setScope(new TwoFoldScopeForSMG());
+                    break;
+                case "4xScope":
+                    $gun->setScope(new FourFoldScopeForSMG());
                     break;
             }
         }
