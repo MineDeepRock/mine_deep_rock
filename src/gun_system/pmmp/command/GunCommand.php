@@ -6,7 +6,7 @@ namespace gun_system\pmmp\command;
 
 use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForAR;
 use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForHG;
-use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForSmG;
+use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForSMG;
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForAR;
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForHG;
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForSMG;
