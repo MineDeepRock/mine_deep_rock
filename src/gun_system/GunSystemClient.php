@@ -56,12 +56,11 @@ class GunSystemClient extends Client
             if ($itemGun instanceof ItemGun) {
                 $gun = $itemGun->getGunData();
 
-                if (intval($distance) > 100) {
+                if (intval($distance) < 100) {
                     $damage = end($gun->getDamageCurve());
                 } else {
                     $damage = $gun->getDamageCurve()[intval($distance)];
                 }
-
                 $entity->setHealth($entity->getHealth() - $damage / 5);//プレイヤーのHPが20なので
             }
         }
