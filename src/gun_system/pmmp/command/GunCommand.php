@@ -6,8 +6,10 @@ namespace gun_system\pmmp\command;
 
 use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForAR;
 use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForHG;
+use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForSmG;
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForAR;
 use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForHG;
+use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForSMG;
 use gun_system\models\assault_rifle\attachiment\scope\EightFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\FourFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
@@ -184,6 +186,12 @@ class GunCommand extends Command
                     break;
                 case "4xScope":
                     $gun->setScope(new FourFoldScopeForSMG());
+                    break;
+                case "ExpansionMagazine":
+                    $gun->setMagazine(new ExpansionMagazineForSMG());
+                    break;
+                case "QuickReloadMagazine":
+                    $gun->setMagazine(new QuickReloadMagazineForSMG());
                     break;
             }
         }
