@@ -15,7 +15,10 @@ use gun_system\models\hand_gun\attachment\scope\FourFoldScopeForHG;
 use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
 use gun_system\models\hand_gun\attachment\scope\TwoFoldScopeForHG;
 use gun_system\models\hand_gun\Mle1903;
+use gun_system\models\light_machine_gun\attachment\scope\EightFoldScopeForLMG;
+use gun_system\models\light_machine_gun\attachment\scope\FourFoldScopeForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
+use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\ParabellumMG14;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
@@ -113,6 +116,15 @@ class GunCommand extends Command
             switch ($name){
                 case "IronSight":
                     $gun->setScope(new IronSightForLMG());
+                    break;
+                case "2xScope":
+                    $gun->setScope(new TwoFoldScopeForLMG());
+                    break;
+                case "4xScope":
+                    $gun->setScope(new FourFoldScopeForLMG());
+                    break;
+                case "8xScope":
+                    $gun->setScope(new EightFoldScopeForLMG());
                     break;
             }
         } else if ($gun instanceof ItemShotGun){
