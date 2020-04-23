@@ -46,9 +46,9 @@ class SniperRifle extends Gun
         $this->scope = $scope;
     }
 
-    public function tryShooting(Closure $onSucceed,bool $isADS): Response {
+    public function tryShooting(Closure $onSucceed, bool $isADS): Response {
         $this->cancelReloading();
-        return parent::tryShooting($onSucceed,$isADS);
+        return parent::tryShooting($onSucceed, $isADS);
     }
 
     public function tryShootingOnce(Closure $onSucceed): Response {
@@ -62,21 +62,28 @@ class SniperRifle extends Gun
             $this->reloadTaskTaskHandler->cancel();
     }
 
-    protected function reload(int $remainingBullet, Closure $onPushed): void {
+    protected function reload(int $remainingBullet, Closure $onStart, Closure $onPushed): void {
         $this->onReloading = true;
 
         $this->reloadTaskTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(
-            function (int $currentTick) use ($remainingBullet, $onPushed): void {
+            function (int $currentTick) use ($remainingBullet, $onStart, $onPushed): void {
                 $bunch = intval(($this->bulletCapacity - $this->currentBullet) / 5);
 
                 if ($bunch > 0 && $remainingBullet >= 5) {
                     $this->currentBullet += 5;
+                    $remainingBullet = $onStart(5);
                     $onPushed();
+                    if ($remainingBullet === 0)
+                        $this->cancelReloading();
                     if ($this->currentBullet === $this->getBulletCapacity())
                         $this->cancelReloading();
                 } else {
                     $this->currentBullet++;
+                    $remainingBullet = $onStart(1);
                     $onPushed();
+                    if ($remainingBullet === 0)
+                        $this->cancelReloading();
+
                     if ($this->currentBullet === $this->getBulletCapacity())
                         $this->cancelReloading();
                 }
