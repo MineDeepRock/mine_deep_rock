@@ -90,8 +90,6 @@ abstract class Shotgun extends Gun
 
 
     protected function reload(int $remainingBullet,Closure $onStart ,Closure $onPushed): void {
-        $this->onReloading = true;
-
         $this->reloadTaskTaskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(
             function (int $currentTick) use ($remainingBullet,$onStart,$onPushed): void {
                 $remainingBullet = $onStart(1);
