@@ -11,7 +11,9 @@ use gun_system\models\assault_rifle\attachiment\scope\TwelveFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
+use gun_system\models\hand_gun\attachment\scope\FourFoldScopeForHG;
 use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
+use gun_system\models\hand_gun\attachment\scope\TwoFoldScopeForHG;
 use gun_system\models\hand_gun\Mle1903;
 use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\LewisGun;
@@ -99,6 +101,12 @@ class GunCommand extends Command
             switch ($name){
                 case "IronSight":
                     $gun->setScope(new IronSightForHG());
+                    break;
+                case "2xScope":
+                    $gun->setScope(new TwoFoldScopeForHG());
+                    break;
+                case "4xScope":
+                    $gun->setScope(new FourFoldScopeForHG());
                     break;
             }
         } else if ($gun instanceof ItemLightMachineGun){
