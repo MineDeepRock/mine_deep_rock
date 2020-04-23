@@ -53,25 +53,11 @@ class ItemSniperRifle extends ItemGun
 
     private function playReloadSound(): void {
         $soundName = GunSounds::SniperRifleReload()->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 5;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
 
     private function playCockingSound(): void {
         $soundName = GunSounds::SniperRifleCocking()->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 40;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
 }

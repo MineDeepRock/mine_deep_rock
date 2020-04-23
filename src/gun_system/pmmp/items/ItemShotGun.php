@@ -99,25 +99,11 @@ class ItemShotGun extends ItemGun
 
     private function playPumpActionSound(): void {
         $soundName = GunSounds::ShotgunPumpAction()->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 10;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
 
     private function playReloadSound(): void {
         $soundName = GunSounds::ShotgunReload()->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 5;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
 }

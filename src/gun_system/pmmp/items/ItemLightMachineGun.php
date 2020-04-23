@@ -7,7 +7,6 @@ namespace gun_system\pmmp\items;
 use gun_system\models\light_machine_gun\attachment\scope\LightMachineGunScope;
 use gun_system\models\light_machine_gun\LightMachineGun;
 use gun_system\pmmp\GunSounds;
-use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
 class ItemLightMachineGun extends ItemGun
@@ -31,25 +30,11 @@ class ItemLightMachineGun extends ItemGun
 
     private function playOverheatSound(): void {
         $soundName = GunSounds::LMGOverheat()->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 30;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
 
     private function playReadySound(): void {
         $soundName = GunSounds::LMGReady()->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 3;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
 }

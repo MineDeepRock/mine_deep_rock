@@ -13,7 +13,6 @@ use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
 abstract class ItemGun extends Tool
@@ -34,40 +33,18 @@ abstract class ItemGun extends Tool
 
     public function playShootingSound(): void {
         $soundName = GunSounds::shootSoundFromGunType($this->gun->getType())->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 3;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::playAround($this->owner,$soundName);
     }
 
     public function playStartReloadingSound(): void {
         $soundName = GunSounds::startReloadingSoundFromGunType($this->gun->getType())->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 3;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
 
     public function playEndReloadingSound(): void {
         $soundName = GunSounds::endReloadingSoundFromGunType($this->gun->getType())->getText();
-        $packet = new PlaySoundPacket();
-        $packet->x = $this->owner->x;
-        $packet->y = $this->owner->y;
-        $packet->z = $this->owner->z;
-        $packet->volume = 3;
-        $packet->pitch = 2;
-        $packet->soundName = $soundName;
-        $this->owner->sendDataPacket($packet);
+        GunSounds::play($this->owner,$soundName);
     }
-
 
     public function onReleaseUsing(Player $player): bool {
         $this->gun->cancelShooting();

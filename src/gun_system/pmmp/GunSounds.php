@@ -5,6 +5,8 @@ namespace gun_system\pmmp;
 
 
 use gun_system\models\GunType;
+use pocketmine\network\mcpe\protocol\PlaySoundPacket;
+use pocketmine\Player;
 
 class GunSounds
 {
@@ -144,6 +146,36 @@ class GunSounds
                 return self::SMGEndReloading();
         }
         return new GunSounds("");
+    }
+
+    public static function play(Player $owner,string $soundName): void {
+        $packet = new PlaySoundPacket();
+        $packet->x = $owner->x;
+        $packet->y = $owner->y;
+        $packet->z = $owner->z;
+        $packet->volume = 10;
+        $packet->pitch = 2;
+        $packet->soundName = $soundName;
+        $owner->sendDataPacket($packet);
+    }
+
+    public static function playAround(Player $owner,string $soundName): void {
+        $players = $owner->getServer()->getOnlinePlayers();
+        self::play($owner,$soundName);
+
+        foreach ($players as $player) {
+            $distance = $owner->getPosition()->distance($player->getPosition());
+            if ($distance < 20) {
+                $packet = new PlaySoundPacket();
+                $packet->x = $player->x;
+                $packet->y = $player->y;
+                $packet->z = $player->z;
+                $packet->volume = 5 - $distance / 4;
+                $packet->pitch = 2;
+                $packet->soundName = $soundName;
+                $player->sendDataPacket($packet);
+            }
+        }
     }
 
     /**
