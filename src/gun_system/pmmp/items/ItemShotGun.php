@@ -46,7 +46,7 @@ class ItemShotGun extends ItemGun
         $this->gun->cancelReloading();
         $result = $this->gun->tryShooting(function ($scheduler) {
             $this->onSuccess($scheduler);
-        });
+        },$this->owner->isSneaking());
         if (!$result->isSuccess())
             $this->owner->sendPopup($result->getMessage());
     }

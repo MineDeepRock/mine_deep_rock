@@ -33,8 +33,8 @@ abstract class Gun
     //TODO:
     //非同期処理のためにある。なくしたい。
     protected $scheduler;
-    private $shootingTaskHandler;
-    private $delayShootingTaskHandler;
+    protected $shootingTaskHandler;
+    protected $delayShootingTaskHandler;
 
     public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->type = $type;
@@ -99,9 +99,9 @@ abstract class Gun
             $this->delayShootingTaskHandler->cancel();
     }
 
-    public function delayShooting(int $second, Closure $onSucceed) {
-        $this->delayShootingTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($onSucceed) : void {
-            $this->shoot($onSucceed);
+    public function delayShooting(int $second, Closure $onSucceed, bool $isADS) {
+        $this->delayShootingTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($onSucceed, $isADS) : void {
+            $this->shoot($onSucceed, $isADS);
         }), 20 * $second);
     }
 
@@ -125,31 +125,29 @@ abstract class Gun
         }
     }
 
-    public function tryShooting(Closure $onSucceed): Response {
+    public function tryShooting(Closure $onSucceed, bool $isADS): Response {
         if ($this->onReloading)
             return new Response(false, "リロード中");
         if ($this->currentBullet === 0)
             return new Response(false, "マガジンに弾がありません");
         if ($this->onCoolTime) {
             //TODO: 1/rate - (now-lastShootDate)
-            $this->delayShooting(1 / $this->rate->getPerSecond(), $onSucceed);
+            $this->delayShooting(1 / $this->rate->getPerSecond(), $onSucceed, $isADS);
             return new Response(true);
         }
 
-        $this->shoot($onSucceed);
+        $this->shoot($onSucceed, $isADS);
         return new Response(true);
     }
 
-    protected function shoot(Closure $onSucceed): void {
+    protected function shoot(Closure $onSucceed, bool $isADS): void {
         $this->isShooting = true;
         if ($this->shootingTaskHandler !== null)
             $this->shootingTaskHandler->cancel();
         if ($this->delayShootingTaskHandler !== null)
             $this->delayShootingTaskHandler->cancel();
 
-
-        if (GunType::LMG()->equal($this->type)) {
-            //発射までにヨッコラショする時間ディレイ！！
+        if ($this->type->equal(GunType::LMG()) && !$isADS) {
             $this->shootingTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($onSucceed): void {
                 //TODO:あんまりよくない
                 $this->ontoCoolTime();

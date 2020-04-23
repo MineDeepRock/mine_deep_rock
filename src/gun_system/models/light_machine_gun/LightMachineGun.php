@@ -85,7 +85,7 @@ class LightMachineGun extends Gun
         return parent::tryShootingOnce($func);
     }
 
-    public function tryShooting(Closure $onSucceed): Response {
+    public function tryShooting(Closure $onSucceed,bool $isADS): Response {
         if ($this->isOverheat)
             return new Response(false, "オーバーヒート中");
 
@@ -94,7 +94,7 @@ class LightMachineGun extends Gun
             $onSucceed($this->scheduler);
         };
 
-        return parent::tryShooting($func);
+        return parent::tryShooting($func,$isADS);
     }
 
     /**
@@ -111,11 +111,11 @@ class LightMachineGun extends Gun
         parent::shootOnce($onSucceed);
     }
 
-    protected function shoot(Closure $onSucceed): void {
+    protected function shoot(Closure $onSucceed,$isADS): void {
         if ($this->overheatRate->getPerShoot() !== 0)
             $this->overheatGauge->raise($this->overheatRate);
 
-        parent::shoot($onSucceed);
+        parent::shoot($onSucceed,$isADS);
     }
 
     /**

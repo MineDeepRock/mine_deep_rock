@@ -25,12 +25,6 @@ class ItemLightMachineGun extends ItemGun
         });
     }
 
-    public function shoot(): void {
-        $this->playReadySound();
-
-        parent::shoot();
-    }
-
     public function setScope(LightMachineGunScope $scope): void {
         $this->gun->setScope($scope);
     }

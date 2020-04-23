@@ -55,9 +55,9 @@ abstract class Shotgun extends Gun
             $this->reloadTaskTaskHandler->cancel();
     }
 
-    public function tryShooting(Closure $onSucceed): Response {
+    public function tryShooting(Closure $onSucceed,bool $isADS): Response {
         $this->cancelReloading();
-        return parent::tryShooting($onSucceed);
+        return parent::tryShooting($onSucceed,$isADS);
     }
 
     public function tryShootingOnce(Closure $onSucceed): Response {

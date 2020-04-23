@@ -80,7 +80,7 @@ abstract class ItemGun extends Tool
             EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler);
             $this->doReaction();
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
-        });
+        },$this->owner->isSneaking());
 
         if (!$result->isSuccess())
             $this->owner->sendPopup($result->getMessage());
