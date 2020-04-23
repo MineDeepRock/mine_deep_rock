@@ -4,6 +4,8 @@
 namespace gun_system\pmmp\command;
 
 
+use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForAR;
+use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForAR;
 use gun_system\models\assault_rifle\attachiment\scope\EightFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\FourFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
@@ -104,6 +106,12 @@ class GunCommand extends Command
                     break;
                 case "12xScope":
                     $gun->setScope(new TwelveFoldScopeForAR());
+                    break;
+                case "ExpansionMagazine":
+                    $gun->setMagazine(new ExpansionMagazineForAR());
+                    break;
+                case "QuickReloadMagazine":
+                    $gun->setMagazine(new QuickReloadMagazineForAR());
                     break;
             }
         } else if ($gun instanceof ItemHandGun){
