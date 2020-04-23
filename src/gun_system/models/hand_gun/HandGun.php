@@ -4,6 +4,7 @@
 namespace gun_system\models\hand_gun;
 
 
+use gun_system\models\assault_rifle\attachiment\magazine\HandGunMagazine;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
@@ -19,6 +20,7 @@ use pocketmine\scheduler\TaskScheduler;
 abstract class HandGun extends Gun
 {
     private $scope;
+    private $magazine;
 
     public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDuration $reloadDuration, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->setScope(new IronSightForHG());
@@ -38,5 +40,13 @@ abstract class HandGun extends Gun
      */
     public function setScope(HandGunScope $scope): void {
         $this->scope = $scope;
+    }
+    /**
+     * @param HandGunMagazine $magazine
+     */
+    public function setMagazine(HandGunMagazine $magazine): void {
+        $this->bulletCapacity += $magazine->getAdditionalBullets();
+        $this->reloadDuration = new ReloadDuration($this->reloadDuration->getSecond() + $magazine->getAdditionalReloadTime());
+        $this->magazine = $magazine;
     }
 }
