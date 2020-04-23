@@ -15,6 +15,6 @@ use pocketmine\scheduler\TaskScheduler;
 class SMLEMK3 extends SniperRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new BulletDamage(100,80), new GunRate(0.8), new BulletSpeed(74), 10, 2.5, new ReloadDuration(0.5), new EffectiveRange(10,50), new GunPrecision(99.5,80), $scheduler);
+        parent::__construct(new BulletDamage(100,80), new GunRate(0.8), new BulletSpeed(740), 10, 2.5, new ReloadDuration(0.5), new EffectiveRange(10,50), new GunPrecision(99.5,80), $scheduler);
     }
 }

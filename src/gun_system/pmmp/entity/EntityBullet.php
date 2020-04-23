@@ -48,7 +48,7 @@ class EntityBullet
         ]);
 
         $projectile = $isArrow ? Entity::createEntity("Arrow", $player->getLevel(), $nbt, $player) : Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
-        $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8));
+        $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8 / 4));
 
         $handle = $scheduler->scheduleRepeatingTask(new ClosureTask(
             function (int $currentTick) use ($projectile) : void {
