@@ -111,7 +111,7 @@ abstract class Gun
         if ($this->currentBullet === 0)
             return new Response(false, "マガジンに弾がありません");
         if ($this->onCoolTime)
-            return new Response(false);
+            return new Response(false,"");
 
         $this->shootOnce($onSucceed);
         return new Response(true);
@@ -179,14 +179,15 @@ abstract class Gun
             return new Response(false, "残弾がありません");
 
         $this->onReloading = true;
-        $consumedBullets = $this->bulletCapacity - $this->currentBullet;
-        $onStarted($consumedBullets);
-        $this->reload($inventoryBullets, $onFinished);
+        $this->reload($inventoryBullets, $onStarted, $onFinished);
 
         return new Response(true);
     }
 
-    protected function reload(int $inventoryBullets, Closure $onFinished): void {
+    protected function reload(int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
+        $consumedBullets = $this->bulletCapacity - $this->currentBullet;
+        $onStarted($consumedBullets);
+
         $this->scheduler->scheduleDelayedTask(new ClosureTask(
             function (int $currentTick) use ($inventoryBullets, $onFinished): void {
                 $empty = $this->bulletCapacity - $this->currentBullet;
