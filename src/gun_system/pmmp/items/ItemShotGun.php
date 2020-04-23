@@ -6,6 +6,7 @@ namespace gun_system\pmmp\items;
 
 use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\BulletId;
+use gun_system\models\shotgun\attachment\muzzle\ShotgunMuzzle;
 use gun_system\models\shotgun\attachment\scope\ShotgunScope;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\entity\EntityBullet;
@@ -26,6 +27,10 @@ class ItemShotGun extends ItemGun
 
     public function setScope(ShotgunScope $scope): void {
         $this->gun->setScope($scope);
+    }
+
+    public function setMuzzle(ShotgunMuzzle $muzzle): void {
+        $this->gun->setMuzzle($muzzle);
     }
 
     public function shootOnce(): void {
@@ -67,7 +72,7 @@ class ItemShotGun extends ItemGun
         } else if ($bulletType->equal(ShotgunBulletType::Dart())) {
             $i = 0;
             while ($i < $this->gun->getPellets()) {
-                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler,true);
+                EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler, true);
                 $i++;
             }
             $this->doReaction();

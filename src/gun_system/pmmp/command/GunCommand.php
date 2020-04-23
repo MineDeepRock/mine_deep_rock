@@ -27,6 +27,7 @@ use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\shotgun\attachment\muzzle\FullChoke;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\attachment\scope\EightFoldScopeForSR;
@@ -156,6 +157,9 @@ class GunCommand extends Command
             switch ($name){
                 case "IronSight":
                     $gun->setScope(new IronSightForSG());
+                    break;
+                case "FullChoke":
+                    $gun->setMuzzle(new FullChoke());
                     break;
             }
         } else if ($gun instanceof ItemSniperRifle){

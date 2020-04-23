@@ -13,10 +13,9 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
-use gun_system\models\hand_gun\attachment\scope\HandGunScope;
-use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\ReloadDuration;
 use gun_system\models\Response;
+use gun_system\models\shotgun\attachment\muzzle\ShotgunMuzzle;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\attachment\scope\ShotgunScope;
 use pocketmine\scheduler\ClosureTask;
@@ -25,6 +24,7 @@ use pocketmine\scheduler\TaskScheduler;
 abstract class Shotgun extends Gun
 {
     private $scope;
+    private $muzzle;
 
     private $bulletType;
     private $pellets;
@@ -70,6 +70,22 @@ abstract class Shotgun extends Gun
      */
     public function getBulletType(): ShotgunBulletType {
         return $this->bulletType;
+    }
+
+    /**
+     * @param ShotgunMuzzle $muzzle
+     */
+    public function setMuzzle(ShotgunMuzzle $muzzle): void {
+        $this->muzzle = $muzzle;
+
+        $this->precision = new GunPrecision(
+            $this->precision->getADS() + $muzzle->getAddPrecision(),
+            $this->precision->getHipShooting() + $muzzle->getAddPrecision());
+
+        $this->bulletDamage = new BulletDamage(
+            $this->bulletDamage->getMaxDamage() + $muzzle->getAddDamage(),
+            $this->bulletDamage->getMinDamage() + $muzzle->getAddDamage()
+        );
     }
 
 

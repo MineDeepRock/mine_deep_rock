@@ -20,7 +20,7 @@ abstract class Gun
     private $reaction;
     protected $reloadDuration;
     protected $effectiveRange;
-    private $precision;
+    protected $precision;
 
     private $damageCurve;
 
