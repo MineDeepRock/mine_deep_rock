@@ -40,8 +40,8 @@ class ItemSniperRifle extends ItemGun
         $inventoryBullets = $this->getBulletAmount();
 
         $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
-            $this->owner->sendPopup("リロード");
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
+            return  $this->getBulletAmount();
         }, function () {
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getBulletCapacity());
             $this->playReloadSound();
@@ -69,7 +69,7 @@ class ItemSniperRifle extends ItemGun
         $packet->x = $this->owner->x;
         $packet->y = $this->owner->y;
         $packet->z = $this->owner->z;
-        $packet->volume = 20;
+        $packet->volume = 40;
         $packet->pitch = 2;
         $packet->soundName = $soundName;
         $this->owner->sendDataPacket($packet);
