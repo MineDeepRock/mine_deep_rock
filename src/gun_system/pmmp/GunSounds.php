@@ -50,9 +50,6 @@ class GunSounds
         return new GunSounds("gun.lmg.reload.start");
     }
 
-    public static function SniperRifleStartReloading(): GunSounds {
-        return new GunSounds("gun.sniperrifle.reload.start");
-    }
 
     public static function SMGStartReloading(): GunSounds {
         return new GunSounds("gun.smg.reload.start");
@@ -68,10 +65,6 @@ class GunSounds
 
     public static function LMGEndReloading(): GunSounds {
         return new GunSounds("gun.lmg.reload.end");
-    }
-
-    public static function SniperRifleEndReloading(): GunSounds {
-        return new GunSounds("gun.sniperrifle.reload.end");
     }
 
     public static function SMGEndReloading(): GunSounds {
@@ -103,6 +96,10 @@ class GunSounds
         return new GunSounds("gun.shotgun.reload");
     }
 
+    public static function SniperRifleReload(): GunSounds {
+        return new GunSounds("gun.sniperrifle.reload");
+    }
+
     public static function shootSoundFromGunType(GunType $gunType): GunSounds {
         switch ($gunType->getTypeText()) {
             case "HandGun":
@@ -129,8 +126,6 @@ class GunSounds
                 return self::AssaultRifleStartReloading();
             case "LMG":
                 return self::LMGStartReloading();
-            case "SniperRifle":
-                return self::SniperRifleStartReloading();
             case "SMG":
                 return self::SMGStartReloading();
         }
@@ -145,8 +140,6 @@ class GunSounds
                 return self::AssaultRifleEndReloading();
             case "LMG":
                 return self::LMGEndReloading();
-            case "SniperRifle":
-                return self::SniperRifleEndReloading();
             case "SMG":
                 return self::SMGEndReloading();
         }
