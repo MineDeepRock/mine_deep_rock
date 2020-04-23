@@ -4,7 +4,10 @@
 namespace gun_system\pmmp\command;
 
 
+use gun_system\models\assault_rifle\attachiment\scope\EightFoldScopeForAR;
+use gun_system\models\assault_rifle\attachiment\scope\FourFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
+use gun_system\models\assault_rifle\attachiment\scope\TwelveFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
@@ -81,6 +84,15 @@ class GunCommand extends Command
                     break;
                 case "2xScope":
                     $gun->setScope(new TwoFoldScopeForAR());
+                    break;
+                case "4xScope":
+                    $gun->setScope(new FourFoldScopeForAR());
+                    break;
+                case "8xScope":
+                    $gun->setScope(new EightFoldScopeForAR());
+                    break;
+                case "12xScope":
+                    $gun->setScope(new TwelveFoldScopeForAR());
                     break;
             }
         } else if ($gun instanceof ItemHandGun){
