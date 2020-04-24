@@ -22,7 +22,9 @@ use gun_system\models\hand_gun\P08;
 use gun_system\models\light_machine_gun\attachment\scope\FourFoldScopeForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
+use gun_system\models\light_machine_gun\BAR1918;
 use gun_system\models\light_machine_gun\LewisGun;
+use gun_system\models\light_machine_gun\MG15;
 use gun_system\models\light_machine_gun\ParabellumMG14;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\Automatic12G;
@@ -234,6 +236,7 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
+
             //SniperRifle
             case "SMLEMK3":
                 $item = new ItemSniperRifle("SMLEMK3", new SMLEMK3($this->scheduler), $player);
@@ -269,12 +272,22 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-
             case "ParabellumMG14":
                 $item = new ItemLightMachineGun("ParabellumMG14", new ParabellumMG14($this->scheduler), $player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
+            case "MG15":
+                $item = new ItemLightMachineGun("MG15", new MG15($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "BAR1918":
+                $item = new ItemLightMachineGun("BAR1918", new BAR1918($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+
         }
     }
 
