@@ -34,7 +34,10 @@ use gun_system\models\shotgun\Model1900;
 use gun_system\models\sniper_rifle\attachment\scope\FourFoldScopeForSR;
 use gun_system\models\sniper_rifle\attachment\scope\IronSightForSR;
 use gun_system\models\sniper_rifle\attachment\scope\TwoFoldScopeForSR;
+use gun_system\models\sniper_rifle\Gewehr98;
+use gun_system\models\sniper_rifle\MartiniHenry;
 use gun_system\models\sniper_rifle\SMLEMK3;
+use gun_system\models\sniper_rifle\Type38Arisaka;
 use gun_system\models\sub_machine_gun\attachment\scope\FourFoldScopeForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\IronSightForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\TwoFoldScopeForSMG;
@@ -243,7 +246,22 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-
+            case "Gewehr98":
+                $item = new ItemSniperRifle("Gewehr98", new Gewehr98($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "MartiniHenry":
+                $item = new ItemSniperRifle("MartiniHenry", new MartiniHenry($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "Type38Arisaka":
+                $item = new ItemSniperRifle("Type38Arisaka", new Type38Arisaka($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+                
             //SMG
             case "MP18":
                 $item = new ItemSubMachineGun("MP18", new MP18($this->scheduler), $player);

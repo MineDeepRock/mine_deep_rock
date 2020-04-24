@@ -10,7 +10,6 @@ use gun_system\models\ClipReloadController;
 use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
-use gun_system\models\OneByOneReloadController;
 use pocketmine\scheduler\TaskScheduler;
 
 class Gewehr98 extends SniperRifle
