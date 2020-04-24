@@ -34,6 +34,8 @@ use gun_system\models\sub_machine_gun\attachment\scope\FourFoldScopeForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\IronSightForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\TwoFoldScopeForSMG;
 use gun_system\models\sub_machine_gun\Automatico;
+use gun_system\models\sub_machine_gun\FrommerStopAuto;
+use gun_system\models\sub_machine_gun\Hellriegel1915;
 use gun_system\models\sub_machine_gun\MP18;
 use gun_system\pmmp\items\ItemAssaultRifle;
 use gun_system\pmmp\items\ItemGun;
@@ -181,7 +183,7 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-                
+
             //AssaultRifle
             case "M1907SL":
                 $item = new ItemAssaultRifle("M1907SL", new M1907SL($this->scheduler), $player);
@@ -224,13 +226,22 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-
             case "Automatico":
                 $item = new ItemSubMachineGun("Automatico", new Automatico($this->scheduler), $player);
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-
+            case "Hellriegel1915":
+                $item = new ItemSubMachineGun("Hellriegel1915", new Hellriegel1915($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "FrommerStopAuto":
+                $item = new ItemSubMachineGun("FrommerStopAuto", new FrommerStopAuto($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+                
             //LMG
             case "LewisGun":
                 $item = new ItemLightMachineGun("LewisGun", new LewisGun($this->scheduler), $player);
