@@ -76,7 +76,7 @@ abstract class ItemGun extends Tool
     }
 
     public function doReaction(): void {
-        if ($this->gun->getReaction() !== 0.0) {
+        if ($this->gun->getReaction() !== 0.0 && !$this->owner->isSneaking()) {
             $playerPosition = $this->owner->getLocation();
             $dir = -$playerPosition->getYaw() - 90.0;
             $pitch = -$playerPosition->getPitch() - 180.0;
