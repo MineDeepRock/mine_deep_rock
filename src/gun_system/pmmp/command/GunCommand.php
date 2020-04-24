@@ -25,7 +25,10 @@ use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\ParabellumMG14;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
+use gun_system\models\shotgun\Automatic12G;
 use gun_system\models\shotgun\M1897;
+use gun_system\models\shotgun\Model10A;
+use gun_system\models\shotgun\Model1900;
 use gun_system\models\sniper_rifle\attachment\scope\FourFoldScopeForSR;
 use gun_system\models\sniper_rifle\attachment\scope\IronSightForSR;
 use gun_system\models\sniper_rifle\attachment\scope\TwoFoldScopeForSR;
@@ -205,6 +208,7 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
+
             //Shotgun
             case "M1897":
                 $bulletType = $bulletName === null ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($bulletName);
@@ -212,7 +216,24 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-
+            case "Model10A":
+                $bulletType = $bulletName === null ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($bulletName);
+                $item = new ItemShotGun("Model10A", new Model10A($bulletType, $this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "Automatic12G":
+                $bulletType = $bulletName === null ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($bulletName);
+                $item = new ItemShotGun("Automatic12G", new Automatic12G($bulletType, $this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "Model1900":
+                $bulletType = $bulletName === null ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($bulletName);
+                $item = new ItemShotGun("Model1900", new Model1900($bulletType, $this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
             //SniperRifle
             case "SMLEMK3":
                 $item = new ItemSniperRifle("SMLEMK3", new SMLEMK3($this->scheduler), $player);
@@ -241,7 +262,7 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-                
+
             //LMG
             case "LewisGun":
                 $item = new ItemLightMachineGun("LewisGun", new LewisGun($this->scheduler), $player);
