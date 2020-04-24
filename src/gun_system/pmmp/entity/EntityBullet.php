@@ -26,7 +26,7 @@ use pocketmine\scheduler\TaskScheduler;
 //TODO:場所ちがくね？
 class EntityBullet
 {
-    static function spawn(Player $player, float $speed, GunPrecision $precision, TaskScheduler $scheduler, $isArrow = false) {
+    static function spawn(Player $player, float $speed, GunPrecision $precision, TaskScheduler $scheduler) {
         $aimPos = $player->getDirectionVector();
         $value = $player->isSneaking() ? $precision->getADS() : $precision->getHipShooting();
 
@@ -47,7 +47,7 @@ class EntityBullet
             ]),
         ]);
 
-        $projectile = $isArrow ? Entity::createEntity("Arrow", $player->getLevel(), $nbt, $player) : Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
+        $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
         $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8 / 4));
 
         $handle = $scheduler->scheduleRepeatingTask(new ClosureTask(

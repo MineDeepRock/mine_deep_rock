@@ -24,18 +24,12 @@ class ShotgunBulletType
         return new ShotgunBulletType("Slug");
     }
 
-    public static function Dart(): ShotgunBulletType {
-        return new ShotgunBulletType("Dart");
-    }
-
     public static function fromString(string $string): ShotgunBulletType {
         switch ($string) {
             case "Buckshot":
                 return self::Buckshot();
             case "Slug":
                 return self::Slug();
-            case "Dart":
-                return self::Dart();
         }
         return self::Buckshot();
     }

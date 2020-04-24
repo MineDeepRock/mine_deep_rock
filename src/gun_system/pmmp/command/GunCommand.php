@@ -67,7 +67,7 @@ class GunCommand extends Command
                 $sender->sendMessage("/gun give [name] [bullet:onlyShotgun]");
                 return true;
             }
-            $bulletName = count($args) === 3 ? $args[1] : null;
+            $bulletName = count($args) === 3 ? $args[2] : null;
             $this->give($player, $args[1],$bulletName);
         } else if ($method === "attachment") {
             if (count($args) < 2) {
