@@ -11,7 +11,6 @@ use gun_system\pmmp\items\bullet\ItemLightMachineGunBullet;
 use gun_system\pmmp\items\bullet\ItemSlugBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
-use gun_system\pmmp\items\ItemAssaultRifle;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
@@ -75,7 +74,6 @@ class Main extends PluginBase implements Listener
         Item::addCreativeItem(Item::get(BulletId::LMG));
 
         Entity::registerEntity(\gun_system\pmmp\entity\Egg::class, true, ['Egg', 'minecraft:egg']);
-        Entity::registerEntity(\gun_system\pmmp\entity\Arrow::class, true, ['Arrow', 'minecraft:arrow']);
     }
 
 
