@@ -15,7 +15,7 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
-use gun_system\models\ReloadDetail;
+use gun_system\models\ReloadController;
 use gun_system\models\Response;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -24,9 +24,9 @@ abstract class AssaultRifle extends Gun
     private $scope;
     private $magazine;
 
-    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, int $bulletCapacity, float $reaction, ReloadDetail $reloadDetail, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadController $reloadController, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->setScope(new IronSightForAR());
-        parent::__construct(GunType::AssaultRifle(), $bulletDamage, $rate, $bulletSpeed, $bulletCapacity, $reaction, $reloadDetail, $effectiveRange, $precision, $scheduler);
+        parent::__construct(GunType::AssaultRifle(), $bulletDamage, $rate, $bulletSpeed, $reaction, $reloadController, $effectiveRange, $precision, $scheduler);
     }
 
     /**

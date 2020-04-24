@@ -24,6 +24,7 @@ use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\MagazineReloadController;
 use gun_system\models\shotgun\attachment\muzzle\FullChoke;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\M1897;
@@ -245,13 +246,14 @@ class GunCommand extends Command
         $bulletDamage = $gun->getBulletDamage();
         $effectiveRange = $gun->getEffectiveRange();
         $rate = $gun->getRate();
+
         return $item->setLore([
             TextFormat::RESET . "火力" . TextFormat::GRAY . $bulletDamage->getMaxDamage() . "-" . $bulletDamage->getMinDamage(),
             TextFormat::RESET . "有効射程" . TextFormat::GRAY . $effectiveRange->getStart() . "-" . $effectiveRange->getEnd(),
             TextFormat::RESET . "レート" . TextFormat::GRAY . $rate->getPerSecond(),
-            TextFormat::RESET . "マガジンキャパ" . TextFormat::GRAY . $gun->getBulletCapacity(),
+            TextFormat::RESET . "マガジンキャパ" . TextFormat::GRAY . $gun->getMagazineCapacity(),
+            TextFormat::RESET . "リロード時間" . $gun->getReloadController()->toString(),
             TextFormat::RESET . "反動" . TextFormat::GRAY . $gun->getReaction(),
-            TextFormat::RESET . "リロード時間" . TextFormat::GRAY . $gun->getReloadDetail()->getSecondOfClip(),//TODO
             TextFormat::RESET . "精度" . TextFormat::GRAY . "ADS:" . $gun->getPrecision()->getADS()."腰撃ち:".$gun->getPrecision()->getHipShooting(),
         ]);
     }

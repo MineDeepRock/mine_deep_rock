@@ -60,13 +60,13 @@ class ItemShotGun extends ItemGun
             }
             $this->doReaction();
             $this->playShootingSound();
-            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getMagazineCapacity());
 
         } else if ($bulletType->equal(ShotgunBulletType::Slug())) {
             EntityBullet::spawn($this->owner, $this->gun->getBulletSpeed()->getPerSecond(), $this->gun->getPrecision(), $scheduler);
             $this->doReaction();
             $this->playShootingSound();
-            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getMagazineCapacity());
 
         } else if ($bulletType->equal(ShotgunBulletType::Dart())) {
             $i = 0;
@@ -76,7 +76,7 @@ class ItemShotGun extends ItemGun
             }
             $this->doReaction();
             $this->playShootingSound();
-            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getMagazineCapacity());
         }
     }
 
@@ -87,7 +87,7 @@ class ItemShotGun extends ItemGun
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType(), $this->gun->getBulletType()), 0, $consumedBullets));
             return $this->getBulletAmount();
         }, function () {
-            $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getBulletCapacity());
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getMagazineCapacity());
             $this->playReloadSound();
         });
 

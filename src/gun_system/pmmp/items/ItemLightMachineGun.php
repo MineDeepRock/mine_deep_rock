@@ -20,7 +20,7 @@ class ItemLightMachineGun extends ItemGun
         });
         $gun->setOnFinishOverheat(function () use ($owner) {
             $this->playReadySound();
-            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getBulletCapacity());
+            $this->owner->sendPopup($this->gun->getCurrentBullet() . "\\" . $this->gun->getMagazineCapacity());
         });
     }
 
