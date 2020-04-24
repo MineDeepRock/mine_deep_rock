@@ -4,7 +4,6 @@
 namespace gun_system\models\sub_machine_gun;
 
 
-use gun_system\models\assault_rifle\attachiment\magazine\SubMachineGunMagazine;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
@@ -39,13 +38,5 @@ class SubMachineGun extends Gun
      */
     public function setScope(SubMachineGunScope $scope): void {
         $this->scope = $scope;
-    }
-    /**
-     * @param SubMachineGunMagazine $magazine
-     */
-    public function setMagazine(SubMachineGunMagazine $magazine): void {
-        //$this->bulletCapacity += $magazine->getAdditionalBullets();
-        //$this->reloadDuration = new ReloadDuration($this->reloadDuration->getSecond() + $magazine->getAdditionalReloadTime());
-        //$this->magazine = $magazine;
     }
 }

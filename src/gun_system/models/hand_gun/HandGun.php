@@ -20,7 +20,6 @@ use pocketmine\scheduler\TaskScheduler;
 abstract class HandGun extends Gun
 {
     private $scope;
-    private $magazine;
 
     public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadController $reloadController, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
         $this->setScope(new IronSightForHG());
@@ -40,13 +39,5 @@ abstract class HandGun extends Gun
      */
     public function setScope(HandGunScope $scope): void {
         $this->scope = $scope;
-    }
-    /**
-     * @param HandGunMagazine $magazine
-     */
-    public function setMagazine(HandGunMagazine $magazine): void {
-        //$this->bulletCapacity += $magazine->getAdditionalBullets();
-        //$this->reloadDuration = new ReloadDuration($this->reloadDuration->getSecond() + $magazine->getAdditionalReloadTime());
-        //$this->magazine = $magazine;
     }
 }

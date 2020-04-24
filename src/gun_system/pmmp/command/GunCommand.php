@@ -4,12 +4,6 @@
 namespace gun_system\pmmp\command;
 
 
-use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForAR;
-use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForHG;
-use gun_system\models\assault_rifle\attachiment\magazine\ExpansionMagazineForSMG;
-use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForAR;
-use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForHG;
-use gun_system\models\assault_rifle\attachiment\magazine\QuickReloadMagazineForSMG;
 use gun_system\models\assault_rifle\attachiment\scope\FourFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
 use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
@@ -24,8 +18,6 @@ use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\ParabellumMG14;
-use gun_system\models\MagazineReloadController;
-use gun_system\models\shotgun\attachment\muzzle\FullChoke;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\attachment\scope\FourFoldScopeForSR;
@@ -102,12 +94,6 @@ class GunCommand extends Command
                 case "4xScope":
                     $gun->setScope(new FourFoldScopeForAR());
                     break;
-                case "ExpansionMagazine":
-                    $gun->setMagazine(new ExpansionMagazineForAR());
-                    break;
-                case "QuickReloadMagazine":
-                    $gun->setMagazine(new QuickReloadMagazineForAR());
-                    break;
             }
         } else if ($gun instanceof ItemHandGun){
             switch ($name){
@@ -119,13 +105,6 @@ class GunCommand extends Command
                     break;
                 case "4xScope":
                     $gun->setScope(new FourFoldScopeForHG());
-                    break;
-                    break;
-                case "ExpansionMagazine":
-                    $gun->setMagazine(new ExpansionMagazineForHG());
-                    break;
-                case "QuickReloadMagazine":
-                    $gun->setMagazine(new QuickReloadMagazineForHG());
                     break;
             }
         } else if ($gun instanceof ItemLightMachineGun){
@@ -144,9 +123,6 @@ class GunCommand extends Command
             switch ($name){
                 case "IronSight":
                     $gun->setScope(new IronSightForSG());
-                    break;
-                case "FullChoke":
-                    $gun->setMuzzle(new FullChoke());
                     break;
             }
         } else if ($gun instanceof ItemSniperRifle){
@@ -171,12 +147,6 @@ class GunCommand extends Command
                     break;
                 case "4xScope":
                     $gun->setScope(new FourFoldScopeForSMG());
-                    break;
-                case "ExpansionMagazine":
-                    $gun->setMagazine(new ExpansionMagazineForSMG());
-                    break;
-                case "QuickReloadMagazine":
-                    $gun->setMagazine(new QuickReloadMagazineForSMG());
                     break;
             }
         }
