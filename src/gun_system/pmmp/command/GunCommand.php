@@ -15,7 +15,10 @@ use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\hand_gun\attachment\scope\FourFoldScopeForHG;
 use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
 use gun_system\models\hand_gun\attachment\scope\TwoFoldScopeForHG;
+use gun_system\models\hand_gun\C96;
+use gun_system\models\hand_gun\HowdahPistol;
 use gun_system\models\hand_gun\Mle1903;
+use gun_system\models\hand_gun\P08;
 use gun_system\models\light_machine_gun\attachment\scope\FourFoldScopeForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
@@ -163,7 +166,22 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-
+            case "P08":
+                $item = new ItemHandGun("P08", new P08($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "C96":
+                $item = new ItemHandGun("C96", new C96($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "HowdahPistol":
+                $item = new ItemHandGun("HowdahPistol", new HowdahPistol($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+                
             //AssaultRifle
             case "M1907SL":
                 $item = new ItemAssaultRifle("M1907SL", new M1907SL($this->scheduler), $player);
