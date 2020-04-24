@@ -17,7 +17,6 @@ class BulletId
 
     public const BUCK_SHOT = ItemIds::BRICK;
     public const SLUG = ItemIds::NETHER_BRICK;
-    public const DART = ItemIds::LEATHER;
 
     public static function fromGunType(GunType $gunType,ShotgunBulletType $shotgunBulletType = null): int {
         if ($gunType->equal(GunType::Shotgun())){
