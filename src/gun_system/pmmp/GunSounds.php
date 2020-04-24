@@ -101,6 +101,9 @@ class GunSounds
     public static function SniperRifleReload(): GunSounds {
         return new GunSounds("gun.sniperrifle.reload");
     }
+    public static function SniperRifleReloadClip(): GunSounds {
+        return new GunSounds("gun.sniperrifle.reload.clip");
+    }
 
     public static function shootSoundFromGunType(GunType $gunType): GunSounds {
         switch ($gunType->getTypeText()) {

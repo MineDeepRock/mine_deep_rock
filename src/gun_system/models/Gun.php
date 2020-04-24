@@ -106,7 +106,7 @@ abstract class Gun
         if ($this->reloadController->currentBullet === 0)
             return new Response(false, "マガジンに弾がありません");
         if ($this->onCoolTime)
-            return new Response(false, "");
+            return new Response(true, $this->getCurrentBullet() . "\\" . $this->getMagazineCapacity());
 
         $this->shootOnce($onSucceed);
         return new Response(true);
@@ -131,7 +131,7 @@ abstract class Gun
         if ($this->onCoolTime) {
             //TODO: 1/rate - (now-lastShootDate)
             $this->delayShooting(1 / $this->rate->getPerSecond(), $onSucceed, $isADS);
-            return new Response(true);
+            return new Response(true, $this->getCurrentBullet() . "\\" . $this->getMagazineCapacity());
         }
 
         $this->shoot($onSucceed, $isADS);
@@ -501,31 +501,31 @@ class ClipReloadController extends ReloadController
         $this->onReloading = true;
 
         if ($inventoryBullets >= $this->clipCapacity && $emptySlot >= $this->clipCapacity) {
-            $this->clipReloadTaskHandler = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($scheduler,$inventoryBullets, $onStarted, $onFinished): void {
+            $this->clipReloadTaskHandler = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($scheduler, $inventoryBullets, $onStarted, $onFinished): void {
                 $this->currentBullet += $this->clipCapacity;
                 $inventoryBullets = $onStarted($this->clipCapacity);
-                $onFinished();
-                if ($inventoryBullets < $this->clipCapacity){
+                $onFinished(true);
+                if ($inventoryBullets < $this->clipCapacity) {
                     $this->clipReloadTaskHandler->cancel();
                     $this->reloadOneByOne($scheduler, $inventoryBullets, $onStarted, $onFinished);
                 }
-                if (($this->magazineCapacity - $this->currentBullet) < $this->clipCapacity){
+                if (($this->magazineCapacity - $this->currentBullet) < $this->clipCapacity) {
                     $this->clipReloadTaskHandler->cancel();
                     $this->reloadOneByOne($scheduler, $inventoryBullets, $onStarted, $onFinished);
                 }
-            }), 20 * $this->clipCapacity,20 * $this->clipCapacity);
+            }), 20 * $this->secondOfClip, 20 * $this->secondOfClip);
         } else {
             $this->reloadOneByOne($scheduler, $inventoryBullets, $onStarted, $onFinished);
         }
 
     }
 
-    private function reloadOneByOne(TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished){
+    private function reloadOneByOne(TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished) {
         if ($this->currentBullet !== $this->magazineCapacity) {
             $this->oneReloadTaskHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($inventoryBullets, $onStarted, $onFinished): void {
                 $this->currentBullet++;
                 $inventoryBullets = $onStarted(1);
-                $onFinished();
+                $onFinished(false);
                 if ($inventoryBullets === 0)
                     $this->oneReloadTaskHandler->cancel();
                 if ($this->currentBullet === $this->magazineCapacity)

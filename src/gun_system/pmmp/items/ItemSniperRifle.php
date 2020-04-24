@@ -14,7 +14,7 @@ use pocketmine\Player;
 class ItemSniperRifle extends ItemGun
 {
     public function __construct(string $name, SniperRifle $gun, Player $owner) {
-        $gun->setWhenBecomeReady(function(){
+        $gun->setWhenBecomeReady(function () {
             $this->playCockingSound();
         });
 
@@ -40,10 +40,14 @@ class ItemSniperRifle extends ItemGun
 
         $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
-            return  $this->getBulletAmount();
-        }, function () {
+            return $this->getBulletAmount();
+        }, function ($isClip) {
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getMagazineCapacity());
-            $this->playReloadSound();
+            if ($isClip) {
+                $this->playReloadClipSound();
+            } else {
+                $this->playReloadSound();
+            }
         });
 
         if (!$result->isSuccess())
@@ -52,11 +56,16 @@ class ItemSniperRifle extends ItemGun
 
     private function playReloadSound(): void {
         $soundName = GunSounds::SniperRifleReload()->getText();
-        GunSounds::play($this->owner,$soundName);
+        GunSounds::play($this->owner, $soundName);
+    }
+
+    private function playReloadClipSound(): void {
+        $soundName = GunSounds::SniperRifleReloadClip()->getText();
+        GunSounds::play($this->owner, $soundName);
     }
 
     private function playCockingSound(): void {
         $soundName = GunSounds::SniperRifleCocking()->getText();
-        GunSounds::play($this->owner,$soundName);
+        GunSounds::play($this->owner, $soundName);
     }
 }
