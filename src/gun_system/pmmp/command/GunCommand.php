@@ -7,7 +7,10 @@ namespace gun_system\pmmp\command;
 use gun_system\models\assault_rifle\attachiment\scope\FourFoldScopeForAR;
 use gun_system\models\assault_rifle\attachiment\scope\IronSightForAR;
 use gun_system\models\assault_rifle\attachiment\scope\TwoFoldScopeForAR;
+use gun_system\models\assault_rifle\CeiRigotti;
+use gun_system\models\assault_rifle\FedorovAvtomat;
 use gun_system\models\assault_rifle\M1907SL;
+use gun_system\models\assault_rifle\Ribeyrolles;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\hand_gun\attachment\scope\FourFoldScopeForHG;
 use gun_system\models\hand_gun\attachment\scope\IronSightForHG;
@@ -167,7 +170,21 @@ class GunCommand extends Command
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 break;
-
+            case "CeiRigotti":
+                $item = new ItemAssaultRifle("CeiRigotti", new CeiRigotti($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "FedorovAvtomat":
+                $item = new ItemAssaultRifle("FedorovAvtomat", new FedorovAvtomat($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
+            case "Ribeyrolles":
+                $item = new ItemAssaultRifle("Ribeyrolles", new Ribeyrolles($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                break;
             //Shotgun
             case "M1897":
                 $bulletType = $bulletName === null ? ShotgunBulletType::Buckshot() : ShotgunBulletType::fromString($bulletName);
