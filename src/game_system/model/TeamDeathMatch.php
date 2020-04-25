@@ -6,6 +6,7 @@ namespace game_system\model;
 
 use Cassandra\Time;
 use Closure;
+use game_system\pmmp\WorldController;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -29,7 +30,9 @@ class TeamDeathMatch extends Game
     private $blueTeamScore;
     private $blueTeamSpawnPoints;
 
-    public function __construct(TeamDeathMatchMap $map,TaskScheduler $scheduler) {
+    private $map;
+
+    public function __construct(TeamDeathMatchMap $map, TaskScheduler $scheduler) {
         $this->limitSecond = 600;
         $this->elapsedSecond = 0;
 
@@ -42,19 +45,28 @@ class TeamDeathMatch extends Game
         $this->blueTeam = new Team();
         $this->blueTeamScore = 0;
         $this->blueTeamSpawnPoints = $map->getBlueTeamSpawnPoints();
+
+        $this->map = $map;
         parent::__construct();
     }
 
     public function start(array $participants, Closure $onFinished): void {
         $this->isStarted = true;
+        $worldController = new WorldController();
 
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
             $this->setSpawnPoint($player, $participant->getBelongTeamId());
 
-            $player->teleport($player->getSpawn());
+            $worldController->teleport($player,
+                $this->map->getName(),
+                $player->getSpawn()->getX(),
+                $player->getSpawn()->getY(),
+                $player->getSpawn()->getZ()
+            );
+
             $player->getInventory()->setContents([]);
-            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(),"gun give ". $participant->getName() . " " . $participant->getSelectedWeaponName());
+            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $participant->getName() . " " . $participant->getSelectedWeaponName());
         }
 
         $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($onFinished): void {

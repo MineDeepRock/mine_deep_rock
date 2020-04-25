@@ -16,6 +16,13 @@ abstract class Map
         $this->creatorName = $creatorName;
         $this->supportGameType = $supportGameType;
     }
+
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return $this->name;
+    }
 }
 
 abstract class TeamDeathMatchMap extends Map
