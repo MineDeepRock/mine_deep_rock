@@ -63,12 +63,13 @@ class GunSystemClient extends Client
                 } else {
                     $damage = $gun->getDamageCurve()[intval($distance)];
                 }
-                $entity->setHealth($entity->getHealth() - $damage / 5);//プレイヤーのHPが20なので
+                $entity->setHealth($entity->getHealth() - ($damage / 5));//プレイヤーのHPが20なので
                 
-                if ($entity->getHealth() - $damage / 5 <= 0 && $entity instanceof Human) {
+                if ($entity->getHealth() - ($damage / 5) <= 0 && $entity instanceof Human) {
                     $players = $attacker->getLevel()->getPlayers();
                     foreach ($players as $player) {
-                        $player->sendMessage($attacker->getName() . " killed " . $entity->getName() . " by" . $itemGun->getCustomName());
+                        var_dump($player->getName());
+                        $player->sendMessage($attacker->getName() . " killed " . $entity->getName() . " by " . $itemGun->getCustomName());
                     }
                 }
             }

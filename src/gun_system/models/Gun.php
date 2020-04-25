@@ -561,7 +561,7 @@ class OneByOneReloadController extends ReloadController
         $this->oneReloadTaskHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($inventoryBullets, $onStarted, $onFinished): void {
             $this->currentBullet++;
             $inventoryBullets = $onStarted(1);
-            $onFinished();
+            $onFinished(false);
             if ($inventoryBullets === 0)
                 $this->oneReloadTaskHandler->cancel();
             if ($this->currentBullet === $this->magazineCapacity)
