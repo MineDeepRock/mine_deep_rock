@@ -61,8 +61,6 @@ class Main extends PluginBase implements Listener
         Item::addCreativeItem(Item::get(BulletId::BUCK_SHOT));
         ItemFactory::registerItem(new ItemSlugBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::SLUG));
-        ItemFactory::registerItem(new ItemDartBullet(), true);
-        Item::addCreativeItem(Item::get(BulletId::DART));
 
         ItemFactory::registerItem(new ItemSniperRifleBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::SNIPER_RIFLE));
