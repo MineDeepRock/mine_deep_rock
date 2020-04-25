@@ -5,13 +5,12 @@ namespace game_system\pmmp\command;
 
 
 use game_system\GameSystemClient;
-use game_system\model\Maps\RealisticWWIBattlefieldExtended;
+use game_system\model\map\RealisticWWIBattlefieldExtended;
 use game_system\model\TeamDeathMatch;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
 use pocketmine\scheduler\TaskScheduler;
-use pocketmine\Server;
 
 class GameCommand extends Command
 {

@@ -1,10 +1,8 @@
 <?php
 
 
-namespace game_system\model\Maps;
+namespace game_system\model\map;
 
-
-use game_system\model\TeamDeathMatchMap;
 
 class RealisticWWIBattlefieldExtended extends TeamDeathMatchMap
 {

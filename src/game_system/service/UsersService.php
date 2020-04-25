@@ -27,7 +27,7 @@ class UsersService extends Service
     }
 
     public function getParticipants(GameId $gameId): array {
-        return $this->repository->getParticipants($gameId);
+        return $this->repository->getParticipants($gameId->value());
     }
 
     public function joinGame(string $userName, GameId $gameId, TeamId $redTeamId, TeamId $blueTeamId): TeamId {
@@ -43,10 +43,10 @@ class UsersService extends Service
         }
 
         if ($numberOfRedTeamMember > $numberOfBlueTeamMember) {
-            $this->repository->joinTeam($userName, $blueTeamId, $gameId);
+            $this->repository->joinTeam($userName, $blueTeamId->value(), $gameId->value());
             return $blueTeamId;
         } else {
-            $this->repository->joinTeam($userName, $redTeamId, $gameId);
+            $this->repository->joinTeam($userName, $redTeamId->value(), $gameId->value());
             return $redTeamId;
         }
     }

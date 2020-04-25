@@ -9,7 +9,6 @@ use game_system\model\Game;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\item\Item;
-use pocketmine\Server;
 
 class GameSystemClient extends Client
 {
@@ -70,6 +69,7 @@ class GameSystemClient extends Client
     }
 
     public function quitGame(string $userName): void {
+        //TODO:アイテム削除とTP
         $this->usersService->quitGame($userName);
     }
 

@@ -15,7 +15,7 @@ class User
 
     private $selectedWeaponName;
 
-    public function __construct(string $name, int $winCount, int $money, TeamId $belongTeamId, TeamId $lastBelongTeamId, GameId $participatedGameId,string $selectedWeaponName = "M1907SL") {
+    public function __construct(string $name, int $winCount, int $money, ?TeamId $belongTeamId, ?TeamId $lastBelongTeamId, ?GameId $participatedGameId, string $selectedWeaponName = "M1907SL") {
         $this->name = $name;
         $this->winCount = $winCount;
         $this->money = $money;
@@ -29,9 +29,9 @@ class User
         $name = $json["name"];
         $winCount = intval($json["win_count"]);
         $money = intval($json["money"]);
-        $belongTeamId = new TeamId($json["belong_team_id"]);
-        $lastBelongTeaId = new TeamId($json["last_belong_team_id"]);
-        $participatedGameId = new GameId($json["participated_game_id"]);
+        $belongTeamId = $json["belong_team_id"] === null ? null : new TeamId($json["belong_team_id"]);
+        $lastBelongTeaId = $json["last_belong_team_id"] === null ? null : new TeamId($json["last_belong_team_id"]);
+        $participatedGameId = $json["participated_game_id"] === null ? null : new GameId($json["participated_game_id"]);
 
         return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId);
     }

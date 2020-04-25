@@ -4,10 +4,9 @@
 namespace game_system\model;
 
 
-use Entity;
 use ValueObject;
 
-class Team extends Entity
+class Team extends ValueObject
 {
     private $id;
 
@@ -20,29 +19,5 @@ class Team extends Entity
      */
     public function getId(): TeamId {
         return $this->id;
-    }
-}
-
-class TeamId extends ValueObject
-{
-    private $id;
-
-    public function value(): ?string {
-        return $this->id;
-    }
-
-    public static function asNew(): TeamId {
-        return new TeamId(uniqid());
-    }
-
-    public function __construct(String $id) {
-        $this->id = $id;
-    }
-
-    public function equal(?TeamId $id): bool {
-        if ($id === null)
-            return false;
-
-        return $this->id === $id->value();
     }
 }

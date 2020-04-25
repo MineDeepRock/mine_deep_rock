@@ -25,7 +25,7 @@ class UsersRepository extends Repository
         }
     }
 
-    public function getUserData(string $userName): User {
+    public function getUserData(string $userName): ?User {
         $result = $this->db->query("SELECT * FROM users WHERE name='{$userName}'");
         if ($result->num_rows === 0) {
             return null;
@@ -34,11 +34,14 @@ class UsersRepository extends Repository
     }
 
     public function getParticipants(string $gameId): array {
-        $result = $this->db->query("SELECT * FROM users WHERE belong_game_id='{$gameId}'");
-        $usersJson = $result->fetch_assoc();
+        $result = $this->db->query("SELECT * FROM users WHERE participated_game_id='{$gameId}'");
+        if ($result->num_rows === 0) {
+            return [];
+        }
+
         $users = array_map(function ($value) {
             return User::fromJson($value);
-        }, $usersJson);
+        }, $result->fetch_assoc());
 
         return $users;
     }
