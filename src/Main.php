@@ -43,7 +43,7 @@ class Main extends PluginBase implements Listener
         $this->gameSystemClient = new GameSystemClient();
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler()));
+        $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler(), $this->getServer()));
         $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemClient, $this->getScheduler(), $this->getServer()));
 
 
