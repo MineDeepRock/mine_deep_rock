@@ -25,8 +25,6 @@ class BulletId
                     return self::BUCK_SHOT;
                 case ShotgunBulletType::Slug()->getTypeText():
                     return self::SLUG;
-                case ShotgunBulletType::Dart()->getTypeText():
-                    return self::DART;
             }
         }
 
