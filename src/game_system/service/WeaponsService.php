@@ -10,7 +10,7 @@ use Service;
 
 class WeaponsService extends Service
 {
-    public function updateKillCount(User $owner, WeaponId $weaponId, int $killCount): void { }
+    public function addKillCount(string $ownerName, string $weaponName): void { }
 
-    public function updateWinCount(User $owner, WeaponId $weaponId, int $winCount): void { }
+    public function addWinCount(string $ownerName, string $weaponName): void { }
 }

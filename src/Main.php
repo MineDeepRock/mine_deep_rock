@@ -15,6 +15,7 @@ use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
+use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
@@ -165,5 +166,12 @@ class Main extends PluginBase implements Listener
         $playerName = $event->getPlayer()->getName();
 
         $this->gameSystemClient->quitGame($playerName);
+    }
+
+    public function onKilledPlayer(EntityDeathEvent $event) {
+        $attackerName = $event->getEventName();
+        $item = $this->getServer()->getPlayer($attackerName)->getInventory()->getItemInHand();
+
+        $this->gameSystemClient->onKilledPlayer($attackerName,$item);
     }
 }

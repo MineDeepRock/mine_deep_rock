@@ -46,8 +46,21 @@ class GameCommand extends Command
                         $targetPlayer->sendMessage("TeamDeathMatchが開かれました。 /game joinで参加しましょう");
                     break;
             }
+        } else if ($method === "close") {
+            if (!$player->isOp()) {
+                $sender->sendMessage("権限がありません");
+                return false;
+            }
+            $result = $this->closeGame();
+            if (!$result)
+                $player->sendMessage("試合が開かれていません");
+
+            $player->sendMessage("試合を終了させました");//TODO
         } else if ($method === "join") {
-            $this->join($player->getName());
+            $result = $this->join($player->getName());
+            if (!$result)
+                $player->sendMessage("試合が開かれていません");
+
             $player->sendMessage("試合に参加しました");
         } else if ($method === "quit" || $method === "hub") {
             $this->quit($player->getName());
@@ -56,12 +69,16 @@ class GameCommand extends Command
         return true;
     }
 
-    private function createTeamDeathMatch(): void {
-        $this->client->createGame(new TeamDeathMatch());
+    private function createTeamDeathMatch(): bool {
+        return $this->client->createGame(new TeamDeathMatch());
     }
 
-    private function join(string $playerName): void {
-        $this->client->joinGame($playerName);
+    private function closeGame(): bool {
+        return $this->client->closeGame();
+    }
+
+    private function join(string $playerName): bool {
+        return $this->client->joinGame($playerName);
     }
 
     private function quit(string $playerName): void {
