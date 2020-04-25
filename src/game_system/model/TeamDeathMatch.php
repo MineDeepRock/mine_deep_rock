@@ -6,7 +6,6 @@ namespace game_system\model;
 
 class TeamDeathMatch extends Game
 {
-    private $id;
     private $redTeam;
     private $redTeamScore;
     private $redTeamSpawnPoints;
@@ -16,8 +15,6 @@ class TeamDeathMatch extends Game
     private $blueTeamSpawnPoints;
 
     public function __construct() {
-        $this->id = GameId::asNew();
-
         $this->redTeam = new Team();
         $this->redTeamScore = 0;
 

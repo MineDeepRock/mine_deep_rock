@@ -6,7 +6,22 @@ namespace game_system\model;
 
 use ValueObject;
 
-abstract class Game extends ValueObject {}
+abstract class Game extends ValueObject
+{
+    private $id;
+
+    public function __construct() {
+        $this->id = GameId::asNew();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+}
 
 class GameType
 {
@@ -16,11 +31,11 @@ class GameType
         $this->type = $type;
     }
 
-    public function equal(GameType $gunType) :bool {
+    public function equal(GameType $gunType): bool {
         return $this->type == $gunType->type;
     }
 
-    public static function TeamDeathMatch():GameType {
+    public static function TeamDeathMatch(): GameType {
         return new GameType("TeamDeathMatch");
     }
 
