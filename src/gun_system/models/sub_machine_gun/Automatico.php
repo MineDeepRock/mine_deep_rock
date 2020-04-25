@@ -15,7 +15,7 @@ use pocketmine\scheduler\TaskScheduler;
 class Automatico extends SubMachineGun
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new BulletDamage(37, 6),
+        parent::__construct(new BulletDamage(23, 13.5),
             new GunRate(15),
             new BulletSpeed(380),
             new MagazineReloadController(25, 2.1),
