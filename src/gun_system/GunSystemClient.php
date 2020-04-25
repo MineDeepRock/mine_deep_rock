@@ -38,7 +38,7 @@ class GunSystemClient extends Client
     }
 
     //TODO:ダメージの計算はGameSystemでやる
-    public function sendDamageByShooting(?Player $attacker, Entity $entity) {
+    public function receivedDamage(?Player $attacker, Entity $entity): int {
         if ($attacker !== null) {
 
             $attackerPos = new Vector3(
@@ -63,17 +63,11 @@ class GunSystemClient extends Client
                 } else {
                     $damage = $gun->getDamageCurve()[intval($distance)];
                 }
-                $entity->setHealth($entity->getHealth() - ($damage / 5));//プレイヤーのHPが20なので
-                
-                if ($entity->getHealth() - ($damage / 5) <= 0 && $entity instanceof Human) {
-                    $players = $attacker->getLevel()->getPlayers();
-                    foreach ($players as $player) {
-                        var_dump($player->getName());
-                        $player->sendMessage($attacker->getName() . " killed " . $entity->getName() . " by " . $itemGun->getCustomName());
-                    }
-                }
+
+                return $damage/5;
             }
         }
+        return 0;
     }
 
 }

@@ -15,6 +15,7 @@ use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
@@ -135,13 +136,6 @@ class Main extends PluginBase implements Listener
         }
     }
 
-    public function onBulletHit(ProjectileHitEntityEvent $event) {
-        $entity = $event->getEntity();
-        if ($entity instanceof \gun_system\pmmp\entity\Egg || $entity instanceof \gun_system\pmmp\entity\Arrow) {
-            $this->gunSystemClient->sendDamageByShooting($entity->getOwningEntity(), $event->getEntityHit());
-        }
-    }
-
     public function onSneak(PlayerToggleSneakEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
@@ -152,6 +146,16 @@ class Main extends PluginBase implements Listener
                 $effectLevel = $item->getGunData()->getScope()->getMagnification()->getValue();
                 $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel));
             }
+        }
+    }
+
+    public function onBulletHit(ProjectileHitEntityEvent $event) {
+        $entity = $event->getEntity();
+        $attacker = $entity->getOwningEntity();
+        if ($entity instanceof \gun_system\pmmp\entity\Egg && $attacker instanceof Human) {
+            $item = $attacker->getInventory()->getItemInHand();
+            $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
+            $this->gameSystemClient->onKilledPlayer($attacker,$entity, $item->getCustomName(), $damage);
         }
     }
 
@@ -166,12 +170,5 @@ class Main extends PluginBase implements Listener
         $playerName = $event->getPlayer()->getName();
 
         $this->gameSystemClient->quitGame($playerName);
-    }
-
-    public function onKilledPlayer(EntityDeathEvent $event) {
-        $attackerName = $event->getEventName();
-        $item = $this->getServer()->getPlayer($attackerName)->getInventory()->getItemInHand();
-
-        $this->gameSystemClient->onKilledPlayer($attackerName, $item);
     }
 }

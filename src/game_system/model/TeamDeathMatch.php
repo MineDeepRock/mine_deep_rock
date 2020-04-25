@@ -56,17 +56,13 @@ class TeamDeathMatch extends Game
 
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
-            $this->setSpawnPoint($player, $participant->getBelongTeamId());
 
-            $worldController->teleport($player,
-                $this->map->getName(),
-                $player->getSpawn()->getX(),
-                $player->getSpawn()->getY(),
-                $player->getSpawn()->getZ()
-            );
-
+            $worldController->teleport($player, $this->map->getName());
+           
             $player->getInventory()->setContents([]);
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $participant->getName() . " " . $participant->getSelectedWeaponName());
+
+            $this->reSpawn($participant->getBelongTeamId(),$player);
         }
 
         $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($onFinished): void {
@@ -92,20 +88,22 @@ class TeamDeathMatch extends Game
         return $this->blueTeam;
     }
 
-    private function onKilledPlayer(TeamId $playerBelongTeamId): void {
-        if ($playerBelongTeamId->equal($this->redTeam->getId())) {
+    private function onKilledPlayer(TeamId $attackerTeamId, Player $killedPlayer): void {
+        $killedPlayerTeamId = $attackerTeamId->equal($this->redTeam->getId()) ? $this->blueTeam->getId() : $this->redTeam->getId();
+        if ($attackerTeamId->equal($this->redTeam->getId())) {
+            $this->reSpawn($killedPlayerTeamId,$killedPlayer);
             $this->redTeamScore++;
         } else {
+            $this->reSpawn($killedPlayerTeamId,$killedPlayer);
             $this->blueTeamScore++;
         }
     }
 
-    //TODO:pmmpのPlayerをimportしたくない
-    private function setSpawnPoint(Player $player, TeamId $belongTeamId): void {
+    private function reSpawn(TeamId $belongTeamId, Player $player) {
         if ($belongTeamId->equal($this->redTeam->getId())) {
-            $player->setSpawn($this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)]);
+            $player->teleport($this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)]);
         } else {
-            $player->setSpawn($this->blueTeamSpawnPoints[rand(0, count($this->blueTeamSpawnPoints) - 1)]);
+            $player->teleport($this->blueTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)]);
         }
     }
 }

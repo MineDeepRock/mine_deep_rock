@@ -8,7 +8,10 @@ use Client;
 use game_system\model\Game;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
+use pocketmine\entity\Entity;
+use pocketmine\entity\Human;
 use pocketmine\item\Item;
+use pocketmine\Player;
 
 class GameSystemClient extends Client
 {
@@ -39,6 +42,7 @@ class GameSystemClient extends Client
         if ($this->game === null)
             return false;
         $participants = $this->usersService->getParticipants($this->game->getId());
+
 
         $this->game->start($participants, function ($winTeam) use ($participants) {
             $winTeamId = $winTeam->getId();
@@ -73,12 +77,23 @@ class GameSystemClient extends Client
         $this->usersService->quitGame($userName);
     }
 
-    public function onKilledPlayer(string $attackerName, Item $weapon) {
-        if (is_subclass_of($weapon, "gun_system\pmmp\items\ItemGun")) {
-            $this->weaponService->addKillCount($attackerName, $weapon->getCustomName());
+    public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage) {
+        $health = $target->getHealth() - $damage;
+        if ($health <= 0 && $target instanceof Human) {
+            $target->setHealth(20);
+
+            $players = $attacker->getLevel()->getPlayers();
+            foreach ($players as $player) {
+                $player->sendMessage($attacker->getName() . " killed " . $target->getName() . " by " . $weaponName);
+            }
+
+            $attackerName = $attacker->getName();
+            $this->weaponService->addKillCount($attacker, $weaponName);
             $belongTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
             $this->game->onKilledPlayer($belongTeamId);
             $this->usersService->addMoney($attackerName, 100);
+        } else {
+            $target->setHealth($damage);
         }
     }
 }
