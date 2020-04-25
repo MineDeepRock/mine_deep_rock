@@ -11,16 +11,18 @@ class User
     private $money;
     private $belongTeamId;
     private $participatedGameId;
-
     private $lastBelongTeamId;
 
-    public function __construct(string $name, int $winCount, int $money, TeamId $belongTeamId, TeamId $lastBelongTeamId, GameId $participatedGameId) {
+    private $selectedWeaponName;
+
+    public function __construct(string $name, int $winCount, int $money, TeamId $belongTeamId, TeamId $lastBelongTeamId, GameId $participatedGameId,string $selectedWeaponName = "M1907SL") {
         $this->name = $name;
         $this->winCount = $winCount;
         $this->money = $money;
         $this->belongTeamId = $belongTeamId;
         $this->participatedGameId = $participatedGameId;
         $this->lastBelongTeamId = $lastBelongTeamId;
+        $this->selectedWeaponName = $selectedWeaponName;
     }
 
     public static function fromJson(array $json): User {
@@ -64,6 +66,13 @@ class User
 
     public function resetBelongTeamId(): void {
         $this->belongTeamId = null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectedWeaponName(): string {
+        return $this->selectedWeaponName;
     }
 
 }

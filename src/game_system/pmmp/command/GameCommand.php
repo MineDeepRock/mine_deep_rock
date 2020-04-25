@@ -5,6 +5,7 @@ namespace game_system\pmmp\command;
 
 
 use game_system\GameSystemClient;
+use game_system\model\Maps\RealisticWWIBattlefieldExtended;
 use game_system\model\TeamDeathMatch;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -89,7 +90,7 @@ class GameCommand extends Command
     }
 
     private function createTeamDeathMatch(): bool {
-        return $this->client->createGame(new TeamDeathMatch($this->scheduler));
+        return $this->client->createGame(new TeamDeathMatch(new RealisticWWIBattlefieldExtended(),$this->scheduler));
     }
 
     public function startGame(): bool {

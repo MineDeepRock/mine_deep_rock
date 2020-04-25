@@ -6,6 +6,7 @@ namespace game_system\model;
 
 use Cassandra\Time;
 use Closure;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
@@ -28,7 +29,7 @@ class TeamDeathMatch extends Game
     private $blueTeamScore;
     private $blueTeamSpawnPoints;
 
-    public function __construct(TaskScheduler $scheduler) {
+    public function __construct(TeamDeathMatchMap $map,TaskScheduler $scheduler) {
         $this->limitSecond = 600;
         $this->elapsedSecond = 0;
 
@@ -36,9 +37,11 @@ class TeamDeathMatch extends Game
 
         $this->redTeam = new Team();
         $this->redTeamScore = 0;
+        $this->redTeamSpawnPoints = $map->getRedTeamSpawnPoints();
 
         $this->blueTeam = new Team();
         $this->blueTeamScore = 0;
+        $this->blueTeamSpawnPoints = $map->getBlueTeamSpawnPoints();
         parent::__construct();
     }
 
@@ -48,7 +51,10 @@ class TeamDeathMatch extends Game
         foreach ($participants as $participant) {
             $player = $server->getPlayer($participant->getName());
             $this->setSpawnPoint($player, $participant->getBelongTeamId());
+
             $player->teleport($player->getSpawn());
+            $player->getInventory()->setContents([]);
+            $server->dispatchCommand(new ConsoleCommandSender(),"gun give ". $participant->getName() . " " . $participant->getSelectedWeaponName());
         }
 
         $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($onFinished): void {
