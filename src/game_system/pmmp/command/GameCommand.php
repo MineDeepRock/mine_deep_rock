@@ -14,10 +14,10 @@ class GameCommand extends Command
 {
     private $client;
 
-    public function __construct(Plugin $owner) {
+    public function __construct(Plugin $owner, GameSystemClient $client) {
         parent::__construct("game", "", "");
         $this->setPermission("Game.Command");
-        $this->client = new GameSystemClient();
+        $this->client = $client;
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
@@ -47,8 +47,11 @@ class GameCommand extends Command
                     break;
             }
         } else if ($method === "join") {
-            $this->join();
+            $this->join($player->getName());
             $player->sendMessage("試合に参加しました");
+        } else if ($method === "quit" || $method === "hub") {
+            $this->quit($player->getName());
+            $player->sendMessage("試合から抜けました");
         }
         return true;
     }
@@ -57,7 +60,11 @@ class GameCommand extends Command
         $this->client->createGame(new TeamDeathMatch());
     }
 
-    private function join(): void {
-        $this->client->joinGame();
+    private function join(string $playerName): void {
+        $this->client->joinGame($playerName);
+    }
+
+    private function quit(string $playerName): void {
+        $this->client->quitGame($playerName);
     }
 }
