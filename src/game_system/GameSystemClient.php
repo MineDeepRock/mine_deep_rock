@@ -15,7 +15,7 @@ class GameSystemClient extends Client
     private $usersService;
     private $weaponService;
 
-    private $holdGameId;
+    private $holdGame;
 
     public function __construct() {
         $this->usersService = new UsersService();
@@ -28,22 +28,22 @@ class GameSystemClient extends Client
 
 
     public function createGame(Game $game): bool {
-        if ($this->holdGameId !== null)
+        if ($this->holdGame !== null)
             return false;
 
-        $this->holdGameId = $game->getId();
+        $this->holdGame = $game;
         return true;
     }
 
     public function closeGame(): bool {
-        if ($this->holdGameId === null)
+        if ($this->holdGame === null)
             return false;
         return true;
     }
 
 
     public function joinGame(string $userName): bool {
-        if ($this->holdGameId === null)
+        if ($this->holdGame === null)
             return false;
 
         $this->usersService->joinGame($userName);
