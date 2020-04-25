@@ -9,13 +9,14 @@ use game_system\model\Game;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\item\Item;
+use pocketmine\Server;
 
 class GameSystemClient extends Client
 {
     private $usersService;
     private $weaponService;
 
-    private $holdGame;
+    private $game;
 
     public function __construct() {
         $this->usersService = new UsersService();
@@ -28,22 +29,40 @@ class GameSystemClient extends Client
 
 
     public function createGame(Game $game): bool {
-        if ($this->holdGame !== null)
+        if ($this->game !== null)
             return false;
 
-        $this->holdGame = $game;
+        $this->game = $game;
+        return true;
+    }
+
+    public function startGame(Server $server): bool {
+        if ($this->game === null)
+            return false;
+        $participants = $this->usersService->getParticipants($this->game->getId());
+
+        $this->game->start($server, $participants, function ($winTeam) use ($participants) {
+            $winTeamId = $winTeam->getId();
+            //途中抜けしたプレイヤーを省かないように再取得はしない
+            foreach ($participants as $participant) {
+                if ($participant->getLastBelongTeamId()->equal($winTeamId))
+                    $this->usersService->addWinCount($participant->getName());
+            }
+        });
+
         return true;
     }
 
     public function closeGame(): bool {
-        if ($this->holdGame === null)
+        if ($this->game === null)
             return false;
+        //TODO
         return true;
     }
 
 
     public function joinGame(string $userName): bool {
-        if ($this->holdGame === null)
+        if ($this->game === null || $this->game->isStarted())
             return false;
 
         $this->usersService->joinGame($userName);
@@ -58,7 +77,7 @@ class GameSystemClient extends Client
         if (is_subclass_of($weapon, "gun_system\pmmp\items\ItemGun")) {
             $this->weaponService->addKillCount($attackerName, $weapon->getCustomName());
             $belongTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
-            $this->holdGame->onKilledPlayer($belongTeamId);
+            $this->game->onKilledPlayer($belongTeamId);
         }
     }
 }

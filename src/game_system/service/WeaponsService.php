@@ -11,6 +11,4 @@ use Service;
 class WeaponsService extends Service
 {
     public function addKillCount(string $ownerName, string $weaponName): void { }
-
-    public function addWinCount(string $ownerName, string $weaponName): void { }
 }

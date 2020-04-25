@@ -9,15 +9,22 @@ use game_system\model\TeamDeathMatch;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
+use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Server;
 
 class GameCommand extends Command
 {
     private $client;
 
-    public function __construct(Plugin $owner, GameSystemClient $client) {
+    private $scheduler;
+    private $server;
+
+    public function __construct(Plugin $owner, GameSystemClient $client, TaskScheduler $scheduler, Server $server) {
         parent::__construct("game", "", "");
         $this->setPermission("Game.Command");
         $this->client = $client;
+        $this->scheduler = $scheduler;
+        $this->server = $server;
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
@@ -40,12 +47,24 @@ class GameCommand extends Command
             $gameName = $args[1];
             switch ($gameName) {
                 case "TeamDeathMatch":
-                    $this->createTeamDeathMatch();
+                    $result = $this->createTeamDeathMatch();
+                    if (!$result)
+                        $player->sendMessage("すでに作成済みのゲームがあります");
                     $targetPlayers = $player->getLevel()->getPlayers();
                     foreach ($targetPlayers as $targetPlayer)
-                        $targetPlayer->sendMessage("TeamDeathMatchが開かれました。 /game joinで参加しましょう");
+                        $targetPlayer->sendMessage("TeamDeathMatchが作成されました。 /game joinで参加しましょう");
                     break;
             }
+        } else if ($method === "start") {
+            if (!$player->isOp()) {
+                $sender->sendMessage("権限がありません");
+                return false;
+            }
+            $result = $this->startGame();
+            if (!$result)
+                $player->sendMessage("試合が作られていません");
+
+            $player->sendMessage("試合を開始しました");
         } else if ($method === "close") {
             if (!$player->isOp()) {
                 $sender->sendMessage("権限がありません");
@@ -59,7 +78,7 @@ class GameCommand extends Command
         } else if ($method === "join") {
             $result = $this->join($player->getName());
             if (!$result)
-                $player->sendMessage("試合が開かれていません");
+                $player->sendMessage("試合が開かれていないか、すでに試合がはじまっています");
 
             $player->sendMessage("試合に参加しました");
         } else if ($method === "quit" || $method === "hub") {
@@ -70,7 +89,11 @@ class GameCommand extends Command
     }
 
     private function createTeamDeathMatch(): bool {
-        return $this->client->createGame(new TeamDeathMatch());
+        return $this->client->createGame(new TeamDeathMatch($this->scheduler));
+    }
+
+    public function startGame(): bool {
+        return $this->client->startGame($this->server);
     }
 
     private function closeGame(): bool {

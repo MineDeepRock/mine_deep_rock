@@ -44,7 +44,7 @@ class Main extends PluginBase implements Listener
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler()));
-        $this->getServer()->getCommandMap()->register("game", new GameCommand($this,$this->gameSystemClient));
+        $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemClient, $this->getScheduler(), $this->getServer()));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
@@ -172,6 +172,6 @@ class Main extends PluginBase implements Listener
         $attackerName = $event->getEventName();
         $item = $this->getServer()->getPlayer($attackerName)->getInventory()->getItemInHand();
 
-        $this->gameSystemClient->onKilledPlayer($attackerName,$item);
+        $this->gameSystemClient->onKilledPlayer($attackerName, $item);
     }
 }
