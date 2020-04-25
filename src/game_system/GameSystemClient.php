@@ -65,7 +65,7 @@ class GameSystemClient extends Client
         if ($this->game === null || $this->game->isStarted())
             return false;
 
-        $this->usersService->joinGame($this->game->getBlueTeam()->getId(), $this->game->getRedTeam()->getId(), $userName);
+        $this->usersService->joinGame($userName, $this->game->getId(), $this->game->getBlueTeam()->getId(), $this->game->getRedTeam()->getId());
         return true;
     }
 
@@ -78,6 +78,7 @@ class GameSystemClient extends Client
             $this->weaponService->addKillCount($attackerName, $weapon->getCustomName());
             $belongTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
             $this->game->onKilledPlayer($belongTeamId);
+            $this->usersService->addMoney($attackerName, 100);
         }
     }
 }

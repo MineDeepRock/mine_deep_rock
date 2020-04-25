@@ -14,6 +14,26 @@ class User
 
     private $lastBelongTeamId;
 
+    public function __construct(string $name, int $winCount, int $money, TeamId $belongTeamId, TeamId $lastBelongTeamId, GameId $participatedGameId) {
+        $this->name = $name;
+        $this->winCount = $winCount;
+        $this->money = $money;
+        $this->belongTeamId = $belongTeamId;
+        $this->participatedGameId = $participatedGameId;
+        $this->lastBelongTeamId = $lastBelongTeamId;
+    }
+
+    public static function fromJson(array $json): User {
+        $name = $json["name"];
+        $winCount = intval($json["win_count"]);
+        $money = intval($json["money"]);
+        $belongTeamId = new TeamId($json["belong_team_id"]);
+        $lastTeaId = new TeamId($json["last_team_id"]);
+        $participatedGameId = new GameId($json["participated_game_id"]);
+
+        return new User($name, $winCount, $money, $belongTeamId, $lastTeaId, $participatedGameId);
+    }
+
     /**
      * @return mixed
      */

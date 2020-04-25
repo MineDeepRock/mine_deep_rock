@@ -7,32 +7,63 @@ namespace game_system\service;
 use game_system\model\GameId;
 use game_system\model\TeamId;
 use game_system\model\User;
+use game_system\repository\UsersRepository;
 use Service;
 
 class UsersService extends Service
 {
+    private $repository;
+
+    public function __construct() {
+        $this->repository = new UsersRepository();
+    }
+
     public function userLogin(string $userName): void {
-        //TODO:存在すればそのまま、そうでなければ作成
+        $this->repository->userLogin($userName);
     }
 
     public function getUserData(string $userName): User {
-        //TODO:userNameからデータ取得
+        return $this->repository->getUserData($userName);
     }
 
     public function getParticipants(GameId $gameId): array {
-        //TODO:participatedGameIdと比較して一致したら返す
+        return $this->repository->getParticipants($gameId);
     }
 
-    public function joinGame(TeamId $redTeamId, TeamId $blueTeamId, string $userName): void {
-        //TODO:belongTeamId,lastBelongTeamId,participatedGameIdをセット
-        //TODO:チームを決める
+    public function joinGame(string $userName, GameId $gameId, TeamId $redTeamId, TeamId $blueTeamId): TeamId {
+        $numberOfRedTeamMember = 0;
+        $numberOfBlueTeamMember = 0;
+        $gameParticipants = $this->getParticipants($gameId);
+        foreach ($gameParticipants as $participant) {
+            if ($redTeamId->equal($participant->getBelongTeamId())) {
+                $numberOfRedTeamMember++;
+            } else {
+                $numberOfBlueTeamMember++;
+            }
+        }
+
+        if ($numberOfRedTeamMember > $numberOfBlueTeamMember) {
+            $this->repository->joinTeam($userName, $blueTeamId, $gameId);
+            return $blueTeamId;
+        } else {
+            $this->repository->joinTeam($userName, $redTeamId, $gameId);
+            return $redTeamId;
+        }
     }
 
     public function quitGame(string $userName): void {
-        //TODO:belongTeamId,participatedGameIdをnullに
+        $this->repository->quitTeam($userName);
     }
 
     public function addWinCount(string $userName): void {
-        //TODO:winCountを更新する
+        $this->repository->addWinCount($userName);
+    }
+
+    public function addMoney(string $userName, int $value): void {
+        $this->repository->addMoney($userName, $value);
+    }
+
+    public function spendMoney(string $userName, int $value): void {
+        $this->repository->spendMoney($userName, $value);
     }
 }
