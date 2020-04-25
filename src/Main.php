@@ -1,11 +1,12 @@
 <?php
 
+use game_system\GameSystemClient;
+use game_system\pmmp\command\GameCommand;
 use gun_system\GunSystemClient;
 use gun_system\models\BulletId;
 use gun_system\pmmp\command\GunCommand;
 use gun_system\pmmp\items\bullet\ItemAssaultRifleBullet;
 use gun_system\pmmp\items\bullet\ItemBuckShotBullet;
-use gun_system\pmmp\items\bullet\ItemDartBullet;
 use gun_system\pmmp\items\bullet\ItemHandGunBullet;
 use gun_system\pmmp\items\bullet\ItemLightMachineGunBullet;
 use gun_system\pmmp\items\bullet\ItemSlugBullet;
@@ -30,26 +31,20 @@ use pocketmine\item\ItemFactory;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\plugin\PluginBase;
-use team_system\pmmp\command\TeamCommand;
-use team_system\services\MemberService;
-use team_system\services\TeamService;
-use team_system\TeamSystemClient;
-use team_system\TeamSystemNotifier;
 
 class Main extends PluginBase implements Listener
 {
-    private $teamSystemClient;
+    private $gameSystemClient;
     private $gunSystemClient;
 
     function onEnable() {
-        $this->teamSystemClient = new TeamSystemClient(new TeamService(), new MemberService(), new TeamSystemNotifier(function () {
-            //TODO:
-        }));
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("team", new TeamCommand($this, $this->teamSystemClient));
-        $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler()));
-
         $this->gunSystemClient = new GunSystemClient();
+        $this->gameSystemClient = new GameSystemClient();
+
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler()));
+        $this->getServer()->getCommandMap()->register("game", new GameCommand($this,$this->gameSystemClient));
+
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::ASSAULT_RIFLE));
@@ -159,17 +154,16 @@ class Main extends PluginBase implements Listener
         }
     }
 
-    //TeamSystem
+    //GameSystem
     public function onJoin(PlayerJoinEvent $event) {
         $playerName = $event->getPlayer()->getName();
 
-        $this->teamSystemClient->onJoin($playerName);
+        $this->gameSystemClient->userLogin($playerName);
     }
 
     public function onQuit(PlayerQuitEvent $event) {
         $playerName = $event->getPlayer()->getName();
 
-        $this->teamSystemClient->onLeave($playerName);
-
+        $this->gameSystemClient->quitGame($playerName);
     }
 }
