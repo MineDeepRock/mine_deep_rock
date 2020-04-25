@@ -30,10 +30,10 @@ class User
         $winCount = intval($json["win_count"]);
         $money = intval($json["money"]);
         $belongTeamId = new TeamId($json["belong_team_id"]);
-        $lastTeaId = new TeamId($json["last_team_id"]);
+        $lastBelongTeaId = new TeamId($json["last_belong_team_id"]);
         $participatedGameId = new GameId($json["participated_game_id"]);
 
-        return new User($name, $winCount, $money, $belongTeamId, $lastTeaId, $participatedGameId);
+        return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId);
     }
 
     /**
