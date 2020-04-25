@@ -44,7 +44,7 @@ class Main extends PluginBase implements Listener
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler(), $this->getServer()));
-        $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemClient, $this->getScheduler(), $this->getServer()));
+        $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemClient, $this->getScheduler()));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
