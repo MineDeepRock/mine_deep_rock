@@ -45,16 +45,16 @@ class TeamDeathMatch extends Game
         parent::__construct();
     }
 
-    public function start(Server $server, array $participants, Closure $onFinished): void {
+    public function start(array $participants, Closure $onFinished): void {
         $this->isStarted = true;
 
         foreach ($participants as $participant) {
-            $player = $server->getPlayer($participant->getName());
+            $player = Server::getInstance()->getPlayer($participant->getName());
             $this->setSpawnPoint($player, $participant->getBelongTeamId());
 
             $player->teleport($player->getSpawn());
             $player->getInventory()->setContents([]);
-            $server->dispatchCommand(new ConsoleCommandSender(),"gun give ". $participant->getName() . " " . $participant->getSelectedWeaponName());
+            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(),"gun give ". $participant->getName() . " " . $participant->getSelectedWeaponName());
         }
 
         $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($onFinished): void {

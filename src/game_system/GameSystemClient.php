@@ -36,12 +36,12 @@ class GameSystemClient extends Client
         return true;
     }
 
-    public function startGame(Server $server): bool {
+    public function startGame(): bool {
         if ($this->game === null)
             return false;
         $participants = $this->usersService->getParticipants($this->game->getId());
 
-        $this->game->start($server, $participants, function ($winTeam) use ($participants) {
+        $this->game->start($participants, function ($winTeam) use ($participants) {
             $winTeamId = $winTeam->getId();
             //途中抜けしたプレイヤーを省かないように再取得はしない
             foreach ($participants as $participant) {

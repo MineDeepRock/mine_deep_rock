@@ -18,14 +18,12 @@ class GameCommand extends Command
     private $client;
 
     private $scheduler;
-    private $server;
 
-    public function __construct(Plugin $owner, GameSystemClient $client, TaskScheduler $scheduler, Server $server) {
+    public function __construct(Plugin $owner, GameSystemClient $client, TaskScheduler $scheduler) {
         parent::__construct("game", "", "");
         $this->setPermission("Game.Command");
         $this->client = $client;
         $this->scheduler = $scheduler;
-        $this->server = $server;
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
@@ -94,7 +92,7 @@ class GameCommand extends Command
     }
 
     public function startGame(): bool {
-        return $this->client->startGame($this->server);
+        return $this->client->startGame();
     }
 
     private function closeGame(): bool {
