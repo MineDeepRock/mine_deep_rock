@@ -8,8 +8,15 @@ class User
 {
     private $name;
     private $money;
-    private $belongTeam;
+    private $belongTeamId;
     private $lastBelongTeamId;
     private $lastJoinedGameId;
+
+    /**
+     * @return mixed
+     */
+    public function getBelongTeamId() {
+        return $this->belongTeamId;
+    }
 
 }

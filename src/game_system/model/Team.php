@@ -14,6 +14,13 @@ class Team extends Entity
     public function __construct() {
         $this->id = TeamId::asNew();
     }
+
+    /**
+     * @return TeamId
+     */
+    public function getId(): TeamId {
+        return $this->id;
+    }
 }
 
 class TeamId extends ValueObject

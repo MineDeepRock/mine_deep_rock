@@ -57,6 +57,8 @@ class GameSystemClient extends Client
     public function onKilledPlayer(string $attackerName, Item $weapon) {
         if (is_subclass_of($weapon, "gun_system\pmmp\items\ItemGun")) {
             $this->weaponService->addKillCount($attackerName, $weapon->getCustomName());
+            $belongTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
+            $this->holdGame->onKilledPlayer($belongTeamId);
         }
     }
 }
