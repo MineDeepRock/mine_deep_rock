@@ -8,40 +8,21 @@ use ValueObject;
 
 class Weapon extends ValueObject
 {
-    private $id;
-
+    private $name;
     private $ownerName;
     private $killCount;
-    private $winCount;
 
-    public function __construct(string $ownerName, $killCount = 0, $winCount = 0) {
-        $this->id = WeaponId::asNew();
+    public function __construct(string $ownerName, string $name, $killCount = 0) {
+        $this->name = $name;
         $this->ownerName = $ownerName;
         $this->killCount = $killCount;
-        $this->winCount = $winCount;
-    }
-}
-
-class WeaponId extends ValueObject
-{
-    private $id;
-
-    public function value(): ?string {
-        return $this->id;
     }
 
-    public static function asNew(): WeaponId {
-        return new WeaponId(uniqid());
-    }
+    public static function fromJson(array $json) : Weapon {
+        $ownerName = $json["owner_name"];
+        $name = $json["name"];
+        $killCount = $json["kill_count"];
 
-    public function __construct(String $id) {
-        $this->id = $id;
-    }
-
-    public function equal(?WeaponId $id): bool {
-        if ($id === null)
-            return false;
-
-        return $this->id === $id->value();
+        return new Weapon($ownerName,$name,$killCount);
     }
 }
