@@ -8,6 +8,7 @@ use Client;
 use gun_system\pmmp\items\ItemGun;
 use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Human;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -62,6 +63,13 @@ class GunSystemClient extends Client
                     $damage = $gun->getDamageCurve()[intval($distance)];
                 }
                 $entity->setHealth($entity->getHealth() - $damage / 5);//プレイヤーのHPが20なので
+                
+                if ($entity->getHealth() - $damage / 5 <= 0 && $entity instanceof Human) {
+                    $players = $attacker->getLevel()->getPlayers();
+                    foreach ($players as $player) {
+                        $player->sendMessage($attacker->getName() . " killed " . $entity->getName() . " by" . $itemGun->getCustomName());
+                    }
+                }
             }
         }
     }
