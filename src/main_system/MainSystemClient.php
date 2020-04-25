@@ -5,6 +5,9 @@ namespace main_system;
 
 
 use Client;
+use pocketmine\level\generator\GeneratorManager;
+use pocketmine\level\Level;
+use pocketmine\Server;
 
 class MainSystemClient extends Client
 {
