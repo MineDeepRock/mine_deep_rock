@@ -15,6 +15,12 @@ use pocketmine\scheduler\TaskScheduler;
 class C96 extends HandGun
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new BulletDamage(28,15), new GunRate(5), new BulletSpeed(440), 0, new OneByOneReloadController(10,0.25), new EffectiveRange(0,15), new GunPrecision(98.8,98), $scheduler);
+        parent::__construct(new BulletDamage(28, 15),
+            new GunRate(5),
+            new BulletSpeed(440),
+            0, new OneByOneReloadController(10, 0.25),
+            new EffectiveRange(0, 15),
+            new GunPrecision(98, 95),
+            $scheduler);
     }
 }

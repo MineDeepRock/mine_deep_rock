@@ -15,6 +15,12 @@ use pocketmine\scheduler\TaskScheduler;
 class CeiRigotti extends AssaultRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new BulletDamage(38,28), new GunRate(5), new BulletSpeed(700), 0,  new ClipReloadController(10,5,1.5,0.5), new EffectiveRange(0,25), new GunPrecision(98.8,97), $scheduler);
+        parent::__construct(new BulletDamage(38, 28),
+            new GunRate(5),
+            new BulletSpeed(700),
+            0, new ClipReloadController(10, 5, 1.5, 0.5),
+            new EffectiveRange(0, 25),
+            new GunPrecision(95, 90),
+            $scheduler);
     }
 }

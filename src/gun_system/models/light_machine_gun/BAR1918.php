@@ -15,6 +15,13 @@ use pocketmine\scheduler\TaskScheduler;
 class BAR1918 extends LightMachineGun
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new OverheatRate(0), new BulletDamage(26, 23), new GunRate(10), new BulletSpeed(820),  new MagazineReloadController(20,3), new EffectiveRange(0, 13), new GunPrecision(98,77), $scheduler);
+        parent::__construct(new OverheatRate(0),
+            new BulletDamage(26, 23),
+            new GunRate(10),
+            new BulletSpeed(820),
+            new MagazineReloadController(20, 3),
+            new EffectiveRange(0, 13),
+            new GunPrecision(98, 75),
+            $scheduler);
     }
 }

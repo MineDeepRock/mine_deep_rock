@@ -48,7 +48,7 @@ class EntityBullet
         ]);
 
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
-        $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8 / 4));
+        $projectile->setMotion($projectile->getMotion()->multiply($speed / 27.8 / 3));
 
         $handle = $scheduler->scheduleRepeatingTask(new ClosureTask(
             function (int $currentTick) use ($projectile) : void {

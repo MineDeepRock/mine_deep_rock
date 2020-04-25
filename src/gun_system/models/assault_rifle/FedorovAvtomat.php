@@ -15,6 +15,12 @@ use pocketmine\scheduler\TaskScheduler;
 class FedorovAvtomat extends AssaultRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new BulletDamage(28, 19), new GunRate(7.5), new BulletSpeed(570), 0, new MagazineReloadController(26, 2.7), new EffectiveRange(0, 25), new GunPrecision(98.8, 97), $scheduler);
+        parent::__construct(new BulletDamage(28, 19),
+            new GunRate(7.5),
+            new BulletSpeed(570),
+            0, new MagazineReloadController(26, 2.7),
+            new EffectiveRange(0, 25),
+            new GunPrecision(95, 90),
+            $scheduler);
     }
 }

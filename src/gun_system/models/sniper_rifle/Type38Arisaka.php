@@ -15,6 +15,12 @@ use pocketmine\scheduler\TaskScheduler;
 class Type38Arisaka extends SniperRifle
 {
     public function __construct(TaskScheduler $scheduler) {
-        parent::__construct(new BulletDamage(100,70), new GunRate(0.95), new BulletSpeed(770),  2.5, new ClipReloadController(5,5,0.7,0.7), new EffectiveRange(10,30), new GunPrecision(99.5,80), $scheduler);
+        parent::__construct(new BulletDamage(100, 70),
+            new GunRate(0.95),
+            new BulletSpeed(770),
+            2.5, new ClipReloadController(5, 5, 0.7, 0.7),
+            new EffectiveRange(10, 30),
+            new GunPrecision(99.5, 80),
+            $scheduler);
     }
 }
