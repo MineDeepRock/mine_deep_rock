@@ -35,13 +35,17 @@ class UsersRepository extends Repository
 
     public function getParticipants(string $gameId): array {
         $result = $this->db->query("SELECT * FROM users WHERE participated_game_id='{$gameId}'");
+        $users = [];
+
         if ($result->num_rows === 0) {
-            return [];
+            return $users;
+        }
+        if ($result->num_rows === 1) {
+            return [User::fromJson($result->fetch_assoc())];
         }
 
-        $users = array_map(function ($value) {
-            return User::fromJson($value);
-        }, $result->fetch_assoc());
+        while ($row = $result->fetch_assoc())
+            array_push($users, User::fromJson($row));
 
         return $users;
     }
@@ -76,7 +80,7 @@ class UsersRepository extends Repository
         }
     }
 
-    public function addMoney(string $userName,int $value): void {
+    public function addMoney(string $userName, int $value): void {
         $result = $this->db->query("UPDATE users SET money=money+{$value} WHERE name='{$userName}'");
 
         if (!$result) {
@@ -85,7 +89,8 @@ class UsersRepository extends Repository
             die($sql_error);
         }
     }
-    public function spendMoney(string $userName,int $value): void {
+
+    public function spendMoney(string $userName, int $value): void {
         $result = $this->db->query("UPDATE users SET money=money-{$value} WHERE name='{$userName}'");
 
         if (!$result) {
