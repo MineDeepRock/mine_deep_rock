@@ -7,9 +7,10 @@ namespace game_system\model;
 class User
 {
     private $name;
+    private $winCount;
     private $money;
     private $belongTeamId;
-    private $belongGameId;
+    private $participatedGameId;
 
     private $lastBelongTeamId;
 
@@ -23,8 +24,8 @@ class User
     /**
      * @return mixed
      */
-    public function getBelongGameId() {
-        return $this->belongGameId;
+    public function getParticipatedGameId() {
+        return $this->participatedGameId;
     }
 
     /**

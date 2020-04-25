@@ -60,6 +60,20 @@ class TeamDeathMatch extends Game
         }), 20 * 1);
     }
 
+    /**
+     * @return Team
+     */
+    public function getRedTeam(): Team {
+        return $this->redTeam;
+    }
+
+    /**
+     * @return Team
+     */
+    public function getBlueTeam(): Team {
+        return $this->blueTeam;
+    }
+
     private function onKilledPlayer(TeamId $playerBelongTeamId): void {
         if ($playerBelongTeamId->equal($this->redTeam->getId())) {
             $this->redTeamScore++;

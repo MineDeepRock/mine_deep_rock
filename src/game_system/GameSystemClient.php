@@ -65,7 +65,7 @@ class GameSystemClient extends Client
         if ($this->game === null || $this->game->isStarted())
             return false;
 
-        $this->usersService->joinGame($userName);
+        $this->usersService->joinGame($this->game->getBlueTeam()->getId(), $this->game->getRedTeam()->getId(), $userName);
         return true;
     }
 
