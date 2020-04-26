@@ -77,23 +77,34 @@ class GameSystemClient extends Client
         $this->usersService->quitGame($userName);
     }
 
-    public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage) {
+    public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage): bool {
         $health = $target->getHealth() - $damage;
-        if ($health <= 0 && $target instanceof Human) {
-            $target->setHealth(20);
 
-            $players = $attacker->getLevel()->getPlayers();
-            foreach ($players as $player) {
-                $player->sendMessage($attacker->getName() . " killed " . $target->getName() . " by " . $weaponName);
-            }
-
-            $attackerName = $attacker->getName();
-            $this->weaponService->addKillCount($attacker, $weaponName);
-            $belongTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
-            $this->game->onKilledPlayer($belongTeamId);
-            $this->usersService->addMoney($attackerName, 100);
-        } else {
-            $target->setHealth($damage);
+        //撃たれた相手が人間じゃない
+        if (!($target instanceof Human)) {
+            $target->setHealth($health);
+            return true;
         }
+
+        if ($target instanceof Human && $target->getLevel()->getName() !== "world") {
+            if ($health <= 0) {
+                $target->setHealth(20);
+
+                $players = $attacker->getLevel()->getPlayers();
+                foreach ($players as $player) {
+                    $player->sendMessage($attacker->getName() . " killed " . $target->getName() . " by " . $weaponName);
+                }
+
+                $attackerName = $attacker->getName();
+                $this->weaponService->addKillCount($attacker, $weaponName);
+                $belongTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
+                $this->game->onKilledPlayer($belongTeamId);
+                $this->usersService->addMoney($attackerName, 100);
+                return true;
+            }
+            $target->setHealth($health);
+            return true;
+        }
+        return true;
     }
 }

@@ -155,7 +155,7 @@ class Main extends PluginBase implements Listener
         if ($entity instanceof \gun_system\pmmp\entity\Egg && $attacker instanceof Human) {
             $item = $attacker->getInventory()->getItemInHand();
             $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
-            $this->gameSystemClient->onKilledPlayer($attacker,$entity, $item->getCustomName(), $damage);
+            $this->gameSystemClient->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
         }
     }
 
