@@ -29,12 +29,12 @@ class ItemLightMachineGun extends ItemGun
     }
 
     private function playOverheatSound(): void {
-        $soundName = GunSounds::LMGOverheat()->getText();
+        $soundName = GunSounds::LMGOverheat();
         GunSounds::play($this->owner,$soundName);
     }
 
     private function playReadySound(): void {
-        $soundName = GunSounds::LMGReady()->getText();
+        $soundName = GunSounds::LMGReady();
         GunSounds::play($this->owner,$soundName);
     }
 }

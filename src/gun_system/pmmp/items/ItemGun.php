@@ -5,8 +5,10 @@ namespace gun_system\pmmp\items;
 
 
 use gun_system\models\BulletId;
+use gun_system\models\ClipReloadController;
 use gun_system\models\Gun;
 use gun_system\models\GunType;
+use gun_system\models\MagazineReloadController;
 use gun_system\pmmp\entity\EntityBullet;
 use gun_system\pmmp\GunSounds;
 use pocketmine\item\Item;
@@ -32,18 +34,8 @@ abstract class ItemGun extends Tool
     }
 
     public function playShootingSound(): void {
-        $soundName = GunSounds::shootSoundFromGunType($this->gun->getType())->getText();
+        $soundName = GunSounds::shootSoundFromGunType($this->gun->getType());
         GunSounds::playAround($this->owner, $soundName);
-    }
-
-    public function playStartReloadingSound(): void {
-        $soundName = GunSounds::startReloadingSoundFromGunType($this->gun->getType())->getText();
-        GunSounds::play($this->owner, $soundName);
-    }
-
-    public function playEndReloadingSound(): void {
-        $soundName = GunSounds::endReloadingSoundFromGunType($this->gun->getType())->getText();
-        GunSounds::play($this->owner, $soundName);
     }
 
     public function onReleaseUsing(Player $player): bool {
@@ -92,13 +84,11 @@ abstract class ItemGun extends Tool
     public function reload() {
         $inventoryBullets = $this->getBulletAmount();
 
-        $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
-            $this->playStartReloadingSound();
+        $result = $this->gun->tryReload($this->owner,$inventoryBullets, function ($consumedBullets) {
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
             return $this->getBulletAmount();
         }, function () {
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getMagazineCapacity());
-            $this->playEndReloadingSound();
         });
 
         if (!$result->isSuccess())

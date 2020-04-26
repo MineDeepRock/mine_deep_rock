@@ -69,12 +69,11 @@ class ItemShotGun extends ItemGun
     public function reload() {
         $inventoryBullets = $this->getBulletAmount();
 
-        $result = $this->gun->tryReload($inventoryBullets, function ($consumedBullets) {
+        $result = $this->gun->tryReload($this->owner,$inventoryBullets, function ($consumedBullets) {
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType(), $this->gun->getBulletType()), 0, $consumedBullets));
             return $this->getBulletAmount();
         }, function () {
             $this->owner->sendPopup($this->gun->getCurrentBullet() . "/" . $this->gun->getMagazineCapacity());
-            $this->playReloadSound();
         });
 
         if (!$result->isSuccess())
@@ -82,12 +81,7 @@ class ItemShotGun extends ItemGun
     }
 
     private function playPumpActionSound(): void {
-        $soundName = GunSounds::ShotgunPumpAction()->getText();
-        GunSounds::play($this->owner,$soundName);
-    }
-
-    private function playReloadSound(): void {
-        $soundName = GunSounds::ShotgunReload()->getText();
+        $soundName = GunSounds::ShotgunPumpAction();
         GunSounds::play($this->owner,$soundName);
     }
 }

@@ -5,6 +5,8 @@ namespace gun_system\models;
 
 
 use Closure;
+use gun_system\pmmp\GunSounds;
+use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -172,7 +174,7 @@ abstract class Gun
         }
     }
 
-    public function tryReload(int $inventoryBullets, Closure $onStarted, Closure $onFinished): Response {
+    public function tryReload(Player $owner, int $inventoryBullets, Closure $onStarted, Closure $onFinished): Response {
         if ($this->reloadController->currentBullet === $this->reloadController->magazineCapacity)
             return new Response(false, $this->reloadController->currentBullet . "/" . $this->reloadController->magazineCapacity);
 
@@ -182,13 +184,13 @@ abstract class Gun
         if ($inventoryBullets === 0)
             return new Response(false, "残弾がありません");
 
-        $this->reload($inventoryBullets, $onStarted, $onFinished);
+        $this->reload($owner, $inventoryBullets, $onStarted, $onFinished);
 
         return new Response(true);
     }
 
-    protected function reload(int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
-        $this->reloadController->carryOut($this->scheduler, $inventoryBullets, $onStarted, $onFinished);
+    protected function reload(Player $owner, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
+        $this->reloadController->carryOut($owner, $this->scheduler, $inventoryBullets, $onStarted, $onFinished);
     }
 
     /**
@@ -426,7 +428,7 @@ abstract class ReloadController
         $this->currentBullet = $magazineCapacity;
     }
 
-    abstract function carryOut(TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void;
+    abstract function carryOut(Player $owner, TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void;
 
     abstract function toString(): string;
 
@@ -447,13 +449,13 @@ class MagazineReloadController extends ReloadController
         $this->second = $second;
     }
 
-    function carryOut(TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
+    function carryOut(Player $owner, TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
         $this->onReloading = true;
+        GunSounds::play($owner, GunSounds::MagazineOut());
 
         $scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($inventoryBullets, $onStarted, $onFinished): void {
+            function (int $currentTick) use ($owner, $inventoryBullets, $onStarted, $onFinished): void {
                 $empty = $this->magazineCapacity - $this->currentBullet;
-
                 if ($empty > $inventoryBullets) {
                     $this->currentBullet += $inventoryBullets;
                     $onStarted($inventoryBullets);
@@ -461,6 +463,7 @@ class MagazineReloadController extends ReloadController
                     $this->currentBullet = $this->magazineCapacity;
                     $onStarted($empty);
                 }
+                GunSounds::play($owner, GunSounds::MagazineIn());
                 $this->onReloading = false;
                 $onFinished();
             }
@@ -496,33 +499,37 @@ class ClipReloadController extends ReloadController
         $this->onReloading = false;
     }
 
-    function carryOut(TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
+    function carryOut(Player $owner, TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
         $emptySlot = $this->magazineCapacity - $this->currentBullet;
         $this->onReloading = true;
 
         if ($inventoryBullets >= $this->clipCapacity && $emptySlot >= $this->clipCapacity) {
-            $this->clipReloadTaskHandler = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($scheduler, $inventoryBullets, $onStarted, $onFinished): void {
+            GunSounds::play($owner, GunSounds::ClipPush());
+            $inventoryBullets = $onStarted($this->clipCapacity);
+
+            $this->clipReloadTaskHandler = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($owner, $scheduler, $inventoryBullets, $onStarted, $onFinished): void {
                 $this->currentBullet += $this->clipCapacity;
-                $inventoryBullets = $onStarted($this->clipCapacity);
                 $onFinished(true);
+                GunSounds::play($owner, GunSounds::ClipPing());
                 if ($inventoryBullets < $this->clipCapacity) {
                     $this->clipReloadTaskHandler->cancel();
-                    $this->reloadOneByOne($scheduler, $inventoryBullets, $onStarted, $onFinished);
+                    $this->reloadOneByOne($owner, $scheduler, $inventoryBullets, $onStarted, $onFinished);
                 }
                 if (($this->magazineCapacity - $this->currentBullet) < $this->clipCapacity) {
                     $this->clipReloadTaskHandler->cancel();
-                    $this->reloadOneByOne($scheduler, $inventoryBullets, $onStarted, $onFinished);
+                    $this->reloadOneByOne($owner, $scheduler, $inventoryBullets, $onStarted, $onFinished);
                 }
             }), 20 * $this->secondOfClip, 20 * $this->secondOfClip);
         } else {
-            $this->reloadOneByOne($scheduler, $inventoryBullets, $onStarted, $onFinished);
+            $this->reloadOneByOne($owner, $scheduler, $inventoryBullets, $onStarted, $onFinished);
         }
 
     }
 
-    private function reloadOneByOne(TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished) {
+    private function reloadOneByOne(Player $owner, TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished) {
         if ($this->currentBullet !== $this->magazineCapacity) {
-            $this->oneReloadTaskHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($inventoryBullets, $onStarted, $onFinished): void {
+            $this->oneReloadTaskHandler = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($owner, $inventoryBullets, $onStarted, $onFinished): void {
+                GunSounds::play($owner, GunSounds::ReloadOne());
                 $this->currentBullet++;
                 $inventoryBullets = $onStarted(1);
                 $onFinished(false);
@@ -530,7 +537,7 @@ class ClipReloadController extends ReloadController
                     $this->oneReloadTaskHandler->cancel();
                 if ($this->currentBullet === $this->magazineCapacity)
                     $this->oneReloadTaskHandler->cancel();
-            }), 20 * $this->secondOfOne);
+            }), 20 * $this->secondOfOne, 20 * $this->secondOfOne);
         }
     }
 
@@ -555,10 +562,11 @@ class OneByOneReloadController extends ReloadController
         $this->onReloading = false;
     }
 
-    function carryOut(TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
+    function carryOut(Player $owner, TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
         $this->onReloading = true;
 
-        $this->oneReloadTaskHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($inventoryBullets, $onStarted, $onFinished): void {
+        $this->oneReloadTaskHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($owner, $inventoryBullets, $onStarted, $onFinished): void {
+            GunSounds::play($owner, GunSounds::ReloadOne());
             $this->currentBullet++;
             $inventoryBullets = $onStarted(1);
             $onFinished(false);

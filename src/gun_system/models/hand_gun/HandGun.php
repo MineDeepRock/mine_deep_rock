@@ -4,7 +4,6 @@
 namespace gun_system\models\hand_gun;
 
 
-use gun_system\models\assault_rifle\attachiment\magazine\HandGunMagazine;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;

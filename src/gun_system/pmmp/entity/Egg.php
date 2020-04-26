@@ -33,9 +33,9 @@ class Egg extends Throwable{
         foreach ($players as $player) {
             $distance = $blockPos->distance($player->getPosition());
             if ($distance < 5) {
-                GunSounds::play($player,GunSounds::bulletHitBlock()->getText());
+                GunSounds::play($player,GunSounds::bulletHitBlock());
             } else if ($distance < 10) {
-                GunSounds::play($player,GunSounds::bulletFly()->getText());
+                GunSounds::play($player,GunSounds::bulletFly());
             }
         }
 
