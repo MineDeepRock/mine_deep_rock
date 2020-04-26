@@ -5,6 +5,7 @@ namespace gun_system\pmmp\entity;
 
 
 use gun_system\pmmp\GunSounds;
+use gun_system\pmmp\items\ItemShotGun;
 use pocketmine\block\Block;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
@@ -41,7 +42,9 @@ class Egg extends Throwable
                 $item = $player->getInventory()->getItemInHand();
                 if (!($player->getName() === $this->getOwningEntity()->getName())) {
                     if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-                        $item->scare();
+                        if (!($item instanceof ItemShotGun)) {
+                            $item->scare();
+                        }
                     }
                 }
             } else if ($distance <= 10) {
