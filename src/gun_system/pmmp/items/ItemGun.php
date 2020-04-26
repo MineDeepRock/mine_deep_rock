@@ -43,6 +43,10 @@ abstract class ItemGun extends Tool
         return true;
     }
 
+    public function scare(): void {
+        $this->gun->scare();
+    }
+
     public function shoot(): void {
         $result = $this->gun->tryShooting(function ($scheduler) {
             $this->playShootingSound();
@@ -84,7 +88,7 @@ abstract class ItemGun extends Tool
     public function reload() {
         $inventoryBullets = $this->getBulletAmount();
 
-        $result = $this->gun->tryReload($this->owner,$inventoryBullets, function ($consumedBullets) {
+        $result = $this->gun->tryReload($this->owner, $inventoryBullets, function ($consumedBullets) {
             $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $consumedBullets));
             return $this->getBulletAmount();
         }, function () {

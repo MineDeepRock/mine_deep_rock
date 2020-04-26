@@ -75,6 +75,13 @@ abstract class Gun
         }
     }
 
+    public function scare(): void {
+        $this->precision = new GunPrecision($this->precision->getADS()-10,$this->precision->getHipShooting()-10);
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function(){
+            $this->precision = new GunPrecision($this->precision->getADS()+10,$this->precision->getHipShooting()+10);
+        }), 20 * 3);
+    }
+
     public function ontoCoolTime(): void {
         $this->onCoolTime = true;
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
