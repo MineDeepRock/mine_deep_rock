@@ -16,6 +16,6 @@ use pocketmine\scheduler\TaskScheduler;
 class Model1900 extends Shotgun
 {
     public function __construct(ShotgunBulletType $bulletType, TaskScheduler $scheduler) {
-        parent::__construct($bulletType, 12, new BulletDamage(12.5, 6.25), new GunRate(5), new BulletSpeed(333),  1, new ClipReloadController(2,2,2.4,3.2), new EffectiveRange(0, 13), new GunPrecision(80,76), $scheduler);
+        parent::__construct($bulletType, 12, new BulletDamage(12.5, 6.25), new GunRate(5), new BulletSpeed(333),  1, new ClipReloadController(2,2,2.4,3.2), new EffectiveRange(0, 13), new GunPrecision(90,86), $scheduler);
     }
 }
