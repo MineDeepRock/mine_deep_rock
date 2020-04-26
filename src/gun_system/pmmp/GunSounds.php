@@ -105,6 +105,14 @@ class GunSounds
         return new GunSounds("gun.sniperrifle.reload.clip");
     }
 
+    public static function bulletFly(): GunSounds {
+        return new GunSounds("gun.bullet.fly");
+    }
+
+    public static function bulletHitBlock(): GunSounds {
+        return new GunSounds("gun.bullet.hit.block");
+    }
+
     public static function shootSoundFromGunType(GunType $gunType): GunSounds {
         switch ($gunType->getTypeText()) {
             case "HandGun":
