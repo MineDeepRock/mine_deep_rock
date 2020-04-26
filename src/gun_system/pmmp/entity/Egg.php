@@ -39,8 +39,11 @@ class Egg extends Throwable
                 GunSounds::play($player, GunSounds::bulletHitBlock());
                 $player->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1));
                 $item = $player->getInventory()->getItemInHand();
-                if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun"))
-                    $item->scare();
+                if (!($player->getName() === $this->getOwningEntity()->getName())) {
+                    if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+                        $item->scare();
+                    }
+                }
             } else if ($distance <= 10) {
                 GunSounds::play($player, GunSounds::bulletFly());
             }
