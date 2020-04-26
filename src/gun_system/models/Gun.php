@@ -565,7 +565,7 @@ class OneByOneReloadController extends ReloadController
     function carryOut(Player $owner, TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
         $this->onReloading = true;
 
-        $this->oneReloadTaskHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($owner, $inventoryBullets, $onStarted, $onFinished): void {
+        $this->oneReloadTaskHandler = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick) use ($owner, $inventoryBullets, $onStarted, $onFinished): void {
             GunSounds::play($owner, GunSounds::ReloadOne());
             $this->currentBullet++;
             $inventoryBullets = $onStarted(1);
@@ -574,7 +574,7 @@ class OneByOneReloadController extends ReloadController
                 $this->oneReloadTaskHandler->cancel();
             if ($this->currentBullet === $this->magazineCapacity)
                 $this->oneReloadTaskHandler->cancel();
-        }), 20 * $this->second);
+        }), 20 * $this->second,20 * $this->second);
     }
 
     function toString(): string {
