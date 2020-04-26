@@ -20,7 +20,7 @@ class Automatico extends SubMachineGun
             new BulletSpeed(380),
             new MagazineReloadController(25, 2.1),
             new EffectiveRange(0, 5),
-            new GunPrecision(95, 85),
+            new GunPrecision(90, 85),
             $scheduler);
     }
 }

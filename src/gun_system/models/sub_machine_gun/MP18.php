@@ -20,7 +20,7 @@ class MP18 extends SubMachineGun
             new BulletSpeed(420),
             new MagazineReloadController(32, 2),
             new EffectiveRange(0, 15),
-            new GunPrecision(90, 85),
+            new GunPrecision(95, 90),
             $scheduler);
     }
 }
