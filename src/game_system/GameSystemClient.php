@@ -10,7 +10,6 @@ use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
-use pocketmine\item\Item;
 use pocketmine\Player;
 
 class GameSystemClient extends Client
@@ -26,6 +25,9 @@ class GameSystemClient extends Client
     }
 
     public function userLogin(string $userName): void {
+        if (!$this->usersService->exists($userName))
+            $this->weaponService->register($userName,"M1907SL");
+
         $this->usersService->userLogin($userName);
     }
 
@@ -96,9 +98,12 @@ class GameSystemClient extends Client
                 }
 
                 $attackerName = $attacker->getName();
-                $this->weaponService->addKillCount($attacker, $weaponName);
-                $belongTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
-                $this->game->onKilledPlayer($belongTeamId);
+
+                $this->weaponService->addKillCount($attacker->getName(), $weaponName);
+
+                $attackerTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
+
+                $this->game->onKilledPlayer($attackerTeamId,$target);
                 $this->usersService->addMoney($attackerName, 100);
                 return true;
             }

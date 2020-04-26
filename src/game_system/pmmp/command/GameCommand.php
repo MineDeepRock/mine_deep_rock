@@ -46,8 +46,11 @@ class GameCommand extends Command
             switch ($gameName) {
                 case "TeamDeathMatch":
                     $result = $this->createTeamDeathMatch();
-                    if (!$result)
+                    if (!$result){
                         $player->sendMessage("すでに作成済みのゲームがあります");
+                        return false;
+                    }
+
                     $targetPlayers = $player->getLevel()->getPlayers();
                     foreach ($targetPlayers as $targetPlayer)
                         $targetPlayer->sendMessage("TeamDeathMatchが作成されました。 /game joinで参加しましょう");
@@ -59,8 +62,10 @@ class GameCommand extends Command
                 return false;
             }
             $result = $this->startGame();
-            if (!$result)
+            if (!$result){
                 $player->sendMessage("試合が作られていません");
+                return false;
+            }
 
             $player->sendMessage("試合を開始しました");
         } else if ($method === "close") {
@@ -69,14 +74,18 @@ class GameCommand extends Command
                 return false;
             }
             $result = $this->closeGame();
-            if (!$result)
+            if (!$result){
                 $player->sendMessage("試合が開かれていません");
+                return false;
+            }
 
             $player->sendMessage("試合を終了させました");//TODO
         } else if ($method === "join") {
             $result = $this->join($player->getName());
-            if (!$result)
+            if (!$result){
                 $player->sendMessage("試合が開かれていないか、すでに試合がはじまっています");
+                return false;
+            }
 
             $player->sendMessage("試合に参加しました");
         } else if ($method === "quit" || $method === "hub") {

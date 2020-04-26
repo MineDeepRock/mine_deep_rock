@@ -71,7 +71,7 @@ class UsersRepository extends Repository
     }
 
     public function addWinCount(string $userName): void {
-        $result = $this->db->query("UPDATE users SET win_count=win_count+1 WHERE name='{$userName}'");
+        $result = $this->db->query("UPDATE users SET win_count+1 WHERE name='{$userName}'");
 
         if (!$result) {
             $sql_error = $this->db->error;
@@ -81,7 +81,7 @@ class UsersRepository extends Repository
     }
 
     public function addMoney(string $userName, int $value): void {
-        $result = $this->db->query("UPDATE users SET money=money+{$value} WHERE name='{$userName}'");
+        $result = $this->db->query("UPDATE users SET money+{$value} WHERE name='{$userName}'");
 
         if (!$result) {
             $sql_error = $this->db->error;

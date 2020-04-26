@@ -18,6 +18,10 @@ class UsersService extends Service
         $this->repository = new UsersRepository();
     }
 
+    public function exists(string $userName): bool {
+        return $this->repository->exists($userName);
+    }
+
     public function userLogin(string $userName): void {
         $this->repository->userLogin($userName);
     }

@@ -58,7 +58,7 @@ class TeamDeathMatch extends Game
             $player = Server::getInstance()->getPlayer($participant->getName());
 
             $worldController->teleport($player, $this->map->getName());
-           
+
             $player->getInventory()->setContents([]);
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $participant->getName() . " " . $participant->getSelectedWeaponName());
 
@@ -88,7 +88,7 @@ class TeamDeathMatch extends Game
         return $this->blueTeam;
     }
 
-    private function onKilledPlayer(TeamId $attackerTeamId, Player $killedPlayer): void {
+    public function onKilledPlayer(TeamId $attackerTeamId, Player $killedPlayer): void {
         $killedPlayerTeamId = $attackerTeamId->equal($this->redTeam->getId()) ? $this->blueTeam->getId() : $this->redTeam->getId();
         if ($attackerTeamId->equal($this->redTeam->getId())) {
             $this->reSpawn($killedPlayerTeamId,$killedPlayer);
