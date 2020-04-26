@@ -76,9 +76,9 @@ abstract class Gun
     }
 
     public function scare(): void {
-        $this->precision = new GunPrecision($this->precision->getADS()-10,$this->precision->getHipShooting()-10);
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function(){
-            $this->precision = new GunPrecision($this->precision->getADS()+10,$this->precision->getHipShooting()+10);
+        $this->precision = new GunPrecision($this->precision->getADS() - 3, $this->precision->getHipShooting() - 3);
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
+            $this->precision = new GunPrecision($this->precision->getADS() + 3, $this->precision->getHipShooting() + 3);
         }), 20 * 3);
     }
 
@@ -581,7 +581,7 @@ class OneByOneReloadController extends ReloadController
                 $this->oneReloadTaskHandler->cancel();
             if ($this->currentBullet === $this->magazineCapacity)
                 $this->oneReloadTaskHandler->cancel();
-        }), 20 * $this->second,20 * $this->second);
+        }), 20 * $this->second, 20 * $this->second);
     }
 
     function toString(): string {
