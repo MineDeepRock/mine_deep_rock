@@ -5,10 +5,13 @@ namespace game_system;
 
 
 use Client;
+use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\Game;
+use game_system\model\map\RealisticWWIBattlefieldExtended;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\Player;
@@ -53,8 +56,9 @@ class GameSystemClient extends Client
 
             $participants = $this->usersService->getParticipants($this->game->getId());
             foreach ($participants as $participant) {
+                EasyScoreboardAPI::getInstance()->allremove($participant->getName());
                 $player = Server::getInstance()->getPlayer($participant->getName());
-                $worldController->teleport($player,"world");
+                $worldController->teleport($player, "world");
 
                 if ($participant->getBelongTeamId()->equal($winTeamId)) {
                     $player->addTitle("勝利!!");
@@ -78,10 +82,39 @@ class GameSystemClient extends Client
 
 
     public function joinGame(string $userName): bool {
-        if ($this->game === null || $this->game->isStarted())
+        if ($this->game === null)
             return false;
 
-        $this->usersService->joinGame($userName, $this->game->getId(), $this->game->getBlueTeam()->getId(), $this->game->getRedTeam()->getId());
+        if ($this->game->isStarted()) {
+            $this->joinGAmeOnTheWay($userName);
+        } else {
+            $this->usersService->joinGame(
+                $userName,
+                $this->game->getId(),
+                $this->game->getBlueTeam()->getId(),
+                $this->game->getRedTeam()->getId());
+        }
+        return true;
+    }
+
+    public function joinGameOnTheWay(string $userName): bool {
+        $user = $this->usersService->getUserData($userName);
+        if ($user->getLastBelongTeamId() === $this->game->getRedTeam()->getId() || $user->getLastBelongTeamId() === $this->game->getBlueTeam()->getId()) {
+            $this->usersService->joinGame(
+                $userName,
+                $this->game->getId(),
+                $this->game->getBlueTeam()->getId(),
+                $this->game->getRedTeam()->getId(),
+                $user->getLastBelongTeamId());
+            return true;
+        }
+        $this->usersService->joinGame(
+            $userName,
+            $this->game->getId(),
+            $this->game->getBlueTeam()->getId(),
+            $this->game->getRedTeam()->getId());
+
+        $this->game->joinGameOnTheWay($user);
         return true;
     }
 

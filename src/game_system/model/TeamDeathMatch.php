@@ -6,6 +6,7 @@ namespace game_system\model;
 
 use Closure;
 use easy_scoreboard_api\EasyScoreboardAPI;
+use game_system\model\map\RealisticWWIBattlefieldExtended;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\WorldController;
 use pocketmine\command\ConsoleCommandSender;
@@ -87,6 +88,26 @@ class TeamDeathMatch extends Game
             }
         }), 20 * 1);
     }
+
+    public function joinGameOnTheWay(User $user) {
+        $worldController = new WorldController();
+
+        $userName = $user->getName();
+        $player = Server::getInstance()->getPlayer($userName);
+
+        $worldController->teleport($player, RealisticWWIBattlefieldExtended::NAME);
+
+        $player->getInventory()->setContents([]);
+        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $user->getSelectedWeaponName());
+
+        $api = EasyScoreboardAPI::getInstance();
+        $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
+        $api->setScore($player, "sidebar", "RedTeamScore:", $this->redTeamScore, 2);
+        $api->setScore($player, "sidebar", "BlueTeamScore:", $this->blueTeamScore, 3);
+
+        $this->reSpawn($user->getBelongTeamId(), $player);
+    }
+
 
     /**
      * @return Team

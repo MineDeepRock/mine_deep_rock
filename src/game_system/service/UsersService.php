@@ -34,7 +34,12 @@ class UsersService extends Service
         return $this->repository->getParticipants($gameId->value());
     }
 
-    public function joinGame(string $userName, GameId $gameId, TeamId $redTeamId, TeamId $blueTeamId): TeamId {
+    public function joinGame(string $userName, GameId $gameId, TeamId $redTeamId, TeamId $blueTeamId, ?TeamId $joinTeamId = null): TeamId {
+        if ($joinTeamId !== null) {
+            $this->repository->joinTeam($userName, $joinTeamId->value(), $gameId->value());
+            return $joinTeamId;
+        }
+
         $numberOfRedTeamMember = 0;
         $numberOfBlueTeamMember = 0;
         $gameParticipants = $this->getParticipants($gameId);
