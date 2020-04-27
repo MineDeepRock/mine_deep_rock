@@ -29,7 +29,7 @@ class WeaponsRepository extends Repository
     }
 
     public function addKillCount(string $ownerName, string $weaponName): void {
-        $result = $this->db->query("UPDATE weapons SET kill_count+1 WHERE name='{$weaponName}' AND owner_name='{$ownerName}'");
+        $result = $this->db->query("UPDATE weapons SET kill_count=kill_count+1 WHERE name='{$weaponName}' AND owner_name='{$ownerName}'");
 
         if (!$result) {
             $sql_error = $this->db->error;
