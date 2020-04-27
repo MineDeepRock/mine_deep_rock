@@ -80,7 +80,7 @@ class Main extends PluginBase implements Listener
             if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
                 $player = $event->getPlayer();
                 $item = $event->getPlayer()->getInventory()->getItemInHand();
-                $this->gunSystemClient->tryShootingOnce($item, $this->getScheduler());
+                $this->gunSystemClient->tryShootingOnce($player,$item);
             }
         }
     }
@@ -90,7 +90,7 @@ class Main extends PluginBase implements Listener
         if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR])) {
             $player = $event->getPlayer();
             $item = $event->getItem();
-            $this->gunSystemClient->tryShooting($item);
+            $this->gunSystemClient->tryShooting($player,$item);
         }
     }
 
@@ -156,14 +156,6 @@ class Main extends PluginBase implements Listener
             $item = $attacker->getInventory()->getItemInHand();
             $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
             $this->gameSystemClient->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
-        }
-    }
-
-    //GameSystem
-    public function onDamage(EntityDeathEvent $event){
-        $entity = $event->getEntity();
-        if ($entity instanceof Human) {
-            $event->setCancelled();
         }
     }
 
