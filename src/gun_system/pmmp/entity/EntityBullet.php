@@ -57,7 +57,7 @@ class EntityBullet
                         $projectile->getX(),
                         $projectile->getY(),
                         $projectile->getZ()
-                    ),1));
+                    ),4));
                 }
             }
         ), 1);
