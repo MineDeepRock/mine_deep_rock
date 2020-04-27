@@ -10,6 +10,7 @@ use gun_system\models\ClipReloadController;
 use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
+use gun_system\models\OneByOneReloadController;
 use pocketmine\scheduler\TaskScheduler;
 
 class ColtSAA extends Revolver
@@ -20,7 +21,7 @@ class ColtSAA extends Revolver
             new GunRate(3.7),
             new BulletSpeed(320),
             0,
-            new ClipReloadController(6,6,6.3,1.3),
+            new OneByOneReloadController(6,1.2),
             new EffectiveRange(0,12),
             new GunPrecision(97,95),
             $scheduler);

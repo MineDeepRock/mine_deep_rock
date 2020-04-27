@@ -14,7 +14,6 @@ use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\level\particle\ExplodeParticle;
 use pocketmine\math\RayTraceResult;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Server;
 
 class Egg extends Throwable
