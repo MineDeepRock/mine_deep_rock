@@ -10,10 +10,10 @@ use game_system\model\map\RealisticWWIBattlefieldExtended;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\WorldController;
 use pocketmine\command\ConsoleCommandSender;
-use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 
 date_default_timezone_set('Asia/Tokyo');
 
@@ -59,10 +59,17 @@ class TeamDeathMatch extends Game
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
 
+            if ($participant->getBelongTeamId()->equal($this->redTeam->getId())) {
+                $player->setNameTag(TextFormat::RED . $participant->getName());
+            } else {
+                $player->setNameTag(TextFormat::BLUE . $participant->getName());
+            }
+
             $worldController->teleport($player, $this->map->getName());
 
             $player->getInventory()->setContents([]);
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $participant->getName() . " " . $participant->getSelectedWeaponName());
+            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $participant->getName() . " 364");
 
             $api = EasyScoreboardAPI::getInstance();
             $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
@@ -147,6 +154,7 @@ class TeamDeathMatch extends Game
         $player = Server::getInstance()->getPlayer($user->getName());
         $player->getInventory()->setContents([]);
         Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $user->getName() . " " . $user->getSelectedWeaponName());
+        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $user->getName() . " 364");
         $belongTeamId = $user->getBelongTeamId();
 
         if ($belongTeamId->equal($this->redTeam->getId())) {
