@@ -8,8 +8,10 @@ use pocketmine\math\Vector3;
 
 class RealisticWWIBattlefieldExtended extends TeamDeathMatchMap
 {
+    public const NAME = "RealisticWWIBattlefieldExtended";
+
     public function __construct() {
-        parent::__construct("RealisticWWIBattlefieldExtended", "BioPowered", [
+        parent::__construct(self::NAME, "BioPowered", [
             new Vector3(9, 4, -66),
             new Vector3(4, 4, -51),
             new Vector3(-49, 4, -61),
