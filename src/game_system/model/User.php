@@ -34,13 +34,13 @@ class User
         $participatedGameId = $json["participated_game_id"] === null ? null : new GameId($json["participated_game_id"]);
         $selectedWeaponName = $json["selected_weapon"];
 
-        return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId,$selectedWeaponName);
+        return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId, $selectedWeaponName);
     }
 
     /**
-     * @return mixed
+     * @return TeamId|null
      */
-    public function getBelongTeamId() {
+    public function getBelongTeamId(): ?TeamId {
         return $this->belongTeamId;
     }
 
@@ -52,16 +52,16 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getName() {
+    public function getName(): string {
         return $this->name;
     }
 
     /**
-     * @return mixed
+     * @return TeamId|null
      */
-    public function getLastBelongTeamId() {
+    public function getLastBelongTeamId(): ?TeamId {
         return $this->lastBelongTeamId;
     }
 

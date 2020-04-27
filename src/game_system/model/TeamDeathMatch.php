@@ -52,35 +52,8 @@ class TeamDeathMatch extends Game
         parent::__construct();
     }
 
-    public function start(array $participants, Closure $onFinished): void {
+    public function start(Closure $onFinished): void {
         $this->isStarted = true;
-        $worldController = new WorldController();
-
-        foreach ($participants as $participant) {
-            $player = Server::getInstance()->getPlayer($participant->getName());
-
-            if ($participant->getBelongTeamId()->equal($this->redTeam->getId())) {
-                $player->setNameTag(TextFormat::RED . $participant->getName());
-                $player->sendMessage(TextFormat::RED . "あなたは赤チームです");
-            } else {
-                $player->setNameTag(TextFormat::BLUE . $participant->getName());
-                $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
-            }
-
-
-            $worldController->teleport($player, $this->map->getName());
-
-            $player->getInventory()->setContents([]);
-            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $participant->getName() . " " . $participant->getSelectedWeaponName());
-            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $participant->getName() . " 364");
-
-            $api = EasyScoreboardAPI::getInstance();
-            $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
-            $api->setScore($player, "sidebar", "RedTeamScore:", $this->redTeamScore, 2);
-            $api->setScore($player, "sidebar", "BlueTeamScore:", $this->blueTeamScore, 3);
-
-            $this->reSpawn($participant);
-        }
 
         $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($onFinished): void {
             $this->elapsedSecond++;
@@ -97,25 +70,6 @@ class TeamDeathMatch extends Game
                 $onFinished($winTeam);
             }
         }), 20 * 1);
-    }
-
-    public function joinGameOnTheWay(User $user) {
-        $worldController = new WorldController();
-
-        $userName = $user->getName();
-        $player = Server::getInstance()->getPlayer($userName);
-
-        $worldController->teleport($player, RealisticWWIBattlefieldExtended::NAME);
-
-        $player->getInventory()->setContents([]);
-        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $user->getSelectedWeaponName());
-
-        $api = EasyScoreboardAPI::getInstance();
-        $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
-        $api->setScore($player, "sidebar", "RedTeamScore:", $this->redTeamScore, 2);
-        $api->setScore($player, "sidebar", "BlueTeamScore:", $this->blueTeamScore, 3);
-
-        $this->reSpawn($user);
     }
 
 
@@ -153,19 +107,23 @@ class TeamDeathMatch extends Game
         }
     }
 
-    private function reSpawn(User $user) {
-        $player = Server::getInstance()->getPlayer($user->getName());
-        $player->getInventory()->setContents([]);
-        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $user->getName() . " " . $user->getSelectedWeaponName());
-        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $user->getName() . " 364");
-        $belongTeamId = $user->getBelongTeamId();
+    /**
+     * @return TeamDeathMatchMap
+     */
+    public function getMap(): TeamDeathMatchMap {
+        return $this->map;
+    }
 
-        if ($belongTeamId->equal($this->redTeam->getId())) {
-            $pos= $this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)];
-            $player->teleport($pos);
+    /**
+     * @param TeamId $userTeamId
+     * @return Coordinate
+     */
+    public function getSpawnPoint(TeamId $userTeamId): Coordinate {
+        if ($userTeamId->equal($this->redTeam->getId())) {
+            return $this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)];;
         } else {
-            $pos = $this->blueTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)];
-            $player->teleport($pos);
+            return $this->blueTeamSpawnPoints[rand(0, count($this->blueTeamSpawnPoints) - 1)];;
         }
+        return new Coordinate(0,0,0);
     }
 }
