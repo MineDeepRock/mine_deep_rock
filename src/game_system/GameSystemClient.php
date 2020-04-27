@@ -6,11 +6,13 @@ namespace game_system;
 
 use Client;
 use game_system\model\Game;
+use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\Player;
+use pocketmine\Server;
 
 class GameSystemClient extends Client
 {
@@ -26,7 +28,7 @@ class GameSystemClient extends Client
 
     public function userLogin(string $userName): void {
         if (!$this->usersService->exists($userName))
-            $this->weaponService->register($userName,"M1907SL");
+            $this->weaponService->register($userName, "M1907SL");
 
         $this->usersService->userLogin($userName);
     }
@@ -45,13 +47,22 @@ class GameSystemClient extends Client
             return false;
         $participants = $this->usersService->getParticipants($this->game->getId());
 
-
         $this->game->start($participants, function ($winTeam) use ($participants) {
+            $worldController = new WorldController();
             $winTeamId = $winTeam->getId();
-            //途中抜けしたプレイヤーを省かないように再取得はしない
+
+            $participants = $this->usersService->getParticipants($this->game->getId());
             foreach ($participants as $participant) {
-                if ($participant->getLastBelongTeamId()->equal($winTeamId))
+                $player = Server::getInstance()->getPlayer($participant->getName());
+                $worldController->teleport($player,"world");
+
+                if ($participant->getBelongTeamId()->equal($winTeamId)) {
+                    $player->addTitle("勝利!!");
                     $this->usersService->addWinCount($participant->getName());
+                    $this->usersService->addMoney($participant->getName(), 1000);
+                } else {
+                    $player->addTitle("負け");
+                }
             }
         });
 
@@ -103,7 +114,7 @@ class GameSystemClient extends Client
 
                 $attackerTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
 
-                $this->game->onKilledPlayer($attackerTeamId,$target);
+                $this->game->onKilledPlayer($attackerTeamId, $target);
                 $this->usersService->addMoney($attackerName, 100);
                 return true;
             }
