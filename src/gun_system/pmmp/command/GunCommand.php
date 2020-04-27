@@ -350,6 +350,7 @@ class GunCommand extends Command
     //TODO:リファクタリング
     public function giveBullet(Player $player, GunType $gunType, int $bulletId = null) {
         $playerName = $player->getName();
+        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give ". $player->getName() . " arrow 1");
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():
                 $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::HAND_GUN . " 64");
