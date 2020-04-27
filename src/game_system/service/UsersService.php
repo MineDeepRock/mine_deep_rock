@@ -34,6 +34,10 @@ class UsersService extends Service
         return $this->repository->getParticipants($gameId->value());
     }
 
+    public function selectWeapon(string $userName, string $weaponName): void {
+        $this->repository->selectWeapon($userName,$weaponName);
+    }
+
     public function joinGame(string $userName, GameId $gameId, TeamId $redTeamId, TeamId $blueTeamId, ?TeamId $joinTeamId = null): TeamId {
         if ($joinTeamId !== null) {
             $this->repository->joinTeam($userName, $joinTeamId->value(), $gameId->value());

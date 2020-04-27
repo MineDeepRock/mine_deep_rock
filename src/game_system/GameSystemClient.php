@@ -7,6 +7,7 @@ namespace game_system;
 use Client;
 use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\Game;
+use game_system\pmmp\WeaponSelectForm;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
@@ -27,11 +28,23 @@ class GameSystemClient extends Client
         $this->weaponService = new WeaponsService();
     }
 
+    public function selectWeapon(Player $player) {
+        $playerName = $player->getName();
+        $player->sendForm(new WeaponSelectForm(function ($weaponName) use ($playerName) {
+            if ($weaponName !== null) {
+                if ($this->weaponService->isOwn($playerName, $weaponName)) {
+                    $this->usersService->selectWeapon($playerName, $weaponName);
+                }
+            }
+
+        }));
+    }
+
     public function userLogin(string $userName): void {
         $player = Server::getInstance()->getPlayer($userName);
         $player->getInventory()->setContents([]);
         $worldController = new WorldController();
-        $worldController->teleport($player,"world");
+        $worldController->teleport($player, "world");
 
         if (!$this->usersService->exists($userName))
             $this->weaponService->register($userName, "M1907SL");
@@ -127,7 +140,7 @@ class GameSystemClient extends Client
         if ($player->isOnline()) {
             $player->getInventory()->setContents([]);
             $worldController = new WorldController();
-            $worldController->teleport($player,"world");
+            $worldController->teleport($player, "world");
             EasyScoreboardAPI::getInstance()->allremove($userName);
         }
 
@@ -158,7 +171,8 @@ class GameSystemClient extends Client
 
                 $attackerTeamId = $this->usersService->getUserData($attackerName)->getBelongTeamId();
 
-                $this->game->onKilledPlayer($attackerTeamId, $target);
+                $user = $this->usersService->getUserData($target->getName());
+                $this->game->onKilledPlayer($attackerTeamId, $user);
                 $this->usersService->addMoney($attackerName, 100);
                 return true;
             }

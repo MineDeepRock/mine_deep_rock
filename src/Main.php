@@ -160,6 +160,15 @@ class Main extends PluginBase implements Listener
     }
 
     //GameSystem
+    public function onTapWeaponSelectBlock(PlayerInteractEvent $event){
+        if ($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($event->getBlock()->getId() === 41) {
+                $this->gameSystemClient->selectWeapon($player);
+            }
+        }
+    }
+
     public function onDamage(EntityDamageEvent $event){
         $entity = $event->getEntity();
         if ($entity instanceof Human) {

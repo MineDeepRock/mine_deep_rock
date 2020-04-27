@@ -11,9 +11,18 @@ class WeaponsRepository extends Repository
 {
     public function getOwnWeapons(string $ownerName): array {
         $result = $this->db->query("SELECT * FROM weapons WHERE owner_name='{$ownerName}'");
-        $weapons = array_map(function($weapon){
-            return Weapon::fromJson($weapon);
-        },$result->fetch_assoc());
+
+        $weapons = [];
+
+        if ($result->num_rows === 0) {
+            return $weapons;
+        }
+        if ($result->num_rows === 1) {
+            return [Weapon::fromJson($result->fetch_assoc())];
+        }
+
+        while ($row = $result->fetch_assoc())
+            array_push($users, Weapon::fromJson($row));
 
         return $weapons;
     }

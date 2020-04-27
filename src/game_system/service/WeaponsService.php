@@ -15,6 +15,11 @@ class WeaponsService extends Service
         $this->repository = new WeaponsRepository();
     }
 
+    public function isOwn(string $ownerName, string $weaponName) {
+        $ownWeapons = $this->getOwnWeapons($ownerName);
+        return in_array($weaponName, $ownWeapons);
+    }
+
     public function getOwnWeapons(string $ownerName): array {
         return $this->repository->getOwnWeapons($ownerName);
     }

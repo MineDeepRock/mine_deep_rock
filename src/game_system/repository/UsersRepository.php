@@ -25,6 +25,16 @@ class UsersRepository extends Repository
         }
     }
 
+    public function selectWeapon(string $userName, string $weaponName): void {
+        $result = $this->db->query("UPDATE users SET selected_weapon='{$weaponName}' WHERE name='{$userName}'");
+
+        if (!$result) {
+            $sql_error = $this->db->error;
+            error_log($sql_error);
+            die($sql_error);
+        }
+    }
+
     public function getUserData(string $userName): ?User {
         $result = $this->db->query("SELECT * FROM users WHERE name='{$userName}'");
         if ($result->num_rows === 0) {
