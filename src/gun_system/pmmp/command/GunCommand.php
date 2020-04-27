@@ -356,7 +356,7 @@ class GunCommand extends Command
                 $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::HAND_GUN . " 64");
                 break;
             case GunType::AssaultRifle()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::ASSAULT_RIFLE . " 64");
+                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::ASSAULT_RIFLE . " 128");
                 break;
             case GunType::SniperRifle()->getTypeText():
                 $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::SNIPER_RIFLE . " 64");
@@ -365,10 +365,10 @@ class GunCommand extends Command
                 $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . $bulletId . " 64");
                 break;
             case GunType::SMG()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::SMG . " 64");
+                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::SMG . " 128");
                 break;
             case GunType::LMG()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::LMG . " 64");
+                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::LMG . " 192");
                 break;
         }
     }
