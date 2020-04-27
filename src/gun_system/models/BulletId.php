@@ -14,6 +14,7 @@ class BulletId
     public const LMG = ItemIds::FLINT;
     public const SNIPER_RIFLE = ItemIds::SUGAR;
     public const SMG = ItemIds::RABBIT_FOOT;
+    public const REVOLVER = ItemIds::RABBIT_HIDE;
 
     public const BUCK_SHOT = ItemIds::BRICK;
     public const SLUG = ItemIds::NETHER_BRICK;
@@ -39,6 +40,8 @@ class BulletId
                 return self::SNIPER_RIFLE;
             case GunType::SMG()->getTypeText():
                 return self::SMG;
+            case GunType::Revolver()->getTypeText():
+                return self::REVOLVER;
         }
         return null;
     }

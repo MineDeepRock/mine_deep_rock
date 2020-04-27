@@ -55,7 +55,12 @@ class WeaponSelectForm implements Form
                 'LewisGun',
                 'ParabellumMG14',
                 'MG15',
-                'BAR1918'
+                'BAR1918',
+
+                'ColtSAA',
+                'RevolverMk6',
+                'No3Revolver',
+                'NagantRevolver'
             ];
         ($this->onSelected)($buttons[$data]);
     }
@@ -98,7 +103,12 @@ class WeaponSelectForm implements Form
                 ['text' => 'LewisGun'],
                 ['text' => 'ParabellumMG14'],
                 ['text' => 'MG15'],
-                ['text' => 'BAR1918']
+                ['text' => 'BAR1918'],
+
+                ['text' => 'ColtSAA'],
+                ['text' => 'RevolverMk6'],
+                ['text' => 'No3Revolver'],
+                ['text' => 'NagantRevolver']
             ]
         ];
     }

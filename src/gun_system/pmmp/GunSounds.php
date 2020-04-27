@@ -99,6 +99,8 @@ class ShootSounds extends ReloadSounds
                 return self::SniperRifleShoot();
             case "SMG":
                 return self::SMGShoot();
+            case "Revolver":
+                return self::RevolverShoot();
         }
         return new GunSounds("");
     }
@@ -126,6 +128,10 @@ class ShootSounds extends ReloadSounds
     public static function SMGShoot(): GunSounds {
         return new GunSounds("gun.smg.shoot");
     }
+
+    public static function RevolverShoot(): GunSounds {
+        return new GunSounds("gun.assaultrifle.shoot");
+    }
 }
 
 class ReloadSounds
@@ -147,9 +153,5 @@ class ReloadSounds
 
     public static function ReloadOne(): GunSounds {
         return new GunSounds("gun.reload.clip.one");
-    }
-
-    public static function Gauge(): GunSounds {
-        return new GunSounds("gun.reload.12gauge");
     }
 }

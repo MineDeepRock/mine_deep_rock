@@ -29,6 +29,10 @@ use gun_system\models\light_machine_gun\BAR1918;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\MG15;
 use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\revolver\NagantRevolver;
+use gun_system\models\revolver\No3Revolver;
+use gun_system\models\revolver\ColtSAA;
+use gun_system\models\revolver\RevolverMk6;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\Automatic12G;
 use gun_system\models\shotgun\M1897;
@@ -53,6 +57,7 @@ use gun_system\pmmp\items\ItemAssaultRifle;
 use gun_system\pmmp\items\ItemGun;
 use gun_system\pmmp\items\ItemHandGun;
 use gun_system\pmmp\items\ItemLightMachineGun;
+use gun_system\pmmp\items\ItemRevolver;
 use gun_system\pmmp\items\ItemShotGun;
 use gun_system\pmmp\items\ItemSubMachineGun;
 use gun_system\pmmp\items\ItemSniperRifle;
@@ -344,6 +349,32 @@ class GunCommand extends Command
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 $this->giveBullet($player,GunType::LMG());
                 break;
+
+            //LMG
+            case "ColtSAA":
+                $item = new ItemRevolver("ColtSAA", new ColtSAA($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                $this->giveBullet($player,GunType::Revolver());
+                break;
+            case "RevolverMk6":
+                $item = new ItemRevolver("RevolverMk6", new RevolverMk6($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                $this->giveBullet($player,GunType::Revolver());
+                break;
+            case "No3Revolver":
+                $item = new ItemRevolver("No3Revolver", new No3Revolver($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                $this->giveBullet($player,GunType::Revolver());
+                break;
+            case "NagantRevolver":
+                $item = new ItemRevolver("NagantRevolver", new NagantRevolver($this->scheduler), $player);
+                $item->setCustomName($item->getName());
+                $player->getInventory()->setItemInHand($this->setItemDescription($item));
+                $this->giveBullet($player,GunType::Revolver());
+                break;
         }
     }
 
@@ -369,6 +400,9 @@ class GunCommand extends Command
                 break;
             case GunType::LMG()->getTypeText():
                 $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::LMG . " 192");
+                break;
+            case GunType::Revolver()->getTypeText():
+                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::REVOLVER . " 64");
                 break;
         }
     }

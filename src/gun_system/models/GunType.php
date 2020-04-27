@@ -34,7 +34,9 @@ class GunType
     public static function SMG():GunType {
         return new GunType("SMG");
     }
-
+    public static function Revolver():GunType {
+        return new GunType("Revolver");
+    }
     /**
      * @return mixed
      */
