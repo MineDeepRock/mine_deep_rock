@@ -7,11 +7,9 @@ namespace game_system;
 use Client;
 use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\Game;
-use game_system\model\map\RealisticWWIBattlefieldExtended;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
-use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\Player;
@@ -30,6 +28,11 @@ class GameSystemClient extends Client
     }
 
     public function userLogin(string $userName): void {
+        $player = Server::getInstance()->getPlayer($userName);
+        $player->getInventory()->setContents([]);
+        $worldController = new WorldController();
+        $worldController->teleport($player,"world");
+
         if (!$this->usersService->exists($userName))
             $this->weaponService->register($userName, "M1907SL");
 
@@ -58,6 +61,7 @@ class GameSystemClient extends Client
             foreach ($participants as $participant) {
                 EasyScoreboardAPI::getInstance()->allremove($participant->getName());
                 $player = Server::getInstance()->getPlayer($participant->getName());
+                $player->getInventory()->setContents([]);
                 $worldController->teleport($player, "world");
 
                 if ($participant->getBelongTeamId()->equal($winTeamId)) {
@@ -119,7 +123,14 @@ class GameSystemClient extends Client
     }
 
     public function quitGame(string $userName): void {
-        //TODO:アイテム削除とTP
+        $player = Server::getInstance()->getPlayer($userName);
+        if ($player->isOnline()) {
+            $player->getInventory()->setContents([]);
+            $worldController = new WorldController();
+            $worldController->teleport($player,"world");
+            EasyScoreboardAPI::getInstance()->allremove($userName);
+        }
+
         $this->usersService->quitGame($userName);
     }
 
