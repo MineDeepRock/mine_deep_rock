@@ -32,9 +32,9 @@ class GameSystemClient extends Client
         $playerName = $player->getName();
         $player->sendForm(new WeaponSelectForm(function ($weaponName) use ($playerName) {
             if ($weaponName !== null) {
-                if ($this->weaponService->isOwn($playerName, $weaponName)) {
+                //if ($this->weaponService->isOwn($playerName, $weaponName)) {
                     $this->usersService->selectWeapon($playerName, $weaponName);
-                }
+                //}
             }
 
         }));
@@ -157,6 +157,13 @@ class GameSystemClient extends Client
         }
 
         if ($target instanceof Human && $target->getLevel()->getName() !== "world") {
+
+            $attackerTeamId = $this->usersService->getUserData($attacker->getName())->getBelongTeamId();
+            $targetTeamId = $this->usersService->getUserData($target->getName())->getBelongTeamId();
+            if ($attackerTeamId->equal($targetTeamId)) {
+                return false;
+            }
+
             if ($health <= 0) {
                 $target->setHealth(20);
 
