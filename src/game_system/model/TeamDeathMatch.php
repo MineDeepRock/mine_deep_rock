@@ -61,9 +61,12 @@ class TeamDeathMatch extends Game
 
             if ($participant->getBelongTeamId()->equal($this->redTeam->getId())) {
                 $player->setNameTag(TextFormat::RED . $participant->getName());
+                $player->sendMessage(TextFormat::RED . "あなたは赤チームです");
             } else {
                 $player->setNameTag(TextFormat::BLUE . $participant->getName());
+                $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
             }
+
 
             $worldController->teleport($player, $this->map->getName());
 
