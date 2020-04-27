@@ -160,6 +160,13 @@ class Main extends PluginBase implements Listener
     }
 
     //GameSystem
+    public function onDamage(EntityDeathEvent $event){
+        $entity = $event->getEntity();
+        if ($entity instanceof Human) {
+            $event->setCancelled();
+        }
+    }
+
     public function onJoin(PlayerJoinEvent $event) {
         $playerName = $event->getPlayer()->getName();
 
