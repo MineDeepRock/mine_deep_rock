@@ -7,10 +7,12 @@ namespace game_system\pmmp\command;
 use game_system\GameSystemClient;
 use game_system\model\map\RealisticWWIBattlefieldExtended;
 use game_system\model\TeamDeathMatch;
+use game_system\pmmp\WorldController;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Server;
 
 class GameCommand extends Command
 {
@@ -33,7 +35,14 @@ class GameCommand extends Command
         }
         $player = $sender->getServer()->getPlayer($sender->getName());
         $method = $args[0];
-        if ($method === "create") {
+        if ($method === "world") {
+            if (count($args) < 2) {
+                $sender->sendMessage("/world [worldName]");
+                return false;
+            }
+            $worldController = new WorldController();
+            $worldController->teleport($player, $args[1]);
+        } else if ($method === "create") {
             if (!$player->isOp()) {
                 $sender->sendMessage("権限がありません");
                 return false;
@@ -46,7 +55,7 @@ class GameCommand extends Command
             switch ($gameName) {
                 case "TeamDeathMatch":
                     $result = $this->createTeamDeathMatch();
-                    if (!$result){
+                    if (!$result) {
                         $player->sendMessage("すでに作成済みのゲームがあります");
                         return false;
                     }
@@ -62,7 +71,7 @@ class GameCommand extends Command
                 return false;
             }
             $result = $this->startGame();
-            if (!$result){
+            if (!$result) {
                 $player->sendMessage("試合が作られていません");
                 return false;
             }
@@ -74,7 +83,7 @@ class GameCommand extends Command
                 return false;
             }
             $result = $this->closeGame();
-            if (!$result){
+            if (!$result) {
                 $player->sendMessage("試合が開かれていません");
                 return false;
             }
@@ -82,12 +91,15 @@ class GameCommand extends Command
             $player->sendMessage("試合を終了させました");//TODO
         } else if ($method === "join") {
             $result = $this->join($player->getName());
-            if (!$result){
-                $player->sendMessage("試合が開かれていないか、すでに試合がはじまっています");
+            if (!$result) {
+                $player->sendMessage("試合が開かれていません");
                 return false;
             }
 
-            $player->sendMessage("試合に参加しました");
+            $onlinePlayers = Server::getInstance()->getOnlinePlayers();
+            foreach ($onlinePlayers as $onlinePlayer)
+                $onlinePlayer->sendMessage($player->getName() . "が試合に参加しました");
+
         } else if ($method === "quit" || $method === "hub") {
             $this->quit($player->getName());
             $player->sendMessage("試合から抜けました");
@@ -96,7 +108,7 @@ class GameCommand extends Command
     }
 
     private function createTeamDeathMatch(): bool {
-        return $this->client->createGame(new TeamDeathMatch(new RealisticWWIBattlefieldExtended(),$this->scheduler));
+        return $this->client->createGame(new TeamDeathMatch(new RealisticWWIBattlefieldExtended(), $this->scheduler));
     }
 
     public function startGame(): bool {
