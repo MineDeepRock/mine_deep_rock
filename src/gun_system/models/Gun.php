@@ -459,16 +459,22 @@ class MagazineReloadController extends ReloadController
     function carryOut(Player $owner, TaskScheduler $scheduler, int $inventoryBullets, Closure $onStarted, Closure $onFinished): void {
         $this->onReloading = true;
         GunSounds::play($owner, GunSounds::MagazineOut());
+        $empty = $this->magazineCapacity - $this->currentBullet;
+
+        if ($empty > $inventoryBullets) {
+            $this->currentBullet += $inventoryBullets;
+            $onStarted($inventoryBullets);
+        } else {
+            $this->currentBullet = $this->magazineCapacity;
+            $onStarted($empty);
+        }
 
         $scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($owner, $inventoryBullets, $onStarted, $onFinished): void {
-                $empty = $this->magazineCapacity - $this->currentBullet;
+            function (int $currentTick) use ($empty,$owner, $inventoryBullets, $onStarted, $onFinished): void {
                 if ($empty > $inventoryBullets) {
                     $this->currentBullet += $inventoryBullets;
-                    $onStarted($inventoryBullets);
                 } else {
                     $this->currentBullet = $this->magazineCapacity;
-                    $onStarted($empty);
                 }
                 GunSounds::play($owner, GunSounds::MagazineIn());
                 $this->onReloading = false;
