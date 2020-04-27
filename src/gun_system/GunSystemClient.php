@@ -68,7 +68,7 @@ class GunSystemClient extends Client
                 $gun = $itemGun->getGunData();
 
                 if (intval($distance) > 99) {
-                    $damage = end($gun->getDamageCurve());
+                    $damage = $gun->getDamageCurve()[99];
                 } else {
                     $damage = $gun->getDamageCurve()[intval($distance)];
                 }
