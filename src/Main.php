@@ -16,7 +16,7 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
-use pocketmine\event\entity\EntityDeathEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
@@ -156,6 +156,14 @@ class Main extends PluginBase implements Listener
             $item = $attacker->getInventory()->getItemInHand();
             $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
             $this->gameSystemClient->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
+        }
+    }
+
+    //GameSystem
+    public function onDamage(EntityDamageEvent $event){
+        $entity = $event->getEntity();
+        if ($entity instanceof Human) {
+            $event->setCancelled();
         }
     }
 

@@ -69,7 +69,7 @@ class TeamDeathMatch extends Game
             $api->setScore($player, "sidebar", "RedTeamScore:", $this->redTeamScore, 2);
             $api->setScore($player, "sidebar", "BlueTeamScore:", $this->blueTeamScore, 3);
 
-            $this->reSpawn($participant->getBelongTeamId(), $player);
+            $this->reSpawn($participant);
         }
 
         $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($onFinished): void {
@@ -105,7 +105,7 @@ class TeamDeathMatch extends Game
         $api->setScore($player, "sidebar", "RedTeamScore:", $this->redTeamScore, 2);
         $api->setScore($player, "sidebar", "BlueTeamScore:", $this->blueTeamScore, 3);
 
-        $this->reSpawn($user->getBelongTeamId(), $player);
+        $this->reSpawn($user);
     }
 
 
@@ -123,19 +123,19 @@ class TeamDeathMatch extends Game
         return $this->blueTeam;
     }
 
-    public function onKilledPlayer(TeamId $attackerTeamId, Player $killedPlayer): void {
+    public function onKilledPlayer(TeamId $attackerTeamId, User $killedUser): void {
         $players = Server::getInstance()->getLevelByName("RealisticWWIBattlefieldExtended")->getPlayers();
         $api = EasyScoreboardAPI::getInstance();
 
         $killedPlayerTeamId = $attackerTeamId->equal($this->redTeam->getId()) ? $this->blueTeam->getId() : $this->redTeam->getId();
         if ($attackerTeamId->equal($this->redTeam->getId())) {
-            $this->reSpawn($killedPlayerTeamId, $killedPlayer);
+            $this->reSpawn($killedUser);
             $this->redTeamScore++;
             foreach ($players as $player) {
                 $api->setScore($player, "sidebar", "RedTeamScore:", $this->redTeamScore, 2);
             }
         } else {
-            $this->reSpawn($killedPlayerTeamId, $killedPlayer);
+            $this->reSpawn($killedUser);
             $this->blueTeamScore++;
             foreach ($players as $player) {
                 $api->setScore($player, "sidebar", "BlueTeamScore:", $this->blueTeamScore, 3);
@@ -143,11 +143,18 @@ class TeamDeathMatch extends Game
         }
     }
 
-    private function reSpawn(TeamId $belongTeamId, Player $player) {
+    private function reSpawn(User $user) {
+        $player = Server::getInstance()->getPlayer($user->getName());
+        $player->getInventory()->setContents([]);
+        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $user->getName() . " " . $user->getSelectedWeaponName());
+        $belongTeamId = $user->getBelongTeamId();
+
         if ($belongTeamId->equal($this->redTeam->getId())) {
-            $player->teleport($this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)]);
+            $pos= $this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)];
+            $player->teleport($pos);
         } else {
-            $player->teleport($this->blueTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)]);
+            $pos = $this->blueTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)];
+            $player->teleport($pos);
         }
     }
 }
