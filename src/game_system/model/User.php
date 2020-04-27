@@ -32,8 +32,9 @@ class User
         $belongTeamId = $json["belong_team_id"] === null ? null : new TeamId($json["belong_team_id"]);
         $lastBelongTeaId = $json["last_belong_team_id"] === null ? null : new TeamId($json["last_belong_team_id"]);
         $participatedGameId = $json["participated_game_id"] === null ? null : new GameId($json["participated_game_id"]);
+        $selectedWeaponName = $json["selected_weapon"];
 
-        return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId);
+        return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId,$selectedWeaponName);
     }
 
     /**
