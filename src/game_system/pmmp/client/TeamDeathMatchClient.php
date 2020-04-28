@@ -11,8 +11,10 @@ use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
 use game_system\pmmp\WorldController;
+use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\level\particle\AngryVillagerParticle;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -87,15 +89,30 @@ class TeamDeathMatchClient extends Client
         $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
     }
 
-    public function onReceiveDamage(Player $attacker, Entity $target, int $health, string $weaponName): void {
+    public function onReceiveDamage(Player $attacker, Entity $target, int $damage, string $weaponName): void {
+        $health = $target->getHealth() - $damage;
+        $target->getLevel()->addParticle(new AngryVillagerParticle(
+            new Vector3(
+                $target->getX() + rand(1, 2),
+                $target->getY() + rand(3, 5),
+                $target->getZ() + rand(1, 2)
+            )
+        ));
+
+        GunSounds::play(Server::getInstance()->getPlayer($target->getName()), GunSounds::bulletHitPlayer(), 10, 1);
+
         if ($health <= 0) {
             $target->setHealth(20);
             $players = $attacker->getLevel()->getPlayers();
             foreach ($players as $player) {
-                $player->sendMessage($attacker->getName() . " killed " . $target->getName() . " by " . $weaponName);
+                $player->sendMessage($attacker->getName() . " が " . $target->getName() . " を倒した [" . $weaponName . "]");
             }
+            $attacker->addTitle(TextFormat::RED . "><", "", 0, 1, 0);
+
         } else {
             $target->setHealth($health);
+            $attacker->addTitle("><", "", 0, 1, 0);
+
         }
     }
 

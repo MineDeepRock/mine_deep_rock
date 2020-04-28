@@ -45,13 +45,17 @@ class GunSounds extends ShootSounds
         return new GunSounds("gun.bullet.hit.block");
     }
 
-    public static function play(Player $owner, GunSounds $soundName): void {
+    public static function bulletHitPlayer():GunSounds {
+        return new GunSounds("game.player.hurt");
+    }
+
+    public static function play(Player $owner, GunSounds $soundName,int $volume = 10,int $pitch = 2): void {
         $packet = new PlaySoundPacket();
         $packet->x = $owner->x;
         $packet->y = $owner->y;
         $packet->z = $owner->z;
-        $packet->volume = 10;
-        $packet->pitch = 2;
+        $packet->volume = $volume;
+        $packet->pitch = $pitch;
         $packet->soundName = $soundName->getText();
         $owner->sendDataPacket($packet);
     }

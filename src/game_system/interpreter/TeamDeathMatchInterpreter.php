@@ -116,20 +116,24 @@ class TeamDeathMatchInterpreter
         return true;
     }
 
-    public function onReceiveDamage(Player $attackerPlayer, Entity $targetPlayer, string $weaponName, int $health): void {
-        if ($targetPlayer->getLevel()->getName() === $this->game->getMap()->getName()) {
-            $attacker = $this->usersService->getUserData($attackerPlayer->getName());
-            $target = $this->usersService->getUserData($targetPlayer->getName());
+    public function onReceiveDamage(Player $attackerPlayer, Entity $targetPlayer, string $weaponName, int $damage): void {
+        $health = $targetPlayer->getHealth() - $damage;
+        if ($this->game !== null) {
+            if ($targetPlayer->getLevel()->getName() === $this->game->getMap()->getName()) {
+                $attacker = $this->usersService->getUserData($attackerPlayer->getName());
+                $target = $this->usersService->getUserData($targetPlayer->getName());
 
-            if (!($attacker->getBelongTeamId()->equal($target->getBelongTeamId()))) {
-                if ($health <= 0) {
-                    $attackerName = $attacker->getName();
-                    $this->weaponService->addKillCount($attacker->getName(), $weaponName);
-                    $this->usersService->addMoney($attackerName, 100);
-                    $this->addScoreByKilling($attacker, $target);
-                    $this->spawn($target);
+                if (!($attacker->getBelongTeamId()->equal($target->getBelongTeamId()))) {
+                    $this->client->onReceiveDamage($attackerPlayer, $targetPlayer, $damage, $weaponName);
+
+                    if ($health <= 0) {
+                        $attackerName = $attacker->getName();
+                        $this->weaponService->addKillCount($attacker->getName(), $weaponName);
+                        $this->usersService->addMoney($attackerName, 100);
+                        $this->addScoreByKilling($attacker, $target);
+                        $this->spawn($target);
+                    }
                 }
-                $this->client->onReceiveDamage($attackerPlayer, $targetPlayer, $health, $weaponName);
             }
         }
     }
@@ -138,11 +142,9 @@ class TeamDeathMatchInterpreter
         $attackerTeamId = $attacker->getBelongTeamId();
 
         if ($attackerTeamId->equal($this->game->getRedTeam()->getId())) {
-            $this->game->redTeamScore++;
-            $this->client->updateRedTeamScoreboard($this->game->redTeamScore, $this->game->getMap()->getName());
+            $this->client->updateRedTeamScoreboard(++$this->game->redTeamScore, $this->game->getMap()->getName());
         } else {
-            $this->game->blueTeamScore++;
-            $this->client->updateBlueTeamScoreboard($this->game->blueTeamScore, $this->game->getMap()->getName());
+            $this->client->updateBlueTeamScoreboard(++$this->game->blueTeamScore, $this->game->getMap()->getName());
         }
         $this->spawn($victim);
     }

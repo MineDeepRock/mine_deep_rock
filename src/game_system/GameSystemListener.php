@@ -60,7 +60,7 @@ class GameSystemListener
     public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage): void {
         $health = $target->getHealth() - $damage;
         if ($target instanceof Human) {
-            $this->teamDeathMatchInterpreter->onReceiveDamage($attacker, $target, $weaponName, $health);
+            $this->teamDeathMatchInterpreter->onReceiveDamage($attacker, $target, $weaponName, $damage);
         } else {
             $target->setHealth($health);
         }
