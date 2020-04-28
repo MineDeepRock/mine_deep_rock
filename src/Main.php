@@ -3,6 +3,7 @@
 use game_system\GameSystemClient;
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
+use game_system\pmmp\items\WeaponSelectItem;
 use gun_system\GunSystemClient;
 use gun_system\models\BulletId;
 use gun_system\pmmp\command\GunCommand;
@@ -75,6 +76,10 @@ class Main extends PluginBase implements Listener
         Item::addCreativeItem(Item::get(BulletId::REVOLVER));
 
         Entity::registerEntity(\gun_system\pmmp\entity\Egg::class, true, ['Egg', 'minecraft:egg']);
+
+
+        ItemFactory::registerItem(new WeaponSelectItem(), true);
+        Item::addCreativeItem(Item::get(WeaponSelectItem::ITEM_ID));
     }
 
 
@@ -86,7 +91,7 @@ class Main extends PluginBase implements Listener
             if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
                 $player = $event->getPlayer();
                 $item = $event->getPlayer()->getInventory()->getItemInHand();
-                $this->gunSystemClient->tryShootingOnce($player,$item);
+                $this->gunSystemClient->tryShootingOnce($player, $item);
             }
         }
     }
@@ -96,7 +101,7 @@ class Main extends PluginBase implements Listener
         if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR])) {
             $player = $event->getPlayer();
             $item = $event->getItem();
-            $this->gunSystemClient->tryShooting($player,$item);
+            $this->gunSystemClient->tryShooting($player, $item);
         }
     }
 
@@ -166,16 +171,16 @@ class Main extends PluginBase implements Listener
     }
 
     //GameSystemListener
-    public function onTapWeaponSelectBlock(PlayerInteractEvent $event){
-        if ($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+    public function onTapByWeaponSelectItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
-            if ($event->getBlock()->getId() === 41) {
+            if ($player->getInventory()->getItemInHand()->getId() === WeaponSelectItem::ITEM_ID) {
                 $this->gameSystemListener->selectWeapon($player);
             }
         }
     }
 
-    public function onDamage(EntityDamageEvent $event){
+    public function onDamage(EntityDamageEvent $event) {
         $entity = $event->getEntity();
         if ($entity instanceof Human) {
             $event->setCancelled();
