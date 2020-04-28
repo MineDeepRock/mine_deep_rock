@@ -45,9 +45,9 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return GameId|null
      */
-    public function getParticipatedGameId() {
+    public function getParticipatedGameId() :?GameId {
         return $this->participatedGameId;
     }
 

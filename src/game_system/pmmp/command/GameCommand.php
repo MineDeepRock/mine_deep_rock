@@ -5,6 +5,7 @@ namespace game_system\pmmp\command;
 
 
 use game_system\GameSystemListener;
+use game_system\model\map\RealisticWWIBattlefieldExtended;
 use game_system\pmmp\WorldController;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -90,7 +91,7 @@ class GameCommand extends Command
         } else if ($method === "join") {
             $result = $this->join($player->getName());
             if (!$result) {
-                $player->sendMessage("試合が開かれていません");
+                $player->sendMessage("試合が開かれていないか。すでに参加しています");
                 return false;
             }
 
@@ -106,7 +107,7 @@ class GameCommand extends Command
     }
 
     private function createTeamDeathMatch(): bool {
-        return $this->listener->initGame();
+        return $this->listener->initGame(new RealisticWWIBattlefieldExtended());
     }
 
     public function startGame(): bool {

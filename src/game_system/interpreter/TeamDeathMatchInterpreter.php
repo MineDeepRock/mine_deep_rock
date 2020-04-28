@@ -4,13 +4,13 @@
 namespace game_system\interpreter;
 
 
+use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\model\User;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\entity\Entity;
-use pocketmine\entity\Human;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
@@ -32,27 +32,33 @@ class TeamDeathMatchInterpreter
         $this->weaponService = $weaponService;
     }
 
-    public function init(int $limitSecond): bool {
+    public function init(TeamDeathMatchMap $map, int $limitSecond): bool {
         if ($this->game !== null)
             return false;
 
         $this->limitSecond = $limitSecond;
-        $this->game = new TeamDeathMatch();
+        $this->game = new TeamDeathMatch($map);
+        return true;
     }
 
     public function start(): bool {
         if ($this->game === null)
             return false;
-        if ($this->game->isStart())//TODO
+        if ($this->game->isStarted())
             return false;
 
         $participants = $this->usersService->getParticipants($this->game->getId());
         $this->client->start(
             $participants,
             $this->game->getRedTeam()->getId(),
-            $this->game->getMap()->getName(),
-            $this->game->getRedTeamScore(),
-            $this->game->getBlueTeamScore());
+            $this->game->redTeamScore,
+            $this->game->blueTeamScore);
+
+
+        $participants = $this->usersService->getParticipants($this->game->getId());
+        foreach ($participants as $participant) {
+            $this->spawn($participant);
+        }
 
         $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
             $this->game->pass();
@@ -73,11 +79,14 @@ class TeamDeathMatchInterpreter
         return true;
     }
 
-    public function join(string $userName) {
+    public function join(string $userName): bool {
         if ($this->game === null)
             return false;
 
         $user = $this->usersService->getUserData($userName);
+        if ($user->getParticipatedGameId() !== null)
+            return false;
+
         if ($this->game->isStarted()) {
             if ($user->getLastBelongTeamId()->equal($this->game->getRedTeam()->getId()) ||
                 $user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId())) {
@@ -87,6 +96,14 @@ class TeamDeathMatchInterpreter
                     $this->game->getBlueTeam()->getId(),
                     $this->game->getRedTeam()->getId(),
                     $user->getLastBelongTeamId());
+
+                $this->client->joinOnTheWay(
+                    $user,
+                    $this->game->getRedTeam()->getId(),
+                    $this->game->redTeamScore,
+                    $this->game->blueTeamScore);
+
+                $this->spawn($user);
                 return true;
             }
         } else {
@@ -100,16 +117,16 @@ class TeamDeathMatchInterpreter
     }
 
     public function onReceiveDamage(Player $attackerPlayer, Entity $targetPlayer, string $weaponName, int $health): void {
-        if ($targetPlayer instanceof Human && $targetPlayer->getLevel()->getName() !== $this->game->getMap()->getMap()) {
-            $attacker = $this->usersService->getUserData($targetPlayer->getName());
+        if ($targetPlayer->getLevel()->getName() === $this->game->getMap()->getName()) {
+            $attacker = $this->usersService->getUserData($attackerPlayer->getName());
             $target = $this->usersService->getUserData($targetPlayer->getName());
 
-            if (!$attacker->getBelongTeamId()->equal($target->getBelongTeamId())) {
+            if (!($attacker->getBelongTeamId()->equal($target->getBelongTeamId()))) {
                 if ($health <= 0) {
                     $attackerName = $attacker->getName();
                     $this->weaponService->addKillCount($attacker->getName(), $weaponName);
                     $this->usersService->addMoney($attackerName, 100);
-                    $this->addScoreByKilling($attacker->getId(), $target);
+                    $this->addScoreByKilling($attacker, $target);
                     $this->spawn($target);
                 }
                 $this->client->onReceiveDamage($attackerPlayer, $targetPlayer, $health, $weaponName);
@@ -132,8 +149,9 @@ class TeamDeathMatchInterpreter
 
     private function spawn(User $user): void {
         $selectedWeaponName = $user->getSelectedWeaponName();
+        $mapName = $this->game->getMap()->getName();
 
-        $this->client->spawn($user->getName(), $selectedWeaponName, $this->game->getSpawnPoint());
+        $this->client->spawn($user->getName(), $selectedWeaponName, $mapName, $this->game->getSpawnPoint($user->getBelongTeamId()));
     }
 
     public function closeGame(): bool {

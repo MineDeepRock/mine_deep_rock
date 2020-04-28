@@ -43,7 +43,7 @@ class Main extends PluginBase implements Listener
 
     function onEnable() {
         $this->gunSystemClient = new GunSystemClient();
-        $this->gameSystemListener = new GameSystemListener();
+        $this->gameSystemListener = new GameSystemListener($this->getScheduler());
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler(), $this->getServer()));

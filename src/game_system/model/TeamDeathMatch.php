@@ -5,15 +5,12 @@ namespace game_system\model;
 
 
 use game_system\model\map\TeamDeathMatchMap;
-use pocketmine\scheduler\TaskScheduler;
 
 date_default_timezone_set('Asia/Tokyo');
 
 class TeamDeathMatch extends Game
 {
     private $elapsedSecond;
-
-    private $scheduler;
 
     private $redTeam;
     public $redTeamScore;
@@ -25,10 +22,9 @@ class TeamDeathMatch extends Game
 
     private $map;
 
-    public function __construct(TeamDeathMatchMap $map, TaskScheduler $scheduler, int $limitSecond) {
+    public function __construct(TeamDeathMatchMap $map) {
         $this->elapsedSecond = 0;
 
-        $this->scheduler = $scheduler;
 
         $this->redTeam = new Team();
         $this->redTeamScore = 0;
@@ -74,11 +70,10 @@ class TeamDeathMatch extends Game
      */
     public function getSpawnPoint(TeamId $userTeamId): Coordinate {
         if ($userTeamId->equal($this->redTeam->getId())) {
-            return $this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)];;
+            return $this->redTeamSpawnPoints[rand(0, count($this->redTeamSpawnPoints) - 1)];
         } else {
-            return $this->blueTeamSpawnPoints[rand(0, count($this->blueTeamSpawnPoints) - 1)];;
+            return $this->blueTeamSpawnPoints[rand(0, count($this->blueTeamSpawnPoints) - 1)];
         }
-        return new Coordinate(0, 0, 0);
     }
 
     /**

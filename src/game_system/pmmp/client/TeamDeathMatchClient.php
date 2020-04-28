@@ -9,6 +9,7 @@ use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\Coordinate;
 use game_system\model\Team;
 use game_system\model\TeamId;
+use game_system\model\User;
 use game_system\pmmp\WorldController;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
@@ -19,9 +20,7 @@ use pocketmine\utils\TextFormat;
 
 class TeamDeathMatchClient extends Client
 {
-    public function start(Array $participants, TeamId $redTeamId, string $usingMapName, int $redTeamScore, int $blueTeamScore): void {
-        $worldController = new WorldController();
-
+    public function start(Array $participants, TeamId $redTeamId, int $redTeamScore, int $blueTeamScore): void {
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
             $playerName = $participant->getName();
@@ -33,12 +32,6 @@ class TeamDeathMatchClient extends Client
                 $player->setNameTag(TextFormat::BLUE . $playerName);
                 $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
             }
-
-            $worldController->teleport($player, $usingMapName);
-
-            $player->getInventory()->setContents([]);
-            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $playerName . " " . $participant->getSelectedWeaponName());
-            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $playerName . " 364");
 
             $api = EasyScoreboardAPI::getInstance();
             $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
@@ -65,15 +58,17 @@ class TeamDeathMatchClient extends Client
         }
     }
 
-    public function joinOnTheWay(string $userName, string $selectedWeaponName, int $redTeamScore, int $blueTeamScore, string $mapName): void {
-        $worldController = new WorldController();
+    public function joinOnTheWay(User $user, TeamId $redTeamId, int $redTeamScore, int $blueTeamScore): void {
+        $playerName = $user->getName();
+        $player = Server::getInstance()->getPlayer($playerName);
 
-        $player = Server::getInstance()->getPlayer($userName);
-
-        $worldController->teleport($player, $mapName);
-
-        $player->getInventory()->setContents([]);
-        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
+        if ($user->getBelongTeamId()->equal($redTeamId)) {
+            $player->setNameTag(TextFormat::RED . $playerName);
+            $player->sendMessage(TextFormat::RED . "あなたは赤チームです");
+        } else {
+            $player->setNameTag(TextFormat::BLUE . $playerName);
+            $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
+        }
 
         $api = EasyScoreboardAPI::getInstance();
         $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
@@ -81,12 +76,14 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(string $userName, string $selectedWeaponName, Coordinate $coordinate) {
+    public function spawn(string $userName, string $selectedWeaponName, string $mapName, Coordinate $coordinate) {
+        $worldController = new WorldController();
         $player = Server::getInstance()->getPlayer($userName);
 
         $player->getInventory()->setContents([]);
         Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
         Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $userName . " 364");
+        $worldController->teleport($player, $mapName);
         $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
     }
 
@@ -135,7 +132,7 @@ class TeamDeathMatchClient extends Client
             $player->getInventory()->setContents([]);
             $worldController = new WorldController();
             $worldController->teleport($player, "world");
-            EasyScoreboardAPI::getInstance()->allremove($userName);
+            EasyScoreboardAPI::getInstance()->deleteScoreboard($player, "sidebar");
         }
     }
 }

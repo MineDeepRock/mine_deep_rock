@@ -5,6 +5,7 @@ namespace game_system;
 
 
 use game_system\interpreter\TeamDeathMatchInterpreter;
+use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\WeaponSelectForm;
 use game_system\pmmp\WorldController;
@@ -36,8 +37,8 @@ class GameSystemListener
         );
     }
 
-    public function initGame(): bool {
-        return $this->teamDeathMatchInterpreter->init(600);
+    public function initGame(TeamDeathMatchMap $map): bool {
+        return $this->teamDeathMatchInterpreter->init($map,600);
     }
 
     public function startGame(): bool {
@@ -58,11 +59,10 @@ class GameSystemListener
 
     public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage): void {
         $health = $target->getHealth() - $damage;
-        //撃たれた相手が人間じゃない
-        if (!($target instanceof Human)) {
-            $target->setHealth($health);
-        } else {
+        if ($target instanceof Human) {
             $this->teamDeathMatchInterpreter->onReceiveDamage($attacker, $target, $weaponName, $health);
+        } else {
+            $target->setHealth($health);
         }
     }
 

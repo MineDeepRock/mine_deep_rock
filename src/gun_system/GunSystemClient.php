@@ -46,7 +46,6 @@ class GunSystemClient extends Client
         }
     }
 
-    //TODO:ダメージの計算はGameSystemでやる
     public function receivedDamage(?Player $attacker, Entity $entity): int {
         if ($attacker !== null) {
 
