@@ -34,6 +34,7 @@ use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
+use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener
@@ -182,9 +183,11 @@ class Main extends PluginBase implements Listener
     }
 
     public function onJoin(PlayerJoinEvent $event) {
-        $playerName = $event->getPlayer()->getName();
-
-        $this->gameSystemListener->userLogin($playerName);
+        $player = $event->getPlayer();
+        $this->gameSystemListener->userLogin($player->getName());
+        $pk = new GameRulesChangedPacket();
+        $pk->gameRules["doImmediateRespawn"] = [1, true];
+        $player->sendDataPacket($pk);
     }
 
     public function onQuit(PlayerQuitEvent $event) {
