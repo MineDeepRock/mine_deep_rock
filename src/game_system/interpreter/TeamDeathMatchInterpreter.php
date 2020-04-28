@@ -99,7 +99,14 @@ class TeamDeathMatchInterpreter
             return false;
 
         if ($this->game->isStarted()) {
-            if ($user->getLastBelongTeamId()->equal($this->game->getRedTeam()->getId()) ||
+
+            if ($user->getLastBelongTeamId() === null) {
+                $this->usersService->joinGame(
+                    $userName,
+                    $this->game->getId(),
+                    $this->game->getBlueTeam()->getId(),
+                    $this->game->getRedTeam()->getId());
+            } else if ($user->getLastBelongTeamId()->equal($this->game->getRedTeam()->getId()) ||
                 $user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId())) {
                 $this->usersService->joinGame(
                     $userName,
@@ -107,16 +114,18 @@ class TeamDeathMatchInterpreter
                     $this->game->getBlueTeam()->getId(),
                     $this->game->getRedTeam()->getId(),
                     $user->getLastBelongTeamId());
-
-                $this->client->joinOnTheWay(
-                    $user,
-                    $this->game->getRedTeam()->getId(),
-                    $this->game->redTeamScore,
-                    $this->game->blueTeamScore);
-
-                $this->spawn($user);
-                return true;
             }
+
+            $user = $this->usersService->getUserData($userName);
+
+            $this->client->joinOnTheWay(
+                $user,
+                $user->getBelongTeamId(),
+                $this->game->redTeamScore,
+                $this->game->blueTeamScore);
+
+            $this->spawn($user);
+            return true;
         } else {
             $this->usersService->joinGame(
                 $userName,
