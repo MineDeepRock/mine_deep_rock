@@ -388,7 +388,7 @@ class GunCommand extends Command
                 $player->getInventory()->addItem(ItemFactory::get(BulletId::HAND_GUN, 0, 64));
                 break;
             case GunType::AssaultRifle()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::ASSAULT_RIFLE, 0, 64));
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::ASSAULT_RIFLE, 0, 128));
                 break;
             case GunType::SniperRifle()->getTypeText():
                 $player->getInventory()->addItem(ItemFactory::get(BulletId::SNIPER_RIFLE, 0, 64));
@@ -397,10 +397,10 @@ class GunCommand extends Command
                 $player->getInventory()->addItem(ItemFactory::get($bulletId, 0, 64));
                 break;
             case GunType::SMG()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::SMG, 0, 64));
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::SMG, 0, 128));
                 break;
             case GunType::LMG()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::LMG, 0, 64));
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::LMG, 0, 192));
                 break;
             case GunType::Revolver()->getTypeText():
                 $player->getInventory()->addItem(ItemFactory::get(BulletId::REVOLVER, 0, 64));

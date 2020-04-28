@@ -21,7 +21,7 @@ class LewisGun extends LightMachineGun
             new BulletSpeed(740),
             new MagazineReloadController(47, 2.85),
             new EffectiveRange(0, 11),
-            new GunPrecision(96.5, 77),
+            new GunPrecision(98.5, 77),
             $scheduler);
     }
 }

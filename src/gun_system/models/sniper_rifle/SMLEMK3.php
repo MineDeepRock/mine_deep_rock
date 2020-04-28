@@ -19,7 +19,7 @@ class SMLEMK3 extends SniperRifle
             new GunRate(0.8),
             new BulletSpeed(740),
             2.5, new ClipReloadController(10, 5, 1.8, 0.5),
-            new EffectiveRange(10, 50),
+            new EffectiveRange(40, 75),
             new GunPrecision(99.5, 80),
             $scheduler);
     }

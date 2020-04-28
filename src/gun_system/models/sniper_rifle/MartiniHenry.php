@@ -19,7 +19,7 @@ class MartiniHenry extends SniperRifle
             new GunRate(0.4),
             new BulletSpeed(440),
             3, new OneByOneReloadController(1, 2.3),
-            new EffectiveRange(10, 50),
+            new EffectiveRange(42, 68),
             new GunPrecision(99.5, 80),
             $scheduler);
     }

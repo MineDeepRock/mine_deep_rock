@@ -19,7 +19,7 @@ class Gewehr98 extends SniperRifle
             new GunRate(0.8),
             new BulletSpeed(880),
             2.5, new ClipReloadController(5, 5, 1.5, 0.5),
-            new EffectiveRange(30, 80),
+            new EffectiveRange(80, 98),
             new GunPrecision(99.5, 80),
             $scheduler);
     }

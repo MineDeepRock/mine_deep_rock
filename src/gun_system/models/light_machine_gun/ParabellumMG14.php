@@ -21,7 +21,7 @@ class ParabellumMG14 extends LightMachineGun
             new BulletSpeed(870),
             new MagazineReloadController(100, 6),
             new EffectiveRange(0, 15),
-            new GunPrecision(95, 75),
+            new GunPrecision(97, 75),
             $scheduler);
     }
 }
