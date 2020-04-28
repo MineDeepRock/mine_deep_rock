@@ -81,42 +81,48 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(string $userName, string $selectedWeaponName, string $mapName, Coordinate $coordinate) {
-        $worldController = new WorldController();
+    public function spawn(string $userName, string $selectedWeaponName, string $mapName, Coordinate $coordinate): void {
         $player = Server::getInstance()->getPlayer($userName);
+        if ($player !== null) {
+            $worldController = new WorldController();
 
-        $player->getInventory()->setContents([]);
-        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
+            $player->getInventory()->setContents([]);
+            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
 
-        $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
-        $player->getInventory()->addItem(new WeaponSelectItem());
+            $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
+            $player->getInventory()->addItem(new WeaponSelectItem());
 
-        $worldController->teleport($player, $mapName);
-        $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
+            $worldController->teleport($player, $mapName);
+            $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
+        }
     }
 
-    public function onReceiveDamage(Player $attacker, Entity $target, int $damage, string $weaponName): void {
-        $health = $target->getHealth() - $damage;
-        $target->getLevel()->addParticle(new AngryVillagerParticle(
+    public function onReceiveDamage(Player $attacker, Player $targetPlayer, int $damage, string $weaponName): void {
+        $health = $targetPlayer->getHealth() - $damage;
+        $targetPlayer->getLevel()->addParticle(new AngryVillagerParticle(
             new Vector3(
-                $target->getX() + rand(1, 2),
-                $target->getY() + rand(3, 5),
-                $target->getZ() + rand(1, 2)
+                $targetPlayer->getX() + rand(1, 2),
+                $targetPlayer->getY() + rand(3, 5),
+                $targetPlayer->getZ() + rand(1, 2)
             )
         ));
 
-        GunSounds::play(Server::getInstance()->getPlayer($target->getName()), GunSounds::bulletHitPlayer(), 10, 1);
+        GunSounds::play($targetPlayer, GunSounds::bulletHitPlayer(), 10, 1);
 
         if ($health <= 0) {
-            $target->setHealth(20);
+            $targetPlayer->setHealth(20);
             $players = $attacker->getLevel()->getPlayers();
+
+            //TODO:Titleにしたい
+            $targetPlayer->sendPopup( TextFormat::RED . $attacker->getName() . "に倒された");
+            $targetPlayer->getInventory()->setContents([]);
             foreach ($players as $player) {
-                $player->sendMessage($attacker->getName() . " が " . $target->getName() . " を倒した [" . $weaponName . "]");
+                $player->sendMessage($attacker->getName() . " が " . $targetPlayer->getName() . " を倒した [" . $weaponName . "]");
             }
             $attacker->addTitle(TextFormat::RED . "><", "", 0, 1, 0);
 
         } else {
-            $target->setHealth($health);
+            $targetPlayer->setHealth($health);
             $attacker->addTitle("><", "", 0, 1, 0);
 
         }

@@ -11,9 +11,11 @@ use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\entity\Entity;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Server;
 
 class TeamDeathMatchInterpreter
 {
@@ -106,6 +108,7 @@ class TeamDeathMatchInterpreter
                     $this->game->getId(),
                     $this->game->getBlueTeam()->getId(),
                     $this->game->getRedTeam()->getId());
+                return true;
             } else if ($user->getLastBelongTeamId()->equal($this->game->getRedTeam()->getId()) ||
                 $user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId())) {
                 $this->usersService->joinGame(
@@ -114,6 +117,8 @@ class TeamDeathMatchInterpreter
                     $this->game->getBlueTeam()->getId(),
                     $this->game->getRedTeam()->getId(),
                     $user->getLastBelongTeamId());
+
+                return true;
             }
 
             $user = $this->usersService->getUserData($userName);
@@ -136,23 +141,38 @@ class TeamDeathMatchInterpreter
         return true;
     }
 
-    public function onReceiveDamage(Player $attackerPlayer, Entity $targetPlayer, string $weaponName, int $damage): void {
-        $health = $targetPlayer->getHealth() - $damage;
+    public function onReceiveDamage(Player $attackerPlayer, Entity $targetEntity, string $weaponName, int $damage): void {
+        $health = $targetEntity->getHealth() - $damage;
         if ($this->game !== null) {
-            if ($targetPlayer->getLevel()->getName() === $this->game->getMap()->getName()) {
+            if ($targetEntity->getLevel()->getName() === $this->game->getMap()->getName()) {
                 $attacker = $this->usersService->getUserData($attackerPlayer->getName());
-                $target = $this->usersService->getUserData($targetPlayer->getName());
+                $target = $this->usersService->getUserData($targetEntity->getName());
 
                 if (!($attacker->getBelongTeamId()->equal($target->getBelongTeamId()))) {
-                    $this->client->onReceiveDamage($attackerPlayer, $targetPlayer, $damage, $weaponName);
+
+                    $targetPlayer = Server::getInstance()->getPlayer($targetEntity->getName());
 
                     if ($health <= 0) {
                         $attackerName = $attacker->getName();
                         $this->weaponService->addKillCount($attacker->getName(), $weaponName);
                         $this->usersService->addMoney($attackerName, 100);
                         $this->addScoreByKilling($attacker, $target);
-                        $this->spawn($target);
+
+
+                        $targetPlayer->setGamemode(Player::SPECTATOR);
+                        $targetPlayer->teleport(new Vector3(
+                            $attackerPlayer->getX(),
+                            $attackerPlayer->getY()+4,
+                            $attackerPlayer->getZ()
+                        ));
+
+                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer,$target): void {
+                            $targetPlayer->setGamemode(Player::ADVENTURE);
+                            $this->spawn($target);
+                        }), 20 * 8);
                     }
+
+                    $this->client->onReceiveDamage($attackerPlayer, $targetPlayer, $damage, $weaponName);
                 }
             }
         }
