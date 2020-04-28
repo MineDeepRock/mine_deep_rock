@@ -66,12 +66,12 @@ class GunSounds extends ShootSounds
 
         foreach ($players as $player) {
             $distance = $owner->getPosition()->distance($player->getPosition());
-            if ($distance < 20) {
+            if ($distance < 30) {
                 $packet = new PlaySoundPacket();
                 $packet->x = $player->x;
                 $packet->y = $player->y;
                 $packet->z = $player->z;
-                $packet->volume = 5 - $distance / 4;
+                $packet->volume = 3 - $distance/10;
                 $packet->pitch = 2;
                 $packet->soundName = $soundName->getText();
                 $player->sendDataPacket($packet);
