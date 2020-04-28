@@ -81,7 +81,7 @@ class GameSystemListener
         $player = Server::getInstance()->getPlayer($userName);
         $player->getInventory()->setContents([]);
         $worldController = new WorldController();
-        $worldController->teleport($player, "world");
+        $worldController->teleport($player, "lobby");
 
         if (!$this->usersService->exists($userName))
             $this->weaponService->register($userName, "M1907SL");

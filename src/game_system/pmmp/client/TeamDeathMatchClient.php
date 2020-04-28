@@ -14,7 +14,6 @@ use game_system\pmmp\WorldController;
 use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
-use pocketmine\item\CookedSalmon;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\particle\AngryVillagerParticle;
@@ -50,10 +49,10 @@ class TeamDeathMatchClient extends Client
         $winTeamId = $winTeam->getId();
 
         foreach ($participants as $participant) {
-            EasyScoreboardAPI::getInstance()->allremove($participant->getName());
             $player = Server::getInstance()->getPlayer($participant->getName());
+            EasyScoreboardAPI::getInstance()->deleteScoreboard($player, "sidebar");
             $player->getInventory()->setContents([]);
-            $worldController->teleport($player, "world");
+            $worldController->teleport($player, "lobby");
 
             if ($participant->getBelongTeamId()->equal($winTeamId)) {
                 $player->addTitle("勝利!!");
@@ -152,7 +151,7 @@ class TeamDeathMatchClient extends Client
         if ($player->isOnline()) {
             $player->getInventory()->setContents([]);
             $worldController = new WorldController();
-            $worldController->teleport($player, "world");
+            $worldController->teleport($player, "lobby");
             EasyScoreboardAPI::getInstance()->deleteScoreboard($player, "sidebar");
         }
     }

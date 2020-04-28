@@ -22,6 +22,8 @@ class TeamDeathMatchInterpreter
     private $weaponService;
     private $scheduler;
 
+    private $taskHandler;
+
     private $game;
     private $limitSecond;
 
@@ -47,6 +49,8 @@ class TeamDeathMatchInterpreter
         if ($this->game->isStarted())
             return false;
 
+        $this->game->start();
+
         $participants = $this->usersService->getParticipants($this->game->getId());
         $this->client->start(
             $participants,
@@ -60,23 +64,30 @@ class TeamDeathMatchInterpreter
             $this->spawn($participant);
         }
 
-        $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
+        $taskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
             $this->game->pass();
             $this->client->displayRemainingTime($this->limitSecond - $this->game->getElapsedSecond(), $this->game->getMap()->getName());
 
             if ($this->game->getElapsedSecond() === $this->limitSecond) {
-                $participants = $this->usersService->getParticipants($this->game->getId());
-                $winTeamId = $this->game->getWinTeam()->getId();
-                foreach ($participants as $participant) {
-                    if ($participant->getBelongTeamId()->equal($winTeamId)) {
-                        $this->usersService->addWinCount($participant->getName());
-                        $this->usersService->addMoney($participant->getName(), 1000);
-                    }
-                }
-                $this->client->onFinish($winTeamId, $participants);
+                $this->onFinished();
             }
         }), 20 * 1);
         return true;
+    }
+
+    private function onFinished(): void {
+        $this->taskHandler->cancel();
+        $participants = $this->usersService->getParticipants($this->game->getId());
+        $winTeam = $this->game->getWinTeam();
+        foreach ($participants as $participant) {
+            if ($participant->getBelongTeamId()->equal($winTeam->getId())) {
+                $this->usersService->addWinCount($participant->getName());
+                $this->usersService->addMoney($participant->getName(), 1000);
+                $this->usersService->quitGame($participant->getName());
+            }
+        }
+        $this->game = null;
+        $this->client->onFinish($winTeam, $participants);
     }
 
     public function join(string $userName): bool {
