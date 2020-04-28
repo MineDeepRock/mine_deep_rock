@@ -64,7 +64,7 @@ class TeamDeathMatchInterpreter
             $this->spawn($participant);
         }
 
-        $taskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
+        $this->taskHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
             $this->game->pass();
             $this->client->displayRemainingTime($this->limitSecond - $this->game->getElapsedSecond(), $this->game->getMap()->getName());
 
@@ -83,8 +83,8 @@ class TeamDeathMatchInterpreter
             if ($participant->getBelongTeamId()->equal($winTeam->getId())) {
                 $this->usersService->addWinCount($participant->getName());
                 $this->usersService->addMoney($participant->getName(), 1000);
-                $this->usersService->quitGame($participant->getName());
             }
+            $this->usersService->quitGame($participant->getName());
         }
         $this->game = null;
         $this->client->onFinish($winTeam, $participants);

@@ -35,7 +35,7 @@ class UsersService extends Service
     }
 
     public function selectWeapon(string $userName, string $weaponName): void {
-        $this->repository->selectWeapon($userName,$weaponName);
+        $this->repository->selectWeapon($userName, $weaponName);
     }
 
     public function joinGame(string $userName, GameId $gameId, TeamId $redTeamId, TeamId $blueTeamId, ?TeamId $joinTeamId = null): TeamId {
