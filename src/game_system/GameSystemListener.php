@@ -8,6 +8,7 @@ use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\form\WeaponSelectForm;
+use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
@@ -82,6 +83,7 @@ class GameSystemListener
         $player->getInventory()->setContents([]);
         $worldController = new WorldController();
         $worldController->teleport($player, "lobby");
+        $player->getInventory()->addItem(new WeaponSelectItem());
 
         if (!$this->usersService->exists($userName))
             $this->weaponService->register($userName, "M1907SL");
