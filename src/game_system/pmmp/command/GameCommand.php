@@ -4,9 +4,7 @@
 namespace game_system\pmmp\command;
 
 
-use game_system\GameSystemClient;
-use game_system\model\map\RealisticWWIBattlefieldExtended;
-use game_system\model\TeamDeathMatch;
+use game_system\GameSystemListener;
 use game_system\pmmp\WorldController;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -16,14 +14,14 @@ use pocketmine\Server;
 
 class GameCommand extends Command
 {
-    private $client;
+    private $listener;
 
     private $scheduler;
 
-    public function __construct(Plugin $owner, GameSystemClient $client, TaskScheduler $scheduler) {
+    public function __construct(Plugin $owner, GameSystemListener $listener, TaskScheduler $scheduler) {
         parent::__construct("game", "", "");
         $this->setPermission("Game.Command");
-        $this->client = $client;
+        $this->listener = $listener;
         $this->scheduler = $scheduler;
     }
 
@@ -108,22 +106,22 @@ class GameCommand extends Command
     }
 
     private function createTeamDeathMatch(): bool {
-        return $this->client->createGame(new TeamDeathMatch(new RealisticWWIBattlefieldExtended(), $this->scheduler));
+        return $this->listener->initGame();
     }
 
     public function startGame(): bool {
-        return $this->client->startGame();
+        return $this->listener->startGame();
     }
 
     private function closeGame(): bool {
-        return $this->client->closeGame();
+        return $this->listener->closeGame();
     }
 
     private function join(string $playerName): bool {
-        return $this->client->joinGame($playerName);
+        return $this->listener->joinGame($playerName);
     }
 
     private function quit(string $playerName): void {
-        $this->client->quitGame($playerName);
+        $this->listener->quitGame($playerName);
     }
 }

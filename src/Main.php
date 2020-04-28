@@ -1,6 +1,7 @@
 <?php
 
 use game_system\GameSystemClient;
+use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use gun_system\GunSystemClient;
 use gun_system\models\BulletId;
@@ -37,16 +38,16 @@ use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener
 {
-    private $gameSystemClient;
+    private $gameSystemListener;
     private $gunSystemClient;
 
     function onEnable() {
         $this->gunSystemClient = new GunSystemClient();
-        $this->gameSystemClient = new GameSystemClient();
+        $this->gameSystemListener = new GameSystemListener();
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler(), $this->getServer()));
-        $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemClient, $this->getScheduler()));
+        $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemListener, $this->getScheduler()));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
@@ -159,16 +160,16 @@ class Main extends PluginBase implements Listener
         if ($entity instanceof \gun_system\pmmp\entity\Egg && $attacker instanceof Human) {
             $item = $attacker->getInventory()->getItemInHand();
             $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
-            $this->gameSystemClient->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
+            $this->gameSystemListener->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
         }
     }
 
-    //GameSystem
+    //GameSystemListener
     public function onTapWeaponSelectBlock(PlayerInteractEvent $event){
         if ($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($event->getBlock()->getId() === 41) {
-                $this->gameSystemClient->selectWeapon($player);
+                $this->gameSystemListener->selectWeapon($player);
             }
         }
     }
@@ -183,12 +184,12 @@ class Main extends PluginBase implements Listener
     public function onJoin(PlayerJoinEvent $event) {
         $playerName = $event->getPlayer()->getName();
 
-        $this->gameSystemClient->userLogin($playerName);
+        $this->gameSystemListener->userLogin($playerName);
     }
 
     public function onQuit(PlayerQuitEvent $event) {
         $playerName = $event->getPlayer()->getName();
 
-        $this->gameSystemClient->quitGame($playerName);
+        $this->gameSystemListener->quitGame($playerName);
     }
 }

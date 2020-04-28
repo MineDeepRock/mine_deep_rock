@@ -7,11 +7,13 @@ namespace game_system\pmmp\client;
 use Client;
 use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\Coordinate;
-use game_system\model\map\RealisticWWIBattlefieldExtended;
+use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\pmmp\WorldController;
 use pocketmine\command\ConsoleCommandSender;
+use pocketmine\entity\Entity;
 use pocketmine\math\Vector3;
+use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
@@ -45,11 +47,10 @@ class TeamDeathMatchClient extends Client
         }
     }
 
-    public function onFinish($winTeam) {
+    public function onFinish(Team $winTeam, array $participants): void {
         $worldController = new WorldController();
         $winTeamId = $winTeam->getId();
 
-        $participants = $this->usersService->getParticipants($this->game->getId());
         foreach ($participants as $participant) {
             EasyScoreboardAPI::getInstance()->allremove($participant->getName());
             $player = Server::getInstance()->getPlayer($participant->getName());
@@ -58,20 +59,18 @@ class TeamDeathMatchClient extends Client
 
             if ($participant->getBelongTeamId()->equal($winTeamId)) {
                 $player->addTitle("勝利!!");
-                $this->usersService->addWinCount($participant->getName());
-                $this->usersService->addMoney($participant->getName(), 1000);
             } else {
                 $player->addTitle("負け");
             }
         }
     }
 
-    public function joinOnTheWay(string $userName, string $selectedWeaponName, int $redTeamScore, int $blueTeamScore): void {
+    public function joinOnTheWay(string $userName, string $selectedWeaponName, int $redTeamScore, int $blueTeamScore, string $mapName): void {
         $worldController = new WorldController();
 
         $player = Server::getInstance()->getPlayer($userName);
 
-        $worldController->teleport($player, RealisticWWIBattlefieldExtended::NAME);
+        $worldController->teleport($player, $mapName);
 
         $player->getInventory()->setContents([]);
         Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
@@ -89,6 +88,45 @@ class TeamDeathMatchClient extends Client
         Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
         Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $userName . " 364");
         $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
+    }
+
+    public function onReceiveDamage(Player $attacker, Entity $target, int $health, string $weaponName): void {
+        if ($health <= 0) {
+            $target->setHealth(20);
+            $players = $attacker->getLevel()->getPlayers();
+            foreach ($players as $player) {
+                $player->sendMessage($attacker->getName() . " killed " . $target->getName() . " by " . $weaponName);
+            }
+        } else {
+            $target->setHealth($health);
+        }
+    }
+
+    public function displayRemainingTime(int $time, string $mapName): void {
+        $players = Server::getInstance()->getLevelByName($mapName)->getPlayers();
+
+        $api = EasyScoreboardAPI::getInstance();
+        foreach ($players as $player) {
+            $api->setScore($player, "sidebar", "残り時間:", $time, 1);
+        }
+    }
+
+    public function updateRedTeamScoreboard(int $score, string $mapName): void {
+        $players = Server::getInstance()->getLevelByName($mapName)->getPlayers();
+        $api = EasyScoreboardAPI::getInstance();
+
+        foreach ($players as $player) {
+            $api->setScore($player, "sidebar", "RedTeamScore:", $score, 2);
+        }
+    }
+
+    public function updateBlueTeamScoreboard(int $score, string $mapName): void {
+        $players = Server::getInstance()->getLevelByName($mapName)->getPlayers();
+        $api = EasyScoreboardAPI::getInstance();
+
+        foreach ($players as $player) {
+            $api->setScore($player, "sidebar", "RedTeamScore:", $score, 2);
+        }
     }
 
     public function quitGame(string $userName): void {
