@@ -7,7 +7,7 @@ namespace game_system;
 use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
-use game_system\pmmp\WeaponSelectForm;
+use game_system\pmmp\form\WeaponSelectForm;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
