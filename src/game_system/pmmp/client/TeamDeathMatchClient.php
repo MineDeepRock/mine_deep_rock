@@ -14,6 +14,9 @@ use game_system\pmmp\WorldController;
 use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\item\CookedSalmon;
+use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
 use pocketmine\level\particle\AngryVillagerParticle;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -83,8 +86,9 @@ class TeamDeathMatchClient extends Client
         $player = Server::getInstance()->getPlayer($userName);
 
         $player->getInventory()->setContents([]);
+        $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
+
         Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
-        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give " . $userName . " 364");
         $worldController->teleport($player, $mapName);
         $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
     }
@@ -139,7 +143,7 @@ class TeamDeathMatchClient extends Client
         $api = EasyScoreboardAPI::getInstance();
 
         foreach ($players as $player) {
-            $api->setScore($player, "sidebar", "RedTeamScore:", $score, 2);
+            $api->setScore($player, "sidebar", "BlueTeamScore:", $score, 3);
         }
     }
 

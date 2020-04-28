@@ -64,6 +64,8 @@ use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
+use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
 use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\scheduler\TaskScheduler;
@@ -380,29 +382,28 @@ class GunCommand extends Command
 
     //TODO:リファクタリング
     public function giveBullet(Player $player, GunType $gunType, int $bulletId = null) {
-        $playerName = $player->getName();
-        Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "give ". $player->getName() . " arrow 1");
+        $player->getInventory()->addItem(ItemFactory::get(Item::ARROW, 0, 10));
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::HAND_GUN . " 64");
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::HAND_GUN, 0, 64));
                 break;
             case GunType::AssaultRifle()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::ASSAULT_RIFLE . " 128");
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::ASSAULT_RIFLE, 0, 64));
                 break;
             case GunType::SniperRifle()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::SNIPER_RIFLE . " 64");
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::SNIPER_RIFLE, 0, 64));
                 break;
             case GunType::Shotgun()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . $bulletId . " 64");
+                $player->getInventory()->addItem(ItemFactory::get($bulletId, 0, 64));
                 break;
             case GunType::SMG()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::SMG . " 128");
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::SMG, 0, 64));
                 break;
             case GunType::LMG()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::LMG . " 192");
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::LMG, 0, 64));
                 break;
             case GunType::Revolver()->getTypeText():
-                $this->server->dispatchCommand(new ConsoleCommandSender(), "give ". $playerName . " " . BulletId::REVOLVER . " 64");
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::REVOLVER, 0, 64));
                 break;
         }
     }

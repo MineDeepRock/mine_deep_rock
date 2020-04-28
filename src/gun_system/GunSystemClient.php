@@ -5,6 +5,7 @@ namespace gun_system;
 
 
 use Client;
+use gun_system\pmmp\GunSounds;
 use gun_system\pmmp\items\ItemGun;
 use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\command\ConsoleCommandSender;
@@ -12,6 +13,7 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
+use pocketmine\level\particle\AngryVillagerParticle;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -28,7 +30,7 @@ class GunSystemClient extends Client
         }
     }
 
-    public function tryShooting(Player $player,Item $item): void {
+    public function tryShooting(Player $player, Item $item): void {
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
             if (!$player->getInventory()->contains(ItemFactory::get(Item::ARROW, 0, 1))) {
                 $player->sendMessage("矢がないと銃を撃つことはできません");
