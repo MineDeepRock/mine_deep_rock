@@ -11,7 +11,7 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
-use gun_system\models\ReloadController;
+use gun_system\models\ReloadingType;
 use gun_system\models\sub_machine_gun\attachment\scope\IronSightForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\SubMachineGunScope;
 use pocketmine\scheduler\TaskScheduler;
@@ -19,11 +19,10 @@ use pocketmine\scheduler\TaskScheduler;
 class SubMachineGun extends Gun
 {
     private $scope;
-    private $magazine;
 
-    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadController $reloadController, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadingType $reloadingType, EffectiveRange $effectiveRange, GunPrecision $precision) {
         $this->setScope(new IronSightForSMG());
-        parent::__construct(GunType::SMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadController, $effectiveRange, $precision, $scheduler);
+        parent::__construct(GunType::SMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadingType, $effectiveRange, $precision);
     }
 
     /**

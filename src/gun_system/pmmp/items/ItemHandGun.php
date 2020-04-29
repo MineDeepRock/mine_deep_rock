@@ -4,15 +4,9 @@
 namespace gun_system\pmmp\items;
 
 
-use gun_system\models\hand_gun\attachment\scope\HandGunScope;
-use gun_system\models\hand_gun\HandGun;
-use pocketmine\Player;
+use gun_system\interpreter\HandGunInterpreter;
 
 class ItemHandGun extends ItemGun
 {
-    public function __construct(string $name, HandGun $gun, Player $owner) { parent::__construct($name, $gun, $owner); }
-
-    public function setScope(HandGunScope $scope): void {
-        $this->gun->setScope($scope);
-    }
+    public function __construct(string $name, HandGunInterpreter $interpreter) { parent::__construct($name, $interpreter); }
 }

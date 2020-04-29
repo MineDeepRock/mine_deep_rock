@@ -12,7 +12,7 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
-use gun_system\models\ReloadController;
+use gun_system\models\ReloadingType;
 use gun_system\models\shotgun\attachment\scope\IronSightForSG;
 use gun_system\models\shotgun\attachment\scope\ShotgunScope;
 use pocketmine\scheduler\TaskScheduler;
@@ -24,7 +24,7 @@ abstract class Shotgun extends Gun
     private $bulletType;
     private $pellets;
 
-    public function __construct(ShotgunBulletType $bulletType,int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadController $reloadController, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(ShotgunBulletType $bulletType,int $pellets, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadingType $reloadingType, EffectiveRange $effectiveRange, GunPrecision $precision) {
         $this->setScope(new IronSightForSG());
 
         $this->bulletType = $bulletType;
@@ -36,7 +36,7 @@ abstract class Shotgun extends Gun
             $this->pellets = 1;
         }
 
-        parent::__construct(GunType::Shotgun(), $bulletDamage, $rate, $bulletSpeed, $reaction, $reloadController, $effectiveRange, $precision, $scheduler);
+        parent::__construct(GunType::Shotgun(), $bulletDamage, $rate, $bulletSpeed, $reaction, $reloadingType, $effectiveRange, $precision);
     }
     /**
      * @return ShotgunBulletType

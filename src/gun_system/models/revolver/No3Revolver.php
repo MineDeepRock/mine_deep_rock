@@ -9,20 +9,19 @@ use gun_system\models\BulletSpeed;
 use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
-use gun_system\models\MagazineReloadController;
+use gun_system\models\MagazineReloadingType;
 use pocketmine\scheduler\TaskScheduler;
 
 class No3Revolver extends Revolver
 {
-    public function __construct(TaskScheduler $scheduler) {
+    public function __construct() {
         parent::__construct(
             new BulletDamage(53,13),
             new GunRate(2.7),
             new BulletSpeed(210),
             0,
-            new MagazineReloadController(6,2.3),
+            new MagazineReloadingType(6,2.3),
             new EffectiveRange(0,8),
-            new GunPrecision(97,90),
-            $scheduler);
+            new GunPrecision(97,90));
     }
 }

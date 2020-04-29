@@ -1,10 +1,9 @@
 <?php
 
-use game_system\GameSystemClient;
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\items\WeaponSelectItem;
-use gun_system\GunSystemClient;
+use gun_system\GunSystemListener;
 use gun_system\models\BulletId;
 use gun_system\pmmp\command\GunCommand;
 use gun_system\pmmp\items\bullet\ItemAssaultRifleBullet;
@@ -44,7 +43,7 @@ class Main extends PluginBase implements Listener
     private $gunSystemClient;
 
     function onEnable() {
-        $this->gunSystemClient = new GunSystemClient();
+        $this->gunSystemClient = new GunSystemListener();
         $this->gameSystemListener = new GameSystemListener($this->getScheduler());
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);

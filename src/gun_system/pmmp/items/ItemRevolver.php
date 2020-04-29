@@ -4,10 +4,9 @@
 namespace gun_system\pmmp\items;
 
 
-use gun_system\models\revolver\Revolver;
-use pocketmine\Player;
+use gun_system\interpreter\RevolverInterpreter;
 
 class ItemRevolver extends ItemGun
 {
-public function __construct(string $name, Revolver $gun, Player $owner) { parent::__construct($name, $gun, $owner); }
+public function __construct(string $name, RevolverInterpreter $interpreter) { parent::__construct($name, $interpreter); }
 }

@@ -14,48 +14,20 @@ use gun_system\models\GunRate;
 use gun_system\models\GunType;
 use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
 use gun_system\models\light_machine_gun\attachment\scope\LightMachineGunScope;
-use gun_system\models\ReloadController;
-use gun_system\models\Response;
-use pocketmine\scheduler\ClosureTask;
+use gun_system\models\ReloadingType;
 use pocketmine\scheduler\TaskScheduler;
 
 class LightMachineGun extends Gun
 {
     private $scope;
 
-    private $overheatGauge;
-    private $isOverheat;
     private $overheatRate;
 
-    private $onOverheated;
-    private $onFinishOverheat;
-
-    public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadController $reloadController, EffectiveRange $effectiveRange, GunPrecision $precision, TaskScheduler $scheduler) {
+    public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadingType $reloadingType, EffectiveRange $effectiveRange, GunPrecision $precision) {
         $this->setScope(new IronSightForLMG());
-        parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadController, $effectiveRange, $precision, $scheduler);
-        $this->overheatGauge = new OverheatGauge(function () {
-            $this->cancelShooting();
-            $this->isOverheat = true;
-            ($this->onOverheated)();
+        parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadingType, $effectiveRange, $precision);
 
-            $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
-                $this->isOverheat = false;
-                ($this->onFinishOverheat)();
-                $this->overheatGauge->reset();
-            }), 20 * 2);
-
-        }, function () {
-            $this->isOverheat = false;
-        });
-
-        $this->isOverheat = false;
         $this->overheatRate = $overheatRate;
-
-        if ($this->overheatRate->getPerShoot() !== 0) {
-            $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick): void {
-                $this->overheatGauge->down(34);
-            }), 20 * 1);
-        }
     }
 
     /**
@@ -72,55 +44,11 @@ class LightMachineGun extends Gun
         $this->scope = $scope;
     }
 
-    public function tryShootingOnce(Closure $onSucceed): Response {
-        if ($this->isOverheat)
-            return new Response(false, "オーバーヒート中");
-
-        $func = function () use ($onSucceed) {
-            $this->overheatGauge->raise($this->overheatRate);
-            $onSucceed($this->scheduler);
-        };
-        return parent::tryShootingOnce($func);
-    }
-
-    public function tryShooting(Closure $onSucceed,bool $isADS): Response {
-        if ($this->isOverheat)
-            return new Response(false, "オーバーヒート中");
-
-        $func = function () use ($onSucceed) {
-            $this->overheatGauge->raise($this->overheatRate);
-            $onSucceed($this->scheduler);
-        };
-
-        return parent::tryShooting($func,$isADS);
-    }
-
     /**
-     * @param mixed $onFinishOverheat
+     * @return OverheatRate
      */
-    public function setOnFinishOverheat($onFinishOverheat): void {
-        $this->onFinishOverheat = $onFinishOverheat;
-    }
-
-    protected function shootOnce(Closure $onSucceed): void {
-        if ($this->overheatRate->getPerShoot() !== 0)
-            $this->overheatGauge->raise($this->overheatRate);
-
-        parent::shootOnce($onSucceed);
-    }
-
-    protected function shoot(Closure $onSucceed,$isADS): void {
-        if ($this->overheatRate->getPerShoot() !== 0)
-            $this->overheatGauge->raise($this->overheatRate);
-
-        parent::shoot($onSucceed,$isADS);
-    }
-
-    /**
-     * @param Closure $onOverheated
-     */
-    public function setOnOverheated(Closure $onOverheated): void {
-        $this->onOverheated = $onOverheated;
+    public function getOverheatRate(): OverheatRate {
+        return $this->overheatRate;
     }
 }
 
@@ -135,7 +63,7 @@ class OverheatRate
     /**
      * @return int
      */
-    public function getPerShoot() {
+    public function getPerShoot(): int {
         return $this->perShoot;
     }
 }
