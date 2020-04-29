@@ -74,7 +74,7 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new ItemRevolverBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::REVOLVER));
 
-        Entity::registerEntity(\gun_system\pmmp\entity\Egg::class, true, ['Egg', 'minecraft:egg']);
+        Entity::registerEntity(\game_system\pmmp\Entity\Egg::class, true, ['Egg', 'minecraft:egg']);
 
 
         ItemFactory::registerItem(new WeaponSelectItem(), true);
@@ -162,7 +162,7 @@ class Main extends PluginBase implements Listener
     public function onBulletHit(ProjectileHitEntityEvent $event) {
         $entity = $event->getEntity();
         $attacker = $entity->getOwningEntity();
-        if ($entity instanceof \gun_system\pmmp\entity\Egg && $attacker instanceof Human) {
+        if ($entity instanceof \game_system\pmmp\Entity\Egg && $attacker instanceof Human) {
             $item = $attacker->getInventory()->getItemInHand();
             $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
             $this->gameSystemListener->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);

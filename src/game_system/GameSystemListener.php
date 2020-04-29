@@ -12,6 +12,9 @@ use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
+use gun_system\pmmp\items\ItemShotGun;
+use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\Player;
@@ -20,6 +23,9 @@ use pocketmine\Server;
 
 class GameSystemListener
 {
+    //TODO:あんまり良くないと思う
+    private static $instance;
+
     private $usersService;
     private $weaponService;
     private $teamDeathMatchInterpreter;
@@ -36,10 +42,16 @@ class GameSystemListener
             $this->weaponService,
             $this->scheduler
         );
+
+        self::$instance = $this;
+    }
+
+    public static function getInstance(): GameSystemListener {
+        return self::$instance;
     }
 
     public function initGame(TeamDeathMatchMap $map): bool {
-        return $this->teamDeathMatchInterpreter->init($map,600);
+        return $this->teamDeathMatchInterpreter->init($map, 600);
     }
 
     public function startGame(): bool {
@@ -56,6 +68,24 @@ class GameSystemListener
 
     public function closeGame(): bool {
         return $this->teamDeathMatchInterpreter->closeGame();
+    }
+
+    public function scare(Player $target, Entity $attacker): void {
+        $item = $target->getInventory()->getItemInHand();
+
+        $targetUser = $this->usersService->getUserData($target->getName());
+        $attackerUser = $this->usersService->getUserData($attacker->getName());
+        if ($targetUser->getBelongTeamId() !== null && $attackerUser->getBelongTeamId() !== null) {
+            if ($targetUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
+                //自分自身には効果がないように
+                if (!($target->getName() === $attacker->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+                    if (!($item instanceof ItemShotGun)) {
+                        $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1));
+                        $item->scare();
+                    }
+                }
+            }
+        }
     }
 
     public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage): void {

@@ -1,9 +1,10 @@
 <?php
 
 
-namespace gun_system\pmmp\entity;
+namespace game_system\pmmp\Entity;
 
 
+use game_system\GameSystemListener;
 use gun_system\pmmp\GunSounds;
 use gun_system\pmmp\items\ItemShotGun;
 use pocketmine\block\Block;
@@ -35,18 +36,11 @@ class Egg extends Throwable
 
         foreach ($players as $player) {
             if ($player !== null || $this->getOwningEntity() !== null) {
+
                 $distance = $blockPos->distance($player->getPosition());
                 if ($distance <= 5) {
                     GunSounds::play($player, GunSounds::bulletHitBlock());
-                    $item = $player->getInventory()->getItemInHand();
-                    if (!($player->getName() === $this->getOwningEntity()->getName())) {
-                        if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-                            if (!($item instanceof ItemShotGun)) {
-                                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1));
-                                $item->scare();
-                            }
-                        }
-                    }
+                    GameSystemListener::getInstance()->scare($player,$this->getOwningEntity());
                 } else if ($distance <= 10) {
                     GunSounds::play($player, GunSounds::bulletFly());
                 }
