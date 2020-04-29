@@ -41,6 +41,10 @@ ItemGun extends Tool
         $this->gunInterpreter->tryReload();
     }
 
+    public function scare(): void {
+        $this->gunInterpreter->scare();
+    }
+
     public function getGunData(): Gun {
         return $this->gunInterpreter->getGunData();
     }

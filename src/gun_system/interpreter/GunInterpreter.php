@@ -142,10 +142,6 @@ abstract class GunInterpreter
         });
     }
 
-    public function cancelReloading(): void {
-        $this->reloadingController->cancelReloading();
-    }
-
     public function tryReload(): void {
         $inventoryBullets = $this->getBulletAmount();
 
