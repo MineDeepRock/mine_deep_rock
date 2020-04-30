@@ -2,6 +2,7 @@
 
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
+use game_system\pmmp\items\AttachmentSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use gun_system\GunSystemListener;
 use gun_system\models\BulletId;
@@ -80,6 +81,9 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new WeaponSelectItem(), true);
         Item::addCreativeItem(Item::get(WeaponSelectItem::ITEM_ID));
 
+        ItemFactory::registerItem(new AttachmentSelectItem(), true);
+        Item::addCreativeItem(Item::get(AttachmentSelectItem::ITEM_ID));
+
         $this->gameSystemListener->initGame(new \game_system\model\map\RealisticWWIBattlefieldExtended());
     }
 
@@ -156,7 +160,7 @@ class Main extends PluginBase implements Listener
         } else {
             if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
                 $effectLevel = $item->getInterpreter()->getScope()->getMagnification()->getValue();
-                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel));
+                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel,false));
             }
         }
     }
@@ -177,6 +181,14 @@ class Main extends PluginBase implements Listener
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === WeaponSelectItem::ITEM_ID) {
                 $this->gameSystemListener->selectWeapon($player);
+            }
+        }
+    }
+    public function onTapByAttachmentSelectItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === AttachmentSelectItem::ITEM_ID) {
+                $this->gameSystemListener->selectAttachment($player);
             }
         }
     }

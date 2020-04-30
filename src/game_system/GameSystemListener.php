@@ -20,6 +20,7 @@ use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\Player;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 
@@ -99,17 +100,27 @@ class GameSystemListener
 
         $targetUser = $this->usersService->getUserData($target->getName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
-        if ($targetUser->getBelongTeamId() !== null && $attackerUser->getBelongTeamId() !== null) {
-            //味方には効果が無いように
-            if (!$targetUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
-                //自分自身には効果がないように
-                if (!($target->getName() === $attacker->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-                    if (!($item instanceof ItemShotGun)) {
-                        $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1));
-                        $item->scare();
-                    }
-                }
+
+        if ($targetUser->getBelongTeamId() === null && $attackerUser->getBelongTeamId() === null) {
+            return;
+        }
+        //味方には効果が無いように
+        if ($targetUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
+            return;
+        }
+        //自分自身には効果がないように
+        if (!($target->getName() === $attacker->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+            //shotgunには効果がない
+            if (($item instanceof ItemShotGun)) {
+                return;
             }
+            $target->removeEffect(Effect::REGENERATION);
+            $item->scare(function () use ($target) {
+                if ($target->isOnline()) {
+                    $target->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1,false));
+                }
+            });
+            $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1,false));
         }
     }
 

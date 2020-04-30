@@ -11,10 +11,11 @@ use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
 use game_system\pmmp\items\AttachmentSelectItem;
-use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
+use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\particle\AngryVillagerParticle;
@@ -85,7 +86,8 @@ class TeamDeathMatchClient extends Client
     public function spawn(string $userName, string $selectedWeaponName, string $mapName, Coordinate $coordinate): void {
         $player = Server::getInstance()->getPlayer($userName);
         if ($player !== null) {
-            $worldController = new WorldController();
+
+            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1,false));
 
             $player->getInventory()->setContents([]);
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
@@ -93,6 +95,7 @@ class TeamDeathMatchClient extends Client
             $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
             $player->getInventory()->addItem(new AttachmentSelectItem());
 
+            $worldController = new WorldController();
             $worldController->teleport($player, $mapName);
             $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
         }

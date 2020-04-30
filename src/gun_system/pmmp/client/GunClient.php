@@ -4,11 +4,13 @@
 namespace gun_system\pmmp\client;
 
 
+use Closure;
 use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\Gun;
-use gun_system\models\GunType;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\GunSounds;
+use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\math\Vector3;
@@ -24,6 +26,7 @@ class GunClient
 {
     private $owner;
     private $gun;
+    private $handler;
 
     public function __construct(Player $owner, Gun $gun) {
         $this->owner = $owner;
@@ -33,6 +36,18 @@ class GunClient
     private function playShootingSound(): void {
         $soundName = GunSounds::shootSoundFromGunType($this->gun->getType());
         GunSounds::playAround($this->owner, $soundName);
+    }
+
+    public function scare(TaskScheduler $scheduler, Closure $onFinished) {
+        if ($this->handler !== null) {
+            $this->handler->cancel();
+        }
+
+        $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($onFinished) : void {
+            if ($this->owner->isOnline()) {
+                $onFinished();
+            }
+        }), 20 * 5);
     }
 
     public function shoot(int $currentBullet, int $magazineCapacity, TaskScheduler $scheduler): void {

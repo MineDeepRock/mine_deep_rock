@@ -4,6 +4,7 @@
 namespace gun_system\pmmp\items;
 
 
+use Closure;
 use gun_system\interpreter\GunInterpreter;
 use gun_system\models\Gun;
 use pocketmine\item\ItemIds;
@@ -41,8 +42,8 @@ ItemGun extends Tool
         $this->gunInterpreter->tryReload();
     }
 
-    public function scare(): void {
-        $this->gunInterpreter->scare();
+    public function scare(Closure $onFinished): void {
+        $this->gunInterpreter->scare($onFinished);
     }
 
     public function getGunData(): Gun {
