@@ -23,15 +23,14 @@ class WeaponSelectForm implements Form
 
         $buttons =
             [
+                'Attachment',
                 'Assault Rifle',
                 'Handgun',
                 'Revolver',
                 'Shotgun',
                 'Sub Machine Gun',
                 'Light Machine Gun',
-                'Sniper Rifle',
-                'Attachment'
-
+                'Sniper Rifle'
             ];
         switch ($buttons[$data]) {
             case 'Assault Rifle':
