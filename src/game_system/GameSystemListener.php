@@ -52,7 +52,7 @@ class GameSystemListener
     }
 
     public function initGame(TeamDeathMatchMap $map): bool {
-        return $this->teamDeathMatchInterpreter->init($map, 20, function () use ($map) {
+        return $this->teamDeathMatchInterpreter->init($map, 600, function () use ($map) {
             $this->onFinished($map);
         });
     }
@@ -99,7 +99,8 @@ class GameSystemListener
         $targetUser = $this->usersService->getUserData($target->getName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
         if ($targetUser->getBelongTeamId() !== null && $attackerUser->getBelongTeamId() !== null) {
-            if ($targetUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
+            //味方には効果が無いように
+            if (!$targetUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
                 //自分自身には効果がないように
                 if (!($target->getName() === $attacker->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
                     if (!($item instanceof ItemShotGun)) {
