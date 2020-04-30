@@ -116,24 +116,13 @@ class TeamDeathMatchInterpreter
 
         if ($this->game->isStarted()) {
 
-            if ($user->getLastBelongTeamId() === null) {
-                $this->usersService->joinGame(
-                    $userName,
-                    $this->game->getId(),
-                    $this->game->getBlueTeam()->getId(),
-                    $this->game->getRedTeam()->getId());
-                return true;
-            } else if ($user->getLastBelongTeamId()->equal($this->game->getRedTeam()->getId()) ||
-                $user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId())) {
-                $this->usersService->joinGame(
-                    $userName,
-                    $this->game->getId(),
-                    $this->game->getBlueTeam()->getId(),
-                    $this->game->getRedTeam()->getId(),
-                    $user->getLastBelongTeamId());
-
-                return true;
-            }
+            $user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId());
+            $this->usersService->joinGame(
+                $userName,
+                $this->game->getId(),
+                $this->game->getBlueTeam()->getId(),
+                $this->game->getRedTeam()->getId(),
+                $user->getLastBelongTeamId());
 
             $user = $this->usersService->getUserData($userName);
 
@@ -232,7 +221,7 @@ class TeamDeathMatchInterpreter
                 return ItemFactory::get($id, 0, 30);
                 break;
         }
-        return null;
+        return ItemFactory::get(Item::COOKED_BEEF, 0, 30);
     }
 
     public function addScoreByKilling(User $attacker, User $victim): void {
