@@ -10,7 +10,13 @@ use game_system\model\User;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
+use gun_system\models\BulletId;
+use gun_system\models\GunList;
+use gun_system\models\GunType;
+use gun_system\models\shotgun\Shotgun;
 use pocketmine\entity\Entity;
+use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -153,6 +159,9 @@ class TeamDeathMatchInterpreter
                     $targetPlayer = Server::getInstance()->getPlayer($targetEntity->getName());
 
                     if ($health <= 0) {
+                        //弾薬回復
+                        $attackerPlayer->getInventory()->addItem($this->getAmmo($attacker));
+
                         $attackerName = $attacker->getName();
                         $this->weaponService->addKillCount($attacker->getName(), $weaponName);
                         $this->usersService->addMoney($attackerName, 100);
@@ -162,11 +171,11 @@ class TeamDeathMatchInterpreter
                         $targetPlayer->setGamemode(Player::SPECTATOR);
                         $targetPlayer->teleport(new Vector3(
                             $attackerPlayer->getX(),
-                            $attackerPlayer->getY()+4,
+                            $attackerPlayer->getY() + 4,
                             $attackerPlayer->getZ()
                         ));
 
-                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer,$target): void {
+                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer, $target): void {
                             if ($targetPlayer->isOnline()) {
                                 $targetPlayer->setGamemode(Player::ADVENTURE);
                                 $this->spawn($target);
@@ -178,6 +187,40 @@ class TeamDeathMatchInterpreter
                 }
             }
         }
+    }
+
+    private function getAmmo(User $user): Item {
+        $weaponName = $user->getSelectedWeaponName();
+        $weapon = GunList::fromString($weaponName);
+        if ($weapon instanceof Shotgun) {
+            $id = BulletId::fromGunType($weapon->getType(), $weapon->getBulletType());
+        } else {
+            $id = BulletId::fromGunType($weapon->getType());
+        }
+        switch ($weapon->getType()->getTypeText()) {
+            case GunType::HandGun()->getTypeText():
+                return ItemFactory::get($id,0,30);
+                break;
+            case GunType::AssaultRifle()->getTypeText():
+                return ItemFactory::get($id,0,30);
+                break;
+            case GunType::Shotgun()->getTypeText():
+                return ItemFactory::get($id,0,20);
+                break;
+            case GunType::SMG()->getTypeText():
+                return ItemFactory::get($id,0,30);
+                break;
+            case GunType::LMG()->getTypeText():
+                return ItemFactory::get($id,0,64);
+                break;
+            case GunType::SniperRifle()->getTypeText():
+                return ItemFactory::get($id,0,5);
+                break;
+            case GunType::Revolver():
+                return ItemFactory::get($id,0,30);
+                break;
+        }
+        return null;
     }
 
     public function addScoreByKilling(User $attacker, User $victim): void {
