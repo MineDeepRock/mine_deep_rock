@@ -23,4 +23,18 @@ abstract class HandGun extends Gun
     public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadingType $reloadingType, EffectiveRange $effectiveRange, GunPrecision $precision) {
         parent::__construct(GunType::HandGun(),$bulletDamage, $rate, $bulletSpeed, $reaction, $reloadingType, $effectiveRange, $precision);
     }
+
+    /**
+     * @return HandGunScope
+     */
+    public function getScope(): HandGunScope {
+        return $this->scope;
+    }
+
+    /**
+     * @param HandGunScope $scope
+     */
+    public function setScope(HandGunScope $scope): void {
+        $this->scope = $scope;
+    }
 }
