@@ -10,7 +10,6 @@ use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\OneByOneReloadingType;
-use pocketmine\scheduler\TaskScheduler;
 
 class MartiniHenry extends SniperRifle
 {

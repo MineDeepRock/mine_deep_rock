@@ -10,7 +10,6 @@ use gun_system\models\ClipReloadingType;
 use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
-use pocketmine\scheduler\TaskScheduler;
 
 class Type38Arisaka extends SniperRifle
 {

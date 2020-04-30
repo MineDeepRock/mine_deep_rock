@@ -10,7 +10,6 @@ use gun_system\models\ClipReloadingType;
 use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
-use pocketmine\scheduler\TaskScheduler;
 
 class Gewehr98 extends SniperRifle
 {
@@ -19,7 +18,7 @@ class Gewehr98 extends SniperRifle
             new GunRate(0.8),
             new BulletSpeed(880),
             2.5, new ClipReloadingType(5, 5, 1.5, 0.5),
-            new EffectiveRange(80, 98),
+            new EffectiveRange(80, 100),
             new GunPrecision(99.5, 80));
     }
 }
