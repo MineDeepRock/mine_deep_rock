@@ -24,13 +24,13 @@ class ShotgunSelectForm implements Form
         $buttons =
             [
                 'M1897',
-                'M1897 Slug',
+                'M1897:Slug',
                 'Model10A',
-                'Model10A Slug',
+                'Model10A:Slug',
                 'Automatic12G',
-                'Automatic12G Slug',
+                'Automatic12G:Slug',
                 'Model1900',
-                'Model1900 Slug',
+                'Model1900:Slug',
             ];
         ($this->onSelected)($buttons[$data]);
     }
@@ -42,13 +42,13 @@ class ShotgunSelectForm implements Form
             'content' => 'Shotgun',
             'buttons' => [
                 ['text' => 'M1897'],
-                ['text' => 'M1897 Slug'],
+                ['text' => 'M1897:Slug'],
                 ['text' => 'Model10A'],
-                ['text' => 'Model10A Slug'],
+                ['text' => 'Model10A:Slug'],
                 ['text' => 'Automatic12G'],
-                ['text' => 'Automatic12G Slug'],
+                ['text' => 'Automatic12G:Slug'],
                 ['text' => 'Model1900'],
-                ['text' => 'Model1900 Slug'],
+                ['text' => 'Model1900:Slug'],
             ]
         ];
     }
