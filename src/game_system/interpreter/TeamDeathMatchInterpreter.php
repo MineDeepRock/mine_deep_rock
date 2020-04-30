@@ -5,10 +5,13 @@ namespace game_system\interpreter;
 
 
 use Closure;
+use game_system\GameSystemListener;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\model\User;
 use game_system\pmmp\client\TeamDeathMatchClient;
+use game_system\pmmp\form\WeaponSelectForm;
+use game_system\pmmp\items\WeaponSelectItem;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\BulletId;
@@ -164,13 +167,14 @@ class TeamDeathMatchInterpreter
                         $this->usersService->addMoney($attackerName, 100);
                         $this->addScoreByKilling($attacker, $target);
 
-
                         $targetPlayer->setGamemode(Player::SPECTATOR);
                         $targetPlayer->teleport(new Vector3(
                             $attackerPlayer->getX(),
                             $attackerPlayer->getY() + 4,
                             $attackerPlayer->getZ()
                         ));
+                        
+                        GameSystemListener::getInstance()->selectWeapon($targetPlayer);
 
                         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer, $target): void {
                             if ($targetPlayer->isOnline()) {
@@ -217,7 +221,7 @@ class TeamDeathMatchInterpreter
             case GunType::SniperRifle()->getTypeText():
                 return ItemFactory::get($id, 0, 5);
                 break;
-            case GunType::Revolver():
+            case GunType::Revolver()->getTypeText():
                 return ItemFactory::get($id, 0, 30);
                 break;
         }

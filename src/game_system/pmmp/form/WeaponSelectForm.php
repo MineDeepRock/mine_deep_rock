@@ -23,7 +23,6 @@ class WeaponSelectForm implements Form
 
         $buttons =
             [
-                'Attachment',
                 'Assault Rifle',
                 'Handgun',
                 'Revolver',
@@ -54,9 +53,6 @@ class WeaponSelectForm implements Form
             case 'Sniper Rifle':
                 $player->sendForm(new SniperRifleSelectForm($this->onSelected));
                 break;
-            case 'Attachment':
-                $player->sendForm(new AttachmentSelectForm($player));
-                break;
         }
     }
 
@@ -66,7 +62,6 @@ class WeaponSelectForm implements Form
             'title' => '銃選択',
             'content' => '武器種',
             'buttons' => [
-                ['text' => 'Attachment'],
                 ['text' => 'Assault Rifle'],
                 ['text' => 'Handgun'],
                 ['text' => 'Revolver'],

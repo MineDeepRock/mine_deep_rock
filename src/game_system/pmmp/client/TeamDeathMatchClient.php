@@ -10,11 +10,11 @@ use game_system\model\Coordinate;
 use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
+use game_system\pmmp\items\AttachmentSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
-use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\particle\AngryVillagerParticle;
@@ -91,7 +91,7 @@ class TeamDeathMatchClient extends Client
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
 
             $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
-            $player->getInventory()->addItem(new WeaponSelectItem());
+            $player->getInventory()->addItem(new AttachmentSelectItem());
 
             $worldController->teleport($player, $mapName);
             $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));

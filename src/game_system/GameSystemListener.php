@@ -8,6 +8,7 @@ use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
+use game_system\pmmp\form\AttachmentSelectForm;
 use game_system\pmmp\form\WeaponSelectForm;
 use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
@@ -130,6 +131,10 @@ class GameSystemListener
                 //}
             }
         }));
+    }
+
+    public function selectAttachment(Player $player) {
+        $player->sendForm(new AttachmentSelectForm($player));
     }
 
     public function userLogin(string $userName): void {
