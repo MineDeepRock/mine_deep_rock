@@ -167,8 +167,10 @@ class TeamDeathMatchInterpreter
                         ));
 
                         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer,$target): void {
-                            $targetPlayer->setGamemode(Player::ADVENTURE);
-                            $this->spawn($target);
+                            if ($targetPlayer->isOnline()) {
+                                $targetPlayer->setGamemode(Player::ADVENTURE);
+                                $this->spawn($target);
+                            }
                         }), 20 * 8);
                     }
 
