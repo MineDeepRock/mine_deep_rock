@@ -73,7 +73,7 @@ abstract class GunInterpreter
     public function scare(): void {
         $this->gun->setPrecision(new GunPrecision($this->gun->getPrecision()->getADS() - 3, $this->gun->getPrecision()->getHipShooting() - 3));
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
-            $this->gun->setPrecision(new GunPrecision($this->gun->getPrecision()->getADS() - 3, $this->gun->getPrecision()->getHipShooting() - 3));
+            $this->gun->setPrecision(new GunPrecision($this->gun->getPrecision()->getADS() + 3, $this->gun->getPrecision()->getHipShooting() + 3));
         }), 20 * 3);
     }
 
