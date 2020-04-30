@@ -112,8 +112,7 @@ class GunCommand extends Command
             $player = $sender->getServer()->getPlayer($args[1]);
 
             $this->give($player, $args[2]);
-        }
-        /*else if ($method === "attachment") {
+        } else if ($method === "attachment") {
             if (count($args) < 3) {
                 $sender->sendMessage("/gun attachment [playerName] [name]");
                 return true;
@@ -121,82 +120,86 @@ class GunCommand extends Command
             $player = $sender->getServer()->getPlayer($args[1]);
 
             $this->attachment($player, $args[2]);
-        }*/
+        }
         return true;
     }
 
-    /*
-    //TODO:リファクタ
     public function attachment(Player $player, string $name) {
-        $gun = $player->getInventory()->getItemInHand();
+        $gun = null;
+        foreach ($player->getInventory()->getContents() as $item) {
+            if (is_subclass_of($item,"gun_system\pmmp\items\ItemGun")) {
+                $gun = $item;
+            }
+        }
+
         if ($gun instanceof ItemAssaultRifle) {
             switch ($name) {
                 case "IronSight":
-                    $gun->setScope(new IronSightForAR());
+                    $gun->getInterpreter()->setScope(new IronSightForAR());
                     break;
                 case "2xScope":
-                    $gun->setScope(new TwoFoldScopeForAR());
+                    $gun->getInterpreter()->setScope(new TwoFoldScopeForAR());
                     break;
                 case "4xScope":
-                    $gun->setScope(new FourFoldScopeForAR());
+                    $gun->getInterpreter()->setScope(new FourFoldScopeForAR());
                     break;
             }
         } else if ($gun instanceof ItemHandGun) {
             switch ($name) {
                 case "IronSight":
-                    $gun->setScope(new IronSightForHG());
+                    $gun->getInterpreter()->setScope(new IronSightForHG());
                     break;
                 case "2xScope":
-                    $gun->setScope(new TwoFoldScopeForHG());
+                    $gun->getInterpreter()->setScope(new TwoFoldScopeForHG());
                     break;
                 case "4xScope":
-                    $gun->setScope(new FourFoldScopeForHG());
+                    $gun->getInterpreter()->setScope(new FourFoldScopeForHG());
                     break;
             }
         } else if ($gun instanceof ItemLightMachineGun) {
             switch ($name) {
                 case "IronSight":
-                    $gun->setScope(new IronSightForLMG());
+                    $gun->getInterpreter()->setScope(new IronSightForLMG());
                     break;
                 case "2xScope":
-                    $gun->setScope(new TwoFoldScopeForLMG());
+                    $gun->getInterpreter()->setScope(new TwoFoldScopeForLMG());
                     break;
                 case "4xScope":
-                    $gun->setScope(new FourFoldScopeForLMG());
+                    $gun->getInterpreter()->setScope(new FourFoldScopeForLMG());
                     break;
             }
         } else if ($gun instanceof ItemShotGun) {
             switch ($name) {
                 case "IronSight":
-                    $gun->setScope(new IronSightForSG());
+                    $gun->getInterpreter()->setScope(new IronSightForSG());
                     break;
             }
         } else if ($gun instanceof ItemSniperRifle) {
             switch ($name) {
                 case "IronSight":
-                    $gun->setScope(new IronSightForSR());
+                    $gun->getInterpreter()->setScope(new IronSightForSR());
                     break;
                 case "2xScope":
-                    $gun->setScope(new TwoFoldScopeForSR());
+                    $gun->getInterpreter()->setScope(new TwoFoldScopeForSR());
                     break;
                 case "4xScope":
-                    $gun->setScope(new FourFoldScopeForSR());
+                    $gun->getInterpreter()->setScope(new FourFoldScopeForSR());
                     break;
             }
         } else if ($gun instanceof ItemSubMachineGun) {
             switch ($name) {
                 case "IronSight":
-                    $gun->setScope(new IronSightForSMG());
+                    $gun->getInterpreter()->setScope(new IronSightForSMG());
                     break;
                 case "2xScope":
-                    $gun->setScope(new TwoFoldScopeForSMG());
+                    $gun->getInterpreter()->setScope(new TwoFoldScopeForSMG());
                     break;
                 case "4xScope":
-                    $gun->setScope(new FourFoldScopeForSMG());
+                    $gun->getInterpreter()->setScope(new FourFoldScopeForSMG());
                     break;
             }
         }
-    }*/
+    }
 
     //TODO:GunListをつかってリファクタリング
     public function give(Player $player, string $name, string $bulletName = null) {

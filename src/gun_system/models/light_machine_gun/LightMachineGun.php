@@ -12,36 +12,17 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
-use gun_system\models\light_machine_gun\attachment\scope\IronSightForLMG;
-use gun_system\models\light_machine_gun\attachment\scope\LightMachineGunScope;
 use gun_system\models\ReloadingType;
-use pocketmine\scheduler\TaskScheduler;
 
 class LightMachineGun extends Gun
 {
-    private $scope;
-
+    //TODO:ここじゃない
     private $overheatRate;
 
     public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadingType $reloadingType, EffectiveRange $effectiveRange, GunPrecision $precision) {
-        $this->setScope(new IronSightForLMG());
         parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadingType, $effectiveRange, $precision);
 
         $this->overheatRate = $overheatRate;
-    }
-
-    /**
-     * @return LightMachineGunScope
-     */
-    public function getScope(): LightMachineGunScope {
-        return $this->scope;
-    }
-
-    /**
-     * @param LightMachineGunScope $scope
-     */
-    public function setScope(LightMachineGunScope $scope): void {
-        $this->scope = $scope;
     }
 
     /**

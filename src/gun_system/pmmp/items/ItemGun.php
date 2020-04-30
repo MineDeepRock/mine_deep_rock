@@ -48,4 +48,8 @@ ItemGun extends Tool
     public function getGunData(): Gun {
         return $this->gunInterpreter->getGunData();
     }
+
+    public function getInterpreter(): GunInterpreter {
+        return $this->gunInterpreter;
+    }
 }

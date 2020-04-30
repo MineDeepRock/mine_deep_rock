@@ -163,7 +163,7 @@ abstract class GunInterpreter
         $reduceBulletFunc = function ($value): int {
             $this->owner->sendPopup("リロード");
             if ($this->gun instanceof Shotgun) {
-                $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType(),$this->gun->getBulletType()), 0, $value));
+                $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType(), $this->gun->getBulletType()), 0, $value));
             } else {
                 $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $value));
             }

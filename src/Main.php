@@ -155,7 +155,7 @@ class Main extends PluginBase implements Listener
             $player->removeEffect(Effect::SLOWNESS);
         } else {
             if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-                $effectLevel = $item->getGunData()->getScope()->getMagnification()->getValue();
+                $effectLevel = $item->getInterpreter()->getScope()->getMagnification()->getValue();
                 $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel));
             }
         }
