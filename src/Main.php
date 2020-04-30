@@ -79,6 +79,8 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new WeaponSelectItem(), true);
         Item::addCreativeItem(Item::get(WeaponSelectItem::ITEM_ID));
+
+        $this->gameSystemListener->initGame(new \game_system\model\map\RealisticWWIBattlefieldExtended());
     }
 
 

@@ -53,6 +53,7 @@ class TeamDeathMatchClient extends Client
             $player = Server::getInstance()->getPlayer($participant->getName());
             EasyScoreboardAPI::getInstance()->deleteScoreboard($player, "sidebar");
             $player->getInventory()->setContents([]);
+            $player->setGamemode(Player::ADVENTURE);
             $worldController->teleport($player, "lobby");
 
             if ($participant->getBelongTeamId()->equal($winTeamId)) {

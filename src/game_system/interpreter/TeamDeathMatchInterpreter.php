@@ -4,6 +4,7 @@
 namespace game_system\interpreter;
 
 
+use Closure;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\model\User;
@@ -31,6 +32,7 @@ class TeamDeathMatchInterpreter
     private $scheduler;
 
     private $taskHandler;
+    private $onFinished;
 
     private $game;
     private $limitSecond;
@@ -42,10 +44,15 @@ class TeamDeathMatchInterpreter
         $this->weaponService = $weaponService;
     }
 
-    public function init(TeamDeathMatchMap $map, int $limitSecond): bool {
+    public function getGameData(): TeamDeathMatch {
+        return $this->game;
+    }
+
+    public function init(TeamDeathMatchMap $map, int $limitSecond, Closure $onFinished): bool {
         if ($this->game !== null)
             return false;
 
+        $this->onFinished = $onFinished;
         $this->limitSecond = $limitSecond;
         $this->game = new TeamDeathMatch($map);
         return true;
@@ -96,6 +103,7 @@ class TeamDeathMatchInterpreter
         }
         $this->game = null;
         $this->client->onFinish($winTeam, $participants);
+        ($this->onFinished)();
     }
 
     public function join(string $userName): bool {
@@ -178,7 +186,11 @@ class TeamDeathMatchInterpreter
                         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer, $target): void {
                             if ($targetPlayer->isOnline()) {
                                 $targetPlayer->setGamemode(Player::ADVENTURE);
-                                $this->spawn($target);
+                                if ($target->getParticipatedGameId() !== null) {
+                                    if ($target->getParticipatedGameId()->equal($this->game->getId())) {
+                                        $this->spawn($target);
+                                    }
+                                }
                             }
                         }), 20 * 8);
                     }
@@ -199,25 +211,25 @@ class TeamDeathMatchInterpreter
         }
         switch ($weapon->getType()->getTypeText()) {
             case GunType::HandGun()->getTypeText():
-                return ItemFactory::get($id,0,30);
+                return ItemFactory::get($id, 0, 30);
                 break;
             case GunType::AssaultRifle()->getTypeText():
-                return ItemFactory::get($id,0,30);
+                return ItemFactory::get($id, 0, 30);
                 break;
             case GunType::Shotgun()->getTypeText():
-                return ItemFactory::get($id,0,20);
+                return ItemFactory::get($id, 0, 20);
                 break;
             case GunType::SMG()->getTypeText():
-                return ItemFactory::get($id,0,30);
+                return ItemFactory::get($id, 0, 30);
                 break;
             case GunType::LMG()->getTypeText():
-                return ItemFactory::get($id,0,64);
+                return ItemFactory::get($id, 0, 64);
                 break;
             case GunType::SniperRifle()->getTypeText():
-                return ItemFactory::get($id,0,5);
+                return ItemFactory::get($id, 0, 5);
                 break;
             case GunType::Revolver():
-                return ItemFactory::get($id,0,30);
+                return ItemFactory::get($id, 0, 30);
                 break;
         }
         return null;

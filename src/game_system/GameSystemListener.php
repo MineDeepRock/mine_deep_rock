@@ -4,6 +4,7 @@
 namespace game_system;
 
 
+use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
@@ -51,19 +52,41 @@ class GameSystemListener
     }
 
     public function initGame(TeamDeathMatchMap $map): bool {
-        return $this->teamDeathMatchInterpreter->init($map, 600);
+        return $this->teamDeathMatchInterpreter->init($map, 20, function () use ($map) {
+            $this->onFinished($map);
+        });
+    }
+
+    private function onFinished(TeamDeathMatchMap $map) {
+        $this->initGame($map);
+        $api = EasyScoreboardAPI::getInstance();
+
+        $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
+        $game = $this->teamDeathMatchInterpreter->getGameData();
+        if (!$game->isStarted()) {
+            foreach ($lobbyPlayers as $player) {
+                $api->sendScoreboard($player, "sidebar", "Lobby", false);
+                $api->setScore($player, "sidebar", "ゲーム参加人数:", 0, 1);
+            }
+        }
     }
 
     public function startGame(): bool {
-        return $this->teamDeathMatchInterpreter->start();
+        $result = $this->teamDeathMatchInterpreter->start();
+        $this->updateNumberOfParticipants();
+        return $result;
     }
 
     public function joinGame(string $userName): bool {
-        return $this->teamDeathMatchInterpreter->join($userName);
+        $result = $this->teamDeathMatchInterpreter->join($userName);
+        $this->updateNumberOfParticipants();
+        return $result;
     }
 
     public function quitGame(string $userName): bool {
-        return $this->teamDeathMatchInterpreter->quitGame($userName);
+        $result = $this->teamDeathMatchInterpreter->quitGame($userName);
+        $this->updateNumberOfParticipants();
+        return $result;
     }
 
     public function closeGame(): bool {
@@ -115,9 +138,37 @@ class GameSystemListener
         $worldController->teleport($player, "lobby");
         $player->getInventory()->addItem(new WeaponSelectItem());
 
+        $api = EasyScoreboardAPI::getInstance();
+        $api->sendScoreboard($player, "sidebar", "Lobby", false);
+        $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
+
+        $game = $this->teamDeathMatchInterpreter->getGameData();
+        if (!$game->isStarted()) {
+            foreach ($lobbyPlayers as $player) {
+                $numberOfParticipants = $this->usersService->getParticipants($game->getId());
+                $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 1);
+            }
+        }
+
         if (!$this->usersService->exists($userName))
             $this->weaponService->register($userName, "M1907SL");
 
         $this->usersService->userLogin($userName);
+    }
+
+    public function updateNumberOfParticipants() {
+        $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
+        $api = EasyScoreboardAPI::getInstance();
+        $game = $this->teamDeathMatchInterpreter->getGameData();
+        if (!$game->isStarted()) {
+            foreach ($lobbyPlayers as $player) {
+                $numberOfParticipants = $this->usersService->getParticipants($game->getId());
+                $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 2);
+            }
+        } else {
+            foreach ($lobbyPlayers as $player) {
+                $api->removeScore($player, "sidebar", 2);
+            }
+        }
     }
 }
