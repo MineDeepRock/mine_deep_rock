@@ -36,6 +36,11 @@ class GunClient
     }
 
     public function shoot(int $currentBullet, int $magazineCapacity, TaskScheduler $scheduler): void {
+
+        //スペクテイターのときは打てないように
+        if ($this->owner->getGamemode() === Player::SPECTATOR) {
+            return;
+        }
         if ($this->gun instanceof Shotgun) {
             if ($this->gun->getBulletType()->equal(ShotgunBulletType::Buckshot())) {
                 $i = 0;
