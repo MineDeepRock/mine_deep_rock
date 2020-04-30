@@ -117,10 +117,10 @@ class GameSystemListener
             $target->removeEffect(Effect::REGENERATION);
             $item->scare(function () use ($target) {
                 if ($target->isOnline()) {
-                    $target->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1,false));
+                    $target->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
                 }
             });
-            $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1,false));
+            $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1, false));
         }
     }
 
@@ -154,6 +154,7 @@ class GameSystemListener
         $worldController = new WorldController();
         $worldController->teleport($player, "lobby");
         $player->getInventory()->addItem(new WeaponSelectItem());
+        $player->setGamemode(Player::ADVENTURE);
 
         $api = EasyScoreboardAPI::getInstance();
         $api->sendScoreboard($player, "sidebar", "Lobby", false);
