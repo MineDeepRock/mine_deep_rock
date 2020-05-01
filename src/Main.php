@@ -84,7 +84,7 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new AttachmentSelectItem(), true);
         Item::addCreativeItem(Item::get(AttachmentSelectItem::ITEM_ID));
 
-        $this->gameSystemListener->initGame(new \game_system\model\map\RealisticWWIBattlefieldExtended());
+        $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
     }
 
 
