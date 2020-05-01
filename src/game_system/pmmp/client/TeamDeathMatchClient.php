@@ -13,6 +13,7 @@ use game_system\model\User;
 use game_system\pmmp\items\AttachmentSelectItem;
 use game_system\pmmp\WorldController;
 use gun_system\pmmp\GunSounds;
+use pocketmine\block\Redstone;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
@@ -27,6 +28,7 @@ use pocketmine\item\IronLeggings;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\particle\AngryVillagerParticle;
+use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -107,13 +109,13 @@ class TeamDeathMatchClient extends Client
 
     public function onReceiveDamage(Player $attacker, Player $targetPlayer, int $damage, string $weaponName): void {
         $health = $targetPlayer->getHealth() - $damage;
-        $targetPlayer->getLevel()->addParticle(new AngryVillagerParticle(
-            new Vector3(
-                $targetPlayer->getX() + rand(1, 2),
-                $targetPlayer->getY() + rand(3, 5),
-                $targetPlayer->getZ() + rand(1, 2)
-            )
-        ));
+
+        $targetPlayer->getLevel()->addParticle(new DestroyBlockParticle(new Vector3(
+            $targetPlayer->getX(),
+            $targetPlayer->getEyeHeight(),
+            $targetPlayer->getZ()
+        ), new Redstone()));
+
 
         GunSounds::play($targetPlayer, GunSounds::bulletHitPlayer(), 10, 1);
 
