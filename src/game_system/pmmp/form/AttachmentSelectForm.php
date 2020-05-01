@@ -68,7 +68,7 @@ class AttachmentSelectForm implements Form
                         ['text' => '4xScope'],
                     ];
                     break;
-                case GunType::Revolver():
+                case GunType::Revolver()->getTypeText():
                     $this->buttons = [
                         ['text' => 'IronSight'],
                     ];
