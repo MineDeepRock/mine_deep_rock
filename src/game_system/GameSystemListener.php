@@ -101,7 +101,7 @@ class GameSystemListener
         $targetUser = $this->usersService->getUserData($target->getName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
 
-        if ($targetUser->getBelongTeamId() === null && $attackerUser->getBelongTeamId() === null) {
+        if ($targetUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) {
             return;
         }
         //味方には効果が無いように
