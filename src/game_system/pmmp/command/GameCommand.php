@@ -41,30 +41,7 @@ class GameCommand extends Command
             }
             $worldController = new WorldController();
             $worldController->teleport($player, $args[1]);
-        } else if ($method === "create") {
-            if (!$player->isOp()) {
-                $sender->sendMessage("権限がありません");
-                return false;
-            }
-            if (count($args) < 2) {
-                $sender->sendMessage("/game create [TeamDeathMatch]");
-                return false;
-            }
-            $gameName = $args[1];
-            switch ($gameName) {
-                case "TeamDeathMatch":
-                    $result = $this->createTeamDeathMatch();
-                    if (!$result) {
-                        $player->sendMessage("すでに作成済みのゲームがあります");
-                        return false;
-                    }
-
-                    $targetPlayers = $player->getLevel()->getPlayers();
-                    foreach ($targetPlayers as $targetPlayer)
-                        $targetPlayer->sendMessage("TeamDeathMatchが作成されました。 /game joinで参加しましょう");
-                    break;
-            }
-        } else if ($method === "start") {
+        } if ($method === "start") {
             if (!$player->isOp()) {
                 $sender->sendMessage("権限がありません");
                 return false;
@@ -91,7 +68,7 @@ class GameCommand extends Command
         } else if ($method === "join") {
             $result = $this->join($player->getName());
             if (!$result) {
-                $player->sendMessage("試合が開かれていないか。すでに参加しています");
+                $player->sendMessage("試合が開かれていないか、すでに参加しています");
                 return false;
             }
 
