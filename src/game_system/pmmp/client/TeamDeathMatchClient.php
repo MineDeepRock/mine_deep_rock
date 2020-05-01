@@ -16,6 +16,14 @@ use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
+use pocketmine\item\GoldBoots;
+use pocketmine\item\GoldChestplate;
+use pocketmine\item\GoldHelmet;
+use pocketmine\item\GoldLeggings;
+use pocketmine\item\IronBoots;
+use pocketmine\item\IronChestplate;
+use pocketmine\item\IronHelmet;
+use pocketmine\item\IronLeggings;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\particle\AngryVillagerParticle;
@@ -29,16 +37,13 @@ class TeamDeathMatchClient extends Client
     public function start(Array $participants, TeamId $redTeamId, int $redTeamScore, int $blueTeamScore): void {
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
-            $playerName = $participant->getName();
 
+            $this->setArmorAndNameTag($player, $participant->getBelongTeamId(), $redTeamId);
             if ($participant->getBelongTeamId()->equal($redTeamId)) {
-                $player->setNameTag(TextFormat::RED . $playerName);
                 $player->sendMessage(TextFormat::RED . "あなたは赤チームです");
             } else {
-                $player->setNameTag(TextFormat::BLUE . $playerName);
                 $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
             }
-
             $api = EasyScoreboardAPI::getInstance();
             $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
             $api->setScore($player, "sidebar", "RedTeamScore:", $redTeamScore, 2);
@@ -69,11 +74,10 @@ class TeamDeathMatchClient extends Client
         $playerName = $user->getName();
         $player = Server::getInstance()->getPlayer($playerName);
 
+        $this->setArmorAndNameTag($player, $user->getBelongTeamId(), $redTeamId);
         if ($user->getBelongTeamId()->equal($redTeamId)) {
-            $player->setNameTag(TextFormat::RED . $playerName);
             $player->sendMessage(TextFormat::RED . "あなたは赤チームです");
         } else {
-            $player->setNameTag(TextFormat::BLUE . $playerName);
             $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
         }
 
@@ -87,7 +91,7 @@ class TeamDeathMatchClient extends Client
         $player = Server::getInstance()->getPlayer($userName);
         if ($player !== null) {
 
-            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1,false));
+            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
 
             $player->getInventory()->setContents([]);
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
@@ -118,7 +122,7 @@ class TeamDeathMatchClient extends Client
             $players = $attacker->getLevel()->getPlayers();
 
             //TODO:Titleにしたい
-            $targetPlayer->sendPopup( TextFormat::RED . $attacker->getName() . "に倒された");
+            $targetPlayer->sendPopup(TextFormat::RED . $attacker->getName() . "に倒された");
             $targetPlayer->getInventory()->setContents([]);
             foreach ($players as $player) {
                 $player->sendMessage($attacker->getName() . " が " . $targetPlayer->getName() . " を倒した [" . $weaponName . "]");
@@ -129,6 +133,22 @@ class TeamDeathMatchClient extends Client
             $targetPlayer->setHealth($health);
             $attacker->addTitle("><", "", 0, 1, 0);
 
+        }
+    }
+
+    public function setArmorAndNameTag(Player $player, TeamID $userTeamId, TeamId $redTeamId) {
+        if ($userTeamId->equal($redTeamId)) {
+            $player->setNameTag(TextFormat::RED . $player->getName());
+            $player->getArmorInventory()->setHelmet(new IronHelmet());
+            $player->getArmorInventory()->setChestplate(new IronChestplate());
+            $player->getArmorInventory()->setLeggings(new IronLeggings());
+            $player->getArmorInventory()->setBoots(new IronBoots());
+        } else {
+            $player->setNameTag(TextFormat::RED . $player->getName());
+            $player->getArmorInventory()->setHelmet(new GoldHelmet());
+            $player->getArmorInventory()->setChestplate(new GoldChestplate());
+            $player->getArmorInventory()->setLeggings(new GoldLeggings());
+            $player->getArmorInventory()->setBoots(new GoldBoots());
         }
     }
 
