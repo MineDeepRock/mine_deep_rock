@@ -17,10 +17,10 @@ class Model1900 extends Shotgun
 {
     public function __construct(ShotgunBulletType $bulletType) {
         parent::__construct($bulletType,
-            12, new BulletDamage(12.5, 6.25),
+            12, new BulletDamage(13, 2),
             new GunRate(5),
             new BulletSpeed(500),
-            1, new ClipReloadingType(2,2,2.4,3.2),
+            2, new ClipReloadingType(2,2,2.4,3.2),
             new EffectiveRange(0, 13),
             new GunPrecision(90,90));
     }

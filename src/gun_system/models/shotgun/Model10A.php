@@ -18,11 +18,11 @@ class Model10A extends Shotgun
     public function __construct(ShotgunBulletType $bulletType) {
         parent::__construct($bulletType,
             12,
-            new BulletDamage(12, 6),
+            new BulletDamage(12, 2),
             new GunRate(1.3),
             new BulletSpeed(333),
-            2, new OneByOneReloadingType(6,0.5),
+            2.5, new OneByOneReloadingType(6,0.5),
             new EffectiveRange(0, 20),
-            new GunPrecision(90,86));
+            new GunPrecision(92,92));
     }
 }
