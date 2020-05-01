@@ -8,19 +8,19 @@ use game_system\model\Coordinate;
 
 class ApocalypticCity extends TeamDeathMatchMap
 {
-    public const NAME = "ApocalypticCity";
+    public const NAME = "Apocalyptic City";
 
     public function __construct() {
         parent::__construct(self::NAME, "",
             [
-                new Coordinate(-182, 12, -134),
-                new Coordinate(-172, 31, -103),
-                new Coordinate(-165, 12, -94),
+                new Coordinate(36, 11, 28),
+                new Coordinate(46, 18, -36),
+                new Coordinate(11, 12, -42),
             ],
             [
-                new Coordinate(-117, 12, -82),
-                new Coordinate(-142, 17, -100),
-                new Coordinate(-124, 12, -104),
+                new Coordinate(-122, 18, 37),
+                new Coordinate(-109, 18, 0),
+                new Coordinate(-89, 18, -32),
             ]);
     }
 }
