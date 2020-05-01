@@ -83,10 +83,6 @@ class GameCommand extends Command
         return true;
     }
 
-    private function createTeamDeathMatch(): bool {
-        return $this->listener->initGame(new RealisticWWIBattlefieldExtended());
-    }
-
     public function startGame(): bool {
         return $this->listener->startGame();
     }
