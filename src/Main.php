@@ -4,6 +4,7 @@ use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\items\AttachmentSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
+use gun_system\EffectiveRangeLoader;
 use gun_system\GunSystemListener;
 use gun_system\models\BulletId;
 use gun_system\pmmp\command\GunCommand;
@@ -44,6 +45,9 @@ class Main extends PluginBase implements Listener
     private $gunSystemClient;
 
     function onEnable() {
+        $effectiveRangeLoader = new EffectiveRangeLoader();
+        $effectiveRangeLoader->loadAll();
+
         $this->gunSystemClient = new GunSystemListener();
         $this->gameSystemListener = new GameSystemListener($this->getScheduler());
 

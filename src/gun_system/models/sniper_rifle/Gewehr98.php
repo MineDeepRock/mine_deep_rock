@@ -4,10 +4,10 @@
 namespace gun_system\models\sniper_rifle;
 
 
+use gun_system\EffectiveRangeLoader;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\ClipReloadingType;
-use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 
@@ -18,7 +18,7 @@ class Gewehr98 extends SniperRifle
             new GunRate(0.8),
             new BulletSpeed(880),
             2.5, new ClipReloadingType(5, 5, 1.5, 0.5),
-            new EffectiveRange(80, 100),
+            EffectiveRangeLoader::getInstance()->ranges["Gewehr98"],
             new GunPrecision(99.5, 80));
     }
 }

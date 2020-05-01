@@ -445,12 +445,12 @@ class GunCommand extends Command
     public function setItemDescription(ItemGun $item): ItemGun {
         $gun = $item->getGunData();
         $bulletDamage = $gun->getBulletDamage();
-        $effectiveRange = $gun->getEffectiveRange();
+        //$effectiveRange = $gun->getEffectiveRange();
         $rate = $gun->getRate();
 
         return $item->setLore([
             TextFormat::RESET . "火力" . TextFormat::GRAY . $bulletDamage->getMaxDamage() . "-" . $bulletDamage->getMinDamage(),
-            TextFormat::RESET . "有効射程" . TextFormat::GRAY . $effectiveRange->getStart() . "-" . $effectiveRange->getEnd(),
+            //TextFormat::RESET . "有効射程" . TextFormat::GRAY . $effectiveRange->getStart() . "-" . $effectiveRange->getEnd(),
             TextFormat::RESET . "レート" . TextFormat::GRAY . $rate->getPerSecond(),
             TextFormat::RESET . "リロード" . $gun->getReloadingType()->toString(),
             TextFormat::RESET . "反動" . TextFormat::GRAY . $gun->getReaction(),

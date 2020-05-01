@@ -7,7 +7,6 @@ namespace gun_system\models\light_machine_gun;
 use Closure;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
-use gun_system\models\EffectiveRange;
 use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
@@ -19,7 +18,7 @@ class LightMachineGun extends Gun
     //TODO:ここじゃない
     private $overheatRate;
 
-    public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadingType $reloadingType, EffectiveRange $effectiveRange, GunPrecision $precision) {
+    public function __construct(OverheatRate $overheatRate, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision) {
         parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadingType, $effectiveRange, $precision);
 
         $this->overheatRate = $overheatRate;

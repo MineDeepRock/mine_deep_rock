@@ -4,13 +4,12 @@
 namespace gun_system\models\light_machine_gun;
 
 
+use gun_system\EffectiveRangeLoader;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
-use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
-use pocketmine\scheduler\TaskScheduler;
 
 class BAR1918 extends LightMachineGun
 {
@@ -20,7 +19,7 @@ class BAR1918 extends LightMachineGun
             new GunRate(10),
             new BulletSpeed(820),
             new MagazineReloadingType(20, 3),
-            new EffectiveRange(0, 13),
+            EffectiveRangeLoader::getInstance()->ranges["BAR1918"],
             new GunPrecision(98, 75));
     }
 }

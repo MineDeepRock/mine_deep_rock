@@ -4,13 +4,12 @@
 namespace gun_system\models\revolver;
 
 
+use gun_system\EffectiveRangeLoader;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
-use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\OneByOneReloadingType;
-use pocketmine\scheduler\TaskScheduler;
 
 class NagantRevolver extends Revolver
 {
@@ -21,7 +20,7 @@ class NagantRevolver extends Revolver
             new BulletSpeed(335),
             0,
             new OneByOneReloadingType(7,1.3),
-            new EffectiveRange(0,15),
+            EffectiveRangeLoader::getInstance()->ranges["NagantRevolver"],
             new GunPrecision(97,90));
     }
 }

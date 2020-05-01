@@ -4,13 +4,12 @@
 namespace gun_system\models\revolver;
 
 
+use gun_system\EffectiveRangeLoader;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
-use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\OneByOneReloadingType;
-use pocketmine\scheduler\TaskScheduler;
 
 class ColtSAA extends Revolver
 {
@@ -21,7 +20,7 @@ class ColtSAA extends Revolver
             new BulletSpeed(320),
             0,
             new OneByOneReloadingType(6,1.2),
-            new EffectiveRange(0,12),
+            EffectiveRangeLoader::getInstance()->ranges["ColtSAA"],
             new GunPrecision(97,95));
     }
 }
