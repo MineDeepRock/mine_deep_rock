@@ -8,6 +8,7 @@ use Closure;
 use gun_system\controller\ClipReloadingController;
 use gun_system\controller\MagazineReloadingController;
 use gun_system\controller\OneByOneReloadingController;
+use gun_system\controller\OverheatController;
 use gun_system\controller\ShootingController;
 use gun_system\models\BulletId;
 use gun_system\models\ClipReloadingType;
@@ -18,6 +19,7 @@ use gun_system\models\MagazineReloadingType;
 use gun_system\models\OneByOneReloadingType;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\client\GunClient;
+use gun_system\pmmp\GunSounds;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -33,6 +35,7 @@ abstract class GunInterpreter
     protected $gun;
     protected $reloadingController;
     protected $shootingController;
+    protected $overheatController;
 
     private $isADS;
 
@@ -54,6 +57,19 @@ abstract class GunInterpreter
             $this->reloadingController->currentBullet -= $value;
             return $this->reloadingController->currentBullet;
         }, $scheduler);
+
+        $this->overheatController = new OverheatController(
+            $gun->getOverheatRate(),
+            function(){
+                $this->cancelShooting();
+                GunSounds::play($this->owner, GunSounds::LMGOverheat());
+                $this->owner->sendPopup("オーバーヒート");
+            },
+            function(){
+                GunSounds::play($this->owner, GunSounds::LMGReady());
+                $this->owner->sendPopup($this->reloadingController->currentBullet . "\\" . $this->reloadingController->magazineCapacity);
+            },
+            $this->scheduler);
 
         $this->client = new GunClient($this->owner, $this->gun);
     }
@@ -105,7 +121,13 @@ abstract class GunInterpreter
             return;
         }
 
+        if ($this->overheatController->isOverheat()) {
+            $this->owner->sendPopup("オーバーヒート中");
+            return;
+        }
+
         $this->shootingController->shootOnce(function (): void {
+            $this->overheatController->raise();
             $this->client->shoot($this->reloadingController->currentBullet, $this->reloadingController->magazineCapacity, $this->scheduler);
         });
     }
@@ -124,6 +146,11 @@ abstract class GunInterpreter
             return;
         }
 
+        if ($this->overheatController->isOverheat()) {
+            $this->owner->sendPopup("オーバーヒート中");
+            return;
+        }
+
         if ($this->shootingController->onCoolTime()) {
             //TODO: 1/rate - (now-lastShootDate)
             $this->shootingController->delayShoot(1 / $this->gun->getRate()->getPerSecond(), function (): void {
@@ -139,6 +166,7 @@ abstract class GunInterpreter
             });
         }
         $this->shootingController->shoot(function (): void {
+            $this->overheatController->raise();
             $this->client->shoot($this->reloadingController->currentBullet, $this->reloadingController->magazineCapacity, $this->scheduler);
         });
     }
@@ -158,6 +186,11 @@ abstract class GunInterpreter
 
         if ($inventoryBullets === 0) {
             $this->owner->sendPopup("弾薬がありません");
+            return;
+        }
+
+        if ($this->overheatController->isOverheat()) {
+            $this->owner->sendPopup("オーバーヒート中");
             return;
         }
 

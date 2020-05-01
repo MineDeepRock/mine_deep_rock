@@ -10,6 +10,7 @@ use gun_system\models\BulletSpeed;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
+use gun_system\models\OverheatRate;
 
 class MP18 extends SubMachineGun
 {
@@ -19,6 +20,7 @@ class MP18 extends SubMachineGun
             new BulletSpeed(420),
             new MagazineReloadingType(32, 2),
             EffectiveRangeLoader::getInstance()->ranges["MP18"],
-            new GunPrecision(98, 95));
+            new GunPrecision(98, 95),
+            new OverheatRate(0));
     }
 }

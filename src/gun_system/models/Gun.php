@@ -14,10 +14,10 @@ abstract class Gun
     private $reaction;
     private $effectiveRange;
     private $precision;
-    private $damageCurve;
     private $reloadingType;
+    private $overheatRate;
 
-    public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision) {
+    public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision, OverheatRate $overheatRate) {
         $this->type = $type;
 
         $this->bulletDamage = $bulletDamage;
@@ -29,6 +29,7 @@ abstract class Gun
 
         $this->precision = $precision;
         $this->effectiveRange = $effectiveRange;
+        $this->overheatRate = $overheatRate;
     }
 
     /**
@@ -92,6 +93,13 @@ abstract class Gun
      */
     public function getReloadingType(): ReloadingType {
         return $this->reloadingType;
+    }
+
+    /**
+     * @return OverheatRate
+     */
+    public function getOverheatRate(): OverheatRate {
+        return $this->overheatRate;
     }
 }
 
@@ -181,6 +189,21 @@ class GunRate
     }
 }
 
+class OverheatRate
+{
+    private $perShoot;
+
+    public function __construct(int $perShoot) {
+        $this->perShoot = $perShoot;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPerShoot(): int {
+        return $this->perShoot;
+    }
+}
 
 abstract class ReloadingType
 {

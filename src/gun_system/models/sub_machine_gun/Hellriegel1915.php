@@ -10,6 +10,7 @@ use gun_system\models\BulletSpeed;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
+use gun_system\models\OverheatRate;
 
 class Hellriegel1915 extends SubMachineGun
 {
@@ -19,6 +20,7 @@ class Hellriegel1915 extends SubMachineGun
             new BulletSpeed(380),
             new MagazineReloadingType(59, 3.8),
             EffectiveRangeLoader::getInstance()->ranges["Hellriegel1915"],
-            new GunPrecision(90, 85));
+            new GunPrecision(90, 85),
+            new OverheatRate(3));
     }
 }

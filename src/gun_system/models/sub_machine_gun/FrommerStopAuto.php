@@ -10,6 +10,7 @@ use gun_system\models\BulletSpeed;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
+use gun_system\models\OverheatRate;
 
 class FrommerStopAuto extends SubMachineGun
 {
@@ -19,6 +20,7 @@ class FrommerStopAuto extends SubMachineGun
             new BulletSpeed(350),
             new MagazineReloadingType(15, 1.25),
             EffectiveRangeLoader::getInstance()->ranges["FrommerStopAuto"],
-            new GunPrecision(98, 95));
+            new GunPrecision(98, 95),
+            new OverheatRate(0));
     }
 }

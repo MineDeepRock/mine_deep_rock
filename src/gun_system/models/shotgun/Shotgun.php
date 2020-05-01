@@ -11,6 +11,7 @@ use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\GunType;
+use gun_system\models\OverheatRate;
 use gun_system\models\ReloadingType;
 
 abstract class Shotgun extends Gun
@@ -28,7 +29,7 @@ abstract class Shotgun extends Gun
             $this->pellets = 1;
         }
 
-        parent::__construct(GunType::Shotgun(), $bulletDamage, $rate, $bulletSpeed, $reaction, $reloadingType, $effectiveRange, $precision);
+        parent::__construct(GunType::Shotgun(), $bulletDamage, $rate, $bulletSpeed, $reaction, $reloadingType, $effectiveRange, $precision, new OverheatRate(0));
     }
     /**
      * @return ShotgunBulletType

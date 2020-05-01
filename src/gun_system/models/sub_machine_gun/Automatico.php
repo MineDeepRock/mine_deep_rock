@@ -10,6 +10,7 @@ use gun_system\models\BulletSpeed;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
+use gun_system\models\OverheatRate;
 
 class Automatico extends SubMachineGun
 {
@@ -19,6 +20,7 @@ class Automatico extends SubMachineGun
             new BulletSpeed(380),
             new MagazineReloadingType(25, 2.1),
             EffectiveRangeLoader::getInstance()->ranges["Automatico"],
-            new GunPrecision(90, 85));
+            new GunPrecision(90, 85),
+            new OverheatRate(0));
     }
 }

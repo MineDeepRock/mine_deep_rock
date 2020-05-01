@@ -10,16 +10,18 @@ use gun_system\models\BulletSpeed;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
+use gun_system\models\OverheatRate;
 
 class ParabellumMG14 extends LightMachineGun
 {
     public function __construct() {
-        parent::__construct(new OverheatRate(3),
+        parent::__construct(
             new BulletDamage(28, 21),
             new GunRate(11.7),
             new BulletSpeed(870),
             new MagazineReloadingType(100, 6),
             EffectiveRangeLoader::getInstance()->ranges["ParabellumMG14"],
-            new GunPrecision(97, 75));
+            new GunPrecision(97, 75),
+            new OverheatRate(3));
     }
 }
