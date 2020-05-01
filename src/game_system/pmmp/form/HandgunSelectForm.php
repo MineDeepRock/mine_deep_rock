@@ -35,7 +35,7 @@ class HandgunSelectForm implements Form
         return [
             'type' => 'form',
             'title' => '銃選択',
-            'content' => 'Assault Rifle',
+            'content' => 'Handgun',
             'buttons' => [
                 ['text' => 'Mle1903'],
                 ['text' => 'P08'],
