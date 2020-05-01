@@ -118,8 +118,6 @@ class TeamDeathMatchInterpreter
             return false;
 
         if ($this->game->isStarted()) {
-
-            $user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId());
             $this->usersService->joinGame(
                 $userName,
                 $this->game->getId(),
@@ -176,11 +174,12 @@ class TeamDeathMatchInterpreter
                         
                         GameSystemListener::getInstance()->selectWeapon($targetPlayer);
 
-                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer, $target): void {
+                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer,$target, $targetEntity): void {
                             if ($targetPlayer->isOnline()) {
                                 $targetPlayer->setGamemode(Player::ADVENTURE);
                                 if ($target->getParticipatedGameId() !== null) {
                                     if ($target->getParticipatedGameId()->equal($this->game->getId())) {
+                                        $target = $this->usersService->getUserData($targetEntity->getName());
                                         $this->spawn($target);
                                     }
                                 }
