@@ -8,6 +8,8 @@ abstract class Gun
 {
     private $type;
 
+    const NAME = "";
+
     private $bulletDamage;
     private $rate;
     private $bulletSpeed;
@@ -17,7 +19,10 @@ abstract class Gun
     private $reloadingType;
     private $overheatRate;
 
-    public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision, OverheatRate $overheatRate) {
+    private $moneyCost;
+    private $killCountCondition;
+
+    public function __construct(GunType $type, BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision, OverheatRate $overheatRate, MoneyCost $moneyCost = null, KillCountCondition $killCountCondition = null) {
         $this->type = $type;
 
         $this->bulletDamage = $bulletDamage;
@@ -30,6 +35,9 @@ abstract class Gun
         $this->precision = $precision;
         $this->effectiveRange = $effectiveRange;
         $this->overheatRate = $overheatRate;
+
+        $this->moneyCost = $moneyCost ?? new MoneyCost(1000);
+        $this->killCountCondition = $killCountCondition;
     }
 
     /**
@@ -100,6 +108,20 @@ abstract class Gun
      */
     public function getOverheatRate(): OverheatRate {
         return $this->overheatRate;
+    }
+
+    /**
+     * @return MoneyCost
+     */
+    public function getMoneyCost(): MoneyCost {
+        return $this->moneyCost;
+    }
+
+    /**
+     * @return KillCountCondition|null
+     */
+    public function getKillCountCondition(): ?KillCountCondition {
+        return $this->killCountCondition;
     }
 }
 

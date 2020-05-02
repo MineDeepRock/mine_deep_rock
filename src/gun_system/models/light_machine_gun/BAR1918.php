@@ -14,13 +14,15 @@ use gun_system\models\OverheatRate;
 
 class BAR1918 extends LightMachineGun
 {
+    const NAME = "BAR1918";
+
     public function __construct() {
         parent::__construct(
             new BulletDamage(26, 23),
             new GunRate(10),
             new BulletSpeed(820),
             new MagazineReloadingType(20, 3),
-            EffectiveRangeLoader::getInstance()->ranges["BAR1918"],
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 75),
             new OverheatRate(0));
     }

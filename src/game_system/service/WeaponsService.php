@@ -4,6 +4,7 @@
 namespace game_system\service;
 
 
+use game_system\model\Weapon;
 use game_system\repository\WeaponsRepository;
 use Service;
 
@@ -18,6 +19,10 @@ class WeaponsService extends Service
     public function isOwn(string $ownerName, string $weaponName) {
         $ownWeapons = $this->getOwnWeapons($ownerName);
         return in_array($weaponName, $ownWeapons);
+    }
+
+    public function getWeapon(string $ownerName,string $weaponName): Weapon {
+        return $this->repository->getWeapon($ownerName,$weaponName);
     }
 
     public function getOwnWeapons(string $ownerName): array {

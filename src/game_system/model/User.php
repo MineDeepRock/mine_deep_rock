@@ -76,4 +76,11 @@ class User
         return $this->selectedWeaponName;
     }
 
+    /**
+     * @return int
+     */
+    public function getMoney(): int {
+        return $this->money;
+    }
+
 }

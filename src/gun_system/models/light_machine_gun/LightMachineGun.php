@@ -15,7 +15,7 @@ use gun_system\models\ReloadingType;
 
 class LightMachineGun extends Gun
 {
-    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision,OverheatRate $overheatRate) {
-        parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadingType, $effectiveRange, $precision,$overheatRate);
+    public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision, OverheatRate $overheatRate) {
+        parent::__construct(GunType::LMG(), $bulletDamage, $rate, $bulletSpeed, 0.0, $reloadingType, $effectiveRange, $precision, $overheatRate);
     }
 }

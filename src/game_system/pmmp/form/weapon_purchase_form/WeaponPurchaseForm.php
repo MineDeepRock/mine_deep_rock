@@ -1,14 +1,15 @@
 <?php
 
 
-namespace game_system\pmmp\form;
+namespace game_system\pmmp\form\weapon_purchase_form;
 
 
 use Closure;
+use gun_system\models\GunType;
 use pocketmine\form\Form;
 use pocketmine\Player;
 
-class WeaponSelectForm implements Form
+class WeaponPurchaseForm implements Form
 {
     private $onSelected;
 
@@ -33,25 +34,25 @@ class WeaponSelectForm implements Form
             ];
         switch ($buttons[$data]) {
             case 'Assault Rifle':
-                $player->sendForm(new AssaultRifleSelectForm($this->onSelected));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::AssaultRifle()));
                 break;
             case 'Handgun':
-                $player->sendForm(new HandgunSelectForm($this->onSelected));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::HandGun()));
                 break;
             case 'Revolver':
-                $player->sendForm(new RevolverSelectForm($this->onSelected));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::Revolver()));
                 break;
             case 'Shotgun':
-                $player->sendForm(new ShotgunSelectForm($this->onSelected));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::Shotgun()));
                 break;
             case 'Sub Machine Gun':
-                $player->sendForm(new SMGSelectForm($this->onSelected));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::SMG()));
                 break;
             case 'Light Machine Gun':
-                $player->sendForm(new LMGSelectForm($this->onSelected));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::LMG()));
                 break;
             case 'Sniper Rifle':
-                $player->sendForm(new SniperRifleSelectForm($this->onSelected));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::SniperRifle()));
                 break;
         }
     }

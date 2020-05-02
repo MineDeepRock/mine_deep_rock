@@ -9,18 +9,19 @@ use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\form\AttachmentSelectForm;
-use game_system\pmmp\form\WeaponSelectForm;
+use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
+use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
 use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
+use gun_system\models\GunList;
 use gun_system\pmmp\items\ItemShotGun;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\Player;
-use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 
@@ -95,6 +96,36 @@ class GameSystemListener
         return $this->teamDeathMatchInterpreter->closeGame();
     }
 
+    public function buyWeapon(string $ownerName, string $weaponName): void {
+        if ($this->isAbleToBuy($ownerName, $weaponName)) {
+            $weapon = GunList::fromString($weaponName);
+            $this->usersService->spendMoney($ownerName, $weapon->getMoneyCost()->getValue());
+            $this->weaponService->register($ownerName, $weaponName);
+        }
+    }
+
+    public function isAbleToBuy(string $ownerName, string $weaponName): bool {
+        $gun = GunList::fromString($weaponName);
+
+        $use = $this->usersService->getUserData($ownerName);
+
+        if ($use->getMoney() <= $gun->getMoneyCost()->getValue())
+            return false;
+
+        if ($this->weaponService->isOwn($ownerName, $weaponName))
+            return false;
+
+        $killCountCondition = $gun->getKillCountCondition();
+
+        if ($killCountCondition !== null) {
+            if (!($this->weaponService->getWeapon($ownerName, $killCountCondition->getWeaponName())->getKillCount() <= $killCountCondition->getCount())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function scare(Player $target, Entity $attacker): void {
         $item = $target->getInventory()->getItemInHand();
 
@@ -136,10 +167,18 @@ class GameSystemListener
     public function selectWeapon(Player $player) {
         $playerName = $player->getName();
         $player->sendForm(new WeaponSelectForm(function ($weaponName) use ($playerName) {
-            if ($weaponName !== null) {
-                //if ($this->weaponService->isOwn($playerName, $weaponName)) {
-                $this->usersService->selectWeapon($playerName, $weaponName);
-                //}
+            $this->usersService->selectWeapon($playerName, $weaponName);
+        }, $this->weaponService->getOwnWeapons($playerName)));
+    }
+
+    public function displayWeaponPurchaseForm(Player $player) {
+        $playerName = $player->getName();
+        $player->sendForm(new WeaponPurchaseForm(function ($weaponName) use ($player, $playerName) {
+            if ($this->isAbleToBuy($playerName, $weaponName)) {
+                $this->buyWeapon($playerName, $weaponName);
+                $player->sendMessage($weaponName . "を購入しました");
+            } else {
+                $player->sendMessage("条件を満たしていないか、すでに持っているので購入できません");
             }
         }));
     }

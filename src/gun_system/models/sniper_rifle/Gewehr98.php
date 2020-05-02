@@ -13,12 +13,15 @@ use gun_system\models\GunRate;
 
 class Gewehr98 extends SniperRifle
 {
+    const NAME = "Gewehr98";
+
     public function __construct() {
-        parent::__construct(new BulletDamage(100, 80),
+        parent::__construct(
+            new BulletDamage(100, 80),
             new GunRate(0.8),
             new BulletSpeed(880),
             2.5, new ClipReloadingType(5, 5, 1.5, 0.5),
-            EffectiveRangeLoader::getInstance()->ranges["Gewehr98"],
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(99.5, 80));
     }
 }

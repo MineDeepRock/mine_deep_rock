@@ -22,9 +22,19 @@ class WeaponsRepository extends Repository
         }
 
         while ($row = $result->fetch_assoc())
-            array_push($users, Weapon::fromJson($row));
+            array_push($weapons, Weapon::fromJson($row));
 
         return $weapons;
+    }
+
+    public function getWeapon(string $ownerName, string $weaponName): Weapon {
+        $result = $this->db->query("SELECT * FROM weapons WHERE name='{$weaponName}' AND owner_name='{$ownerName}'");
+
+        if ($result->num_rows === 0) {
+            return null;
+        }
+
+        return Weapon::fromJson($result->fetch_assoc());
     }
 
     public function register(string $ownerName, string $weaponName): void {

@@ -25,4 +25,18 @@ class Weapon extends ValueObject
 
         return new Weapon($ownerName,$name,$killCount);
     }
+
+    /**
+     * @return int
+     */
+    public function getKillCount(): int {
+        return $this->killCount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return $this->name;
+    }
 }

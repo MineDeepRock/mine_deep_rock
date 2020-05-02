@@ -3,6 +3,7 @@
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\items\AttachmentSelectItem;
+use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use gun_system\EffectiveRangeLoader;
 use gun_system\GunSystemListener;
@@ -85,6 +86,9 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new WeaponSelectItem(), true);
         Item::addCreativeItem(Item::get(WeaponSelectItem::ITEM_ID));
 
+        ItemFactory::registerItem(new WeaponPurchaseItem(), true);
+        Item::addCreativeItem(Item::get(WeaponPurchaseItem::ITEM_ID));
+
         ItemFactory::registerItem(new AttachmentSelectItem(), true);
         Item::addCreativeItem(Item::get(AttachmentSelectItem::ITEM_ID));
 
@@ -164,7 +168,7 @@ class Main extends PluginBase implements Listener
         } else {
             if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
                 $effectLevel = $item->getInterpreter()->getScope()->getMagnification()->getValue();
-                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel,false));
+                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel, false));
             }
         }
     }
@@ -188,6 +192,16 @@ class Main extends PluginBase implements Listener
             }
         }
     }
+
+    public function onTapByWeaponPurchaseItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === WeaponPurchaseItem::ITEM_ID) {
+                $this->gameSystemListener->displayWeaponPurchaseForm($player);
+            }
+        }
+    }
+
     public function onTapByAttachmentSelectItem(PlayerInteractEvent $event) {
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();

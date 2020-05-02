@@ -16,6 +16,6 @@ use gun_system\models\ReloadingType;
 abstract class HandGun extends Gun
 {
     public function __construct(BulletDamage $bulletDamage, GunRate $rate, BulletSpeed $bulletSpeed, float $reaction, ReloadingType $reloadingType, array $effectiveRange, GunPrecision $precision) {
-        parent::__construct(GunType::HandGun(), $bulletDamage, $rate, $bulletSpeed, $reaction, $reloadingType, $effectiveRange, $precision,new OverheatRate(0));
+        parent::__construct(GunType::HandGun(), $bulletDamage, $rate, $bulletSpeed, $reaction, $reloadingType, $effectiveRange, $precision, new OverheatRate(0));
     }
 }

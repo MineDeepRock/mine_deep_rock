@@ -13,14 +13,16 @@ use gun_system\models\MagazineReloadingType;
 
 class Ribeyrolles extends AssaultRifle
 {
+    const NAME = "Ribeyrolles";
+
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28,17),
+            new BulletDamage(28, 17),
             new GunRate(9),
             new BulletSpeed(520),
             0,
-            new MagazineReloadingType(25,2),
-            EffectiveRangeLoader::getInstance()->ranges["Ribeyrolles"],
+            new MagazineReloadingType(25, 2),
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(95, 90));
     }
 }

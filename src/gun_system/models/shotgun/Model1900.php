@@ -14,13 +14,16 @@ use gun_system\models\GunRate;
 
 class Model1900 extends Shotgun
 {
+    const NAME = "Model1900";
+
     public function __construct(ShotgunBulletType $bulletType) {
-        parent::__construct($bulletType,
+        parent::__construct(
+            $bulletType,
             12, new BulletDamage(13, 2),
             new GunRate(5),
             new BulletSpeed(500),
-            2, new ClipReloadingType(2,2,2.4,3.2),
-            EffectiveRangeLoader::getInstance()->ranges["Model1900"],
-            new GunPrecision(90,90));
+            2, new ClipReloadingType(2, 2, 2.4, 3.2),
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
+            new GunPrecision(90, 90));
     }
 }

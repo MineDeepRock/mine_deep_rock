@@ -13,14 +13,16 @@ use gun_system\models\OneByOneReloadingType;
 
 class NagantRevolver extends Revolver
 {
+    const NAME = "NagantRevolver";
+
     public function __construct() {
         parent::__construct(
-            new BulletDamage(40,23),
+            new BulletDamage(40, 23),
             new GunRate(3.3),
             new BulletSpeed(335),
             0,
-            new OneByOneReloadingType(7,1.3),
-            EffectiveRangeLoader::getInstance()->ranges["NagantRevolver"],
-            new GunPrecision(97,90));
+            new OneByOneReloadingType(7, 1.3),
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
+            new GunPrecision(97, 90));
     }
 }

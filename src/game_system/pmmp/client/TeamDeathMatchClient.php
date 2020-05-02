@@ -96,7 +96,6 @@ class TeamDeathMatchClient extends Client
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
 
             $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
-            $player->getInventory()->addItem(new AttachmentSelectItem());
 
             $worldController = new WorldController();
             $worldController->teleport($player, $mapName);

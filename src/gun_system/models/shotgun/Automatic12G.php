@@ -14,14 +14,17 @@ use gun_system\models\OneByOneReloadingType;
 
 class Automatic12G extends Shotgun
 {
+    const NAME = "Automatic12G";
+
     public function __construct(ShotgunBulletType $bulletType) {
-        parent::__construct($bulletType,
+        parent::__construct(
+            $bulletType,
             12,
             new BulletDamage(7.7, 1),
             new GunRate(4.2),
             new BulletSpeed(333),
-            1, new OneByOneReloadingType(5,0.7),
-            EffectiveRangeLoader::getInstance()->ranges["Automatic12G"],
-            new GunPrecision(90,90));
+            1, new OneByOneReloadingType(5, 0.7),
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
+            new GunPrecision(90, 90));
     }
 }

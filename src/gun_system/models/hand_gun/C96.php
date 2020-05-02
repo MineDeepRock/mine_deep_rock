@@ -13,12 +13,15 @@ use gun_system\models\OneByOneReloadingType;
 
 class C96 extends HandGun
 {
+    const NAME = "C96";
+
     public function __construct() {
-        parent::__construct(new BulletDamage(28, 15),
+        parent::__construct(
+            new BulletDamage(28, 15),
             new GunRate(5),
             new BulletSpeed(440),
             0, new OneByOneReloadingType(10, 0.25),
-            EffectiveRangeLoader::getInstance()->ranges["C96"],
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 95));
     }
 }

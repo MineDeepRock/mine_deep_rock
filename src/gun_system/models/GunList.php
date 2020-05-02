@@ -209,4 +209,60 @@ class GunList
         }
         return null;
     }
+
+    /**
+     * @return array
+     */
+    public function getAssaultRifles(): array {
+        return $this->ar;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHandguns(): array {
+        return $this->hg;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShotguns(): array {
+        return $this->sg;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShotgunSlugs(): array {
+        return $this->sgs;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSniperRifles(): array {
+        return $this->sn;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSMGs(): array {
+        return $this->smg;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLMGs(): array {
+        return $this->lmg;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRevolvers(): array {
+        return $this->rv;
+    }
 }

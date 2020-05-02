@@ -15,6 +15,8 @@ use pocketmine\scheduler\TaskScheduler;
 
 class M1907SL extends AssaultRifle
 {
+    const NAME = "M1907SL";
+
     public function __construct() {
         parent::__construct(
             new BulletDamage(42, 23),
@@ -22,7 +24,7 @@ class M1907SL extends AssaultRifle
             new BulletSpeed(570),
             0,
             new MagazineReloadingType(20, 2.3),
-            EffectiveRangeLoader::getInstance()->ranges["M1907SL"],
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(95, 90));
     }
 }

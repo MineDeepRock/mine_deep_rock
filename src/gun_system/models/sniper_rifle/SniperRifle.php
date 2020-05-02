@@ -6,7 +6,6 @@ namespace gun_system\models\sniper_rifle;
 
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
-use gun_system\models\EffectiveRange;
 use gun_system\models\Gun;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;

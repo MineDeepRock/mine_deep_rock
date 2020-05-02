@@ -14,12 +14,15 @@ use gun_system\models\OverheatRate;
 
 class FrommerStopAuto extends SubMachineGun
 {
+    const NAME = "FrommerStopAuto";
+
     public function __construct() {
-        parent::__construct(new BulletDamage(23, 12),
+        parent::__construct(
+            new BulletDamage(23, 12),
             new GunRate(15),
             new BulletSpeed(350),
             new MagazineReloadingType(15, 1.25),
-            EffectiveRangeLoader::getInstance()->ranges["FrommerStopAuto"],
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 95),
             new OverheatRate(0));
     }

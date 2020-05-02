@@ -14,12 +14,15 @@ use gun_system\models\OverheatRate;
 
 class Hellriegel1915 extends SubMachineGun
 {
+    const NAME = "Hellriegel1915";
+
     public function __construct() {
-        parent::__construct(new BulletDamage(26, 15),
+        parent::__construct(
+            new BulletDamage(26, 15),
             new GunRate(11),
             new BulletSpeed(380),
             new MagazineReloadingType(59, 3.8),
-            EffectiveRangeLoader::getInstance()->ranges["Hellriegel1915"],
+            EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(90, 85),
             new OverheatRate(3));
     }
