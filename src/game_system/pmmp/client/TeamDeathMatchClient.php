@@ -27,7 +27,6 @@ use pocketmine\item\IronHelmet;
 use pocketmine\item\IronLeggings;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
-use pocketmine\level\particle\AngryVillagerParticle;
 use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\math\Vector3;
 use pocketmine\Player;

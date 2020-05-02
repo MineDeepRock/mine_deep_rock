@@ -10,8 +10,6 @@ use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\model\User;
 use game_system\pmmp\client\TeamDeathMatchClient;
-use game_system\pmmp\form\WeaponSelectForm;
-use game_system\pmmp\items\WeaponSelectItem;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\BulletId;
