@@ -50,7 +50,7 @@ use gun_system\models\sniper_rifle\attachment\scope\TwoFoldScopeForSR;
 use gun_system\models\sniper_rifle\Gewehr98;
 use gun_system\models\sniper_rifle\MartiniHenry;
 use gun_system\models\sniper_rifle\SMLEMK3;
-use gun_system\models\sniper_rifle\Type38Arisaka;
+use gun_system\models\sniper_rifle\VetterliVitali;
 use gun_system\models\sub_machine_gun\attachment\scope\FourFoldScopeForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\IronSightForSMG;
 use gun_system\models\sub_machine_gun\attachment\scope\TwoFoldScopeForSMG;
@@ -298,8 +298,8 @@ class GunCommand extends Command
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 $this->giveBullet($player, GunType::SniperRifle());
                 break;
-            case "Type38Arisaka":
-                $item = new ItemSniperRifle("Type38Arisaka", new SniperRifleInterpreter(new Type38Arisaka(), $player, $this->scheduler));
+            case "VetterliVitali":
+                $item = new ItemSniperRifle("VetterliVitali", new SniperRifleInterpreter(new VetterliVitali(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 $this->giveBullet($player, GunType::SniperRifle());

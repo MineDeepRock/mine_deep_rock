@@ -4,39 +4,76 @@
 namespace gun_system;
 
 
+use gun_system\models\assault_rifle\CeiRigotti;
+use gun_system\models\assault_rifle\FedorovAvtomat;
+use gun_system\models\assault_rifle\M1907SL;
+use gun_system\models\assault_rifle\Ribeyrolles;
+use gun_system\models\GunList;
+use gun_system\models\hand_gun\C96;
+use gun_system\models\hand_gun\HowdahPistol;
+use gun_system\models\hand_gun\Mle1903;
+use gun_system\models\hand_gun\P08;
+use gun_system\models\light_machine_gun\BAR1918;
+use gun_system\models\light_machine_gun\LewisGun;
+use gun_system\models\light_machine_gun\MG15;
+use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\revolver\ColtSAA;
+use gun_system\models\revolver\NagantRevolver;
+use gun_system\models\revolver\No3Revolver;
+use gun_system\models\revolver\RevolverMk6;
+use gun_system\models\shotgun\Automatic12G;
+use gun_system\models\shotgun\M1897;
+use gun_system\models\shotgun\Model10A;
+use gun_system\models\shotgun\Model1900;
+use gun_system\models\sniper_rifle\Gewehr98;
+use gun_system\models\sniper_rifle\MartiniHenry;
+use gun_system\models\sniper_rifle\SMLEMK3;
+use gun_system\models\sniper_rifle\VetterliVitali;
+use gun_system\models\sub_machine_gun\Automatico;
+use gun_system\models\sub_machine_gun\FrommerStopAuto;
+use gun_system\models\sub_machine_gun\Hellriegel1915;
+use gun_system\models\sub_machine_gun\MP18;
+
 class EffectiveRangeLoader
 {
     private static $instance;
 
     public $ranges = [
-        "Mle1903" => [],
-        "P08" => [],
-        "C96" => [],
-        "HowdahPistol" => [],
-        "M1907SL" => [],
-        "CeiRigotti" => [],
-        "FedorovAvtomat" => [],
-        "Ribeyrolles" => [],
-        "M1897" => [],
-        "Model10A" => [],
-        "Automatic12G" => [],
-        "Model1900" => [],
-        "SMLEMK3" => [],
-        "Gewehr98" => [],
-        "MartiniHenry" => [],
-        "Type38Arisaka" => [],
-        "MP18" => [],
-        "Automatico" => [],
-        "Hellriegel1915" => [],
-        "FrommerStopAuto" => [],
-        "LewisGun" => [],
-        "ParabellumMG14" => [],
-        "MG15" => [],
-        "BAR1918" => [],
-        "ColtSAA" => [],
-        "NagantRevolver" => [],
-        "No3Revolver" => [],
-        "RevolverMk6" => []
+            //Handgun
+            Mle1903::NAME => [],
+            P08::NAME => [],
+            C96::NAME => [],
+            HowdahPistol::NAME => [],
+            //AssaultRifle
+            M1907SL::NAME => [],
+            CeiRigotti::NAME => [],
+            FedorovAvtomat::NAME => [],
+            Ribeyrolles::NAME => [],
+            //Shotgun
+            M1897::NAME => [],
+            Model10A::NAME => [],
+            Automatic12G::NAME => [],
+            Model1900::NAME => [],
+            //SniperRifle
+            SMLEMK3::NAME => [],
+            Gewehr98::NAME => [],
+            MartiniHenry::NAME => [],
+            VetterliVitali::NAME => [],
+            //SMG
+            MP18::NAME => [],
+            Automatico::NAME => [],
+            Hellriegel1915::NAME => [],
+            FrommerStopAuto::NAME => [],
+            //LMG
+            LewisGun::NAME => [],
+            ParabellumMG14::NAME => [],
+            MG15::NAME => [],
+            BAR1918::NAME => [],
+            //LMG
+            ColtSAA::NAME => [],
+            RevolverMk6::NAME => [],
+            No3Revolver::NAME => [],
+            NagantRevolver::NAME => [],
     ];
 
     public function __construct() {

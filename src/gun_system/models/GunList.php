@@ -27,7 +27,7 @@ use gun_system\models\shotgun\Model1900;
 use gun_system\models\sniper_rifle\Gewehr98;
 use gun_system\models\sniper_rifle\MartiniHenry;
 use gun_system\models\sniper_rifle\SMLEMK3;
-use gun_system\models\sniper_rifle\Type38Arisaka;
+use gun_system\models\sniper_rifle\VetterliVitali;
 use gun_system\models\sub_machine_gun\Automatico;
 use gun_system\models\sub_machine_gun\FrommerStopAuto;
 use gun_system\models\sub_machine_gun\Hellriegel1915;
@@ -38,7 +38,6 @@ class GunList
     private $ar = [];
     private $hg = [];
     private $sg = [];
-    private $sgs = [];
     private $sn = [];
     private $smg = [];
     private $lmg = [];
@@ -67,7 +66,7 @@ class GunList
             new SMLEMK3(),
             new Gewehr98(),
             new MartiniHenry(),
-            new Type38Arisaka(),
+            new VetterliVitali(),
         ];
         $this->smg = [
             new MP18(),
@@ -92,99 +91,99 @@ class GunList
     static function fromString(string $string): Gun {
         switch ($string) {
             //Handgun
-            case "Mle1903":
+            case Mle1903::NAME:
                 return new Mle1903();
                 break;
-            case "P08":
+            case P08::NAME:
                 return new P08();
                 break;
-            case "C96":
+            case C96::NAME:
                 return new C96();
                 break;
-            case "HowdahPistol":
+            case HowdahPistol::NAME:
                 return new HowdahPistol();
                 break;
 
             //AssaultRifle
-            case "M1907SL":
+            case M1907SL::NAME:
                 return new M1907SL();
                 break;
-            case "CeiRigotti":
+            case CeiRigotti::NAME:
                 return new CeiRigotti();
                 break;
-            case "FedorovAvtomat":
+            case FedorovAvtomat::NAME:
                 return new FedorovAvtomat();
                 break;
-            case "Ribeyrolles":
+            case Ribeyrolles::NAME:
                 return new Ribeyrolles();
                 break;
 
             //Shotgun
-            case "M1897":
+            case M1897::NAME:
                 return new M1897();
                 break;
-            case "Model10A":
+            case Model10A::NAME:
                 return new Model10A();
                 break;
-            case "Automatic12G":
+            case Automatic12G::NAME:
                 return new Automatic12G();
-            case "Model1900":
+            case Model1900::NAME:
                 return new Model1900();
                 break;
 
             //SniperRifle
-            case "SMLEMK3":
+            case SMLEMK3::NAME:
                 return new SMLEMK3();
                 break;
-            case "Gewehr98":
+            case Gewehr98::NAME:
                 return new Gewehr98();
                 break;
-            case "MartiniHenry":
+            case MartiniHenry::NAME:
                 return new MartiniHenry();
                 break;
-            case "Type38Arisaka":
-                return new Type38Arisaka();
+            case VetterliVitali::NAME:
+                return new VetterliVitali();
                 break;
 
             //SMG
-            case "MP18":
+            case MP18::NAME:
                 return new MP18();
                 break;
-            case "Automatico":
+            case Automatico::NAME:
                 return new Automatico();
                 break;
-            case "Hellriegel1915":
+            case Hellriegel1915::NAME:
                 return new Hellriegel1915();
                 break;
-            case "FrommerStopAuto":
+            case FrommerStopAuto::NAME:
                 return new FrommerStopAuto();
                 break;
 
             //LMG
-            case "LewisGun":
+            case LewisGun::NAME:
                 return new LewisGun();
                 break;
-            case "ParabellumMG14":
+            case ParabellumMG14::NAME:
                 return new ParabellumMG14();
                 break;
-            case "MG15":
+            case MG15::NAME:
                 return new MG15();
                 break;
-            case "BAR1918":
+            case BAR1918::NAME:
                 return new BAR1918();
                 break;
 
             //LMG
-            case "ColtSAA":
+            case ColtSAA::NAME:
                 return new ColtSAA();
                 break;
-            case "RevolverMk6":
+            case RevolverMk6::NAME:
                 return new RevolverMk6();
                 break;
-            case "No3Revolver":
+            case No3Revolver::NAME:
                 return new No3Revolver();
                 break;
-            case "NagantRevolver":
+            case NagantRevolver::NAME:
                 return new NagantRevolver();
                 break;
         }
