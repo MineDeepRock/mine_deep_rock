@@ -5,12 +5,10 @@ namespace gun_system\pmmp\client;
 
 
 use Closure;
-use gun_system\models\attachment\bullet\ShotgunBulletType;
+use gun_system\models\BulletId;
 use gun_system\models\Gun;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\GunSounds;
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\math\Vector3;
@@ -57,7 +55,7 @@ class GunClient
             return;
         }
         if ($this->gun instanceof Shotgun) {
-            if ($this->gun->getBulletType()->equal(ShotgunBulletType::Buckshot())) {
+            if ($this->gun->getBulletType()->equal(BulletId::SHOTGUN)) {
                 $i = 0;
                 while ($i < $this->gun->getPellets()) {
                     self::spawnBullet($scheduler);
@@ -65,10 +63,11 @@ class GunClient
                 }
                 $this->doReaction();
             }
+        } else {
+            self::spawnBullet($scheduler);
         }
         $this->owner->sendPopup($currentBullet . "/" . $magazineCapacity);
         $this->playShootingSound();
-        self::spawnBullet($scheduler);
         $this->doReaction();
     }
 

@@ -17,7 +17,6 @@ use gun_system\models\GunPrecision;
 use gun_system\models\GunType;
 use gun_system\models\MagazineReloadingType;
 use gun_system\models\OneByOneReloadingType;
-use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\client\GunClient;
 use gun_system\pmmp\GunSounds;
 use pocketmine\item\Item;
@@ -60,12 +59,12 @@ abstract class GunInterpreter
 
         $this->overheatController = new OverheatController(
             $gun->getOverheatRate(),
-            function(){
+            function () {
                 $this->cancelShooting();
                 GunSounds::play($this->owner, GunSounds::LMGOverheat());
                 $this->owner->sendPopup("オーバーヒート");
             },
-            function(){
+            function () {
                 GunSounds::play($this->owner, GunSounds::LMGReady());
                 $this->owner->sendPopup($this->reloadingController->currentBullet . "\\" . $this->reloadingController->magazineCapacity);
             },
@@ -91,7 +90,7 @@ abstract class GunInterpreter
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
             $this->gun->setPrecision(new GunPrecision($this->gun->getPrecision()->getADS() + 3, $this->gun->getPrecision()->getHipShooting() + 3));
         }), 20 * 3);
-        $this->client->scare($this->scheduler,$onFinished);
+        $this->client->scare($this->scheduler, $onFinished);
     }
 
     public function cancelShooting(): void {
@@ -193,16 +192,12 @@ abstract class GunInterpreter
             $this->owner->sendPopup("オーバーヒート中");
             return;
         }
-        
+
         $this->cancelShooting();
 
         $reduceBulletFunc = function ($value): int {
             $this->owner->sendPopup("リロード");
-            if ($this->gun instanceof Shotgun) {
-                $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType(), $this->gun->getBulletType()), 0, $value));
-            } else {
-                $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $value));
-            }
+            $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $value));
             return $this->getBulletAmount();
         };
 
@@ -218,12 +213,7 @@ abstract class GunInterpreter
 
         $bullets = array_filter($inventoryContents, function ($item) {
             if (is_subclass_of($item, "gun_system\pmmp\items\bullet\ItemBullet")) {
-                if ($this->gun->getType()->equal(GunType::Shotgun())) {
-                    return $item->getBullet()->getSupportGunType()->equal($this->gun->getType())
-                        && $item->getBullet()->getBulletType()->equal($this->gun->getBulletType());
-                } else {
-                    return $item->getBullet()->getSupportGunType()->equal($this->gun->getType());
-                }
+                return $item->getBullet()->getSupportGunType()->equal($this->gun->getType());
             }
             return false;
         });

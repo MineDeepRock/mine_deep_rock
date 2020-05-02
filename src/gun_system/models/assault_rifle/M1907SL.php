@@ -7,11 +7,9 @@ namespace gun_system\models\assault_rifle;
 use gun_system\EffectiveRangeLoader;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
-use gun_system\models\EffectiveRange;
 use gun_system\models\GunPrecision;
 use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
-use pocketmine\scheduler\TaskScheduler;
 
 class M1907SL extends AssaultRifle
 {

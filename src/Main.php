@@ -10,11 +10,10 @@ use gun_system\GunSystemListener;
 use gun_system\models\BulletId;
 use gun_system\pmmp\command\GunCommand;
 use gun_system\pmmp\items\bullet\ItemAssaultRifleBullet;
-use gun_system\pmmp\items\bullet\ItemBuckShotBullet;
 use gun_system\pmmp\items\bullet\ItemHandGunBullet;
 use gun_system\pmmp\items\bullet\ItemLightMachineGunBullet;
 use gun_system\pmmp\items\bullet\ItemRevolverBullet;
-use gun_system\pmmp\items\bullet\ItemSlugBullet;
+use gun_system\pmmp\items\bullet\ItemShotgunBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
 use pocketmine\entity\Effect;
@@ -63,10 +62,8 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new ItemHandGunBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::HAND_GUN));
 
-        ItemFactory::registerItem(new ItemBuckShotBullet(), true);
-        Item::addCreativeItem(Item::get(BulletId::BUCK_SHOT));
-        ItemFactory::registerItem(new ItemSlugBullet(), true);
-        Item::addCreativeItem(Item::get(BulletId::SLUG));
+        ItemFactory::registerItem(new ItemShotgunBullet(), true);
+        Item::addCreativeItem(Item::get(BulletId::SHOTGUN));
 
         ItemFactory::registerItem(new ItemSniperRifleBullet(), true);
         Item::addCreativeItem(Item::get(BulletId::SNIPER_RIFLE));

@@ -5,7 +5,6 @@ namespace gun_system\models\shotgun;
 
 
 use gun_system\EffectiveRangeLoader;
-use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\BulletDamage;
 use gun_system\models\BulletSpeed;
 use gun_system\models\GunPrecision;
@@ -16,9 +15,8 @@ class Model10A extends Shotgun
 {
     const NAME = "Model10A";
 
-    public function __construct(ShotgunBulletType $bulletType) {
+    public function __construct() {
         parent::__construct(
-            $bulletType,
             12,
             new BulletDamage(12, 2),
             new GunRate(1.3),

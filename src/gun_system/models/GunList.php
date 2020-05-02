@@ -8,7 +8,6 @@ use gun_system\models\assault_rifle\CeiRigotti;
 use gun_system\models\assault_rifle\FedorovAvtomat;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\assault_rifle\Ribeyrolles;
-use gun_system\models\attachment\bullet\ShotgunBulletType;
 use gun_system\models\hand_gun\C96;
 use gun_system\models\hand_gun\HowdahPistol;
 use gun_system\models\hand_gun\Mle1903;
@@ -59,16 +58,10 @@ class GunList
             new HowdahPistol(),
         ];
         $this->sg = [
-            new M1897(ShotgunBulletType::Buckshot()),
-            new Model10A(ShotgunBulletType::Buckshot()),
-            new Automatic12G(ShotgunBulletType::Buckshot()),
-            new Model1900(ShotgunBulletType::Buckshot()),
-        ];
-        $this->sgs = [
-            new M1897(ShotgunBulletType::Slug()),
-            new Model10A(ShotgunBulletType::Slug()),
-            new Automatic12G(ShotgunBulletType::Slug()),
-            new Model1900(ShotgunBulletType::Slug()),
+            new M1897(),
+            new Model10A(),
+            new Automatic12G(),
+            new Model1900(),
         ];
         $this->sn = [
             new SMLEMK3(),
@@ -128,27 +121,15 @@ class GunList
 
             //Shotgun
             case "M1897":
-                return new M1897(ShotgunBulletType::Buckshot());
+                return new M1897();
                 break;
             case "Model10A":
-                return new Model10A(ShotgunBulletType::Buckshot());
+                return new Model10A();
                 break;
             case "Automatic12G":
-                return new Automatic12G(ShotgunBulletType::Buckshot());
+                return new Automatic12G();
             case "Model1900":
-                return new Model1900(ShotgunBulletType::Buckshot());
-                break;
-
-            case "M1897:Slug":
-                return new M1897(ShotgunBulletType::Slug());
-                break;
-            case "Model10A:Slug":
-                return new Model10A(ShotgunBulletType::Slug());
-                break;
-            case "Automatic12G:Slug":
-                return new Automatic12G(ShotgunBulletType::Slug());
-            case "Model1900:Slug":
-                return new Model1900(ShotgunBulletType::Slug());
+                return new Model1900();
                 break;
 
             //SniperRifle
@@ -229,13 +210,6 @@ class GunList
      */
     public function getShotguns(): array {
         return $this->sg;
-    }
-
-    /**
-     * @return array
-     */
-    public function getShotgunSlugs(): array {
-        return $this->sgs;
     }
 
     /**
