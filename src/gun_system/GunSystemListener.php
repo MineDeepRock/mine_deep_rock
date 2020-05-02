@@ -7,9 +7,11 @@ namespace gun_system;
 use Client;
 use gun_system\pmmp\items\ItemGun;
 use gun_system\pmmp\items\ItemSniperRifle;
+use pocketmine\block\Redstone;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
+use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
@@ -56,6 +58,12 @@ class GunSystemListener extends Client
             );
 
             $distance = $attackerPos->distance($entityPo);
+
+            $entity->getLevel()->addParticle(new DestroyBlockParticle(new Vector3(
+                $entity->getX(),
+                $entity->getY() + 1,
+                $entity->getZ()
+            ), new Redstone()));
 
             $itemGun = $attacker->getInventory()->getItemInHand();
             if ($itemGun instanceof ItemGun) {
