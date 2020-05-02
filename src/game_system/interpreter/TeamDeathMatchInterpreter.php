@@ -170,7 +170,7 @@ class TeamDeathMatchInterpreter
                             $attackerPlayer->getZ()
                         ));
                         
-                        GameSystemListener::getInstance()->selectWeapon($targetPlayer);
+                        GameSystemListener::getInstance()->displayWeaponSelectForm($targetPlayer);
 
                         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer,$target, $targetEntity): void {
                             if ($targetPlayer->isOnline()) {

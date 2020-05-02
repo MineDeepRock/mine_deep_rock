@@ -164,7 +164,7 @@ class GameSystemListener
         }
     }
 
-    public function selectWeapon(Player $player) {
+    public function displayWeaponSelectForm(Player $player) {
         $playerName = $player->getName();
         $player->sendForm(new WeaponSelectForm(function ($weaponName) use ($playerName) {
             $this->usersService->selectWeapon($playerName, $weaponName);
@@ -183,7 +183,7 @@ class GameSystemListener
         }));
     }
 
-    public function selectAttachment(Player $player) {
+    public function displaySelectAttachmentForm(Player $player) {
         $player->sendForm(new AttachmentSelectForm($player));
     }
 
@@ -200,11 +200,9 @@ class GameSystemListener
         $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
 
         $game = $this->teamDeathMatchInterpreter->getGameData();
-        if (!$game->isStarted()) {
-            foreach ($lobbyPlayers as $player) {
-                $numberOfParticipants = $this->usersService->getParticipants($game->getId());
-                $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 1);
-            }
+        foreach ($lobbyPlayers as $player) {
+            $numberOfParticipants = $this->usersService->getParticipants($game->getId());
+            $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 1);
         }
 
         if (!$this->usersService->exists($userName))

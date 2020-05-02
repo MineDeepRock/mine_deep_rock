@@ -185,7 +185,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === WeaponSelectItem::ITEM_ID) {
-                $this->gameSystemListener->selectWeapon($player);
+                $this->gameSystemListener->displayWeaponSelectForm($player);
             }
         }
     }
@@ -203,7 +203,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === AttachmentSelectItem::ITEM_ID) {
-                $this->gameSystemListener->selectAttachment($player);
+                $this->gameSystemListener->displaySelectAttachmentForm($player);
             }
         }
     }
