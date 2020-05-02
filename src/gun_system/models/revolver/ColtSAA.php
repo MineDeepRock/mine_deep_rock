@@ -17,7 +17,7 @@ class ColtSAA extends Revolver
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(60, 30),
+            new BulletDamage(60),
             new GunRate(3.7),
             new BulletSpeed(320),
             0,

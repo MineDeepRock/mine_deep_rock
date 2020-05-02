@@ -18,7 +18,7 @@ class Hellriegel1915 extends SubMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(26, 15),
+            new BulletDamage(26),
             new GunRate(11),
             new BulletSpeed(380),
             new MagazineReloadingType(59, 3.8),

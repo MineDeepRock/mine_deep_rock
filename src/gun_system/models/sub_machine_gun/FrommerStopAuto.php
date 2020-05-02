@@ -18,7 +18,7 @@ class FrommerStopAuto extends SubMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(23, 12),
+            new BulletDamage(23),
             new GunRate(15),
             new BulletSpeed(350),
             new MagazineReloadingType(15, 1.25),

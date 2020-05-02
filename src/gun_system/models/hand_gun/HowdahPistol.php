@@ -17,7 +17,7 @@ class HowdahPistol extends HandGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(53, 15),
+            new BulletDamage(53),
             new GunRate(4),
             new BulletSpeed(230),
             0, new MagazineReloadingType(4, 3.3),

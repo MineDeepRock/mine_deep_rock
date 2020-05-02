@@ -17,7 +17,7 @@ class Mle1903 extends HandGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(30, 13),
+            new BulletDamage(30),
             new GunRate(3.5),
             new BulletSpeed(350),
             0, new MagazineReloadingType(7, 2),

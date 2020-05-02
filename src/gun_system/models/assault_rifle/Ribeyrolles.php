@@ -17,7 +17,7 @@ class Ribeyrolles extends AssaultRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28, 17),
+            new BulletDamage(28),
             new GunRate(9),
             new BulletSpeed(520),
             0,

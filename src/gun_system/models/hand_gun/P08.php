@@ -17,7 +17,7 @@ class P08 extends HandGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(30, 15),
+            new BulletDamage(30),
             new GunRate(5),
             new BulletSpeed(350),
             0, new MagazineReloadingType(8, 1.3),

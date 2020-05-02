@@ -18,7 +18,7 @@ class ParabellumMG14 extends LightMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28, 21),
+            new BulletDamage(28),
             new GunRate(11.7),
             new BulletSpeed(870),
             new MagazineReloadingType(100, 6),

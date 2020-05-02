@@ -17,7 +17,7 @@ class MartiniHenry extends SniperRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(112, 70),
+            new BulletDamage(112),
             new GunRate(0.4),
             new BulletSpeed(440),
             3, new OneByOneReloadingType(1, 2.3),

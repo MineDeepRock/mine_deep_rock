@@ -17,7 +17,7 @@ class Gewehr98 extends SniperRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(100, 80),
+            new BulletDamage(100),
             new GunRate(0.8),
             new BulletSpeed(880),
             2.5, new ClipReloadingType(5, 5, 1.5, 0.5),

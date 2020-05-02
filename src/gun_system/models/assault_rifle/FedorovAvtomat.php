@@ -17,7 +17,7 @@ class FedorovAvtomat extends AssaultRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28, 19),
+            new BulletDamage(28),
             new GunRate(7.5),
             new BulletSpeed(570),
             0, new MagazineReloadingType(26, 2.7),

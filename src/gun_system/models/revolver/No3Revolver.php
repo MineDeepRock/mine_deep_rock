@@ -17,7 +17,7 @@ class No3Revolver extends Revolver
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(53, 13),
+            new BulletDamage(53),
             new GunRate(2.7),
             new BulletSpeed(210),
             0,

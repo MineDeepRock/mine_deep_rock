@@ -420,7 +420,7 @@ class GunCommand extends Command
         $rate = $gun->getRate();
 
         return $item->setLore([
-            TextFormat::RESET . "火力" . TextFormat::GRAY . $bulletDamage->getMaxDamage() . "-" . $bulletDamage->getMinDamage(),
+            TextFormat::RESET . "火力" . TextFormat::GRAY . $bulletDamage->getValue(),
             //TextFormat::RESET . "有効射程" . TextFormat::GRAY . $effectiveRange->getStart() . "-" . $effectiveRange->getEnd(),
             TextFormat::RESET . "レート" . TextFormat::GRAY . $rate->getPerSecond(),
             TextFormat::RESET . "リロード" . $gun->getReloadingType()->toString(),

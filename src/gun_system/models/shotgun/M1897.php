@@ -18,7 +18,7 @@ class M1897 extends Shotgun
     public function __construct() {
         parent::__construct(
             12,
-            new BulletDamage(10, 2),
+            new BulletDamage(10),
             new GunRate(2.3),
             new BulletSpeed(333),
             2, new OneByOneReloadingType(5, 0.5),

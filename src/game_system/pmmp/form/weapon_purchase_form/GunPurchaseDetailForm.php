@@ -35,7 +35,7 @@ class GunPurchaseDetailForm implements Form
             'title' => '銃購入',
             'content' =>
                 $this->gun::NAME . "\n" .
-                TextFormat::RESET . "火力" . TextFormat::GRAY . $this->gun->getBulletDamage()->getMaxDamage() . "\n" .
+                TextFormat::RESET . "火力" . TextFormat::GRAY . $this->gun->getBulletDamage()->getValue() . "\n" .
                 TextFormat::RESET . "レート" . TextFormat::GRAY . $this->gun->getRate()->getPerSecond() . "\n" .
                 TextFormat::RESET . "リロード" . TextFormat::GRAY . $this->gun->getReloadingType()->toString() . "\n" .
                 TextFormat::RESET . "反動" . TextFormat::GRAY . $this->gun->getReaction() . "\n" .

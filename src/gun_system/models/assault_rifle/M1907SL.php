@@ -17,7 +17,7 @@ class M1907SL extends AssaultRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(42, 23),
+            new BulletDamage(42),
             new GunRate(5),
             new BulletSpeed(570),
             0,

@@ -17,7 +17,7 @@ class NagantRevolver extends Revolver
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(40, 23),
+            new BulletDamage(40),
             new GunRate(3.3),
             new BulletSpeed(335),
             0,

@@ -17,7 +17,7 @@ class SMLEMK3 extends SniperRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(100, 80),
+            new BulletDamage(100),
             new GunRate(0.8),
             new BulletSpeed(740),
             2.5, new ClipReloadingType(10, 5, 1.8, 0.5),

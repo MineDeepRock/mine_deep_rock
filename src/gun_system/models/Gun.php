@@ -127,26 +127,17 @@ abstract class Gun
 
 class BulletDamage
 {
-    private $maxDamage;
-    private $minDamage;
+    private $value;
 
-    public function __construct(int $maxDamage, int $minDamage) {
-        $this->maxDamage = $maxDamage;
-        $this->minDamage = $minDamage;
+    public function __construct(int $value) {
+        $this->value = $value;
     }
 
     /**
      * @return int
      */
-    public function getMaxDamage(): int {
-        return $this->maxDamage;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMinDamage(): int {
-        return $this->minDamage;
+    public function getValue(): int {
+        return $this->value;
     }
 }
 

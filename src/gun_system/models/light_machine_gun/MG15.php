@@ -18,7 +18,7 @@ class MG15 extends LightMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28, 21),
+            new BulletDamage(28),
             new GunRate(8.3),
             new BulletSpeed(870),
             new MagazineReloadingType(100, 4.5),

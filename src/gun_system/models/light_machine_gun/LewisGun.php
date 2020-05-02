@@ -18,7 +18,7 @@ class LewisGun extends LightMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(26, 20),
+            new BulletDamage(26),
             new GunRate(8),
             new BulletSpeed(740),
             new MagazineReloadingType(47, 2.85),

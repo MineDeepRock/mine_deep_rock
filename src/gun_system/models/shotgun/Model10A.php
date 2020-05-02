@@ -18,7 +18,7 @@ class Model10A extends Shotgun
     public function __construct() {
         parent::__construct(
             12,
-            new BulletDamage(12, 2),
+            new BulletDamage(12),
             new GunRate(1.3),
             new BulletSpeed(333),
             2.5, new OneByOneReloadingType(6, 0.5),

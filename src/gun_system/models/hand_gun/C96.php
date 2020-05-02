@@ -17,7 +17,7 @@ class C96 extends HandGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28, 15),
+            new BulletDamage(28),
             new GunRate(5),
             new BulletSpeed(440),
             0, new OneByOneReloadingType(10, 0.25),

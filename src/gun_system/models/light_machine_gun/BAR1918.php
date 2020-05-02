@@ -18,7 +18,7 @@ class BAR1918 extends LightMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(26, 23),
+            new BulletDamage(26),
             new GunRate(10),
             new BulletSpeed(820),
             new MagazineReloadingType(20, 3),

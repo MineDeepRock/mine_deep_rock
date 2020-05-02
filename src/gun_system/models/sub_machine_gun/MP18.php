@@ -18,7 +18,7 @@ class MP18 extends SubMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28, 15),
+            new BulletDamage(28),
             new GunRate(9),
             new BulletSpeed(420),
             new MagazineReloadingType(32, 2),

@@ -17,7 +17,7 @@ class CeiRigotti extends AssaultRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(38, 28),
+            new BulletDamage(38),
             new GunRate(5),
             new BulletSpeed(700),
             0, new ClipReloadingType(10, 5, 1.5, 0.5),

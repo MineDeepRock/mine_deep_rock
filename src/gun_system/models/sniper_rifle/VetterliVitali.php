@@ -17,7 +17,7 @@ class VetterliVitali extends SniperRifle
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(100, 70),
+            new BulletDamage(100),
             new GunRate(0.76),
             new BulletSpeed(440),
             2.5, new ClipReloadingType(4, 4, 1.6, 0.76),

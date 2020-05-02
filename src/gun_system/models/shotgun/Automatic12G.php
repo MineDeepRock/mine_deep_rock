@@ -18,7 +18,7 @@ class Automatic12G extends Shotgun
     public function __construct() {
         parent::__construct(
             12,
-            new BulletDamage(7.7, 1),
+            new BulletDamage(7.7),
             new GunRate(4.2),
             new BulletSpeed(333),
             1, new OneByOneReloadingType(5, 0.7),

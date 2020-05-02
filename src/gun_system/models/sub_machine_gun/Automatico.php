@@ -18,7 +18,7 @@ class Automatico extends SubMachineGun
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(23, 13.5),
+            new BulletDamage(23),
             new GunRate(15),
             new BulletSpeed(380),
             new MagazineReloadingType(25, 2.1),
