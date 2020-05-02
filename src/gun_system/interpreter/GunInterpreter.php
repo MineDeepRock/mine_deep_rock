@@ -193,6 +193,8 @@ abstract class GunInterpreter
             $this->owner->sendPopup("オーバーヒート中");
             return;
         }
+        
+        $this->cancelShooting();
 
         $reduceBulletFunc = function ($value): int {
             $this->owner->sendPopup("リロード");

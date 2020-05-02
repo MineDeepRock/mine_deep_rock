@@ -9,10 +9,10 @@ class EffectiveRangeLoader
     private static $instance;
 
     public $ranges = [
-        //"Mle1903" => [],
-        //"P08" => [],
-        //"C96" => [],
-        //"HowdahPistol" => [],
+        "Mle1903" => [],
+        "P08" => [],
+        "C96" => [],
+        "HowdahPistol" => [],
         "M1907SL" => [],
         "CeiRigotti" => [],
         "FedorovAvtomat" => [],
@@ -21,22 +21,22 @@ class EffectiveRangeLoader
         "Model10A" => [],
         "Automatic12G" => [],
         "Model1900" => [],
-        //"SMLEMK3" => [],
-        //"Gewehr98" => [],
-        //"MartiniHenry" => [],
-        //"Type38Arisaka" => [],
-        //"MP18" => [],
-        //"Automatico" => [],
-        //"Hellriegel1915" => [],
-        //"FrommerStopAuto" => [],
-        //"LewisGun" => [],
-        //"ParabellumMG14" => [],
-        //"MG15" => [],
-        //"BAR1918" => [],
-        //"ColtSAA" => [],
-        //"NagantRevolver" => [],
-        //"No3Revolver" => [],
-        //"RevolverMk6" => []
+        "SMLEMK3" => [],
+        "Gewehr98" => [],
+        "MartiniHenry" => [],
+        "Type38Arisaka" => [],
+        "MP18" => [],
+        "Automatico" => [],
+        "Hellriegel1915" => [],
+        "FrommerStopAuto" => [],
+        "LewisGun" => [],
+        "ParabellumMG14" => [],
+        "MG15" => [],
+        "BAR1918" => [],
+        "ColtSAA" => [],
+        "NagantRevolver" => [],
+        "No3Revolver" => [],
+        "RevolverMk6" => []
     ];
 
     public function __construct() {
@@ -49,9 +49,13 @@ class EffectiveRangeLoader
 
     public function loadAll() {
         foreach ($this->ranges as $name => $range) {
-            $this->ranges[$name] = $this->load("D:\pmmp\plugins\mine_deep_rock\src\gun_system\data\\effective_ranges\\" . $name . ".png");
+            $path = "D:\pmmp\plugins\mine_deep_rock\src\gun_system\data\\effective_ranges\\" . $name . ".png";
+            if (file_exists($path)) {
+                $this->ranges[$name] = $this->load($path);
+            } else {
+                $this->ranges[$name] = [];
+            }
         }
-        var_dump($this->ranges);
     }
 
     public function load(string $path): array {

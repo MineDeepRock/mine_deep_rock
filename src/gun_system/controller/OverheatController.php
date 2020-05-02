@@ -25,6 +25,7 @@ class OverheatController
         $this->scheduler = $scheduler;
         $this->onOverheat = $onOverheat;
         $this->onFinished = $onFinished;
+        $this->isOverheat = false;
 
         if ($this->rate->getPerShoot() !== 0) {
             $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick): void {

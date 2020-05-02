@@ -62,9 +62,9 @@ class GunSystemListener extends Client
                 $gun = $itemGun->getGunData();
 
                 if (intval($distance) > 99) {
-                    $damage = $gun->getEffectiveRange()[99];
+                    $damage = $gun->getBulletDamage()->getMaxDamage() * $gun->getEffectiveRange()[99] / 100;
                 } else {
-                    $damage = $gun->getEffectiveRange()[intval($distance)];
+                    $damage = $gun->getBulletDamage()->getMaxDamage() * $gun->getEffectiveRange()[intval($distance)] / 100;
                 }
 
                 return $damage / 5;
