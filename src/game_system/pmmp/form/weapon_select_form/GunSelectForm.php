@@ -27,7 +27,7 @@ class GunSelectForm implements Form
             return;
         }
 
-        ($this->onSelected)($this->gunNameList[$data]);
+        $player->sendForm(new GunSelectDetailForm($this->onSelected,$this->gunNameList[$data]));
     }
 
     public function jsonSerialize() {

@@ -44,8 +44,8 @@ class GunPurchaseDetailForm implements Form
                 [
                     'text' => '購入',
                     'image' => [
-                        'type' => 'url',
-                        'data' => '' . $this->gun::NAME//TODO:実装
+                        'type' => 'path',
+                        'data' => 'textures/effective_ranges/' . $this->gun::NAME
                     ]
                 ]
             ]
