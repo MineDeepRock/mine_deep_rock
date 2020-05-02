@@ -9,55 +9,48 @@ use gun_system\models\GunList;
 use gun_system\models\GunType;
 use pocketmine\form\Form;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 
 class GunPurchaseForm implements Form
 {
     private $onSelected;
 
     private $gunType;
-    private $gunNameList;
+    private $gunList;
 
     public function __construct(Closure $onSelected, GunType $gunType) {
         $this->onSelected = $onSelected;
         $this->gunType = $gunType;
-        $this->gunNameList = [];
+        $this->gunList = [];
         $gunListInstance = new GunList();
 
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():
-                $this->gunNameList = array_map(function ($gun) {
-                    return $gun::NAME;
-                }, $gunListInstance->getHandguns());
-                break;
-
-            case GunType::AssaultRifle()->getTypeText():
-                $this->gunNameList = array_map(function ($gun) {
-                    return $gun::NAME;
-                }, $gunListInstance->getAssaultRifles());
-                break;
-
-            case GunType::LMG()->getTypeText():
-                $this->gunNameList = array_map(function ($gun) {
-                    return $gun::NAME;
-                }, $gunListInstance->getLMGs());
-                break;
-
-            case GunType::SniperRifle()->getTypeText():
-                $this->gunNameList = array_map(function ($gun) {
-                    return $gun::NAME;
-                }, $gunListInstance->getSniperRifles());
-                break;
-
-            case GunType::SMG()->getTypeText():
-                $this->gunNameList = array_map(function ($gun) {
-                    return $gun::NAME;
-                }, $gunListInstance->getSMGs());
+                $this->gunList = $gunListInstance->getHandguns();
                 break;
 
             case GunType::Revolver()->getTypeText():
-                $this->gunNameList = array_map(function ($gun) {
-                    return $gun::NAME;
-                }, $gunListInstance->getRevolvers());
+                $this->gunList = $gunListInstance->getRevolvers();
+                break;
+
+            case GunType::AssaultRifle()->getTypeText():
+                $this->gunList = $gunListInstance->getAssaultRifles();
+                break;
+
+            case GunType::Shotgun()->getTypeText():
+                $this->gunList = $gunListInstance->getShotguns();
+                break;
+
+            case GunType::LMG()->getTypeText():
+                $this->gunList = $gunListInstance->getLMGs();
+                break;
+
+            case GunType::SMG()->getTypeText():
+                $this->gunList = $gunListInstance->getSMGs();
+                break;
+
+            case GunType::SniperRifle()->getTypeText():
+                $this->gunList = $gunListInstance->getSniperRifles();
                 break;
         }
     }
@@ -67,18 +60,17 @@ class GunPurchaseForm implements Form
             return;
         }
 
-        ($this->onSelected)($this->gunNameList[$data]);
+        $player->sendForm(new GunPurchaseDetailForm($this->onSelected,$this->gunList[$data]));
     }
 
     public function jsonSerialize() {
         $buttons = [];
-        foreach ($this->gunNameList as $name) {
-            $buttons[] = ['text' => $name];
+        foreach ($this->gunList as $gun) {
+            $buttons[] = ['text' => $gun::NAME];
         }
-
         return [
             'type' => 'form',
-            'title' => '銃選択',
+            'title' => '銃購入',
             'content' => $this->gunType->getTypeText(),
             'buttons' => $buttons
         ];
