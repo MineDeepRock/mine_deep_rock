@@ -2,6 +2,7 @@
 
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
+use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\items\AttachmentSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
@@ -56,6 +57,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler(), $this->getServer()));
         $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemListener, $this->getScheduler()));
+        $this->getServer()->getCommandMap()->register("state", new StateCommand($this, $this->gameSystemListener));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
