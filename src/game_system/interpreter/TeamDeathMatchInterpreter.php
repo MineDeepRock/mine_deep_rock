@@ -16,6 +16,9 @@ use gun_system\models\BulletId;
 use gun_system\models\GunList;
 use gun_system\models\GunType;
 use gun_system\models\shotgun\Shotgun;
+use gun_system\pmmp\items\ItemShotGun;
+use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
@@ -143,6 +146,21 @@ class TeamDeathMatchInterpreter
         return true;
     }
 
+    public function scare(User $targetUser, User $attackerUser, Item $item) {
+        if ($targetUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) {
+            return;
+        }
+        //味方には効果が無いように
+        if ($targetUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId()))
+            return;
+
+        //自分自身には効果がないように
+        if (!($attackerUser->getName() === $targetUser->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+            $target = Server::getInstance()->getPlayer($targetUser->getName());
+            $this->client->scare($target, $item);
+        }
+    }
+
     public function onReceiveDamage(Player $attackerPlayer, Entity $targetEntity, string $weaponName, int $damage): void {
         $health = $targetEntity->getHealth() - $damage;
         if ($this->game !== null) {
@@ -185,6 +203,7 @@ class TeamDeathMatchInterpreter
                         }), 20 * 8);
                     }
 
+                    $this->scare($target, $attacker, $targetPlayer->getInventory()->getItemInHand());
                     $this->client->onReceiveDamage($attackerPlayer, $targetPlayer, $damage, $weaponName);
                 }
             }

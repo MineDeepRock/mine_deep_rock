@@ -141,27 +141,7 @@ class GameSystemListener
         $targetUser = $this->usersService->getUserData($target->getName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
 
-        if ($targetUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) {
-            return;
-        }
-        //味方には効果が無いように
-        if ($targetUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
-            return;
-        }
-        //自分自身には効果がないように
-        if (!($target->getName() === $attacker->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-            //shotgunには効果がない
-            if (($item instanceof ItemShotGun)) {
-                return;
-            }
-            $target->removeEffect(Effect::REGENERATION);
-            $item->scare(function () use ($target) {
-                if ($target->isOnline()) {
-                    $target->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
-                }
-            });
-            $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1, false));
-        }
+        $this->teamDeathMatchInterpreter->scare($targetUser,$attackerUser,$item);
     }
 
     public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage): void {

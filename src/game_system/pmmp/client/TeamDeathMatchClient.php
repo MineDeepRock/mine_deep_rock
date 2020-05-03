@@ -104,6 +104,16 @@ class TeamDeathMatchClient extends Client
         }
     }
 
+    public function scare(Player $target, Item $item) {
+        $target->removeEffect(Effect::REGENERATION);
+        $item->scare(function () use ($target) {
+            if ($target->isOnline()) {
+                $target->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
+            }
+        });
+        $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1, false));
+    }
+
     public function onReceiveDamage(Player $attacker, Player $targetPlayer, int $damage, string $weaponName): void {
         $health = $targetPlayer->getHealth() - $damage;
 
