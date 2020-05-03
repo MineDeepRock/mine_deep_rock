@@ -139,6 +139,7 @@ class TeamDeathMatchClient extends Client
     }
 
     public function setArmorAndNameTag(Player $player, TeamID $userTeamId, TeamId $redTeamId) {
+        $player->setNameTagAlwaysVisible(false);
         if ($userTeamId->equal($redTeamId)) {
             $player->setNameTag(TextFormat::RED . $player->getName());
             $player->getArmorInventory()->setHelmet(new IronHelmet());
