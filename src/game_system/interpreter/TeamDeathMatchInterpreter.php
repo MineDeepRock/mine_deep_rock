@@ -10,6 +10,9 @@ use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\model\User;
 use game_system\pmmp\client\TeamDeathMatchClient;
+use game_system\pmmp\items\SpawnItem;
+use game_system\pmmp\items\SubWeaponSelectItem;
+use game_system\pmmp\items\WeaponSelectItem;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\BulletId;
@@ -202,20 +205,6 @@ class TeamDeathMatchInterpreter
                             $attackerPlayer->getY() + 4,
                             $attackerPlayer->getZ()
                         ));
-
-                        GameSystemListener::getInstance()->displayWeaponSelectForm($targetPlayer);
-
-                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer, $target, $targetEntity): void {
-                            if ($targetPlayer->isOnline()) {
-                                $targetPlayer->setGamemode(Player::ADVENTURE);
-                                if ($target->getParticipatedGameId() !== null) {
-                                    if ($target->getParticipatedGameId()->equal($this->game->getId())) {
-                                        $target = $this->usersService->getUserData($targetEntity->getName());
-                                        $this->spawn($target);
-                                    }
-                                }
-                            }
-                        }), 20 * 8);
                     }
 
                     $this->scare($target, $attacker, $targetPlayer->getInventory()->getItemInHand());
@@ -265,12 +254,37 @@ class TeamDeathMatchInterpreter
         $this->spawn($victim);
     }
 
-    private function spawn(User $user): void {
+    public function spawn(User $user): void {
+        $player = Server::getInstance()->getPlayer($user->getName());
+
+        if (!$player->isOnline())
+            return;
+
+        $player->setGamemode(Player::ADVENTURE);
+        $player->getInventory()->remove(new WeaponSelectItem());
+        $player->getInventory()->remove(new SubWeaponSelectItem());
+        $player->getInventory()->remove(new SpawnItem());
+
+        if ($user->getParticipatedGameId() === null)
+            return;
+
+        if (!$user->getParticipatedGameId()->equal($this->game->getId()))
+            return;
+
         $selectedWeaponName = $user->getSelectedWeaponName();
+        $selectedWeapon = $this->weaponService->getWeapon($user->getName(), $selectedWeaponName);
+
         $selectedSubWeaponName = $user->getSelectedSubWeaponName();
+        $selectedSubWeapon = $this->weaponService->getWeapon($user->getName(), $selectedSubWeaponName);
+
         $mapName = $this->game->getMap()->getName();
 
-        $this->client->spawn($user->getName(), $selectedWeaponName, $selectedSubWeaponName, $mapName, $this->game->getSpawnPoint($user->getBelongTeamId()));
+        $this->client->spawn(
+            $player,
+            $selectedWeapon,
+            $selectedSubWeapon,
+            $mapName,
+            $this->game->getSpawnPoint($user->getBelongTeamId()));
     }
 
     public function closeGame(): bool {

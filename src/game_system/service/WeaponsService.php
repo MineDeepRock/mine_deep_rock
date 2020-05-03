@@ -36,4 +36,8 @@ class WeaponsService extends Service
     public function addKillCount(string $ownerName, string $weaponName): void {
         $this->repository->addKillCount($ownerName, $weaponName);
     }
+
+    public function setScope(string $ownerName, string $weaponName, string $scopeName): void {
+        $this->repository->setScope($ownerName, $weaponName,$scopeName);
+    }
 }

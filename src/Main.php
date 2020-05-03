@@ -3,7 +3,8 @@
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
-use game_system\pmmp\items\AttachmentSelectItem;
+use game_system\pmmp\items\SpawnItem;
+use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use gun_system\EffectiveRangeLoader;
@@ -87,11 +88,14 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new WeaponSelectItem(), true);
         Item::addCreativeItem(Item::get(WeaponSelectItem::ITEM_ID));
 
+        ItemFactory::registerItem(new SubWeaponSelectItem(), true);
+        Item::addCreativeItem(Item::get(SubWeaponSelectItem::ITEM_ID));
+
         ItemFactory::registerItem(new WeaponPurchaseItem(), true);
         Item::addCreativeItem(Item::get(WeaponPurchaseItem::ITEM_ID));
 
-        ItemFactory::registerItem(new AttachmentSelectItem(), true);
-        Item::addCreativeItem(Item::get(AttachmentSelectItem::ITEM_ID));
+        ItemFactory::registerItem(new SpawnItem(), true);
+        Item::addCreativeItem(Item::get(SpawnItem::ITEM_ID));
 
         $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
     }
@@ -194,6 +198,15 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    public function onTapBySubWeaponSelectItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === SubWeaponSelectItem::ITEM_ID) {
+                $this->gameSystemListener->displaySubWeaponSelectForm($player);
+            }
+        }
+    }
+
     public function onTapByWeaponPurchaseItem(PlayerInteractEvent $event) {
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
@@ -203,11 +216,11 @@ class Main extends PluginBase implements Listener
         }
     }
 
-    public function onTapByAttachmentSelectItem(PlayerInteractEvent $event) {
+    public function onTapBySpawnItem(PlayerInteractEvent $event) {
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === AttachmentSelectItem::ITEM_ID) {
-                $this->gameSystemListener->displaySelectAttachmentForm($player);
+            if ($player->getInventory()->getItemInHand()->getId() === SpawnItem::ITEM_ID) {
+                $this->gameSystemListener->spawnOnTeamDeath($player->getName());
             }
         }
     }
@@ -231,13 +244,5 @@ class Main extends PluginBase implements Listener
         $playerName = $event->getPlayer()->getName();
 
         $this->gameSystemListener->quitGame($playerName);
-    }
-
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args) :bool{
-        if($args[0] === 'st'){
-            $player = $this->getServer()->getPlayer($sender->getName());
-            $this->gameSystemListener->showUserStatus($player);
-        }
-        return false;
     }
 }

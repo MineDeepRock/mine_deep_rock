@@ -6,6 +6,7 @@ namespace game_system\pmmp\form\weapon_select_form;
 
 use Closure;
 use game_system\model\Weapon;
+use game_system\pmmp\form\AttachmentSelectForm;
 use gun_system\models\GunList;
 use pocketmine\form\Form;
 use pocketmine\Player;
@@ -27,7 +28,11 @@ class GunSelectDetailForm implements Form
             return;
         }
 
-        ($this->onSelected)($this->weapon->getName());
+        $gun = GunList::fromString($this->weapon->getName());
+
+        $player->sendForm(new AttachmentSelectForm(function ($scopeName){
+            ($this->onSelected)($this->weapon->getName(),$scopeName);
+        },$gun->getType()));
     }
 
     public function jsonSerialize() {
@@ -51,7 +56,7 @@ class GunSelectDetailForm implements Form
                         'type' => 'url',
                         'data' => 'textures/effective_ranges/' . $gun::NAME
                     ]
-                ]
+                ],
             ]
         ];
     }

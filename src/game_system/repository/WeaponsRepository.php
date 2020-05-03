@@ -56,4 +56,14 @@ class WeaponsRepository extends Repository
             die($sql_error);
         }
     }
+
+    public function setScope(string $ownerName, string $weaponName, string $scopeName): void {
+        $result = $this->db->query("UPDATE weapons SET scope='{$scopeName}' WHERE name='{$weaponName}' AND owner_name='{$ownerName}'");
+
+        if (!$result) {
+            $sql_error = $this->db->error;
+            error_log($sql_error);
+            die($sql_error);
+        }
+    }
 }

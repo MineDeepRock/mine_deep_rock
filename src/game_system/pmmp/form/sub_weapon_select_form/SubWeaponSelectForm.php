@@ -36,11 +36,8 @@ class SubWeaponSelectForm implements Form
 
         $buttons =
             [
-                'Assault Rifle',
-                'Shotgun',
-                'Sub Machine Gun',
-                'Light Machine Gun',
-                'Sniper Rifle'
+                'Handgun',
+                'Revolver'
             ];
         switch ($buttons[$data]) {
             case 'Handgun':

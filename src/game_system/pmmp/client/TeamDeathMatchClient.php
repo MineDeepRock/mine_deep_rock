@@ -10,7 +10,11 @@ use game_system\model\Coordinate;
 use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
+use game_system\model\Weapon;
 use game_system\pmmp\items\AttachmentSelectItem;
+use game_system\pmmp\items\SpawnItem;
+use game_system\pmmp\items\SubWeaponSelectItem;
+use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
@@ -87,15 +91,18 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(string $userName, string $selectedWeaponName, string $selectedSubWeaponName, string $mapName, Coordinate $coordinate): void {
-        $player = Server::getInstance()->getPlayer($userName);
+    public function spawn(Player $player, Weapon $selectedWeapon, Weapon $selectedSubWeapon, string $mapName, Coordinate $coordinate): void {
         if ($player !== null) {
 
             $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
 
             $player->getInventory()->setContents([]);
-            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
-            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedSubWeaponName);
+            Server::getInstance()->dispatchCommand(
+                new ConsoleCommandSender(),
+                "gun give " . $player->getName() . " " . $selectedWeapon->getName() . " " . $selectedWeapon->getScope());
+            Server::getInstance()->dispatchCommand(
+                new ConsoleCommandSender(),
+                "gun give " . $player->getName() . " " . $selectedSubWeapon->getName() . " ". $selectedSubWeapon->getScope());
 
             $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
 
@@ -127,6 +134,10 @@ class TeamDeathMatchClient extends Client
             //TODO:Titleにしたい
             $targetPlayer->sendPopup(TextFormat::RED . $attacker->getName() . "に倒された");
             $targetPlayer->getInventory()->setContents([]);
+            $targetPlayer->getInventory()->addItem(new WeaponSelectItem());
+            $targetPlayer->getInventory()->addItem(new SubWeaponSelectItem());
+            $targetPlayer->getInventory()->addItem(new SpawnItem());
+
             foreach ($players as $player) {
                 $player->sendMessage($attacker->getName() . " が " . $targetPlayer->getName() . " を倒した [" . $weaponName . "]");
             }

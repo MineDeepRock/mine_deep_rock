@@ -12,6 +12,7 @@ use game_system\pmmp\form\AttachmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
+use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
@@ -142,7 +143,7 @@ class GameSystemListener
         $targetUser = $this->usersService->getUserData($target->getName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
 
-        $this->teamDeathMatchInterpreter->scare($targetUser,$attackerUser,$item);
+        $this->teamDeathMatchInterpreter->scare($targetUser, $attackerUser, $item);
     }
 
     public function onReceivedDamage(Player $attacker, Entity $target, string $weaponName, int $damage): void {
@@ -156,15 +157,17 @@ class GameSystemListener
 
     public function displayWeaponSelectForm(Player $player) {
         $playerName = $player->getName();
-        $player->sendForm(new WeaponSelectForm(function ($weaponName) use ($playerName) {
+        $player->sendForm(new WeaponSelectForm(function ($weaponName, $scopeName) use ($playerName) {
             $this->usersService->selectWeapon($playerName, $weaponName);
+            $this->weaponService->setScope($playerName, $weaponName, $scopeName);
         }, $this->weaponService->getOwnWeapons($playerName)));
     }
 
     public function displaySubWeaponSelectForm(Player $player) {
         $playerName = $player->getName();
-        $player->sendForm(new SubWeaponSelectForm(function ($weaponName) use ($playerName) {
+        $player->sendForm(new SubWeaponSelectForm(function ($weaponName, $scopeName) use ($playerName) {
             $this->usersService->selectSubWeapon($playerName, $weaponName);
+            $this->weaponService->setScope($playerName, $weaponName, $scopeName);
         }, $this->weaponService->getOwnWeapons($playerName)));
     }
 
@@ -177,14 +180,11 @@ class GameSystemListener
             } else {
                 $player->sendMessage("条件を満たしていないか、すでに持っているので購入できません");
             }
-        },array_map(function($weapon){
+        }, array_map(function ($weapon) {
             return $weapon->getName();
-        },$this->weaponService->getOwnWeapons($playerName))));
+        }, $this->weaponService->getOwnWeapons($playerName))));
     }
 
-    public function displaySelectAttachmentForm(Player $player) {
-        $player->sendForm(new AttachmentSelectForm($player));
-    }
 
     public function userLogin(string $userName): void {
         $player = Server::getInstance()->getPlayer($userName);
@@ -192,6 +192,7 @@ class GameSystemListener
         $worldController = new WorldController();
         $worldController->teleport($player, "lobby");
         $player->getInventory()->addItem(new WeaponSelectItem());
+        $player->getInventory()->addItem(new SubWeaponSelectItem());
         $player->getInventory()->addItem(new WeaponPurchaseItem());
         $player->setGamemode(Player::ADVENTURE);
 
@@ -205,7 +206,7 @@ class GameSystemListener
             $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 1);
         }
 
-        if (!$this->usersService->exists($userName)){
+        if (!$this->usersService->exists($userName)) {
             $this->weaponService->register($userName, M1907SL::NAME);
             $this->weaponService->register($userName, Mle1903::NAME);
             $this->weaponService->register($userName, Chauchat::NAME);
@@ -214,6 +215,10 @@ class GameSystemListener
             $this->weaponService->register($userName, MP18::NAME);
         }
         $this->usersService->userLogin($userName);
+    }
+
+    public function spawnOnTeamDeath(string $playerName) {
+        $this->teamDeathMatchInterpreter->spawn($this->usersService->getUserData($playerName));
     }
 
     public function updateNumberOfParticipants() {
