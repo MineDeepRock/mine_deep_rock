@@ -119,7 +119,13 @@ class TeamDeathMatchInterpreter
             return false;
 
         if ($this->game->isStarted()) {
-            if ($user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId()) ||
+            if ($user->getLastBelongTeamId() === null) {
+                $this->usersService->joinGame(
+                    $userName,
+                    $this->game->getId(),
+                    $this->game->getBlueTeam()->getId(),
+                    $this->game->getRedTeam()->getId());
+            } else if ($user->getLastBelongTeamId()->equal($this->game->getBlueTeam()->getId()) ||
                 $user->getLastBelongTeamId()->equal($this->game->getRedTeam()->getId())) {
                 $this->usersService->joinGame(
                     $userName,
