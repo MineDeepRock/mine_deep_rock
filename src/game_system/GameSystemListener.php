@@ -11,11 +11,18 @@ use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\form\AttachmentSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
+use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
+use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\GunList;
+use gun_system\models\hand_gun\Mle1903;
+use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\shotgun\M1897;
+use gun_system\models\sniper_rifle\SMLEMK3;
+use gun_system\models\sub_machine_gun\MP18;
 use gun_system\pmmp\items\ItemShotGun;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
@@ -68,6 +75,8 @@ class GameSystemListener
         $game = $this->teamDeathMatchInterpreter->getGameData();
         if (!$game->isStarted()) {
             foreach ($lobbyPlayers as $player) {
+                $player->getInventory()->addItem(new WeaponSelectItem());
+                $player->getInventory()->addItem(new WeaponPurchaseItem());
                 $api->sendScoreboard($player, "sidebar", "Lobby", false);
                 $api->setScore($player, "sidebar", "ゲーム参加人数:", 0, 1);
             }
@@ -193,6 +202,7 @@ class GameSystemListener
         $worldController = new WorldController();
         $worldController->teleport($player, "lobby");
         $player->getInventory()->addItem(new WeaponSelectItem());
+        $player->getInventory()->addItem(new WeaponPurchaseItem());
         $player->setGamemode(Player::ADVENTURE);
 
         $api = EasyScoreboardAPI::getInstance();
@@ -205,9 +215,14 @@ class GameSystemListener
             $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 1);
         }
 
-        if (!$this->usersService->exists($userName))
-            $this->weaponService->register($userName, "M1907SL");
-
+        if (!$this->usersService->exists($userName)){
+            $this->weaponService->register($userName, M1907SL::NAME);
+            $this->weaponService->register($userName, Mle1903::NAME);
+            $this->weaponService->register($userName, ParabellumMG14::NAME);
+            $this->weaponService->register($userName, M1897::NAME);
+            $this->weaponService->register($userName, SMLEMK3::NAME);
+            $this->weaponService->register($userName, MP18::NAME);
+        }
         $this->usersService->userLogin($userName);
     }
 
@@ -225,5 +240,10 @@ class GameSystemListener
                 $api->removeScore($player, "sidebar", 2);
             }
         }
+    }
+
+    public function showUserStatus(Player $player) {
+        $user = $this->usersService->getUserData($player->getName());
+        $player->sendMessage("所持金:" . $user->getMoney());
     }
 }

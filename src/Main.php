@@ -16,6 +16,8 @@ use gun_system\pmmp\items\bullet\ItemRevolverBullet;
 use gun_system\pmmp\items\bullet\ItemShotgunBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
@@ -227,5 +229,13 @@ class Main extends PluginBase implements Listener
         $playerName = $event->getPlayer()->getName();
 
         $this->gameSystemListener->quitGame($playerName);
+    }
+
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args) :bool{
+        if($args[0] === 'st'){
+            $player = $this->getServer()->getPlayer($sender->getName());
+            $this->gameSystemListener->showUserStatus($player);
+        }
+        return false;
     }
 }
