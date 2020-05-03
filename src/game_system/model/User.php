@@ -9,13 +9,15 @@ class User
     private $name;
     private $winCount;
     private $money;
+
     private $belongTeamId;
     private $participatedGameId;
     private $lastBelongTeamId;
 
     private $selectedWeaponName;
+    private $selectedSubWeaponName;
 
-    public function __construct(string $name, int $winCount, int $money, ?TeamId $belongTeamId, ?TeamId $lastBelongTeamId, ?GameId $participatedGameId, string $selectedWeaponName = "M1907SL") {
+    public function __construct(string $name, int $winCount, int $money, ?TeamId $belongTeamId, ?TeamId $lastBelongTeamId, ?GameId $participatedGameId, string $selectedWeaponName = "M1907SL", string $selectedSubWeaponName = "Mle1903") {
         $this->name = $name;
         $this->winCount = $winCount;
         $this->money = $money;
@@ -23,6 +25,7 @@ class User
         $this->participatedGameId = $participatedGameId;
         $this->lastBelongTeamId = $lastBelongTeamId;
         $this->selectedWeaponName = $selectedWeaponName;
+        $this->selectedSubWeaponName = $selectedSubWeaponName;
     }
 
     public static function fromJson(array $json): User {
@@ -33,8 +36,9 @@ class User
         $lastBelongTeaId = $json["last_belong_team_id"] === null ? null : new TeamId($json["last_belong_team_id"]);
         $participatedGameId = $json["participated_game_id"] === null ? null : new GameId($json["participated_game_id"]);
         $selectedWeaponName = $json["selected_weapon"];
+        $selectedSubWeaponName = $json["selected_sub_weapon"];
 
-        return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId, $selectedWeaponName);
+        return new User($name, $winCount, $money, $belongTeamId, $lastBelongTeaId, $participatedGameId, $selectedWeaponName,$selectedSubWeaponName);
     }
 
     /**
@@ -74,6 +78,13 @@ class User
      */
     public function getSelectedWeaponName(): string {
         return $this->selectedWeaponName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectedSubWeaponName(): string {
+        return $this->selectedSubWeaponName;
     }
 
     /**

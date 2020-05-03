@@ -87,7 +87,7 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(string $userName, string $selectedWeaponName, string $mapName, Coordinate $coordinate): void {
+    public function spawn(string $userName, string $selectedWeaponName, string $selectedSubWeaponName, string $mapName, Coordinate $coordinate): void {
         $player = Server::getInstance()->getPlayer($userName);
         if ($player !== null) {
 
@@ -95,6 +95,7 @@ class TeamDeathMatchClient extends Client
 
             $player->getInventory()->setContents([]);
             Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedWeaponName);
+            Server::getInstance()->dispatchCommand(new ConsoleCommandSender(), "gun give " . $userName . " " . $selectedSubWeaponName);
 
             $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
 

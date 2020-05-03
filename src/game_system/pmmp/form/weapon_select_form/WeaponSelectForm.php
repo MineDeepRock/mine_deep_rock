@@ -36,8 +36,6 @@ class WeaponSelectForm implements Form
         $buttons =
             [
                 'Assault Rifle',
-                'Handgun',
-                'Revolver',
                 'Shotgun',
                 'Sub Machine Gun',
                 'Light Machine Gun',
@@ -53,28 +51,6 @@ class WeaponSelectForm implements Form
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::AssaultRifle(),
-                    $weaponList));
-                break;
-            case 'Handgun':
-                $weaponList = [];
-                foreach ($this->ownWeapons as $weapon) {
-                    if (GunList::fromString($weapon->getName()) instanceof Handgun)
-                        $weaponList[] = $weapon;
-                }
-                $player->sendForm(new GunSelectForm(
-                    $this->onSelected,
-                    GunType::Handgun(),
-                    $weaponList));
-                break;
-            case 'Revolver':
-                $weaponList = [];
-                foreach ($this->ownWeapons as $weapon) {
-                    if (GunList::fromString($weapon->getName()) instanceof Revolver)
-                        $weaponList[] = $weapon;
-                }
-                $player->sendForm(new GunSelectForm(
-                    $this->onSelected,
-                    GunType::Revolver(),
                     $weaponList));
                 break;
             case 'Shotgun':
@@ -131,8 +107,6 @@ class WeaponSelectForm implements Form
             'content' => '武器種',
             'buttons' => [
                 ['text' => 'Assault Rifle'],
-                ['text' => 'Handgun'],
-                ['text' => 'Revolver'],
                 ['text' => 'Shotgun'],
                 ['text' => 'Sub Machine Gun'],
                 ['text' => 'Light Machine Gun'],

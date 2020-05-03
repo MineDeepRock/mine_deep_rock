@@ -9,6 +9,7 @@ use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\form\AttachmentSelectForm;
+use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
 use game_system\pmmp\items\WeaponPurchaseItem;
@@ -157,6 +158,13 @@ class GameSystemListener
         $playerName = $player->getName();
         $player->sendForm(new WeaponSelectForm(function ($weaponName) use ($playerName) {
             $this->usersService->selectWeapon($playerName, $weaponName);
+        }, $this->weaponService->getOwnWeapons($playerName)));
+    }
+
+    public function displaySubWeaponSelectForm(Player $player) {
+        $playerName = $player->getName();
+        $player->sendForm(new SubWeaponSelectForm(function ($weaponName) use ($playerName) {
+            $this->usersService->selectSubWeapon($playerName, $weaponName);
         }, $this->weaponService->getOwnWeapons($playerName)));
     }
 

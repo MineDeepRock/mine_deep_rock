@@ -189,7 +189,7 @@ class TeamDeathMatchInterpreter
 
                     if ($health <= 0) {
                         //弾薬回復
-                        $attackerPlayer->getInventory()->addItem($this->getAmmo($attacker));
+                        $attackerPlayer->getInventory()->addItem($this->getAmmo($weaponName));
 
                         $attackerName = $attacker->getName();
                         $this->weaponService->addKillCount($attacker->getName(), $weaponName);
@@ -225,8 +225,7 @@ class TeamDeathMatchInterpreter
         }
     }
 
-    private function getAmmo(User $user): Item {
-        $weaponName = $user->getSelectedWeaponName();
+    private function getAmmo(String $weaponName): Item {
         $weapon = GunList::fromString($weaponName);
         $id = BulletId::fromGunType($weapon->getType());
         switch ($weapon->getType()->getTypeText()) {
@@ -268,9 +267,10 @@ class TeamDeathMatchInterpreter
 
     private function spawn(User $user): void {
         $selectedWeaponName = $user->getSelectedWeaponName();
+        $selectedSubWeaponName = $user->getSelectedSubWeaponName();
         $mapName = $this->game->getMap()->getName();
 
-        $this->client->spawn($user->getName(), $selectedWeaponName, $mapName, $this->game->getSpawnPoint($user->getBelongTeamId()));
+        $this->client->spawn($user->getName(), $selectedWeaponName, $selectedSubWeaponName, $mapName, $this->game->getSpawnPoint($user->getBelongTeamId()));
     }
 
     public function closeGame(): bool {
