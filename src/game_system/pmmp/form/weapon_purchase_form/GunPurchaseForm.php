@@ -18,7 +18,7 @@ class GunPurchaseForm implements Form
     private $gunType;
     private $gunList;
 
-    public function __construct(Closure $onSelected, GunType $gunType) {
+    public function __construct(Closure $onSelected, GunType $gunType, array $ownWeaponNames) {
         $this->onSelected = $onSelected;
         $this->gunType = $gunType;
         $this->gunList = [];
@@ -26,31 +26,59 @@ class GunPurchaseForm implements Form
 
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():
-                $this->gunList = $gunListInstance->getHandguns();
+                foreach ($gunListInstance->getHandguns() as $gun) {
+                    if (!in_array($gun::NAME,$ownWeaponNames)) {
+                        $this->gunList[] = $gun;
+                    }
+                }
                 break;
 
             case GunType::Revolver()->getTypeText():
-                $this->gunList = $gunListInstance->getRevolvers();
+                foreach ($gunListInstance->getRevolvers() as $gun) {
+                    if (!in_array($gun::NAME,$ownWeaponNames)) {
+                        $this->gunList[] = $gun;
+                    }
+                }
                 break;
 
             case GunType::AssaultRifle()->getTypeText():
-                $this->gunList = $gunListInstance->getAssaultRifles();
+                foreach ($gunListInstance->getAssaultRifles() as $gun) {
+                    if (!in_array($gun::NAME,$ownWeaponNames)) {
+                        $this->gunList[] = $gun;
+                    }
+                }
                 break;
 
             case GunType::Shotgun()->getTypeText():
-                $this->gunList = $gunListInstance->getShotguns();
+                foreach ($gunListInstance->getShotguns() as $gun) {
+                    if (!in_array($gun::NAME,$ownWeaponNames)) {
+                        $this->gunList[] = $gun;
+                    }
+                }
                 break;
 
             case GunType::LMG()->getTypeText():
-                $this->gunList = $gunListInstance->getLMGs();
+                foreach ($gunListInstance->getLMGs() as $gun) {
+                    if (!in_array($gun::NAME,$ownWeaponNames)) {
+                        $this->gunList[] = $gun;
+                    }
+                }
                 break;
 
             case GunType::SMG()->getTypeText():
-                $this->gunList = $gunListInstance->getSMGs();
+                foreach ($gunListInstance->getSMGs() as $gun) {
+                    if (!in_array($gun::NAME,$ownWeaponNames)) {
+                        $this->gunList[] = $gun;
+                    }
+                }
                 break;
 
             case GunType::SniperRifle()->getTypeText():
-                $this->gunList = $gunListInstance->getSniperRifles();
+                foreach ($gunListInstance->getSniperRifles() as $gun) {
+                    if (!in_array($gun::NAME,$ownWeaponNames)) {
+                        $this->gunList[] = $gun;
+                    }
+                }
                 break;
         }
     }
@@ -60,7 +88,7 @@ class GunPurchaseForm implements Form
             return;
         }
 
-        $player->sendForm(new GunPurchaseDetailForm($this->onSelected,$this->gunList[$data]));
+        $player->sendForm(new GunPurchaseDetailForm($this->onSelected, $this->gunList[$data]));
     }
 
     public function jsonSerialize() {

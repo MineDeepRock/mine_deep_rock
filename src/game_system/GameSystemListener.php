@@ -169,7 +169,9 @@ class GameSystemListener
             } else {
                 $player->sendMessage("条件を満たしていないか、すでに持っているので購入できません");
             }
-        }));
+        },array_map(function($weapon){
+            return $weapon->getName();
+        },$this->weaponService->getOwnWeapons($playerName))));
     }
 
     public function displaySelectAttachmentForm(Player $player) {

@@ -13,8 +13,11 @@ class WeaponPurchaseForm implements Form
 {
     private $onSelected;
 
-    public function __construct(Closure $onSelected) {
+    private $ownWeaponNames;
+
+    public function __construct(Closure $onSelected, array $ownWeaponNames) {
         $this->onSelected = $onSelected;
+        $this->ownWeaponNames = $ownWeaponNames;
     }
 
     public function handleResponse(Player $player, $data): void {
@@ -34,25 +37,25 @@ class WeaponPurchaseForm implements Form
             ];
         switch ($buttons[$data]) {
             case 'Assault Rifle':
-                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::AssaultRifle()));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::AssaultRifle(),$this->ownWeaponNames));
                 break;
             case 'Handgun':
-                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::HandGun()));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::HandGun(),$this->ownWeaponNames));
                 break;
             case 'Revolver':
-                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::Revolver()));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::Revolver(),$this->ownWeaponNames));
                 break;
             case 'Shotgun':
-                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::Shotgun()));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::Shotgun(),$this->ownWeaponNames));
                 break;
             case 'Sub Machine Gun':
-                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::SMG()));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::SMG(),$this->ownWeaponNames));
                 break;
             case 'Light Machine Gun':
-                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::LMG()));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::LMG(),$this->ownWeaponNames));
                 break;
             case 'Sniper Rifle':
-                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::SniperRifle()));
+                $player->sendForm(new GunPurchaseForm($this->onSelected, GunType::SniperRifle(),$this->ownWeaponNames));
                 break;
         }
     }
