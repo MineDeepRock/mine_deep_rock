@@ -18,7 +18,7 @@ class Model1900 extends Shotgun
     public function __construct() {
         parent::__construct(
             12, new BulletDamage(13),
-            new GunRate(5),
+            new GunRate(20),
             new BulletSpeed(500),
             2, new ClipReloadingType(2, 2, 2.4, 3.2),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],

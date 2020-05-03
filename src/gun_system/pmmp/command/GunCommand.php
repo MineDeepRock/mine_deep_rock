@@ -34,7 +34,7 @@ use gun_system\models\light_machine_gun\attachment\scope\TwoFoldScopeForLMG;
 use gun_system\models\light_machine_gun\BAR1918;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\MG15;
-use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\light_machine_gun\Chauchat;
 use gun_system\models\revolver\NagantRevolver;
 use gun_system\models\revolver\No3Revolver;
 use gun_system\models\revolver\ColtSAA;
@@ -338,8 +338,8 @@ class GunCommand extends Command
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 $this->giveBullet($player, GunType::LMG());
                 break;
-            case "ParabellumMG14":
-                $item = new ItemLightMachineGun("ParabellumMG14", new LightMachineGunInterpreter(new ParabellumMG14(), $player, $this->scheduler));
+            case "Chauchat":
+                $item = new ItemLightMachineGun("Chauchat", new LightMachineGunInterpreter(new Chauchat(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
                 $player->getInventory()->setItemInHand($this->setItemDescription($item));
                 $this->giveBullet($player, GunType::LMG());

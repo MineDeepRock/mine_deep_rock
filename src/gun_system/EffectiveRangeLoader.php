@@ -16,7 +16,7 @@ use gun_system\models\hand_gun\P08;
 use gun_system\models\light_machine_gun\BAR1918;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\MG15;
-use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\light_machine_gun\Chauchat;
 use gun_system\models\revolver\ColtSAA;
 use gun_system\models\revolver\NagantRevolver;
 use gun_system\models\revolver\No3Revolver;
@@ -66,7 +66,7 @@ class EffectiveRangeLoader
             FrommerStopAuto::NAME => [],
             //LMG
             LewisGun::NAME => [],
-            ParabellumMG14::NAME => [],
+            Chauchat::NAME => [],
             MG15::NAME => [],
             BAR1918::NAME => [],
             //LMG

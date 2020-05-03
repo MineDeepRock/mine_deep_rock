@@ -55,14 +55,12 @@ class GunClient
             return;
         }
         if ($this->gun instanceof Shotgun) {
-            if ($this->gun->getBulletType()->equal(BulletId::SHOTGUN)) {
-                $i = 0;
-                while ($i < $this->gun->getPellets()) {
-                    self::spawnBullet($scheduler);
-                    $i++;
-                }
-                $this->doReaction();
+            $i = 0;
+            while ($i < $this->gun->getPellets()) {
+                self::spawnBullet($scheduler);
+                $i++;
             }
+            $this->doReaction();
         } else {
             self::spawnBullet($scheduler);
         }
@@ -112,7 +110,7 @@ class GunClient
         ]);
 
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
-        $projectile->setMotion($projectile->getMotion()->multiply($this->gun->getBulletSpeed()->getPerSecond() / 27.8 / 3));
+        $projectile->setMotion($projectile->getMotion()->multiply($this->gun->getBulletSpeed()->getPerSecond() / 27.8));
 
         $handle = $scheduler->scheduleRepeatingTask(new ClosureTask(
             function (int $currentTick) use ($projectile) : void {

@@ -11,6 +11,6 @@ use gun_system\models\BulletId;
 class ItemShotgunBullet extends ItemBullet
 {
     public function __construct() {
-        parent::__construct(BulletId::SNIPER_RIFLE, "ShotgunBullet",new ShotgunBullet());
+        parent::__construct(BulletId::SHOTGUN, "ShotgunBullet",new ShotgunBullet());
     }
 }

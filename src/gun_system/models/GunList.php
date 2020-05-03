@@ -15,7 +15,7 @@ use gun_system\models\hand_gun\P08;
 use gun_system\models\light_machine_gun\BAR1918;
 use gun_system\models\light_machine_gun\LewisGun;
 use gun_system\models\light_machine_gun\MG15;
-use gun_system\models\light_machine_gun\ParabellumMG14;
+use gun_system\models\light_machine_gun\Chauchat;
 use gun_system\models\revolver\ColtSAA;
 use gun_system\models\revolver\NagantRevolver;
 use gun_system\models\revolver\No3Revolver;
@@ -76,7 +76,7 @@ class GunList
         ];
         $this->lmg = [
             new LewisGun(),
-            new ParabellumMG14(),
+            new Chauchat(),
             new MG15(),
             new BAR1918()
         ];
@@ -163,8 +163,8 @@ class GunList
             case LewisGun::NAME:
                 return new LewisGun();
                 break;
-            case ParabellumMG14::NAME:
-                return new ParabellumMG14();
+            case Chauchat::NAME:
+                return new Chauchat();
                 break;
             case MG15::NAME:
                 return new MG15();

@@ -127,7 +127,7 @@ class TeamDeathMatchInterpreter
 
             $this->client->joinOnTheWay(
                 $user,
-                $user->getBelongTeamId(),
+                $this->game->getRedTeam()->getId(),
                 $this->game->redTeamScore,
                 $this->game->blueTeamScore);
 
@@ -169,10 +169,10 @@ class TeamDeathMatchInterpreter
                             $attackerPlayer->getY() + 4,
                             $attackerPlayer->getZ()
                         ));
-                        
+
                         GameSystemListener::getInstance()->displayWeaponSelectForm($targetPlayer);
 
-                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer,$target, $targetEntity): void {
+                        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($targetPlayer, $target, $targetEntity): void {
                             if ($targetPlayer->isOnline()) {
                                 $targetPlayer->setGamemode(Player::ADVENTURE);
                                 if ($target->getParticipatedGameId() !== null) {
@@ -194,11 +194,7 @@ class TeamDeathMatchInterpreter
     private function getAmmo(User $user): Item {
         $weaponName = $user->getSelectedWeaponName();
         $weapon = GunList::fromString($weaponName);
-        if ($weapon instanceof Shotgun) {
-            $id = BulletId::fromGunType($weapon->getType(), $weapon->getBulletType());
-        } else {
-            $id = BulletId::fromGunType($weapon->getType());
-        }
+        $id = BulletId::fromGunType($weapon->getType());
         switch ($weapon->getType()->getTypeText()) {
             case GunType::HandGun()->getTypeText():
                 return ItemFactory::get($id, 0, 30);

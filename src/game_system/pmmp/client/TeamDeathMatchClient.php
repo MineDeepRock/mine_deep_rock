@@ -43,6 +43,7 @@ class TeamDeathMatchClient extends Client
             } else {
                 $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
             }
+
             $api = EasyScoreboardAPI::getInstance();
             $api->sendScoreboard($player, "sidebar", "TeamDeathMatch", false);
             $api->setScore($player, "sidebar", "RedTeamScore:", $redTeamScore, 2);
@@ -135,7 +136,7 @@ class TeamDeathMatchClient extends Client
             $player->getArmorInventory()->setLeggings(new IronLeggings());
             $player->getArmorInventory()->setBoots(new IronBoots());
         } else {
-            $player->setNameTag(TextFormat::RED . $player->getName());
+            $player->setNameTag(TextFormat::BLUE . $player->getName());
             $player->getArmorInventory()->setHelmet(new GoldHelmet());
             $player->getArmorInventory()->setChestplate(new GoldChestplate());
             $player->getArmorInventory()->setLeggings(new GoldLeggings());

@@ -12,18 +12,18 @@ use gun_system\models\GunRate;
 use gun_system\models\MagazineReloadingType;
 use gun_system\models\OverheatRate;
 
-class ParabellumMG14 extends LightMachineGun
+class Chauchat extends LightMachineGun
 {
     const NAME = "ParabellumMG14";
 
     public function __construct() {
         parent::__construct(
-            new BulletDamage(28),
-            new GunRate(11.7),
-            new BulletSpeed(870),
-            new MagazineReloadingType(100, 6),
+            new BulletDamage(38),
+            new GunRate(6),
+            new BulletSpeed(720),
+            new MagazineReloadingType(20, 3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(97, 75),
-            new OverheatRate(3));
+            new OverheatRate(0));
     }
 }
