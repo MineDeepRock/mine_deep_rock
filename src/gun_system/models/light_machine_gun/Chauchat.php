@@ -14,7 +14,7 @@ use gun_system\models\OverheatRate;
 
 class Chauchat extends LightMachineGun
 {
-    const NAME = "ParabellumMG14";
+    const NAME = "Chauchat";
 
     public function __construct() {
         parent::__construct(
