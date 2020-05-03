@@ -107,7 +107,7 @@ abstract class GunInterpreter
         }
 
         if ($this->reloadingController->isEmpty()) {
-            $this->owner->sendPopup("マガジンに弾がありません");
+            $this->tryReload();
             return;
         }
 
@@ -141,7 +141,7 @@ abstract class GunInterpreter
         }
 
         if ($this->reloadingController->isEmpty()) {
-            $this->owner->sendPopup("マガジンに弾がありません");
+            $this->tryReload();
             return;
         }
 
