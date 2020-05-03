@@ -206,14 +206,14 @@ class OverheatRate
 {
     private $perShoot;
 
-    public function __construct(int $perShoot) {
+    public function __construct(float $perShoot) {
         $this->perShoot = $perShoot;
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getPerShoot(): int {
+    public function getPerShoot(): float {
         return $this->perShoot;
     }
 }
