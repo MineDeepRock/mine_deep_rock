@@ -81,7 +81,7 @@ class GunCommand extends Command
 
     private $scheduler;
     private $server;
-    
+
     private $gunList;
 
     public function __construct(Plugin $owner, TaskScheduler $scheduler, Server $server) {
@@ -100,34 +100,31 @@ class GunCommand extends Command
         }
         $method = $args[0];
         if ($method === "give") {
-            if (count($args) < 3) {
-                $sender->sendMessage("/gun give [playerName] [name]");
+            if (count($args) < 4) {
+                $sender->sendMessage("/gun give [playerName] [name] [scope]");
                 return true;
             }
 
             $player = $sender->getServer()->getPlayer($args[1]);
-
-            $this->give($player, $args[2]);
-        } else if ($method === "attachment") {
-            if (count($args) < 3) {
-                $sender->sendMessage("/gun attachment [playerName] [name]");
-                return true;
+            if ($player === null){
+                $sender->sendMessage("プレイヤー(". $args[1] . "}がいません");
+                return false;
             }
-            $player = $sender->getServer()->getPlayer($args[1]);
-
-            $this->attachment($player, $args[2]);
+            $gunName = $args[2];
+            $scope = $args[3];
+            $ItemGun = $this->select($player,$gunName);
+            if ($ItemGun === null){
+                $sender->sendMessage("銃の名前が正しくありません");
+                return false;
+            }
+            $this->setScope($ItemGun,$scope);
+            $player->getInventory()->addItem($ItemGun);
+            $this->giveBullet($player,$ItemGun->getGunData()->getType());
         }
         return true;
     }
 
-    public function attachment(Player $player, string $name) {
-        $gun = null;
-        foreach ($player->getInventory()->getContents() as $item) {
-            if (is_subclass_of($item,"gun_system\pmmp\items\ItemGun")) {
-                $gun = $item;
-            }
-        }
-
+    private function setScope(ItemGun $gun, string $name) {
         if ($gun instanceof ItemAssaultRifle) {
             switch ($name) {
                 case "IronSight":
@@ -197,196 +194,168 @@ class GunCommand extends Command
         }
     }
 
-    //TODO:GunListをつかってリファクタリング
-    public function give(Player $player, string $name) {
+    private function select(Player $player, string $name): ItemGun {
         $gun = $this->gunList->fromString($name);
         switch ($name) {
             //Handgun
             case "Mle1903":
                 $item = new ItemHandGun("Mle1903", new HandGunInterpreter(new Mle1903(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::HandGun());
+                return $this->setItemDescription($item);
                 break;
             case "P08":
                 $item = new ItemHandGun("P08", new HandGunInterpreter(new P08(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::HandGun());
+                return $this->setItemDescription($item);
                 break;
             case "C96":
                 $item = new ItemHandGun("C96", new HandGunInterpreter(new C96(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::HandGun());
+                return $this->setItemDescription($item);
                 break;
             case "HowdahPistol":
                 $item = new ItemHandGun("HowdahPistol", new HandGunInterpreter(new HowdahPistol(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::HandGun());
+                return $this->setItemDescription($item);
                 break;
 
             //AssaultRifle
             case "M1907SL":
                 $item = new ItemAssaultRifle("M1907SL", new AssaultRifleInterpreter(new M1907SL(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::AssaultRifle());
+                return $this->setItemDescription($item);
                 break;
             case "CeiRigotti":
                 $item = new ItemAssaultRifle("CeiRigotti", new AssaultRifleInterpreter(new CeiRigotti(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::AssaultRifle());
+                return $this->setItemDescription($item);
                 break;
             case "FedorovAvtomat":
                 $item = new ItemAssaultRifle("FedorovAvtomat", new AssaultRifleInterpreter(new FedorovAvtomat(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::AssaultRifle());
+                return $this->setItemDescription($item);
                 break;
             case "Ribeyrolles":
                 $item = new ItemAssaultRifle("Ribeyrolles", new AssaultRifleInterpreter(new Ribeyrolles(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::AssaultRifle());
+                return $this->setItemDescription($item);
                 break;
 
             //Shotgun
             case "M1897":
                 $item = new ItemShotGun("M1897", new ShotgunInterpreter(new M1897(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Shotgun(), BulletId::SHOTGUN);
+                return $this->setItemDescription($item);
                 break;
             case "Model10A":
                 $item = new ItemShotGun("Model10A", new ShotgunInterpreter(new Model10A(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Shotgun(), BulletId::SHOTGUN);
+                return $this->setItemDescription($item);
                 break;
             case "Automatic12G":
                 $item = new ItemShotGun("Automatic12G", new ShotgunInterpreter(new Automatic12G(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Shotgun(), BulletId::SHOTGUN);
+                return $this->setItemDescription($item);
                 break;
             case "Model1900":
                 $item = new ItemShotGun("Model1900", new ShotgunInterpreter(new Model1900(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Shotgun(), BulletId::SHOTGUN);
+                return $this->setItemDescription($item);
                 break;
 
             //SniperRifle
             case "SMLEMK3":
                 $item = new ItemSniperRifle("SMLEMK3", new SniperRifleInterpreter(new SMLEMK3(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SniperRifle());
+                return $this->setItemDescription($item);
                 break;
             case "Gewehr98":
                 $item = new ItemSniperRifle("Gewehr98", new SniperRifleInterpreter(new Gewehr98(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SniperRifle());
+                return $this->setItemDescription($item);
                 break;
             case "MartiniHenry":
                 $item = new ItemSniperRifle("MartiniHenry", new SniperRifleInterpreter(new MartiniHenry(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SniperRifle());
+                return $this->setItemDescription($item);
                 break;
             case "VetterliVitali":
                 $item = new ItemSniperRifle("VetterliVitali", new SniperRifleInterpreter(new VetterliVitali(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SniperRifle());
+                return $this->setItemDescription($item);
                 break;
 
             //SMG
             case "MP18":
                 $item = new ItemSubMachineGun("MP18", new SubMachineGunInterpreter(new MP18(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SMG());
+                return $this->setItemDescription($item);
                 break;
             case "Automatico":
                 $item = new ItemSubMachineGun("Automatico", new SubMachineGunInterpreter(new Automatico(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SMG());
+                return $this->setItemDescription($item);
                 break;
             case "Hellriegel1915":
                 $item = new ItemSubMachineGun("Hellriegel1915", new SubMachineGunInterpreter(new Hellriegel1915(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SMG());
+                return $this->setItemDescription($item);
                 break;
             case "FrommerStopAuto":
                 $item = new ItemSubMachineGun("FrommerStopAuto", new SubMachineGunInterpreter(new FrommerStopAuto(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::SMG());
+                return $this->setItemDescription($item);
                 break;
 
             //LMG
             case "LewisGun":
                 $item = new ItemLightMachineGun("LewisGun", new LightMachineGunInterpreter(new LewisGun(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::LMG());
+                return $this->setItemDescription($item);
                 break;
             case "Chauchat":
                 $item = new ItemLightMachineGun("Chauchat", new LightMachineGunInterpreter(new Chauchat(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::LMG());
+                return $this->setItemDescription($item);
                 break;
             case "MG15":
                 $item = new ItemLightMachineGun("MG15", new LightMachineGunInterpreter(new MG15(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::LMG());
+                return $this->setItemDescription($item);
                 break;
             case "BAR1918":
                 $item = new ItemLightMachineGun("BAR1918", new LightMachineGunInterpreter(new BAR1918(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::LMG());
+                return $this->setItemDescription($item);
                 break;
 
-            //LMG
+            //Revolver
             case "ColtSAA":
                 $item = new ItemRevolver("ColtSAA", new RevolverInterpreter(new ColtSAA(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Revolver());
+                return $this->setItemDescription($item);
                 break;
             case "RevolverMk6":
                 $item = new ItemRevolver("RevolverMk6", new RevolverInterpreter(new RevolverMk6(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Revolver());
+                return $this->setItemDescription($item);
                 break;
             case "No3Revolver":
                 $item = new ItemRevolver("No3Revolver", new RevolverInterpreter(new No3Revolver(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Revolver());
+                return $this->setItemDescription($item);
                 break;
             case "NagantRevolver":
                 $item = new ItemRevolver("NagantRevolver", new RevolverInterpreter(new NagantRevolver(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
-                $player->getInventory()->addItem($this->setItemDescription($item));
-                $this->giveBullet($player, GunType::Revolver());
+                return $this->setItemDescription($item);
                 break;
         }
+        return null;
     }
 
     //TODO:リファクタリング
-    public function giveBullet(Player $player, GunType $gunType, int $bulletId = null) {
+    private function giveBullet(Player $player, GunType $gunType) {
         $player->getInventory()->addItem(ItemFactory::get(Item::ARROW, 0, 10));
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():
@@ -399,7 +368,7 @@ class GunCommand extends Command
                 $player->getInventory()->addItem(ItemFactory::get(BulletId::SNIPER_RIFLE, 0, 64));
                 break;
             case GunType::Shotgun()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get($bulletId, 0, 64));
+                $player->getInventory()->addItem(ItemFactory::get(BulletId::SHOTGUN, 0, 64));
                 break;
             case GunType::SMG()->getTypeText():
                 $player->getInventory()->addItem(ItemFactory::get(BulletId::SMG, 0, 128));
@@ -413,7 +382,7 @@ class GunCommand extends Command
         }
     }
 
-    public function setItemDescription(ItemGun $item): ItemGun {
+    private function setItemDescription(ItemGun $item): ItemGun {
         $gun = $item->getGunData();
         $bulletDamage = $gun->getBulletDamage();
         //$effectiveRange = $gun->getEffectiveRange();
