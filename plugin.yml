@@ -14,3 +14,6 @@ permissions:
       Gun.Command:
         default: true
         description: "ガンシステム"
+      State.Command:
+        default: true
+        description: "ステートコマンド"
