@@ -45,81 +45,81 @@ class WeaponSelectForm implements Form
             ];
         switch ($buttons[$data]) {
             case 'Assault Rifle':
-                $gunNameList = [];
+                $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof AssaultRifle)
-                        $gunNameList[] = $weapon->getName();
+                        $weaponList[] = $weapon;
                 }
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::AssaultRifle(),
-                    $gunNameList));
+                    $weaponList));
                 break;
             case 'Handgun':
-                $gunNameList = [];
+                $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof Handgun)
-                        $gunNameList[] = $weapon->getName();
+                        $weaponList[] = $weapon;
                 }
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::Handgun(),
-                    $gunNameList));
+                    $weaponList));
                 break;
             case 'Revolver':
-                $gunNameList = [];
+                $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof Revolver)
-                        $gunNameList[] = $weapon->getName();
+                        $weaponList[] = $weapon;
                 }
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::Revolver(),
-                    $gunNameList));
+                    $weaponList));
                 break;
             case 'Shotgun':
-                $gunNameList = [];
+                $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof Shotgun)
-                        $gunNameList[] = $weapon->getName();
+                        $weaponList[] = $weapon;
                 }
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::Shotgun(),
-                    $gunNameList));
+                    $weaponList));
                 break;
             case 'Sub Machine Gun':
-                $gunNameList = [];
+                $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof SubMachineGun)
-                        $gunNameList[] = $weapon->getName();
+                        $weaponList[] = $weapon;
                 }
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::SMG(),
-                    $gunNameList));
+                    $weaponList));
                 break;
             case 'Light Machine Gun':
-                $gunNameList = [];
+                $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof LightMachineGun)
-                        $gunNameList[] = $weapon->getName();
+                        $weaponList[] = $weapon;
                 }
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::LMG(),
-                    $gunNameList));
+                    $weaponList));
                 break;
             case 'Sniper Rifle':
-                $gunNameList = [];
+                $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof SniperRifle)
-                        $gunNameList[] = $weapon->getName();
+                        $weaponList[] = $weapon;
                 }
                 $player->sendForm(new GunSelectForm(
                     $this->onSelected,
                     GunType::SniperRifle(),
-                    $gunNameList));
+                    $weaponList));
                 break;
         }
     }

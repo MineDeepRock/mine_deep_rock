@@ -5,6 +5,7 @@ namespace game_system\pmmp\form\weapon_select_form;
 
 
 use Closure;
+use game_system\model\Weapon;
 use gun_system\models\GunList;
 use pocketmine\form\Form;
 use pocketmine\Player;
@@ -14,11 +15,11 @@ class GunSelectDetailForm implements Form
 {
     private $onSelected;
 
-    private $gunName;
+    private $weapon;
 
-    public function __construct(Closure $onSelected, string $gunName) {
+    public function __construct(Closure $onSelected, Weapon $weapon) {
         $this->onSelected = $onSelected;
-        $this->gunName = $gunName;
+        $this->weapon = $weapon;
     }
 
     public function handleResponse(Player $player, $data): void {
@@ -26,17 +27,18 @@ class GunSelectDetailForm implements Form
             return;
         }
 
-        ($this->onSelected)($this->gunName);
+        ($this->onSelected)($this->weapon->getName());
     }
 
     public function jsonSerialize() {
-        $gun = GunList::fromString($this->gunName);
+        $gun = GunList::fromString($this->weapon->getName());
 
         return [
             'type' => 'form',
             'title' => '銃選択',
             'content' =>
-                $this->gunName . "\n" .
+                $gun::NAME . "\n" .
+                "kill数" . $this->weapon->getKillCount() . "\n" .
                 TextFormat::RESET . "火力" . TextFormat::GRAY . $gun->getBulletDamage()->getValue() . "\n" .
                 TextFormat::RESET . "レート" . TextFormat::GRAY . $gun->getRate()->getPerSecond() . "\n" .
                 TextFormat::RESET . "リロード". TextFormat::GRAY . $gun->getReloadingType()->toString() . "\n" .
@@ -47,7 +49,7 @@ class GunSelectDetailForm implements Form
                     'text' => '選択',
                     'image' => [
                         'type' => 'url',
-                        'data' => 'textures/effective_ranges/' . $this->gunName
+                        'data' => 'textures/effective_ranges/' . $gun::NAME
                     ]
                 ]
             ]

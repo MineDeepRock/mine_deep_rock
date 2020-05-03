@@ -14,12 +14,12 @@ class GunSelectForm implements Form
     private $onSelected;
 
     private $gunType;
-    private $gunNameList;
+    private $weaponList;
 
-    public function __construct(Closure $onSelected, GunType $gunType, array $gunNameList) {
+    public function __construct(Closure $onSelected, GunType $gunType, array $weaponList) {
         $this->onSelected = $onSelected;
         $this->gunType = $gunType;
-        $this->gunNameList = $gunNameList;
+        $this->weaponList = $weaponList;
     }
 
     public function handleResponse(Player $player, $data): void {
@@ -27,13 +27,13 @@ class GunSelectForm implements Form
             return;
         }
 
-        $player->sendForm(new GunSelectDetailForm($this->onSelected,$this->gunNameList[$data]));
+        $player->sendForm(new GunSelectDetailForm($this->onSelected,$this->weaponList[$data]));
     }
 
     public function jsonSerialize() {
         $buttons = [];
-        foreach ($this->gunNameList as $name) {
-            $buttons[] = ['text' => $name];
+        foreach ($this->weaponList as $weapon) {
+            $buttons[] = ['text' => $weapon->getName()];
         }
 
         return [
