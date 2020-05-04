@@ -225,6 +225,30 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    public function onTapByForTapUser(DataPacketReceiveEvent $event) {
+        $packet = $event->getPacket();
+        if ($packet instanceof LevelSoundEventPacket) {
+            if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
+                $player = $event->getPlayer();
+                $item = $event->getPlayer()->getInventory()->getItemInHand();
+                switch ($item->getId()) {
+                    case WeaponSelectItem::ITEM_ID:
+                        $this->gameSystemListener->displayWeaponSelectForm($player);
+                        break;
+                    case SubWeaponSelectItem::ITEM_ID:
+                        $this->gameSystemListener->displaySubWeaponSelectForm($player);
+                        break;
+                    case WeaponPurchaseItem::ITEM_ID:
+                        $this->gameSystemListener->displayWeaponPurchaseForm($player);
+                        break;
+                    case SpawnItem::ITEM_ID:
+                        $this->gameSystemListener->spawnOnTeamDeath($player->getName());
+                        break;
+                }
+            }
+        }
+    }
+
     public function onDamage(EntityDamageEvent $event) {
         $entity = $event->getEntity();
         if ($entity instanceof Human) {
