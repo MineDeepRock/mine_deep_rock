@@ -5,10 +5,14 @@ namespace game_system\pmmp\command;
 
 
 use game_system\GameSystemListener;
-use game_system\model\map\RealisticWWIBattlefieldExtended;
+use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\WorldController;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\plugin\Plugin;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
@@ -79,6 +83,27 @@ class GameCommand extends Command
         } else if ($method === "quit" || $method === "hub") {
             $this->quit($player->getName());
             $player->sendMessage("試合から抜けました");
+        } else if ($method === "ammo") {
+            $player = $sender->getServer()->getPlayer($sender->getName());
+            $nbt = new CompoundTag('', [
+                'Pos' => new ListTag('Pos', [
+                    new DoubleTag('', $player->getX() + 0.5),
+                    new DoubleTag('', $player->getY() + 0.5),
+                    new DoubleTag('', $player->getZ() + 0.5)
+                ]),
+                'Motion' => new ListTag('Motion', [
+                    new DoubleTag('', 0),
+                    new DoubleTag('', 0),
+                    new DoubleTag('', 0)
+                ]),
+                'Rotation' => new ListTag('Rotation', [
+                    new FloatTag("", $player->getYaw()),
+                    new FloatTag("", $player->getPitch())
+                ]),
+            ]);
+
+            $ammoBox = new AmmoBoxEntity($player->getLevel(),$nbt,$this->scheduler);
+            $ammoBox->spawnToAll();
         }
         return true;
     }

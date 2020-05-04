@@ -3,6 +3,7 @@
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
+use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
@@ -18,12 +19,11 @@ use gun_system\pmmp\items\bullet\ItemRevolverBullet;
 use gun_system\pmmp\items\bullet\ItemShotgunBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\inventory\InventoryTransactionEvent;
@@ -96,6 +96,8 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new SpawnItem(), true);
         Item::addCreativeItem(Item::get(SpawnItem::ITEM_ID));
+
+        Entity::registerEntity(AmmoBoxEntity::class, true, ['AmmoBox']);
 
         $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
     }
@@ -268,5 +270,17 @@ class Main extends PluginBase implements Listener
         $playerName = $event->getPlayer()->getName();
 
         $this->gameSystemListener->quitGame($playerName);
+    }
+
+    public function onTapAmmoBox(EntityDamageEvent $event): void {
+        if($event instanceof EntityDamageByEntityEvent){
+            $entity = $event->getEntity();
+            $player = $this->getServer()->getPlayer($event->getDamager()->getName());
+            if ($player === null) return;
+
+            if($entity->getName() == "AmmoBox") {
+                $entity->onTap($player);
+            }
+        }
     }
 }
