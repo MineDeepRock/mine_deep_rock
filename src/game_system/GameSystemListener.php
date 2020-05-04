@@ -163,10 +163,14 @@ class GameSystemListener
 
     public function displayWeaponSelectForm(Player $player) {
         $playerName = $player->getName();
+        $user = $this->usersService->getUserData($playerName);
+
         $player->sendForm(new WeaponSelectForm(function ($weaponName, $scopeName) use ($playerName) {
             $this->usersService->selectWeapon($playerName, $weaponName);
             $this->weaponService->setScope($playerName, $weaponName, $scopeName);
-        }, $this->weaponService->getOwnWeapons($playerName)));
+        },
+            $this->weaponService->getOwnWeapons($playerName),
+            $user->getMilitaryDepartment()->getCanEquipGunTypes()));
     }
 
     public function displaySubWeaponSelectForm(Player $player) {

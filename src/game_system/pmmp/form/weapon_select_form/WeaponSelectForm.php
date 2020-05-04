@@ -22,10 +22,12 @@ class WeaponSelectForm implements Form
     private $onSelected;
 
     private $ownWeapons;
+    private $canEquipGunTypes;
 
-    public function __construct(Closure $onSelected, array $ownWeapons) {
+    public function __construct(Closure $onSelected, array $ownWeapons, array $canEquipGunTypes) {
         $this->onSelected = $onSelected;
         $this->ownWeapons = $ownWeapons;
+        $this->canEquipGunTypes = $canEquipGunTypes;
     }
 
     public function handleResponse(Player $player, $data): void {
@@ -33,16 +35,12 @@ class WeaponSelectForm implements Form
             return;
         }
 
-        $buttons =
-            [
-                'Assault Rifle',
-                'Shotgun',
-                'Sub Machine Gun',
-                'Light Machine Gun',
-                'Sniper Rifle'
-            ];
+        $buttons = array_map(function($gunType){
+            return $gunType->getTypeText();
+        },$this->canEquipGunTypes);
+
         switch ($buttons[$data]) {
-            case 'Assault Rifle':
+            case GunType::AssaultRifle()->getTypeText():
                 $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof AssaultRifle)
@@ -53,7 +51,7 @@ class WeaponSelectForm implements Form
                     GunType::AssaultRifle(),
                     $weaponList));
                 break;
-            case 'Shotgun':
+            case GunType::Shotgun()->getTypeText():
                 $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof Shotgun)
@@ -64,7 +62,7 @@ class WeaponSelectForm implements Form
                     GunType::Shotgun(),
                     $weaponList));
                 break;
-            case 'Sub Machine Gun':
+            case GunType::SMG()->getTypeText():
                 $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof SubMachineGun)
@@ -75,7 +73,7 @@ class WeaponSelectForm implements Form
                     GunType::SMG(),
                     $weaponList));
                 break;
-            case 'Light Machine Gun':
+            case GunType::LMG()->getTypeText():
                 $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof LightMachineGun)
@@ -86,7 +84,7 @@ class WeaponSelectForm implements Form
                     GunType::LMG(),
                     $weaponList));
                 break;
-            case 'Sniper Rifle':
+            case GunType::SniperRifle()->getTypeText():
                 $weaponList = [];
                 foreach ($this->ownWeapons as $weapon) {
                     if (GunList::fromString($weapon->getName()) instanceof SniperRifle)
@@ -101,17 +99,15 @@ class WeaponSelectForm implements Form
     }
 
     public function jsonSerialize() {
+        $buttons = array_map(function($gunType){
+            return ['text' => $gunType->getTypeText()];
+        },$this->canEquipGunTypes);
+
         return [
             'type' => 'form',
             'title' => '銃選択',
             'content' => '武器種',
-            'buttons' => [
-                ['text' => 'Assault Rifle'],
-                ['text' => 'Shotgun'],
-                ['text' => 'Sub Machine Gun'],
-                ['text' => 'Light Machine Gun'],
-                ['text' => 'Sniper Rifle']
-            ]
+            'buttons' => $buttons
         ];
     }
 }
