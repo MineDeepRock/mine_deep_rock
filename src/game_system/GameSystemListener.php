@@ -13,6 +13,7 @@ use game_system\pmmp\form\AttachmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
+use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
@@ -247,12 +248,13 @@ class GameSystemListener
         $player->sendMessage("所持金:" . $user->getMoney());
     }
 
-    public function spawnAmmoBox(Player $player){
+    public function spawnAmmoBox(Player $player) {
+        $player->getInventory()->remove(new SpawnAmmoBoxItem());
         $nbt = new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $player->getX() + 0.5),
+                new DoubleTag('', $player->getX()),
                 new DoubleTag('', $player->getY() + 0.5),
-                new DoubleTag('', $player->getZ() + 0.5)
+                new DoubleTag('', $player->getZ())
             ]),
             'Motion' => new ListTag('Motion', [
                 new DoubleTag('', 0),
@@ -272,7 +274,7 @@ class GameSystemListener
             $this->usersService,
             $this->weaponService,
             $this->scheduler);
-        
+
         $ammoBox->spawnToAll();
     }
 }

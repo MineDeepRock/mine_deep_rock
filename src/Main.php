@@ -98,6 +98,9 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new SpawnItem(), true);
         Item::addCreativeItem(Item::get(SpawnItem::ITEM_ID));
 
+        ItemFactory::registerItem(new SpawnAmmoBoxItem(), true);
+        Item::addCreativeItem(Item::get(SpawnAmmoBoxItem::ITEM_ID));
+
         Entity::registerEntity(AmmoBoxEntity::class, true, ['AmmoBox']);
 
         $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
@@ -256,7 +259,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
-                $this->gameSystemListener->spawnAmmoBox($player->getName());
+                $this->gameSystemListener->spawnAmmoBox($player);
             }
         }
     }

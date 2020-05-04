@@ -121,35 +121,39 @@ class GunCommand extends Command
             $player->getInventory()->addItem($ItemGun);
         } else if ($method === "ammo") {
 
-            if (count($args) < 4) {
+            if (count($args) < 3) {
                 $sender->sendMessage("/gun ammo [playerName] [gunType] [count]");
                 return true;
             }
 
             $player = $sender->getServer()->getPlayer($args[1]);
             $gunType = $args[2];
-            $count = $args[3];
+            if (count($args) < 4) {
+                $count = null;
+            } else {
+                $count = $args[3];
+            }
             switch ($gunType) {
                 case GunType::HandGun()->getTypeText():
-                    $this->giveAmmo($player, GunType::HandGun(), $count);
+                    $this->giveAmmo($player, GunType::HandGun(), $count ?? 32);
                     break;
                 case GunType::Revolver()->getTypeText():
-                    $this->giveAmmo($player, GunType::Revolver(), $count);
+                    $this->giveAmmo($player, GunType::Revolver(), $count ?? 32);
                     break;
                 case GunType::AssaultRifle()->getTypeText():
-                    $this->giveAmmo($player, GunType::AssaultRifle(), $count);
+                    $this->giveAmmo($player, GunType::AssaultRifle(), $count ?? 64);
                     break;
                 case GunType::Shotgun()->getTypeText():
-                    $this->giveAmmo($player, GunType::Shotgun(), $count);
+                    $this->giveAmmo($player, GunType::Shotgun(), $count ?? 40);
                     break;
                 case GunType::SMG()->getTypeText():
-                    $this->giveAmmo($player, GunType::SMG(), $count);
+                    $this->giveAmmo($player, GunType::SMG(), $count ?? 64);
                     break;
                 case GunType::LMG()->getTypeText():
-                    $this->giveAmmo($player, GunType::LMG(), $count);
+                    $this->giveAmmo($player, GunType::LMG(), $count ?? 128);
                     break;
                 case GunType::SniperRifle()->getTypeText():
-                    $this->giveAmmo($player, GunType::SniperRifle(), $count);
+                    $this->giveAmmo($player, GunType::SniperRifle(), $count ?? 32);
                     break;
             }
         }
@@ -227,6 +231,7 @@ class GunCommand extends Command
     }
 
     private function select(Player $player, string $name): ?ItemGun {
+        $player->getInventory()->addItem(ItemFactory::get(Item::ARROW, 0, 5));
         switch ($name) {
             //Handgun
             case "Mle1903":
@@ -387,7 +392,6 @@ class GunCommand extends Command
 
     //TODO:リファクタリング
     private function giveAmmo(Player $player, GunType $gunType, int $count) {
-        $player->getInventory()->addItem(ItemFactory::get(Item::ARROW, 0, $count));
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():
                 $player->getInventory()->addItem(ItemFactory::get(BulletId::HAND_GUN, 0, $count));
