@@ -83,27 +83,6 @@ class GameCommand extends Command
         } else if ($method === "quit" || $method === "hub") {
             $this->quit($player->getName());
             $player->sendMessage("試合から抜けました");
-        } else if ($method === "ammo") {
-            $player = $sender->getServer()->getPlayer($sender->getName());
-            $nbt = new CompoundTag('', [
-                'Pos' => new ListTag('Pos', [
-                    new DoubleTag('', $player->getX() + 0.5),
-                    new DoubleTag('', $player->getY() + 0.5),
-                    new DoubleTag('', $player->getZ() + 0.5)
-                ]),
-                'Motion' => new ListTag('Motion', [
-                    new DoubleTag('', 0),
-                    new DoubleTag('', 0),
-                    new DoubleTag('', 0)
-                ]),
-                'Rotation' => new ListTag('Rotation', [
-                    new FloatTag("", $player->getYaw()),
-                    new FloatTag("", $player->getPitch())
-                ]),
-            ]);
-
-            $ammoBox = new AmmoBoxEntity($player->getLevel(),$nbt,$this->scheduler);
-            $ammoBox->spawnToAll();
         }
         return true;
     }

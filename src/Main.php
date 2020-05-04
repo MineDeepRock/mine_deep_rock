@@ -4,6 +4,7 @@ use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
+use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
@@ -251,6 +252,15 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    public function onTapBySpawnAmmoBoxItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
+                $this->gameSystemListener->spawnAmmoBox($player->getName());
+            }
+        }
+    }
+
     public function onDamage(EntityDamageEvent $event) {
         $entity = $event->getEntity();
         if ($entity instanceof Human) {
@@ -270,17 +280,5 @@ class Main extends PluginBase implements Listener
         $playerName = $event->getPlayer()->getName();
 
         $this->gameSystemListener->quitGame($playerName);
-    }
-
-    public function onTapAmmoBox(EntityDamageEvent $event): void {
-        if($event instanceof EntityDamageByEntityEvent){
-            $entity = $event->getEntity();
-            $player = $this->getServer()->getPlayer($event->getDamager()->getName());
-            if ($player === null) return;
-
-            if($entity->getName() == "AmmoBox") {
-                $entity->onTap($player);
-            }
-        }
     }
 }

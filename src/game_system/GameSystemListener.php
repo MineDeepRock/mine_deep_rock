@@ -8,6 +8,7 @@ use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
+use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\form\AttachmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
@@ -30,6 +31,10 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
@@ -240,5 +245,34 @@ class GameSystemListener
     public function showUserStatus(Player $player) {
         $user = $this->usersService->getUserData($player->getName());
         $player->sendMessage("所持金:" . $user->getMoney());
+    }
+
+    public function spawnAmmoBox(Player $player){
+        $nbt = new CompoundTag('', [
+            'Pos' => new ListTag('Pos', [
+                new DoubleTag('', $player->getX() + 0.5),
+                new DoubleTag('', $player->getY() + 0.5),
+                new DoubleTag('', $player->getZ() + 0.5)
+            ]),
+            'Motion' => new ListTag('Motion', [
+                new DoubleTag('', 0),
+                new DoubleTag('', 0),
+                new DoubleTag('', 0)
+            ]),
+            'Rotation' => new ListTag('Rotation', [
+                new FloatTag("", $player->getYaw()),
+                new FloatTag("", $player->getPitch())
+            ]),
+        ]);
+
+        $ammoBox = new AmmoBoxEntity(
+            $player->getLevel(),
+            $nbt,
+            $player,
+            $this->usersService,
+            $this->weaponService,
+            $this->scheduler);
+        
+        $ammoBox->spawnToAll();
     }
 }
