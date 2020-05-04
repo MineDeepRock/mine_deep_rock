@@ -119,7 +119,37 @@ class GunCommand extends Command
             }
             $this->setScope($ItemGun,$scope);
             $player->getInventory()->addItem($ItemGun);
-            $this->giveBullet($player,$ItemGun->getGunData()->getType());
+        } else if ($method === "ammo"){
+
+            if (count($args) < 3) {
+                $sender->sendMessage("/gun ammo [playerName] [gunType]");
+                return true;
+            }
+
+            $player = $sender->getServer()->getPlayer($args[1]);
+            switch ($args[2]) {
+                case GunType::HandGun()->getTypeText():
+                    $this->giveAmmo($player,GunType::HandGun());
+                    break;
+                case GunType::Revolver()->getTypeText():
+                    $this->giveAmmo($player,GunType::Revolver());
+                    break;
+                case GunType::AssaultRifle()->getTypeText():
+                    $this->giveAmmo($player,GunType::AssaultRifle());
+                    break;
+                case GunType::Shotgun()->getTypeText():
+                    $this->giveAmmo($player,GunType::Shotgun());
+                    break;
+                case GunType::SMG()->getTypeText():
+                    $this->giveAmmo($player,GunType::SMG());
+                    break;
+                case GunType::LMG()->getTypeText():
+                    $this->giveAmmo($player,GunType::LMG());
+                    break;
+                case GunType::SniperRifle()->getTypeText():
+                    $this->giveAmmo($player,GunType::SniperRifle());
+                    break;
+            }
         }
         return true;
     }
@@ -355,7 +385,7 @@ class GunCommand extends Command
     }
 
     //TODO:リファクタリング
-    private function giveBullet(Player $player, GunType $gunType) {
+    private function giveAmmo(Player $player, GunType $gunType) {
         $player->getInventory()->addItem(ItemFactory::get(Item::ARROW, 0, 10));
         switch ($gunType->getTypeText()) {
             case GunType::HandGun()->getTypeText():

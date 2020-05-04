@@ -11,7 +11,6 @@ use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
 use game_system\model\Weapon;
-use game_system\pmmp\items\AttachmentSelectItem;
 use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
@@ -91,7 +90,7 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(Player $player, Weapon $selectedWeapon, Weapon $selectedSubWeapon, string $mapName, Coordinate $coordinate): void {
+    public function spawn(Player $player, Weapon $selectedWeapon, string $selectedWeaponType, Weapon $selectedSubWeapon, string $selectedSubWeaponType, string $mapName, Coordinate $coordinate): void {
         if ($player !== null) {
 
             $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
@@ -100,9 +99,18 @@ class TeamDeathMatchClient extends Client
             Server::getInstance()->dispatchCommand(
                 new ConsoleCommandSender(),
                 "gun give " . $player->getName() . " " . $selectedWeapon->getName() . " " . $selectedWeapon->getScope());
+
             Server::getInstance()->dispatchCommand(
                 new ConsoleCommandSender(),
-                "gun give " . $player->getName() . " " . $selectedSubWeapon->getName() . " ". $selectedSubWeapon->getScope());
+                "gun give " . $player->getName() . " " . $selectedSubWeapon->getName() . " " . $selectedSubWeapon->getScope());
+
+            Server::getInstance()->dispatchCommand(
+                new ConsoleCommandSender(),
+                "gun ammo " . $player->getName() . " " . $selectedWeaponType);
+
+            Server::getInstance()->dispatchCommand(
+                new ConsoleCommandSender(),
+                "gun ammo " . $player->getName() . " " . $selectedSubWeaponType);
 
             $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
 

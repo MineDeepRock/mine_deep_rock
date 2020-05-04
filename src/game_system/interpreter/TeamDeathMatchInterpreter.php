@@ -273,16 +273,20 @@ class TeamDeathMatchInterpreter
 
         $selectedWeaponName = $user->getSelectedWeaponName();
         $selectedWeapon = $this->weaponService->getWeapon($user->getName(), $selectedWeaponName);
+        $selectedWeaponType = GunList::fromString($selectedWeaponName)->getType()->getTypeText();
 
         $selectedSubWeaponName = $user->getSelectedSubWeaponName();
         $selectedSubWeapon = $this->weaponService->getWeapon($user->getName(), $selectedSubWeaponName);
+        $selectedSubWeaponType = GunList::fromString($selectedSubWeaponName)->getType()->getTypeText();
 
         $mapName = $this->game->getMap()->getName();
 
         $this->client->spawn(
             $player,
             $selectedWeapon,
+            $selectedWeaponType,
             $selectedSubWeapon,
+            $selectedSubWeaponType,
             $mapName,
             $this->game->getSpawnPoint($user->getBelongTeamId()));
     }
