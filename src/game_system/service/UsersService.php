@@ -34,6 +34,10 @@ class UsersService extends Service
         return $this->repository->getParticipants($gameId->value());
     }
 
+    public function selectMilitaryDepartment(string $userName, string $militaryDepartmentName): void {
+        $this->repository->selectMilitaryDepartment($userName, $militaryDepartmentName);
+    }
+
     public function selectWeapon(string $userName, string $weaponName): void {
         $this->repository->selectWeapon($userName, $weaponName);
     }

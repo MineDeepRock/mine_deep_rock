@@ -11,6 +11,7 @@ use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
 use game_system\model\Weapon;
+use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
@@ -142,6 +143,7 @@ class TeamDeathMatchClient extends Client
             //TODO:Titleにしたい
             $targetPlayer->sendPopup(TextFormat::RED . $attacker->getName() . "に倒された");
             $targetPlayer->getInventory()->setContents([]);
+            $targetPlayer->getInventory()->addItem(new MilitaryDepartmentSelectItem());
             $targetPlayer->getInventory()->addItem(new WeaponSelectItem());
             $targetPlayer->getInventory()->addItem(new SubWeaponSelectItem());
             $targetPlayer->getInventory()->addItem(new SpawnItem());

@@ -11,16 +11,20 @@ abstract class MilitaryDepartment
     private $canEquipGadgetTypes = [];
     private $effectIds = [];
 
+    private $defaultWeaponName = "";
+
     public function __construct(
         string $name,
         array $canEquipGunTypes,
         array $canEquipGadgetTypes,
-        array $effectIds) {
+        array $effectIds,
+        string $defaultWeaponName) {
 
         $this->name = $name;
         $this->canEquipGunTypes = $canEquipGunTypes;
         $this->canEquipGadgetTypes = $canEquipGadgetTypes;
         $this->effectIds = $effectIds;
+        $this->defaultWeaponName = $defaultWeaponName;
     }
 
     static function fromName(string $name): ?MilitaryDepartment {
@@ -67,5 +71,12 @@ abstract class MilitaryDepartment
      */
     public function getEffectIds(): array {
         return $this->effectIds;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultWeaponName(): string {
+        return $this->defaultWeaponName;
     }
 }

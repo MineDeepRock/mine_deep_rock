@@ -4,6 +4,7 @@ use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
+use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
@@ -233,6 +234,24 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    public function onTapBySpawnAmmoBoxItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
+                $this->gameSystemListener->spawnAmmoBox($player);
+            }
+        }
+    }
+
+    public function onTapByMilitaryDepartmentSelectItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === MilitaryDepartmentSelectItem::ITEM_ID) {
+                $this->gameSystemListener->displayMilitaryDepartmentSelectForm($player);
+            }
+        }
+    }
+
     public function onTapByForTapUser(DataPacketReceiveEvent $event) {
         $packet = $event->getPacket();
         if ($packet instanceof LevelSoundEventPacket) {
@@ -252,16 +271,13 @@ class Main extends PluginBase implements Listener
                     case SpawnItem::ITEM_ID:
                         $this->gameSystemListener->spawnOnTeamDeath($player->getName());
                         break;
+                    case SpawnAmmoBoxItem::ITEM_ID:
+                        $this->gameSystemListener->spawnAmmoBox($player);
+                        break;
+                    case MilitaryDepartmentSelectItem::ITEM_ID:
+                        $this->gameSystemListener->displayMilitaryDepartmentSelectForm($player);
+                        break;
                 }
-            }
-        }
-    }
-
-    public function onTapBySpawnAmmoBoxItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
-                $this->gameSystemListener->spawnAmmoBox($player);
             }
         }
     }

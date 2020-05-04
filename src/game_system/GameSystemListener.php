@@ -10,9 +10,11 @@ use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\form\AttachmentSelectForm;
+use game_system\pmmp\form\MilitaryDepartmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
+use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
@@ -161,6 +163,15 @@ class GameSystemListener
         }
     }
 
+    public function displayMilitaryDepartmentSelectForm(Player $player) {
+        $playerName = $player->getName();
+
+        $player->sendForm(new MilitaryDepartmentSelectForm(function ($militaryDepartment) use ($playerName) {
+            $this->usersService->selectMilitaryDepartment($playerName, $militaryDepartment->getName());
+            $this->usersService->selectWeapon($playerName, $militaryDepartment->getDefaultWeaponName());
+        }));
+    }
+
     public function displayWeaponSelectForm(Player $player) {
         $playerName = $player->getName();
         $user = $this->usersService->getUserData($playerName);
@@ -201,6 +212,7 @@ class GameSystemListener
         $player->getInventory()->setContents([]);
         $worldController = new WorldController();
         $worldController->teleport($player, "lobby");
+        $player->getInventory()->addItem(new MilitaryDepartmentSelectItem());
         $player->getInventory()->addItem(new WeaponSelectItem());
         $player->getInventory()->addItem(new SubWeaponSelectItem());
         $player->getInventory()->addItem(new WeaponPurchaseItem());
