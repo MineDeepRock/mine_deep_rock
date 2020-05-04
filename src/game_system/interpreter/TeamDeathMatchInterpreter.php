@@ -5,23 +5,15 @@ namespace game_system\interpreter;
 
 
 use Closure;
-use game_system\GameSystemListener;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\model\User;
 use game_system\pmmp\client\TeamDeathMatchClient;
-use game_system\pmmp\items\SpawnItem;
-use game_system\pmmp\items\SubWeaponSelectItem;
-use game_system\pmmp\items\WeaponSelectItem;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\BulletId;
 use gun_system\models\GunList;
 use gun_system\models\GunType;
-use gun_system\models\shotgun\Shotgun;
-use gun_system\pmmp\items\ItemShotGun;
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
@@ -175,7 +167,7 @@ class TeamDeathMatchInterpreter
         //自分自身には効果がないように
         if (!($attackerUser->getName() === $targetUser->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
             $target = Server::getInstance()->getPlayer($targetUser->getName());
-            $this->client->scare($target, $item);
+            $this->client->scare($target, $targetUser->getMilitaryDepartment()->getEffectIds(), $item);
         }
     }
 
@@ -214,7 +206,7 @@ class TeamDeathMatchInterpreter
         }
     }
 
-    private function getAmmo(String $weaponName): Item {
+    private function getAmmo(string $weaponName): Item {
         $weapon = GunList::fromString($weaponName);
         $id = BulletId::fromGunType($weapon->getType());
         switch ($weapon->getType()->getTypeText()) {
@@ -261,9 +253,6 @@ class TeamDeathMatchInterpreter
             return;
 
         $player->setGamemode(Player::ADVENTURE);
-        $player->getInventory()->remove(new WeaponSelectItem());
-        $player->getInventory()->remove(new SubWeaponSelectItem());
-        $player->getInventory()->remove(new SpawnItem());
 
         if ($user->getParticipatedGameId() === null)
             return;
@@ -283,6 +272,7 @@ class TeamDeathMatchInterpreter
 
         $this->client->spawn(
             $player,
+            $user->getMilitaryDepartment()->getEffectIds(),
             $selectedWeapon,
             $selectedWeaponType,
             $selectedSubWeapon,

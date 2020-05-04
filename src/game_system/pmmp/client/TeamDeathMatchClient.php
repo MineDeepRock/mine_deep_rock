@@ -37,7 +37,7 @@ use pocketmine\utils\TextFormat;
 
 class TeamDeathMatchClient extends Client
 {
-    public function start(Array $participants, TeamId $redTeamId, int $redTeamScore, int $blueTeamScore): void {
+    public function start(array $participants, TeamId $redTeamId, int $redTeamScore, int $blueTeamScore): void {
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
 
@@ -91,10 +91,13 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(Player $player, Weapon $selectedWeapon, string $selectedWeaponType, Weapon $selectedSubWeapon, string $selectedSubWeaponType, string $mapName, Coordinate $coordinate): void {
+    public function spawn(Player $player, array $effectIds, Weapon $selectedWeapon, string $selectedWeaponType, Weapon $selectedSubWeapon, string $selectedSubWeaponType, string $mapName, Coordinate $coordinate): void {
         if ($player !== null) {
-
-            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
+            $player->removeAllEffects();
+            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::HEALING), 20 * 5, 4, false));
+            foreach ($effectIds as $effectId) {
+                $player->addEffect(new EffectInstance(Effect::getEffect($effectId), null, 1, false));
+            }
 
             $player->getInventory()->setContents([]);
             Server::getInstance()->dispatchCommand(
@@ -121,14 +124,18 @@ class TeamDeathMatchClient extends Client
         }
     }
 
-    public function scare(Player $target, Item $item) {
-        $target->removeEffect(Effect::REGENERATION);
-        $item->scare(function () use ($target) {
+    public function scare(Player $target, array $effectIds, Item $item) {
+        $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1, false));
+        foreach ($effectIds as $effectId) {
+            $target->removeEffect($effectId);
+        }
+        $item->scare(function () use ($target,$effectIds) {
             if ($target->isOnline()) {
-                $target->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), null, 1, false));
+                foreach ($effectIds as $effectId) {
+                    $target->addEffect(new EffectInstance(Effect::getEffect($effectId), null, 1, false));
+                }
             }
         });
-        $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1, false));
     }
 
     public function onReceiveDamage(Player $attacker, Player $targetPlayer, int $damage, string $weaponName): void {

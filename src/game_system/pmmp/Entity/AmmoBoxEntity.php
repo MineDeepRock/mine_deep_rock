@@ -22,7 +22,13 @@ class AmmoBoxEntity extends BoxEntity
 
     private $interpreter;
 
-    public function __construct(Level $level, CompoundTag $nbt, Player $owner, UsersService $usersService, WeaponsService $weaponService, TaskScheduler $scheduler) {
+    public function __construct(
+        Level $level,
+        CompoundTag $nbt,
+        Player $owner,
+        UsersService $usersService,
+        WeaponsService $weaponService,
+        TaskScheduler $scheduler) {
         parent::__construct($level, $nbt);
         $this->interpreter = new AmmoBoxInterpreter(
             $owner,
