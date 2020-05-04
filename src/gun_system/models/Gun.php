@@ -239,7 +239,7 @@ class MagazineReloadingType extends ReloadingType
     }
 
     function toString(): string {
-        return strval($this->second);
+        return "装填数:" . $this->magazineCapacity . ", リロード時間:" . $this->second;
     }
 }
 
@@ -257,7 +257,7 @@ class ClipReloadingType extends ReloadingType
     }
 
     function toString(): string {
-        return " クリップ:" . "(" . $this->clipCapacity . ")" . $this->secondOfClip . ", 1発:" . $this->secondOfOne;
+        return "装填数:" . $this->magazineCapacity . ", リロード時間: " . $this->secondOfClip . "(クリップ" . $this->clipCapacity . ") " . $this->secondOfOne . "(一発)";
     }
 
 }
