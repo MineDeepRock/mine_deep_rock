@@ -58,10 +58,13 @@ class MedicineBoxEntity extends BoxEntity
 
     public function giveAgain() : void{
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
-                $contain = $this->owner->getInventory()->contains(new SpawnMedicineBoxItem());
-                if (!$contain && $this->owner->getGamemode() === Player::ADVENTURE) {
-                    $this->owner->getInventory()->addItem(new SpawnMedicineBoxItem());
-                }
+            if (!$this->owner->isOnline()) return;
+            if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
+
+            $contain = $this->owner->getInventory()->contains(new SpawnMedicineBoxItem());
+            if ($contain) return;
+
+            $this->owner->getInventory()->addItem(new SpawnMedicineBoxItem());
         }), 20 * 10);
     }
 

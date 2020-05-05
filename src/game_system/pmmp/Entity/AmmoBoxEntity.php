@@ -45,7 +45,7 @@ class AmmoBoxEntity extends BoxEntity
             $weaponService,
             $scheduler);
 
-        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
+        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) {
                 $this->kill();
                 $this->giveAgain();
@@ -59,12 +59,15 @@ class AmmoBoxEntity extends BoxEntity
         $this->giveAgain();
     }
 
-    public function giveAgain() : void{
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
+    public function giveAgain(): void {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
+            if (!$this->owner->isOnline()) return;
+            if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
+
             $contain = $this->owner->getInventory()->contains(new SpawnAmmoBoxItem());
-            if (!$contain && $this->owner->getGamemode() === Player::ADVENTURE) {
-                $this->owner->getInventory()->addItem(new SpawnAmmoBoxItem());
-            }
+            if ($contain) return;
+
+            $this->owner->getInventory()->addItem(new SpawnAmmoBoxItem());
         }), 20 * 10);
     }
 
