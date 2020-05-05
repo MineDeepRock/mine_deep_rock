@@ -55,27 +55,9 @@ class BoxEntity extends Human
     }
 
     private function initSkin(): void {
-        $path = "D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\\textures\\" . $this->skinName . ".png";
-        $img = imagecreatefrompng($path);
-        $skinbytes = '';
-        $l = (int)getimagesize($path)[1];
-
-        for ($y = 0; $y < $l; $y++) {
-            for ($x = 0; $x < 64; $x++) {
-                $argb = imagecolorat($img, $x, $y);
-                $a = ((~((int)($argb >> 24))) << 1) & 0xff;
-                $r = ($argb >> 16) & 0xff;
-                $g = ($argb >> 8) & 0xff;
-                $b = $argb & 0xff;
-                $skinbytes .= chr($r) . chr($g) . chr($b) . chr($a);
-            }
-        }
-
-        imagedestroy($img);
-
         $this->setSkin(new Skin(
             $this->skinId,
-            $skinbytes,
+            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\\textures\\" . $this->skinName . ".skin"),
             $this->capeData,
             $this->geometryId,
             file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\models\\" . $this->geometryName)
