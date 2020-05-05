@@ -4,9 +4,11 @@ use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
+use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnItem;
+use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
@@ -102,7 +104,12 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new SpawnAmmoBoxItem(), true);
         Item::addCreativeItem(Item::get(SpawnAmmoBoxItem::ITEM_ID));
 
+        ItemFactory::registerItem(new SpawnMedicineBoxItem(), true);
+        Item::addCreativeItem(Item::get(SpawnMedicineBoxItem::ITEM_ID));
+
         Entity::registerEntity(AmmoBoxEntity::class, true, ['AmmoBox']);
+
+        Entity::registerEntity(MedicineBoxEntity::class, true, ['MedicineBox']);
 
         $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
     }
@@ -185,15 +192,16 @@ class Main extends PluginBase implements Listener
         }
     }
 
-    public function onBulletHit(ProjectileHitEntityEvent $event) {
+    public function onBulletHit(ProjectileHitEntityEvent $event) :void {
         $entity = $event->getEntity();
         $attacker = $entity->getOwningEntity();
-        if (!($entity instanceof AmmoBoxEntity)) {
-            if ($entity instanceof \game_system\pmmp\Entity\Egg && $attacker instanceof Human) {
-                $item = $attacker->getInventory()->getItemInHand();
-                $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
-                $this->gameSystemListener->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
-            }
+        if ($event->getEntityHit() instanceof AmmoBoxEntity) return;
+        if ($event->getEntityHit() instanceof MedicineBoxEntity) return;
+
+        if ($entity instanceof \game_system\pmmp\Entity\Egg && $attacker instanceof Human) {
+            $item = $attacker->getInventory()->getItemInHand();
+            $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
+            $this->gameSystemListener->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
         }
     }
 
@@ -243,6 +251,15 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    public function onTapBySpawnMedicineBoxItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
+                $this->gameSystemListener->spawnMedicineBox($player);
+            }
+        }
+    }
+
     public function onTapByMilitaryDepartmentSelectItem(PlayerInteractEvent $event) {
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
@@ -273,6 +290,9 @@ class Main extends PluginBase implements Listener
                         break;
                     case SpawnAmmoBoxItem::ITEM_ID:
                         $this->gameSystemListener->spawnAmmoBox($player);
+                        break;
+                    case SpawnMedicineBoxItem::ITEM_ID:
+                        $this->gameSystemListener->spawnMedicineBox($player);
                         break;
                     case MilitaryDepartmentSelectItem::ITEM_ID:
                         $this->gameSystemListener->displayMilitaryDepartmentSelectForm($player);

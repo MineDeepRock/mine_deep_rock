@@ -91,7 +91,7 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(Player $player, array $effectIds, Weapon $selectedWeapon, string $selectedWeaponType, Weapon $selectedSubWeapon, string $selectedSubWeaponType, string $mapName, Coordinate $coordinate): void {
+    public function spawn(Player $player, array $gadgetSpawnItems, array $effectIds, Weapon $selectedWeapon, string $selectedWeaponType, Weapon $selectedSubWeapon, string $selectedSubWeaponType, string $mapName, Coordinate $coordinate): void {
         if ($player !== null) {
             $player->removeAllEffects();
             $player->addEffect(new EffectInstance(Effect::getEffect(Effect::HEALING), 20 * 5, 4, false));
@@ -107,6 +107,10 @@ class TeamDeathMatchClient extends Client
             Server::getInstance()->dispatchCommand(
                 new ConsoleCommandSender(),
                 "gun give " . $player->getName() . " " . $selectedSubWeapon->getName() . " " . $selectedSubWeapon->getScope());
+
+            foreach ($gadgetSpawnItems as $gadgetSpawnItem) {
+                $player->getInventory()->addItem($gadgetSpawnItem);
+            }
 
             Server::getInstance()->dispatchCommand(
                 new ConsoleCommandSender(),
@@ -129,7 +133,7 @@ class TeamDeathMatchClient extends Client
         foreach ($effectIds as $effectId) {
             $target->removeEffect($effectId);
         }
-        $item->scare(function () use ($target,$effectIds) {
+        $item->scare(function () use ($target, $effectIds) {
             if ($target->isOnline()) {
                 foreach ($effectIds as $effectId) {
                     $target->addEffect(new EffectInstance(Effect::getEffect($effectId), null, 1, false));

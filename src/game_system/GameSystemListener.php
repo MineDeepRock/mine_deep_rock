@@ -9,13 +9,14 @@ use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
-use game_system\pmmp\form\AttachmentSelectForm;
+use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\form\MilitaryDepartmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
+use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
@@ -29,9 +30,6 @@ use gun_system\models\light_machine_gun\Chauchat;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\MP18;
-use gun_system\pmmp\items\ItemShotGun;
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\nbt\tag\CompoundTag;
@@ -292,5 +290,34 @@ class GameSystemListener
             $this->scheduler);
 
         $ammoBox->spawnToAll();
+    }
+
+    public function spawnMedicineBox(Player $player) {
+        $player->getInventory()->remove(new SpawnMedicineBoxItem());
+        $nbt = new CompoundTag('', [
+            'Pos' => new ListTag('Pos', [
+                new DoubleTag('', $player->getX()),
+                new DoubleTag('', $player->getY() + 0.5),
+                new DoubleTag('', $player->getZ())
+            ]),
+            'Motion' => new ListTag('Motion', [
+                new DoubleTag('', 0),
+                new DoubleTag('', 0),
+                new DoubleTag('', 0)
+            ]),
+            'Rotation' => new ListTag('Rotation', [
+                new FloatTag("", $player->getYaw()),
+                new FloatTag("", $player->getPitch())
+            ]),
+        ]);
+
+        $medicineBox = new MedicineBoxEntity(
+            $player->getLevel(),
+            $nbt,
+            $player,
+            $this->usersService,
+            $this->scheduler);
+
+        $medicineBox->spawnToAll();
     }
 }

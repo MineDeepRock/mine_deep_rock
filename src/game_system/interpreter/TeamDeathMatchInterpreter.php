@@ -5,10 +5,13 @@ namespace game_system\interpreter;
 
 
 use Closure;
+use game_system\model\GadgetType;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\model\User;
 use game_system\pmmp\client\TeamDeathMatchClient;
+use game_system\pmmp\items\SpawnAmmoBoxItem;
+use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\BulletId;
@@ -270,8 +273,21 @@ class TeamDeathMatchInterpreter
 
         $mapName = $this->game->getMap()->getName();
 
+        $spawnGadgetItems = [];
+        foreach ($user->getMilitaryDepartment()->getCanEquipGadgetTypes() as $type){
+            switch ($type->getTypeText()) {
+                case GadgetType::AmmoBox()->getTypeText():
+                    $spawnGadgetItems[] = new SpawnAmmoBoxItem();
+                    break;
+                case GadgetType::MedicineBox()->getTypeText():
+                    $spawnGadgetItems[] = new SpawnMedicineBoxItem();
+                    break;
+            }
+        }
+
         $this->client->spawn(
             $player,
+            $spawnGadgetItems,
             $user->getMilitaryDepartment()->getEffectIds(),
             $selectedWeapon,
             $selectedWeaponType,

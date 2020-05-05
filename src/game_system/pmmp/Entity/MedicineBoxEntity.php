@@ -4,22 +4,21 @@
 namespace game_system\pmmp\Entity;
 
 
-use game_system\interpreter\AmmoBoxInterpreter;
+use game_system\interpreter\MedicineBoxInterpreter;
 use game_system\model\Coordinate;
-use game_system\pmmp\items\SpawnAmmoBoxItem;
+use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\service\UsersService;
-use game_system\service\WeaponsService;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
-class AmmoBoxEntity extends BoxEntity
+class MedicineBoxEntity extends BoxEntity
 {
-    public $skinName = "AmmoBox";
-    public $geometryId = "geometry.AmmoBox";
-    public $geometryName = "AmmoBox.geo.json";
+    public $skinName = "MedicineBox";
+    public $geometryId = "geometry.MedicineBox";
+    public $geometryName = "MedicineBox.geo.json";
 
     private $owner;
     private $scheduler;
@@ -30,19 +29,17 @@ class AmmoBoxEntity extends BoxEntity
         CompoundTag $nbt,
         Player $owner,
         UsersService $usersService,
-        WeaponsService $weaponService,
         TaskScheduler $scheduler) {
         parent::__construct($level, $nbt);
         $this->owner = $owner;
         $this->scheduler = $scheduler;
-        $this->interpreter = new AmmoBoxInterpreter(
+        $this->interpreter = new MedicineBoxInterpreter(
             $owner,
             new Coordinate(
                 $this->getX(),
                 $this->getY(),
                 $this->getZ()),
             $usersService,
-            $weaponService,
             $scheduler);
 
         $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
@@ -50,7 +47,7 @@ class AmmoBoxEntity extends BoxEntity
                 $this->kill();
                 $this->giveAgain();
             }
-        }), 20 * $this->interpreter->getAmmoBox()->getSecondLimit());
+        }), 20 * $this->interpreter->getMedicineBox()->getSecondLimit());
     }
 
     protected function onDeath(): void {
@@ -61,14 +58,14 @@ class AmmoBoxEntity extends BoxEntity
 
     public function giveAgain() : void{
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
-            $contain = $this->owner->getInventory()->contains(new SpawnAmmoBoxItem());
-            if (!$contain && $this->owner->getGamemode() === Player::ADVENTURE) {
-                $this->owner->getInventory()->addItem(new SpawnAmmoBoxItem());
-            }
+                $contain = $this->owner->getInventory()->contains(new SpawnMedicineBoxItem());
+                if (!$contain && $this->owner->getGamemode() === Player::ADVENTURE) {
+                    $this->owner->getInventory()->addItem(new SpawnMedicineBoxItem());
+                }
         }), 20 * 10);
     }
 
     public function getName(): string {
-        return "AmmoBox";
+        return "MedicineBox";
     }
 }
