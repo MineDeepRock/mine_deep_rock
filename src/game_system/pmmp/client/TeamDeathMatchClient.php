@@ -41,7 +41,6 @@ class TeamDeathMatchClient extends Client
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
 
-            $this->setArmorAndNameTag($player, $participant->getBelongTeamId(), $redTeamId);
             if ($participant->getBelongTeamId()->equal($redTeamId)) {
                 $player->sendMessage(TextFormat::RED . "あなたは赤チームです");
             } else {
@@ -78,7 +77,6 @@ class TeamDeathMatchClient extends Client
         $playerName = $user->getName();
         $player = Server::getInstance()->getPlayer($playerName);
 
-        $this->setArmorAndNameTag($player, $user->getBelongTeamId(), $redTeamId);
         if ($user->getBelongTeamId()->equal($redTeamId)) {
             $player->sendMessage(TextFormat::RED . "あなたは赤チームです");
         } else {
@@ -91,41 +89,57 @@ class TeamDeathMatchClient extends Client
         $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
     }
 
-    public function spawn(Player $player, array $gadgetSpawnItems, array $effectIds, Weapon $selectedWeapon, string $selectedWeaponType, Weapon $selectedSubWeapon, string $selectedSubWeaponType, string $mapName, Coordinate $coordinate): void {
-        if ($player !== null) {
-            $player->removeAllEffects();
-            $player->addEffect(new EffectInstance(Effect::getEffect(Effect::HEALING), 20 * 5, 4, false));
-            foreach ($effectIds as $effectId) {
-                $player->addEffect(new EffectInstance(Effect::getEffect($effectId), null, 1, false));
-            }
+    //TODO:リファクタリング
+    public function spawn(
+        Player $player,
+        TeamId $teamId,
+        TeamId $redTeamId,
+        string $tag,
+        array $gadgetSpawnItems,
+        array $effectIds,
+        Weapon $selectedWeapon,
+        string $selectedWeaponType,
+        Weapon $selectedSubWeapon,
+        string $selectedSubWeaponType,
+        string $mapName,
+        Coordinate $coordinate): void {
 
-            $player->getInventory()->setContents([]);
-            Server::getInstance()->dispatchCommand(
-                new ConsoleCommandSender(),
-                "gun give " . $player->getName() . " " . $selectedWeapon->getName() . " " . $selectedWeapon->getScope());
+        if ($player === null) return;
 
-            Server::getInstance()->dispatchCommand(
-                new ConsoleCommandSender(),
-                "gun give " . $player->getName() . " " . $selectedSubWeapon->getName() . " " . $selectedSubWeapon->getScope());
-
-            foreach ($gadgetSpawnItems as $gadgetSpawnItem) {
-                $player->getInventory()->addItem($gadgetSpawnItem);
-            }
-
-            Server::getInstance()->dispatchCommand(
-                new ConsoleCommandSender(),
-                "gun ammo " . $player->getName() . " " . $selectedWeaponType);
-
-            Server::getInstance()->dispatchCommand(
-                new ConsoleCommandSender(),
-                "gun ammo " . $player->getName() . " " . $selectedSubWeaponType);
-
-            $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
-
-            $worldController = new WorldController();
-            $worldController->teleport($player, $mapName);
-            $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
+        $player->removeAllEffects();
+        $player->addEffect(new EffectInstance(Effect::getEffect(Effect::HEALING), 20 * 5, 4, false));
+        foreach ($effectIds as $effectId) {
+            $player->addEffect(new EffectInstance(Effect::getEffect($effectId), null, 1, false));
         }
+
+        $this->setArmorAndNameTag($player, $tag, $teamId, $redTeamId);
+
+        $player->getInventory()->setContents([]);
+        Server::getInstance()->dispatchCommand(
+            new ConsoleCommandSender(),
+            "gun give " . $player->getName() . " " . $selectedWeapon->getName() . " " . $selectedWeapon->getScope());
+
+        Server::getInstance()->dispatchCommand(
+            new ConsoleCommandSender(),
+            "gun give " . $player->getName() . " " . $selectedSubWeapon->getName() . " " . $selectedSubWeapon->getScope());
+
+        foreach ($gadgetSpawnItems as $gadgetSpawnItem) {
+            $player->getInventory()->addItem($gadgetSpawnItem);
+        }
+
+        Server::getInstance()->dispatchCommand(
+            new ConsoleCommandSender(),
+            "gun ammo " . $player->getName() . " " . $selectedWeaponType);
+
+        Server::getInstance()->dispatchCommand(
+            new ConsoleCommandSender(),
+            "gun ammo " . $player->getName() . " " . $selectedSubWeaponType);
+
+        $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
+
+        $worldController = new WorldController();
+        $worldController->teleport($player, $mapName);
+        $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
     }
 
     public function scare(Player $target, array $effectIds, Item $item) {
@@ -171,16 +185,16 @@ class TeamDeathMatchClient extends Client
         }
     }
 
-    public function setArmorAndNameTag(Player $player, TeamID $userTeamId, TeamId $redTeamId) {
+    public function setArmorAndNameTag(Player $player, string $tag, TeamID $userTeamId, TeamId $redTeamId) {
         $player->setNameTagAlwaysVisible(false);
         if ($userTeamId->equal($redTeamId)) {
-            $player->setNameTag(TextFormat::RED . $player->getName());
+            $player->setNameTag(TextFormat::RED . "[{$tag}]" . $player->getName());
             $player->getArmorInventory()->setHelmet(new IronHelmet());
             $player->getArmorInventory()->setChestplate(new IronChestplate());
             $player->getArmorInventory()->setLeggings(new IronLeggings());
             $player->getArmorInventory()->setBoots(new IronBoots());
         } else {
-            $player->setNameTag(TextFormat::BLUE . $player->getName());
+            $player->setNameTag(TextFormat::BLUE . "[{$tag}]" . $player->getName());
             $player->getArmorInventory()->setHelmet(new GoldHelmet());
             $player->getArmorInventory()->setChestplate(new GoldChestplate());
             $player->getArmorInventory()->setLeggings(new GoldLeggings());

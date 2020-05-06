@@ -287,6 +287,9 @@ class TeamDeathMatchInterpreter
 
         $this->client->spawn(
             $player,
+            $user->getBelongTeamId(),
+            $this->game->getRedTeam()->getId(),
+            $user->getMilitaryDepartment()->getName(),
             $spawnGadgetItems,
             $user->getMilitaryDepartment()->getEffectIds(),
             $selectedWeapon,
