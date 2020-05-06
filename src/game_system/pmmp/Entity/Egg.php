@@ -38,7 +38,7 @@ class Egg extends Throwable
             if ($player !== null || $this->getOwningEntity() !== null) {
 
                 $distance = $blockPos->distance($player->getPosition());
-                if ($distance <= 5) {
+                if ($distance <= 2) {
                     GunSounds::play($player, GunSounds::bulletHitBlock());
                     GameSystemListener::getInstance()->scare($player,$this->getOwningEntity());
                 } else if ($distance <= 10) {
