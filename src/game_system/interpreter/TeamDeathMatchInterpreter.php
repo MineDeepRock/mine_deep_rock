@@ -282,6 +282,9 @@ class TeamDeathMatchInterpreter
                 case GadgetType::MedicineBox()->getTypeText():
                     $spawnGadgetItems[] = new SpawnMedicineBoxItem();
                     break;
+                case GadgetType::FlareBox()->getTypeText():
+                    $spawnGadgetItems[] = new SpawnFlareBoxItem();
+                    break;
             }
         }
 

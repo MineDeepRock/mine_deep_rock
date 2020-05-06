@@ -5,7 +5,7 @@ use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
-use game_system\pmmp\items\FlareBoxItem;
+use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnItem;
@@ -108,14 +108,14 @@ class Main extends PluginBase implements Listener
         ItemFactory::registerItem(new SpawnMedicineBoxItem(), true);
         Item::addCreativeItem(Item::get(SpawnMedicineBoxItem::ITEM_ID));
 
+        ItemFactory::registerItem(new SpawnFlareBoxItem(), true);
+        Item::addCreativeItem(Item::get(SpawnFlareBoxItem::ITEM_ID));
+
         Entity::registerEntity(AmmoBoxEntity::class, true, ['AmmoBox']);
 
         Entity::registerEntity(MedicineBoxEntity::class, true, ['MedicineBox']);
 
-        ItemFactory::registerItem(new FlareBoxItem(), true);
-        Item::addCreativeItem(Item::get(FlareBoxItem::ITEM_ID));
-
-        Entity::registerEntity(FlareBoxItem::class, true, ['FlareBox']);
+        Entity::registerEntity(SpawnFlareBoxItem::class, true, ['FlareBox']);
 
         $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
     }
@@ -303,7 +303,7 @@ class Main extends PluginBase implements Listener
                     case MilitaryDepartmentSelectItem::ITEM_ID:
                         $this->gameSystemListener->displayMilitaryDepartmentSelectForm($player);
                         break;
-                    case FlareBoxItem::ITEM_ID:
+                    case SpawnFlareBoxItem::ITEM_ID:
                         $this->gameSystemListener->spawnFlareBox($player);
                         break;
                 }

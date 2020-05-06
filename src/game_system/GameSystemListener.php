@@ -15,7 +15,7 @@ use game_system\pmmp\form\MilitaryDepartmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
-use game_system\pmmp\items\FlareBoxItem;
+use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
@@ -326,7 +326,7 @@ class GameSystemListener
     }
 
     public function spawnFlareBox(Player $player){
-        $player->getInventory()->remove(new FlareBoxItem());
+        $player->getInventory()->remove(new SpawnFlareBoxItem());
 
         $flareGun = new FlareBoxEntity(
             $player->getLevel(),

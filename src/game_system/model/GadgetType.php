@@ -22,6 +22,9 @@ class GadgetType
     public static function MedicineBox():GadgetType {
         return new GadgetType("MedicineBox");
     }
+    public static function FlareBox():GadgetType {
+        return new GadgetType("FlareBox");
+    }
     /**
      * @return mixed
      */

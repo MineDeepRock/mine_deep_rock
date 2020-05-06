@@ -8,7 +8,7 @@ use game_system\model\Coordinate;
 use game_system\model\FlareBox;
 use game_system\model\military_department\Scout;
 use game_system\pmmp\client\FlareBoxClient;
-use game_system\pmmp\items\FlareBoxItem;
+use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\service\UsersService;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -98,10 +98,10 @@ class FlareBoxInterpreter
             $assaultSoldier = new Scout();
             if ($user->getMilitaryDepartment()->getName() !== $assaultSoldier->getName()) return;
 
-            $contain = $this->owner->getInventory()->contains(new FlareBoxItem());
+            $contain = $this->owner->getInventory()->contains(new SpawnFlareBoxItem());
             if ($contain) return;
 
-            $this->owner->getInventory()->addItem(new FlareBoxItem());
+            $this->owner->getInventory()->addItem(new SpawnFlareBoxItem());
         }), 20 * 10);
     }
 }
