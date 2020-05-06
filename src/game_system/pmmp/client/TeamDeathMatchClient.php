@@ -117,11 +117,11 @@ class TeamDeathMatchClient extends Client
         $player->getInventory()->setContents([]);
         Server::getInstance()->dispatchCommand(
             new ConsoleCommandSender(),
-            "gun give " . $player->getName() . " " . $selectedWeapon->getName() . " " . $selectedWeapon->getScope());
+            "gun give \"" . $player->getName() . "\" " . $selectedWeapon->getName() . " " . $selectedWeapon->getScope());
 
         Server::getInstance()->dispatchCommand(
             new ConsoleCommandSender(),
-            "gun give " . $player->getName() . " " . $selectedSubWeapon->getName() . " " . $selectedSubWeapon->getScope());
+            "gun give \"" . $player->getName() . "\" " . $selectedSubWeapon->getName() . " " . $selectedSubWeapon->getScope());
 
         foreach ($gadgetSpawnItems as $gadgetSpawnItem) {
             $player->getInventory()->addItem($gadgetSpawnItem);
@@ -129,11 +129,11 @@ class TeamDeathMatchClient extends Client
 
         Server::getInstance()->dispatchCommand(
             new ConsoleCommandSender(),
-            "gun ammo " . $player->getName() . " " . $selectedWeaponType);
+            "gun ammo \"" . $player->getName() . "\" " . $selectedWeaponType);
 
         Server::getInstance()->dispatchCommand(
             new ConsoleCommandSender(),
-            "gun ammo " . $player->getName() . " " . $selectedSubWeaponType);
+            "gun ammo \"" . $player->getName() . "\" " . $selectedSubWeaponType);
 
         $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
 
