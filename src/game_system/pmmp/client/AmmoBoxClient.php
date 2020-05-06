@@ -13,6 +13,6 @@ class AmmoBoxClient
     public function useAmmoBox(string $playerName, GunType $gunType, int $count): void {
         Server::getInstance()->dispatchCommand(
             new ConsoleCommandSender(),
-            "gun ammo " . $playerName . " " . $gunType->getTypeText() . " " . $count);
+            "gun ammo \"" . $playerName . "\" " . $gunType->getTypeText() . " " . $count);
     }
 }
