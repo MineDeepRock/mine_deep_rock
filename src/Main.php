@@ -4,6 +4,7 @@ use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
+use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
@@ -203,6 +204,7 @@ class Main extends PluginBase implements Listener
         $attacker = $entity->getOwningEntity();
         if ($event->getEntityHit() instanceof AmmoBoxEntity) return;
         if ($event->getEntityHit() instanceof MedicineBoxEntity) return;
+        if ($event->getEntityHit() instanceof FlareBoxEntity) return;
 
         if ($entity instanceof \game_system\pmmp\Entity\Egg && $attacker instanceof Human) {
             $item = $attacker->getInventory()->getItemInHand();
