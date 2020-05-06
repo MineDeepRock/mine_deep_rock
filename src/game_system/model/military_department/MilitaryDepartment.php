@@ -17,13 +17,13 @@ abstract class MilitaryDepartment
         string $name,
         array $canEquipGunTypes,
         array $canEquipGadgetTypes,
-        array $effectIds,
+        array $effects,
         string $defaultWeaponName) {
 
         $this->name = $name;
         $this->canEquipGunTypes = $canEquipGunTypes;
         $this->canEquipGadgetTypes = $canEquipGadgetTypes;
-        $this->effectIds = $effectIds;
+        $this->effectIds = $effects;
         $this->defaultWeaponName = $defaultWeaponName;
     }
 
@@ -71,7 +71,7 @@ abstract class MilitaryDepartment
     /**
      * @return array
      */
-    public function getEffectIds(): array {
+    public function getEffects(): array {
         return $this->effectIds;
     }
 

@@ -170,7 +170,7 @@ class TeamDeathMatchInterpreter
         //自分自身には効果がないように
         if (!($attackerUser->getName() === $targetUser->getName()) && is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
             $target = Server::getInstance()->getPlayer($targetUser->getName());
-            $this->client->scare($target, $targetUser->getMilitaryDepartment()->getEffectIds(), $item);
+            $this->client->scare($target, $targetUser->getMilitaryDepartment()->getEffects(), $item);
         }
     }
 
@@ -291,7 +291,7 @@ class TeamDeathMatchInterpreter
             $this->game->getRedTeam()->getId(),
             $user->getMilitaryDepartment()->getName(),
             $spawnGadgetItems,
-            $user->getMilitaryDepartment()->getEffectIds(),
+            $user->getMilitaryDepartment()->getEffects(),
             $selectedWeapon,
             $selectedWeaponType,
             $selectedSubWeapon,

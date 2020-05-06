@@ -7,6 +7,7 @@ namespace game_system\model\military_department;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\GunType;
 use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 
 class AssaultSoldier extends MilitaryDepartment
 {
@@ -18,7 +19,7 @@ class AssaultSoldier extends MilitaryDepartment
             ],
             [],
             [
-                Effect::SPEED
+                new EffectInstance(Effect::getEffect(EFFECT::SPEED), null, 0, false)
             ],
             M1907SL::NAME
         );

@@ -96,7 +96,7 @@ class TeamDeathMatchClient extends Client
         TeamId $redTeamId,
         string $tag,
         array $gadgetSpawnItems,
-        array $effectIds,
+        array $effects,
         Weapon $selectedWeapon,
         string $selectedWeaponType,
         Weapon $selectedSubWeapon,
@@ -108,9 +108,8 @@ class TeamDeathMatchClient extends Client
 
         $player->removeAllEffects();
         $player->addEffect(new EffectInstance(Effect::getEffect(Effect::HEALING), 20 * 5, 4, false));
-        foreach ($effectIds as $effectId) {
-            $player->addEffect(new EffectInstance(Effect::getEffect($effectId), null, 1, false));
-        }
+
+        foreach ($effects as $effect) $player->addEffect($effect);
 
         $this->setArmorAndNameTag($player, $tag, $teamId, $redTeamId);
 
@@ -142,15 +141,20 @@ class TeamDeathMatchClient extends Client
         $player->teleport(new Vector3($coordinate->getX(), $coordinate->getY(), $coordinate->getZ()));
     }
 
-    public function scare(Player $target, array $effectIds, Item $item) {
+    public function scare(Player $target, array $effects, Item $item) {
         $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1, false));
-        foreach ($effectIds as $effectId) {
-            $target->removeEffect($effectId);
+        foreach ($effects as $effect) {
+            if ($effect->getId() !== Effect::HEALTH_BOOST) {
+                $target->removeEffect($effect);
+            }
         }
-        $item->scare(function () use ($target, $effectIds) {
+
+        $item->scare(function () use ($target, $effects) {
             if ($target->isOnline()) {
-                foreach ($effectIds as $effectId) {
-                    $target->addEffect(new EffectInstance(Effect::getEffect($effectId), null, 1, false));
+                foreach ($effects as $effect) {
+                    if ($effect->getId() !== Effect::HEALTH_BOOST) {
+                        $target->addEffect($effect);
+                    }
                 }
             }
         });

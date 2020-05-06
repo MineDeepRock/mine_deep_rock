@@ -8,6 +8,7 @@ use game_system\model\GadgetType;
 use gun_system\models\GunType;
 use gun_system\models\light_machine_gun\Chauchat;
 use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 
 class Engineer extends MilitaryDepartment
 {
@@ -20,7 +21,7 @@ class Engineer extends MilitaryDepartment
                 GadgetType::AmmoBox()
             ],
             [
-                Effect::HEALTH_BOOST
+                new EffectInstance(Effect::getEffect(EFFECT::HEALTH_BOOST), null, 2, false)
             ],
             Chauchat::NAME
 
