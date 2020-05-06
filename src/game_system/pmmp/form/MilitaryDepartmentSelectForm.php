@@ -35,16 +35,24 @@ class MilitaryDepartmentSelectForm implements Form
 
         switch ($militaryDepartments[$data]) {
             case 'AssaultSoldier':
-                ($this->onSelected)(new AssaultSoldier());
+                $player->sendForm(new MilitaryDepartmentDetailForm(function (){
+                    ($this->onSelected)(new AssaultSoldier());
+                },new AssaultSoldier()));
                 break;
             case 'Engineer':
-                ($this->onSelected)(new Engineer());
+                $player->sendForm(new MilitaryDepartmentDetailForm(function (){
+                    ($this->onSelected)(new Engineer());
+                },new Engineer()));
                 break;
             case 'NursingSoldier':
-                ($this->onSelected)(new NursingSoldier());
+                $player->sendForm(new MilitaryDepartmentDetailForm(function (){
+                    ($this->onSelected)(new NursingSoldier());
+                },new NursingSoldier()));
                 break;
             case 'Scout':
-                ($this->onSelected)(new Scout());
+                $player->sendForm(new MilitaryDepartmentDetailForm(function (){
+                    ($this->onSelected)(new Scout());
+                },new Scout()));
                 break;
         }
     }

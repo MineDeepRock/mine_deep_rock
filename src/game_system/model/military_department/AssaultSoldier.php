@@ -23,4 +23,8 @@ class AssaultSoldier extends MilitaryDepartment
             M1907SL::NAME
         );
     }
+
+    function getDescription(): string {
+        return "武器:AR,SG\nガジェット:\nエフェクト:移動速度上昇";
+    }
 }

@@ -45,6 +45,8 @@ abstract class MilitaryDepartment
         return new AssaultSoldier();
     }
 
+    abstract function getDescription(): string;
+
     /**
      * @return string
      */
