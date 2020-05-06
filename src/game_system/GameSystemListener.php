@@ -83,7 +83,9 @@ class GameSystemListener
         $game = $this->teamDeathMatchInterpreter->getGameData();
         if (!$game->isStarted()) {
             foreach ($lobbyPlayers as $player) {
+                $player->getInventory()->addItem(new MilitaryDepartmentSelectItem());
                 $player->getInventory()->addItem(new WeaponSelectItem());
+                $player->getInventory()->addItem(new SubWeaponSelectItem());
                 $player->getInventory()->addItem(new WeaponPurchaseItem());
                 $api->sendScoreboard($player, "sidebar", "Lobby", false);
                 $api->setScore($player, "sidebar", "ゲーム参加人数:", 0, 1);
