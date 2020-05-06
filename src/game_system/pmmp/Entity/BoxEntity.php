@@ -26,7 +26,7 @@ class BoxEntity extends Human
     protected $geometryName = "";
 
     public $width = 1;
-    public $height = 2;
+    public $height = 1;
     public $eyeHeight = 1.5;
 
     protected $gravity = 0.08;
