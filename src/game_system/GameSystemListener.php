@@ -9,11 +9,13 @@ use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
+use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\form\MilitaryDepartmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
+use game_system\pmmp\items\FlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
@@ -321,5 +323,17 @@ class GameSystemListener
             $this->scheduler);
 
         $medicineBox->spawnToAll();
+    }
+
+    public function spawnFlareBox(Player $player){
+        $player->getInventory()->remove(new FlareBoxItem());
+
+        $flareGun = new FlareBoxEntity(
+            $player->getLevel(),
+            $player,
+            $this->usersService,
+            $this->scheduler);
+
+        $flareGun->spawnToAll();
     }
 }

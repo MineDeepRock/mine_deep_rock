@@ -6,7 +6,6 @@ namespace game_system\pmmp\Entity;
 
 use game_system\interpreter\MedicineBoxInterpreter;
 use game_system\model\Coordinate;
-use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\service\UsersService;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;

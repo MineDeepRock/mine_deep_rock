@@ -41,6 +41,12 @@ class MedicineBoxInterpreter
         $this->ownerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
 
         $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick): void {
+            $this->client->summonParticle(
+                $this->owner->getLevel(),
+                new Vector3(
+                    $this->medicineBox->getCoordinate()->getX(),
+                    $this->medicineBox->getCoordinate()->getY(),
+                    $this->medicineBox->getCoordinate()->getZ()));
             foreach ($this->getAroundTeamPlayers() as $player) {
                 $this->client->useMedicineBox($player);
             }

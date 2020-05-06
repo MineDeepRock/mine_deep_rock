@@ -45,7 +45,12 @@ class AmmoBoxInterpreter
         $this->ownerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
 
         $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick): void {
-            foreach ($this->getAroundTeamPlayers() as $player) {
+            $this->client->summonParticle(
+                $this->owner->getLevel(),
+                new Vector3(
+                    $this->ammoBox->getCoordinate()->getX(),
+                    $this->ammoBox->getCoordinate()->getY(),
+                    $this->ammoBox->getCoordinate()->getZ()));            foreach ($this->getAroundTeamPlayers() as $player) {
                 $user = $this->usersService->getUserData($player->getName());
                 $gun = GunList::fromString($user->getSelectedWeaponName());
                 $subGun = GunList::fromString($user->getSelectedSubWeaponName());

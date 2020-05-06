@@ -4,14 +4,10 @@
 namespace game_system\pmmp\Entity;
 
 
-use game_system\pmmp\client\AmmoBoxClient;
 use pocketmine\entity\Human;
 use pocketmine\entity\Skin;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\Player;
-use pocketmine\scheduler\ClosureTask;
-use pocketmine\scheduler\TaskScheduler;
 use pocketmine\utils\UUID;
 
 class BoxEntity extends Human
