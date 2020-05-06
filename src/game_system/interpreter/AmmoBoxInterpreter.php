@@ -6,7 +6,9 @@ namespace game_system\interpreter;
 
 use game_system\model\AmmoBox;
 use game_system\model\Coordinate;
+use game_system\model\military_department\AssaultSoldier;
 use game_system\pmmp\client\AmmoBoxClient;
+use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\GunList;
@@ -85,5 +87,21 @@ class AmmoBoxInterpreter
 
             return $ammoPosition->distance($player->getPosition()) < 6;
         });
+    }
+
+    public function giveAgain(): void {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
+            if (!$this->owner->isOnline()) return;
+            if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
+
+            $user = $this->usersService->getUserData($this->owner->getName());
+            $assaultSoldier = new AssaultSoldier();
+            if ($user->getMilitaryDepartment()->getName() !== $assaultSoldier->getName()) return;
+
+            $contain = $this->owner->getInventory()->contains(new SpawnAmmoBoxItem());
+            if ($contain) return;
+
+            $this->owner->getInventory()->addItem(new SpawnAmmoBoxItem());
+        }), 20 * 10);
     }
 }

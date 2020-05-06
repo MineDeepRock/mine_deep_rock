@@ -4,10 +4,11 @@
 namespace game_system\interpreter;
 
 
-use game_system\model\AmmoBox;
 use game_system\model\Coordinate;
 use game_system\model\MedicineBox;
+use game_system\model\military_department\NursingSoldier;
 use game_system\pmmp\client\MedicineBoxClient;
+use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\service\UsersService;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -71,5 +72,21 @@ class MedicineBoxInterpreter
 
             return $ammoPosition->distance($player->getPosition()) < 6;
         });
+    }
+
+    public function giveAgain(): void {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
+            if (!$this->owner->isOnline()) return;
+            if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
+
+            $user = $this->usersService->getUserData($this->owner->getName());
+            $nursingSoldier = new NursingSoldier();
+            if ($user->getMilitaryDepartment()->getName() !== $nursingSoldier->getName()) return;
+
+            $contain = $this->owner->getInventory()->contains(new SpawnMedicineBoxItem());
+            if ($contain) return;
+
+            $this->owner->getInventory()->addItem(new SpawnMedicineBoxItem());
+        }), 20 * 10);
     }
 }

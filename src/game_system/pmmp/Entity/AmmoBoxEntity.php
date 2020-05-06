@@ -46,29 +46,14 @@ class AmmoBoxEntity extends BoxEntity
             $scheduler);
 
         $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
-            if ($this->isAlive()) {
-                $this->kill();
-                $this->giveAgain();
-            }
+            if ($this->isAlive()) $this->kill();
         }), 20 * $this->interpreter->getAmmoBox()->getSecondLimit());
     }
 
     protected function onDeath(): void {
         parent::onDeath();
         $this->interpreter->stop();
-        $this->giveAgain();
-    }
-
-    public function giveAgain(): void {
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
-            if (!$this->owner->isOnline()) return;
-            if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
-
-            $contain = $this->owner->getInventory()->contains(new SpawnAmmoBoxItem());
-            if ($contain) return;
-
-            $this->owner->getInventory()->addItem(new SpawnAmmoBoxItem());
-        }), 20 * 10);
+        $this->interpreter->giveAgain();
     }
 
     public function getName(): string {
