@@ -1,11 +1,13 @@
 # アーキテクチャ
 
-#### Client
-メイン。  
-Service使った処理を書く
+#### Main
+イベントを受け受け取りListenerに流す
 
-#### Interpreter
-(非PMMP側)
+#### Listener
+ServiceとInterpreterをまとめる役割がある。
+簡単な処理を行う
+
+#### Interpreter(非PMMP側)
 Listenerから受けた内容を処理しClientとやり取りする。
 
 #### Client(PMMP側)
@@ -25,8 +27,10 @@ value_objectとentityに分かれる
 #### PMMP model
 
 ## 依存関係
-依存関係は矢印のみ許可する
+依存関係は矢印のみ許可する  
 
+Main  
+↓  
 Listener       
 ↓ ↓  
 ↓ Interpreter  
