@@ -3,6 +3,7 @@
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\StateCommand;
+use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
@@ -65,6 +66,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler(), $this->getServer()));
         $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemListener, $this->getScheduler()));
         $this->getServer()->getCommandMap()->register("state", new StateCommand($this, $this->gameSystemListener));
+        $this->getServer()->getCommandMap()->register("world", new WorldCommand($this));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
@@ -118,7 +120,9 @@ class Main extends PluginBase implements Listener
 
         Entity::registerEntity(FlareBoxEntity::class, true, ['FlareBox']);
 
-        $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
+        $this->gameSystemListener->initGame([
+                new \game_system\model\map\ApocalypticCity(),
+                new \game_system\model\map\WaterfrontHome()][rand(0,1)]);
     }
 
 
