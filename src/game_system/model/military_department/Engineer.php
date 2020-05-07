@@ -20,9 +20,7 @@ class Engineer extends MilitaryDepartment
             [
                 GadgetType::AmmoBox()
             ],
-            [
-                new EffectInstance(Effect::getEffect(EFFECT::HEALTH_BOOST), null, 2, false)
-            ],
+            [],
             Chauchat::NAME
 
         );
