@@ -48,6 +48,7 @@ use gun_system\models\sniper_rifle\attachment\scope\FourFoldScopeForSR;
 use gun_system\models\sniper_rifle\attachment\scope\IronSightForSR;
 use gun_system\models\sniper_rifle\attachment\scope\TwoFoldScopeForSR;
 use gun_system\models\sniper_rifle\Gewehr98;
+use gun_system\models\sniper_rifle\GewehrM95;
 use gun_system\models\sniper_rifle\MartiniHenry;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sniper_rifle\VetterliVitali;
@@ -317,6 +318,11 @@ class GunCommand extends Command
                 break;
             case "VetterliVitali":
                 $item = new ItemSniperRifle("VetterliVitali", new SniperRifleInterpreter(new VetterliVitali(), $player, $this->scheduler));
+                $item->setCustomName($item->getName());
+                return $this->setItemDescription($item);
+                break;
+            case "GewehrM95":
+                $item = new ItemSniperRifle("GewehrM95", new SniperRifleInterpreter(new GewehrM95(), $player, $this->scheduler));
                 $item->setCustomName($item->getName());
                 return $this->setItemDescription($item);
                 break;

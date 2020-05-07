@@ -25,6 +25,7 @@ use gun_system\models\shotgun\M1897;
 use gun_system\models\shotgun\Model10A;
 use gun_system\models\shotgun\Model1900;
 use gun_system\models\sniper_rifle\Gewehr98;
+use gun_system\models\sniper_rifle\GewehrM95;
 use gun_system\models\sniper_rifle\MartiniHenry;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sniper_rifle\VetterliVitali;
@@ -67,6 +68,7 @@ class GunList
             new Gewehr98(),
             new MartiniHenry(),
             new VetterliVitali(),
+            new GewehrM95(),
         ];
         $this->smg = [
             new MP18(),
@@ -143,6 +145,9 @@ class GunList
                 break;
             case VetterliVitali::NAME:
                 return new VetterliVitali();
+                break;
+            case GewehrM95::NAME:
+                return new GewehrM95();
                 break;
 
             //SMG
