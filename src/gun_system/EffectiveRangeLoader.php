@@ -26,6 +26,7 @@ use gun_system\models\shotgun\M1897;
 use gun_system\models\shotgun\Model10A;
 use gun_system\models\shotgun\Model1900;
 use gun_system\models\sniper_rifle\Gewehr98;
+use gun_system\models\sniper_rifle\GewehrM95;
 use gun_system\models\sniper_rifle\MartiniHenry;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sniper_rifle\VetterliVitali;
@@ -59,6 +60,7 @@ class EffectiveRangeLoader
             Gewehr98::NAME => [],
             MartiniHenry::NAME => [],
             VetterliVitali::NAME => [],
+            GewehrM95::NAME => [],
             //SMG
             MP18::NAME => [],
             Automatico::NAME => [],
