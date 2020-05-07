@@ -33,14 +33,7 @@ class GameCommand extends Command
         }
         $player = $sender->getServer()->getPlayer($sender->getName());
         $method = $args[0];
-        if ($method === "world") {
-            if (count($args) < 2) {
-                $sender->sendMessage("/world [worldName]");
-                return false;
-            }
-            $worldController = new WorldController();
-            $worldController->teleport($player, $args[1]);
-        } if ($method === "start") {
+        if ($method === "start") {
             if (!$player->isOp()) {
                 $sender->sendMessage("権限がありません");
                 return false;

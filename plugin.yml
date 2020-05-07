@@ -17,3 +17,6 @@ permissions:
       State.Command:
         default: true
         description: "ステートコマンド"
+      World.Command:
+        default: true
+        description: "ワールドコマンド"
