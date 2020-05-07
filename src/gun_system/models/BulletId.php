@@ -34,7 +34,7 @@ class BulletId
             case GunType::Revolver()->getTypeText():
                 return self::REVOLVER;
         }
-        return null;
+        return self::HAND_GUN;
     }
 }
 

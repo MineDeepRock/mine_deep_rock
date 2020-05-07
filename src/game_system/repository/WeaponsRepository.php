@@ -30,10 +30,6 @@ class WeaponsRepository extends Repository
     public function getWeapon(string $ownerName, string $weaponName): Weapon {
         $result = $this->db->query("SELECT * FROM weapons WHERE name='{$weaponName}' AND owner_name='{$ownerName}'");
 
-        if ($result->num_rows === 0) {
-            return null;
-        }
-
         return Weapon::fromJson($result->fetch_assoc());
     }
 

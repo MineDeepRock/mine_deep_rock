@@ -7,6 +7,7 @@ namespace game_system;
 use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\interpreter\TeamDeathMatchInterpreter;
 use game_system\model\map\TeamDeathMatchMap;
+use game_system\model\TeamDeathMatch;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
@@ -72,7 +73,7 @@ class GameSystemListener
     }
 
     public function initGame(TeamDeathMatchMap $map): bool {
-        return $this->teamDeathMatchInterpreter->init($map, 600, function () use ($map) {
+        return $this->teamDeathMatchInterpreter->init(new TeamDeathMatch($map), 600, function () use ($map) {
             $this->onFinished($map);
         });
     }

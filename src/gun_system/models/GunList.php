@@ -187,7 +187,7 @@ class GunList
                 return new NagantRevolver();
                 break;
         }
-        return null;
+        return new Mle1903();
     }
 
     /**

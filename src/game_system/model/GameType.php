@@ -20,6 +20,10 @@ class GameType
         return new GameType("TeamDeathMatch");
     }
 
+    public static function TeamDomination(): GameType {
+        return new GameType("TeamDomination");
+    }
+
     /**
      * @return string
      */
