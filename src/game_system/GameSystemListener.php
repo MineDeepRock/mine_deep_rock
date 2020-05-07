@@ -33,8 +33,11 @@ use gun_system\models\light_machine_gun\Chauchat;
 use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\MP18;
+use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
+use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
@@ -326,7 +329,7 @@ class GameSystemListener
         $medicineBox->spawnToAll();
     }
 
-    public function spawnFlareBox(Player $player){
+    public function spawnFlareBox(Player $player) {
         $player->getInventory()->remove(new SpawnFlareBoxItem());
 
         $flareGun = new FlareBoxEntity(
@@ -336,5 +339,14 @@ class GameSystemListener
             $this->scheduler);
 
         $flareGun->spawnToAll();
+    }
+
+    public function scopeSniperRifle(Player $player, Item $item): void {
+        if ($player->getArmorInventory()->getHelmet()->getId() === Item::PUMPKIN) {
+            //TODO:装備がハゲるのを治す
+            $player->getArmorInventory()->removeItem(ItemFactory::get(Item::PUMPKIN));
+        } else if ($item instanceof ItemSniperRifle) {
+            $player->getArmorInventory()->setHelmet(ItemFactory::get(Item::PUMPKIN));
+        }
     }
 }

@@ -151,7 +151,7 @@ class TwoTeamGameClient
         $target->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 20 * 3, 1, false));
         foreach ($effects as $effect) {
             if ($effect->getId() !== Effect::HEALTH_BOOST) {
-                $target->removeEffect($effect);
+                $target->removeEffect($effect->getId());
             }
         }
 
@@ -172,26 +172,29 @@ class TwoTeamGameClient
         GunSounds::play($targetPlayer, GunSounds::bulletHitPlayer(), 10, 1);
 
         if ($health <= 0) {
-            $targetPlayer->setHealth(20);
-            $players = $attacker->getLevel()->getPlayers();
-
-            //TODO:Titleにしたい
-            $targetPlayer->sendPopup(TextFormat::RED . $attacker->getName() . "に倒された");
-            $targetPlayer->getInventory()->setContents([]);
-            $targetPlayer->getInventory()->addItem(new MilitaryDepartmentSelectItem());
-            $targetPlayer->getInventory()->addItem(new WeaponSelectItem());
-            $targetPlayer->getInventory()->addItem(new SubWeaponSelectItem());
-            $targetPlayer->getInventory()->addItem(new SpawnItem());
-
-            foreach ($players as $player) {
-                $player->sendMessage($attacker->getName() . " が " . $targetPlayer->getName() . " を倒した [" . $weaponName . "]");
-            }
+            $this->onDead($attacker,$targetPlayer,$weaponName);
             $attacker->addTitle(TextFormat::RED . "><", "", 0, 1, 0);
-
         } else {
             $targetPlayer->setHealth($health);
             $attacker->addTitle("><", "", 0, 1, 0);
+        }
+    }
 
+    private function onDead(Player $attacker, Player $target, string $weaponName) {
+        $target->setGamemode(Player::SPECTATOR);
+        $target->setHealth(20);
+        $players = $attacker->getLevel()->getPlayers();
+
+        //TODO:Titleにしたい
+        $target->sendPopup(TextFormat::RED . $attacker->getName() . "に倒された");
+        $target->getInventory()->setContents([]);
+        $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
+        $target->getInventory()->addItem(new WeaponSelectItem());
+        $target->getInventory()->addItem(new SubWeaponSelectItem());
+        $target->getInventory()->addItem(new SpawnItem());
+
+        foreach ($players as $player) {
+            $player->sendMessage($attacker->getName() . " が " . $target->getName() . " を倒した [" . $weaponName . "]");
         }
     }
 

@@ -208,8 +208,6 @@ class TwoTeamGameInterpreter
             $attackerPlayer->getY() + 4,
             $attackerPlayer->getZ()
         ));
-
-        $this->spawn($targetUser);
     }
 
     private function getAmmo(string $weaponName): Item {

@@ -5,7 +5,6 @@ namespace gun_system\pmmp\client;
 
 
 use Closure;
-use gun_system\models\BulletId;
 use gun_system\models\Gun;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\GunSounds;
@@ -94,25 +93,25 @@ class GunClient
 
         $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
-                new DoubleTag("", $player->x),
-                new DoubleTag("", $player->y + $player->getEyeHeight() - 0.3),
-                new DoubleTag("", $player->z)
+                new DoubleTag("", $player->getX()),
+                new DoubleTag("", $player->getY() + $player->getEyeHeight()),
+                new DoubleTag("", $player->getZ())
             ]),
             "Motion" => new ListTag("Motion", [
-                new DoubleTag("", $aimPos->x + rand(-(100 - $value), (100 - $value)) / 200),
-                new DoubleTag("", $aimPos->y + rand(-(100 - $value), (100 - $value)) / 200),
-                new DoubleTag("", $aimPos->z + rand(-(100 - $value), (100 - $value)) / 200)
+                new DoubleTag("", $aimPos->getX() + rand(-(100 - $value), (100 - $value)) / 200),
+                new DoubleTag("", $aimPos->getY() + rand(-(100 - $value), (100 - $value)) / 200),
+                new DoubleTag("", $aimPos->getZ() + rand(-(100 - $value), (100 - $value)) / 200)
             ]),
             "Rotation" => new ListTag("Rotation", [
-                new FloatTag("", $player->yaw),
-                new FloatTag("", $player->pitch)
+                new FloatTag("", $player->getYaw()),
+                new FloatTag("", $player->getPitch())
             ]),
         ]);
 
         $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
         $projectile->setMotion($projectile->getMotion()->multiply($this->gun->getBulletSpeed()->getPerSecond() / 27.8));
 
-        $handle = $scheduler->scheduleRepeatingTask(new ClosureTask(
+        $handle = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(
             function (int $currentTick) use ($projectile) : void {
                 if (!$projectile->isClosed()) {
                     $projectile->getLevel()->addParticle(new CriticalParticle(new Vector3(
@@ -122,7 +121,7 @@ class GunClient
                     ), 4));
                 }
             }
-        ), 1);
+        ), 3,1);
 
         //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();

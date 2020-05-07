@@ -116,7 +116,7 @@ class Main extends PluginBase implements Listener
 
         Entity::registerEntity(MedicineBoxEntity::class, true, ['MedicineBox']);
 
-        Entity::registerEntity(SpawnFlareBoxItem::class, true, ['FlareBox']);
+        Entity::registerEntity(FlareBoxEntity::class, true, ['FlareBox']);
 
         $this->gameSystemListener->initGame(new \game_system\model\map\ApocalypticCity());
     }
@@ -189,6 +189,7 @@ class Main extends PluginBase implements Listener
     public function onSneak(PlayerToggleSneakEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
+        $this->gameSystemListener->scopeSniperRifle($player,$item);
         if ($player->isSneaking()) {
             $player->removeEffect(Effect::SLOWNESS);
         } else {
