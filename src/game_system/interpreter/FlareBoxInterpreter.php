@@ -104,4 +104,8 @@ class FlareBoxInterpreter
             $this->owner->getInventory()->addItem(new SpawnFlareBoxItem());
         }), 20 * 10);
     }
+
+    public function getFlareBox(): FlareBox {
+        return $this->flareBox;
+    }
 }

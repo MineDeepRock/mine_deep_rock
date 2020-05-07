@@ -8,6 +8,11 @@ use pocketmine\entity\Human;
 use pocketmine\entity\Skin;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\Player;
+use pocketmine\scheduler\TaskScheduler;
 use pocketmine\utils\UUID;
 
 class BoxEntity extends Human
@@ -33,8 +38,29 @@ class BoxEntity extends Human
     public $defaultHP = 1;
     public $uuid;
 
-    public function __construct(Level $level, CompoundTag $nbt) {
+    protected $owner;
+    protected $scheduler;
+
+    public function __construct(Level $level,Player $owner,TaskScheduler $scheduler) {
+        $nbt = new CompoundTag('', [
+            'Pos' => new ListTag('Pos', [
+                new DoubleTag('', $owner->getX()),
+                new DoubleTag('', $owner->getY() + 0.5),
+                new DoubleTag('', $owner->getZ())
+            ]),
+            'Motion' => new ListTag('Motion', [
+                new DoubleTag('', 0),
+                new DoubleTag('', 0),
+                new DoubleTag('', 0)
+            ]),
+            'Rotation' => new ListTag('Rotation', [
+                new FloatTag("", $owner->getYaw()),
+                new FloatTag("", $owner->getPitch())
+            ]),
+        ]);
         $this->uuid = UUID::fromRandom();
+        $this->owner = $owner;
+        $this->scheduler = $scheduler;
         $this->initSkin();
 
         parent::__construct($level, $nbt);
@@ -62,5 +88,19 @@ class BoxEntity extends Human
 
     public function getName(): string {
         return "";
+    }
+
+    /**
+     * @return Player
+     */
+    public function getOwner(): Player {
+        return $this->owner;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getScheduler() {
+        return $this->scheduler;
     }
 }

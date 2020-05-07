@@ -10,6 +10,7 @@ use game_system\model\map\TeamDeathMatchMap;
 use game_system\model\TeamDeathMatch;
 use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
+use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\form\MilitaryDepartmentSelectForm;
@@ -38,10 +39,6 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
@@ -272,26 +269,9 @@ class GameSystemListener
 
     public function spawnAmmoBox(Player $player) {
         $player->getInventory()->remove(new SpawnAmmoBoxItem());
-        $nbt = new CompoundTag('', [
-            'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $player->getX()),
-                new DoubleTag('', $player->getY() + 0.5),
-                new DoubleTag('', $player->getZ())
-            ]),
-            'Motion' => new ListTag('Motion', [
-                new DoubleTag('', 0),
-                new DoubleTag('', 0),
-                new DoubleTag('', 0)
-            ]),
-            'Rotation' => new ListTag('Rotation', [
-                new FloatTag("", $player->getYaw()),
-                new FloatTag("", $player->getPitch())
-            ]),
-        ]);
 
         $ammoBox = new AmmoBoxEntity(
             $player->getLevel(),
-            $nbt,
             $player,
             $this->usersService,
             $this->weaponService,
@@ -302,26 +282,8 @@ class GameSystemListener
 
     public function spawnMedicineBox(Player $player) {
         $player->getInventory()->remove(new SpawnMedicineBoxItem());
-        $nbt = new CompoundTag('', [
-            'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $player->getX()),
-                new DoubleTag('', $player->getY() + 0.5),
-                new DoubleTag('', $player->getZ())
-            ]),
-            'Motion' => new ListTag('Motion', [
-                new DoubleTag('', 0),
-                new DoubleTag('', 0),
-                new DoubleTag('', 0)
-            ]),
-            'Rotation' => new ListTag('Rotation', [
-                new FloatTag("", $player->getYaw()),
-                new FloatTag("", $player->getPitch())
-            ]),
-        ]);
-
         $medicineBox = new MedicineBoxEntity(
             $player->getLevel(),
-            $nbt,
             $player,
             $this->usersService,
             $this->scheduler);
@@ -348,5 +310,12 @@ class GameSystemListener
         } else if ($item instanceof ItemSniperRifle) {
             $player->getArmorInventory()->setHelmet(ItemFactory::get(Item::PUMPKIN));
         }
+    }
+
+    public function onBoxHitBullet(Player $attacker, BoxEntity $boxEntity): void {
+        $ownerUser = $this->usersService->getUserData($boxEntity->getOwner()->getName());
+        $attackerUser = $this->usersService->getUserData($attacker->getName());
+        if ($ownerUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) $boxEntity->kill();
+        if (!$ownerUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) $boxEntity->kill();
     }
 }

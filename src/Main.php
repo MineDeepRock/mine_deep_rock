@@ -207,9 +207,11 @@ class Main extends PluginBase implements Listener
     public function onBulletHit(ProjectileHitEntityEvent $event) :void {
         $entity = $event->getEntity();
         $attacker = $entity->getOwningEntity();
-        if ($event->getEntityHit() instanceof AmmoBoxEntity) return;
-        if ($event->getEntityHit() instanceof MedicineBoxEntity) return;
-        if ($event->getEntityHit() instanceof FlareBoxEntity) return;
+
+        if (is_subclass_of($event->getEntityHit(),"game_system\pmmp\Entity\BoxEntity")) {
+            $this->gameSystemListener->onBoxHitBullet($attacker,$entity);
+            return;
+        }
 
         if ($entity instanceof \game_system\pmmp\Entity\Egg && $attacker instanceof Human) {
             $item = $attacker->getInventory()->getItemInHand();

@@ -8,7 +8,6 @@ class FlareBox
 {
     const NAME = "";
     private $secondLimit;
-    private $playerHit = [];
     private $coordinate;
 
     public function __construct(int $secondLimit, Coordinate $coordinate) {
@@ -21,6 +20,13 @@ class FlareBox
      */
     public function getCoordinate(): Coordinate {
         return $this->coordinate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSecondLimit(): int {
+        return $this->secondLimit;
     }
 
 }

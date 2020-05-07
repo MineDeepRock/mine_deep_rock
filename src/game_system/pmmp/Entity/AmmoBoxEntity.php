@@ -6,11 +6,9 @@ namespace game_system\pmmp\Entity;
 
 use game_system\interpreter\AmmoBoxInterpreter;
 use game_system\model\Coordinate;
-use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
@@ -21,20 +19,15 @@ class AmmoBoxEntity extends BoxEntity
     public $geometryId = "geometry.AmmoBox";
     public $geometryName = "AmmoBox.geo.json";
 
-    private $owner;
-    private $scheduler;
     private $interpreter;
 
     public function __construct(
         Level $level,
-        CompoundTag $nbt,
         Player $owner,
         UsersService $usersService,
         WeaponsService $weaponService,
         TaskScheduler $scheduler) {
-        parent::__construct($level, $nbt);
-        $this->owner = $owner;
-        $this->scheduler = $scheduler;
+        parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new AmmoBoxInterpreter(
             $owner,
             new Coordinate(

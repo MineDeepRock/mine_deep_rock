@@ -22,8 +22,6 @@ class FlareBoxEntity extends BoxEntity
     public $geometryId = "geometry.FlareBox";
     public $geometryName = "FlareBox.geo.json";
 
-    private $owner;
-    private $scheduler;
     private $interpreter;
 
     public function __construct(
@@ -31,27 +29,8 @@ class FlareBoxEntity extends BoxEntity
         Player $owner,
         UsersService $usersService,
         TaskScheduler $scheduler) {
-        $nbt = new CompoundTag('', [
-            'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $owner->getX()),
-                new DoubleTag('', $owner->getY() + 0.5),
-                new DoubleTag('', $owner->getZ())
-            ]),
-            'Motion' => new ListTag('Motion', [
-                new DoubleTag('', 0),
-                new DoubleTag('', 0),
-                new DoubleTag('', 0)
-            ]),
-            'Rotation' => new ListTag('Rotation', [
-                new FloatTag("", $owner->getYaw()),
-                new FloatTag("", $owner->getPitch())
-            ]),
-        ]);
 
-        parent::__construct($level, $nbt);
-        $this->owner = $owner;
-        $this->scheduler = $scheduler;
-
+        parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new FlareBoxInterpreter(
             $owner,
             $usersService,
@@ -62,8 +41,8 @@ class FlareBoxEntity extends BoxEntity
             $scheduler);
 
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
-            $this->kill();
-        }), 20 * 20);
+            if ($this->isAlive()) $this->kill();
+        }), 20 * $this->interpreter->getFlareBox()->getSecondLimit());
     }
 
     protected function onDeath(): void {
