@@ -24,6 +24,6 @@ class Scout extends MilitaryDepartment
     }
 
     function getDescription(): string {
-        return "武器:SR\nガジェット:\nエフェクト:";
+        return "武器:SR\nガジェット:フレア箱\nエフェクト:";
     }
 }

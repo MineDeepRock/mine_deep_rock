@@ -27,6 +27,6 @@ class Engineer extends MilitaryDepartment
     }
 
     function getDescription(): string {
-        return "武器 : LMG\nガジェット: 弾薬箱\nエフェクト : 体力 1.5倍";
+        return "武器 : LMG\nガジェット: 弾薬箱\nエフェクト :";
     }
 }
