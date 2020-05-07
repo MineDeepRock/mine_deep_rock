@@ -85,7 +85,7 @@ class FlareBoxInterpreter
                 $this->flareBox->getCoordinate()->getZ()
             );
 
-            return $flarePosition->distance($player->getPosition()) <= 20;
+            return $flarePosition->distance($player->getPosition()) <= 25;
         });
     }
 
