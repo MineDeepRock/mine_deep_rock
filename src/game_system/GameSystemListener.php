@@ -42,6 +42,7 @@ use pocketmine\item\ItemFactory;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 
 class GameSystemListener
 {
@@ -129,9 +130,9 @@ class GameSystemListener
     public function isAbleToBuy(string $ownerName, string $weaponName): bool {
         $gun = GunList::fromString($weaponName);
 
-        $use = $this->usersService->getUserData($ownerName);
+        $user = $this->usersService->getUserData($ownerName);
 
-        if ($use->getMoney() <= $gun->getMoneyCost()->getValue())
+        if ($user->getMoney() <= $gun->getMoneyCost()->getValue())
             return false;
 
         if ($this->weaponService->isOwn($ownerName, $weaponName))
@@ -276,8 +277,8 @@ class GameSystemListener
             $this->usersService,
             $this->weaponService,
             $this->scheduler);
-
         $ammoBox->spawnToAll();
+        $this->setBoxNameTag($ammoBox,$player->getName());
     }
 
     public function spawnMedicineBox(Player $player) {
@@ -287,21 +288,35 @@ class GameSystemListener
             $player,
             $this->usersService,
             $this->scheduler);
-
         $medicineBox->spawnToAll();
+        $this->setBoxNameTag($medicineBox,$player->getName());
     }
 
     public function spawnFlareBox(Player $player) {
         $player->getInventory()->remove(new SpawnFlareBoxItem());
 
-        $flareGun = new FlareBoxEntity(
+        $flareBox = new FlareBoxEntity(
             $player->getLevel(),
             $player,
             $this->usersService,
             $this->scheduler);
 
-        $flareGun->spawnToAll();
+        $flareBox->spawnToAll();
+        $this->setBoxNameTag($flareBox,$player->getName());
     }
+
+    private function setBoxNameTag(BoxEntity $entity,string $ownerName) {
+        $user = $this->usersService->getUserData($ownerName);
+        if ($user->getBelongTeamId() === null) return;
+        if ($this->teamDeathMatchInterpreter->getGameData() === null) return;
+        if ($user->getBelongTeamId()->equal($this->teamDeathMatchInterpreter->getGameData()->getRedTeam()->getId())) {
+            $entity->setNameTag(TextFormat::RED . $entity->getName());
+        } else {
+            $entity->setNameTag(TextFormat::BLUE . $entity->getName());
+        }
+        $entity->setNameTagAlwaysVisible(false);
+    }
+
 
     public function scopeSniperRifle(Player $player, Item $item): void {
         if ($player->getArmorInventory()->getHelmet()->getId() === Item::PUMPKIN) {
