@@ -11,6 +11,7 @@ use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\Entity\TargetNPC;
+use game_system\pmmp\Entity\TrialGunDealerNPC;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
@@ -128,6 +129,7 @@ class Main extends PluginBase implements Listener
         Entity::registerEntity(GunDealerNPC::class, true, ['GunDealer']);
         Entity::registerEntity(GameMasterNPC::class, true, ['GameMaster']);
         Entity::registerEntity(TargetNPC::class, true, ['Target']);
+        Entity::registerEntity(TrialGunDealerNPC::class, true, ['TrialGunDealer']);
 
         $this->gameSystemListener->initGame([
             new \game_system\model\map\ApocalypticCity(),
@@ -368,6 +370,8 @@ class Main extends PluginBase implements Listener
                 $this->gameSystemListener->displayWeaponPurchaseForm($player);
             } else if ($entity instanceof GameMasterNPC) {
                 $this->gameSystemListener->joinGame($player);
+            } else if ($entity instanceof TrialGunDealerNPC) {
+                $this->gameSystemListener->displayTrialWeaponSelectForm($player);
             }
         }
     }

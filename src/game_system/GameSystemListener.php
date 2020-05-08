@@ -15,6 +15,7 @@ use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\form\MilitaryDepartmentSelectForm;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
+use game_system\pmmp\form\trial_weapon_select_form\TrialWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
 use game_system\pmmp\form\weapon_select_form\WeaponSelectForm;
 use game_system\pmmp\items\SpawnFlareBoxItem;
@@ -34,6 +35,7 @@ use gun_system\models\shotgun\M1897;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\MP18;
 use gun_system\pmmp\items\ItemSniperRifle;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
 use pocketmine\item\Item;
@@ -215,6 +217,19 @@ class GameSystemListener
         }, $this->weaponService->getOwnWeapons($playerName))));
     }
 
+    public function displayTrialWeaponSelectForm(Player $player) {
+        $playerName = $player->getName();
+        $player->sendForm(new TrialWeaponSelectForm(function ($weaponName, $scopeName) use ($playerName): void {
+            $gunType = GunList::fromString($weaponName)->getType()->getTypeText();
+            Server::getInstance()->dispatchCommand(
+                new ConsoleCommandSender(),
+                "gun give \"" . $playerName . "\" " . $weaponName . " " . $scopeName);
+
+            Server::getInstance()->dispatchCommand(
+                new ConsoleCommandSender(),
+                "gun ammo \"" . $playerName . "\" " . $gunType);
+        }));
+    }
 
     public function userLogin(string $userName): void {
         $player = Server::getInstance()->getPlayer($userName);
@@ -282,7 +297,7 @@ class GameSystemListener
             $this->weaponService,
             $this->scheduler);
         $ammoBox->spawnToAll();
-        $this->setBoxNameTag($ammoBox,$player->getName());
+        $this->setBoxNameTag($ammoBox, $player->getName());
     }
 
     public function spawnMedicineBox(Player $player) {
@@ -293,7 +308,7 @@ class GameSystemListener
             $this->usersService,
             $this->scheduler);
         $medicineBox->spawnToAll();
-        $this->setBoxNameTag($medicineBox,$player->getName());
+        $this->setBoxNameTag($medicineBox, $player->getName());
     }
 
     public function spawnFlareBox(Player $player) {
@@ -306,10 +321,10 @@ class GameSystemListener
             $this->scheduler);
 
         $flareBox->spawnToAll();
-        $this->setBoxNameTag($flareBox,$player->getName());
+        $this->setBoxNameTag($flareBox, $player->getName());
     }
 
-    private function setBoxNameTag(BoxEntity $entity,string $ownerName) {
+    private function setBoxNameTag(BoxEntity $entity, string $ownerName) {
         $user = $this->usersService->getUserData($ownerName);
         if ($user->getBelongTeamId() === null) return;
         if ($this->teamDeathMatchInterpreter->getGameData() === null) return;
