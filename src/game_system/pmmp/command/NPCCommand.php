@@ -8,6 +8,7 @@ use game_system\GameSystemListener;
 use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\TargetNPC;
+use game_system\pmmp\Entity\TrialGunDealerNPC;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\nbt\tag\CompoundTag;
@@ -70,6 +71,10 @@ class NPCCommand extends Command
                     break;
                 case "Target":
                     $target = new TargetNPC($player->getLevel(),$nbt);
+                    $target->spawnToAll();
+                    break;
+                case "TrialGunDealer":
+                    $target = new TrialGunDealerNPC($player->getLevel(),$nbt);
                     $target->spawnToAll();
                     break;
             }
