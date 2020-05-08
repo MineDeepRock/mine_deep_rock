@@ -94,7 +94,13 @@ class GunPurchaseForm implements Form
     public function jsonSerialize() {
         $buttons = [];
         foreach ($this->gunList as $gun) {
-            $buttons[] = ['text' => $gun::NAME];
+            $buttons[] = [
+                'text' => $gun::NAME,
+                'image' => [
+                    'type' => 'path',
+                    'data' => 'textures/effective_ranges/' . $gun::NAME
+                ]
+            ];
         }
         return [
             'type' => 'form',

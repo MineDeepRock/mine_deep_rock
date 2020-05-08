@@ -27,13 +27,19 @@ class GunSelectForm implements Form
             return;
         }
 
-        $player->sendForm(new GunSelectDetailForm($this->onSelected,$this->weaponList[$data]));
+        $player->sendForm(new GunSelectDetailForm($this->onSelected, $this->weaponList[$data]));
     }
 
     public function jsonSerialize() {
         $buttons = [];
         foreach ($this->weaponList as $weapon) {
-            $buttons[] = ['text' => $weapon->getName()];
+            $buttons[] = [
+                'text' => $weapon->getName(),
+                'image' => [
+                    'type' => 'path',
+                    'data' => 'textures/effective_ranges/' . $weapon->getName()
+                ]
+            ];
         }
 
         return [

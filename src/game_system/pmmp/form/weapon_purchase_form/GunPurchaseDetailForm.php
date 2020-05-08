@@ -43,10 +43,6 @@ class GunPurchaseDetailForm implements Form
             'buttons' => [
                 [
                     'text' => '購入',
-                    'image' => [
-                        'type' => 'path',
-                        'data' => 'textures/effective_ranges/' . $this->gun::NAME
-                    ]
                 ]
             ]
         ];
