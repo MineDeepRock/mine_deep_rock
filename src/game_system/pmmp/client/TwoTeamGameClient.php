@@ -166,7 +166,7 @@ class TwoTeamGameClient
         });
     }
 
-    public function onReceiveDamage(Player $attacker, Player $targetPlayer, int $damage, string $weaponName): void {
+    public function onReceiveDamage(Player $attacker, Player $targetPlayer, float $damage, string $weaponName): void {
         $health = $targetPlayer->getHealth() - $damage;
 
         GunSounds::play($targetPlayer, GunSounds::bulletHitPlayer(), 10, 1);

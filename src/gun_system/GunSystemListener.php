@@ -43,7 +43,7 @@ class GunSystemListener extends Client
         }
     }
 
-    public function receivedDamage(?Player $attacker, Entity $entity): int {
+    public function receivedDamage(?Player $attacker, Entity $entity): float {
         if ($attacker !== null) {
 
             $attackerPos = new Vector3(
