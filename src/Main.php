@@ -2,6 +2,7 @@
 
 use game_system\GameSystemListener;
 use game_system\pmmp\command\GameCommand;
+use game_system\pmmp\command\NPCCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
@@ -68,6 +69,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemListener, $this->getScheduler()));
         $this->getServer()->getCommandMap()->register("state", new StateCommand($this, $this->gameSystemListener));
         $this->getServer()->getCommandMap()->register("world", new WorldCommand($this));
+        $this->getServer()->getCommandMap()->register("npc", new NPCCommand($this));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
@@ -113,10 +115,11 @@ class Main extends PluginBase implements Listener
         Item::addCreativeItem(Item::get(SpawnFlareBoxItem::ITEM_ID));
 
         Entity::registerEntity(AmmoBoxEntity::class, true, ['AmmoBox']);
-
         Entity::registerEntity(MedicineBoxEntity::class, true, ['MedicineBox']);
-
         Entity::registerEntity(FlareBoxEntity::class, true, ['FlareBox']);
+
+        Entity::registerEntity(GunDealerNPC::class, true, ['GunDealer']);
+        Entity::registerEntity(GameMasterNPC::class, true, ['GameMaster']);
 
         $this->gameSystemListener->initGame([
                 new \game_system\model\map\ApocalypticCity(),

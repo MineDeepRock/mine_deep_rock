@@ -5,6 +5,7 @@ namespace game_system\pmmp\command;
 
 
 use game_system\GameSystemListener;
+use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -26,6 +27,10 @@ class NPCCommand extends Command
             return true;
         }
         $player = $sender->getServer()->getPlayer($sender->getName());
+        if (!$player->isOp()) {
+            $sender->sendMessage("権限がありません");
+            return false;
+        }
         $method = $args[0];
         if ($method === "spawn") {
             if ($args < 2) {
@@ -36,6 +41,10 @@ class NPCCommand extends Command
             switch ($args[1]) {
                 case "GunDealer":
                     $dealer = new GunDealerNPC($player->getLevel(),$player);
+                    $dealer->spawnToAll();
+                    break;
+                case "GameMaster":
+                    $dealer = new GameMasterNPC($player->getLevel(),$player);
                     $dealer->spawnToAll();
                     break;
             }
