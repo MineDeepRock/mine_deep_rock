@@ -5,7 +5,6 @@ namespace game_system\pmmp\form\trial_weapon_select_form;
 
 
 use Closure;
-use game_system\pmmp\form\weapon_select_form\GunSelectDetailForm;
 use gun_system\models\GunList;
 use gun_system\models\GunType;
 use pocketmine\form\Form;
@@ -74,7 +73,7 @@ class TrialGunSelectForm implements Form
             return;
         }
 
-        $player->sendForm(new GunSelectDetailForm($this->onSelected, $this->gunList[$data]));
+        $player->sendForm(new TrialGunDetailForm($this->onSelected, $this->gunList[$data]));
     }
 
     public function jsonSerialize() {
