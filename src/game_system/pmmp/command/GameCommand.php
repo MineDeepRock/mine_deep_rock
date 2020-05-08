@@ -57,17 +57,6 @@ class GameCommand extends Command
             }
 
             $player->sendMessage("試合を終了させました");//TODO
-        } else if ($method === "join") {
-            $result = $this->join($player->getName());
-            if (!$result) {
-                $player->sendMessage("試合が開かれていないか、すでに参加しています");
-                return false;
-            }
-
-            $onlinePlayers = Server::getInstance()->getOnlinePlayers();
-            foreach ($onlinePlayers as $onlinePlayer)
-                $onlinePlayer->sendMessage($player->getName() . "が試合に参加しました");
-
         } else if ($method === "quit" || $method === "hub") {
             $this->quit($player->getName());
             $player->sendMessage("試合から抜けました");
@@ -81,10 +70,6 @@ class GameCommand extends Command
 
     private function closeGame(): bool {
         return $this->listener->closeGame();
-    }
-
-    private function join(string $playerName): bool {
-        return $this->listener->joinGame($playerName);
     }
 
     private function quit(string $playerName): void {

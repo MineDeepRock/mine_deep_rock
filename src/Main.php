@@ -6,6 +6,7 @@ use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
+use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\items\SpawnFlareBoxItem;
@@ -319,6 +320,8 @@ class Main extends PluginBase implements Listener
             $player = $event->getDamager();
             if ($entity instanceof GunDealerNPC) {
                 $this->gameSystemListener->displayWeaponPurchaseForm($player);
+            } else if ($entity instanceof GameMasterNPC) {
+                $this->gameSystemListener->joinGame($player);
             }
         }
     }

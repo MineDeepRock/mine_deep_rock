@@ -22,7 +22,6 @@ use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
-use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
@@ -90,7 +89,6 @@ class GameSystemListener
                 $player->getInventory()->addItem(new MilitaryDepartmentSelectItem());
                 $player->getInventory()->addItem(new WeaponSelectItem());
                 $player->getInventory()->addItem(new SubWeaponSelectItem());
-                $player->getInventory()->addItem(new WeaponPurchaseItem());
                 $api->sendScoreboard($player, "sidebar", "Lobby", false);
                 $api->setScore($player, "sidebar", "ゲーム参加人数:", 0, 1);
             }
@@ -103,10 +101,17 @@ class GameSystemListener
         return $result;
     }
 
-    public function joinGame(string $userName): bool {
-        $result = $this->teamDeathMatchInterpreter->join($userName);
+    public function joinGame(Player $player): void {
+        $result = $this->teamDeathMatchInterpreter->join($player->getName());
         $this->updateNumberOfParticipants();
-        return $result;
+        if (!$result) {
+            $player->sendMessage("試合が開かれていないか、すでに参加しています");
+            return;
+        }
+
+        $onlinePlayers = Server::getInstance()->getOnlinePlayers();
+        foreach ($onlinePlayers as $onlinePlayer)
+            $onlinePlayer->sendMessage($player->getName() . "が試合に参加しました");
     }
 
     public function quitGame(string $userName): bool {
@@ -219,7 +224,6 @@ class GameSystemListener
         $player->getInventory()->addItem(new MilitaryDepartmentSelectItem());
         $player->getInventory()->addItem(new WeaponSelectItem());
         $player->getInventory()->addItem(new SubWeaponSelectItem());
-        $player->getInventory()->addItem(new WeaponPurchaseItem());
         $player->setGamemode(Player::ADVENTURE);
 
         $api = EasyScoreboardAPI::getInstance();
