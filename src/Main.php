@@ -10,6 +10,7 @@ use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\MedicineBoxEntity;
+use game_system\pmmp\Entity\TargetNPC;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
@@ -48,9 +49,15 @@ use pocketmine\inventory\transaction\action\SlotChangeAction;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\math\Vector3;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\scheduler\ClosureTask;
 
 class Main extends PluginBase implements Listener
 {
@@ -120,10 +127,11 @@ class Main extends PluginBase implements Listener
 
         Entity::registerEntity(GunDealerNPC::class, true, ['GunDealer']);
         Entity::registerEntity(GameMasterNPC::class, true, ['GameMaster']);
+        Entity::registerEntity(TargetNPC::class, true, ['Target']);
 
         $this->gameSystemListener->initGame([
-                new \game_system\model\map\ApocalypticCity(),
-                new \game_system\model\map\WaterfrontHome()][rand(0,1)]);
+            new \game_system\model\map\ApocalypticCity(),
+            new \game_system\model\map\WaterfrontHome()][rand(0, 1)]);
     }
 
 
@@ -194,7 +202,7 @@ class Main extends PluginBase implements Listener
     public function onSneak(PlayerToggleSneakEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
-        $this->gameSystemListener->scopeSniperRifle($player,$item);
+        $this->gameSystemListener->scopeSniperRifle($player, $item);
         if ($player->isSneaking()) {
             $player->removeEffect(Effect::SLOWNESS);
         } else {
@@ -205,20 +213,55 @@ class Main extends PluginBase implements Listener
         }
     }
 
-    public function onBulletHit(ProjectileHitEntityEvent $event) :void {
-        $entity = $event->getEntity();
-        $attacker = $entity->getOwningEntity();
+    public function onBulletHit(ProjectileHitEntityEvent $event): void {
+        $bullet = $event->getEntity();
+        $victim = $event->getEntityHit();
+        $attacker = $bullet->getOwningEntity();
 
-        if (is_subclass_of($event->getEntityHit(),"game_system\pmmp\Entity\BoxEntity")) {
-            $this->gameSystemListener->onBoxHitBullet($attacker,$entity);
+        if (is_subclass_of($event->getEntityHit(), "game_system\pmmp\Entity\BoxEntity")) {
+            $this->gameSystemListener->onBoxHitBullet($attacker, $victim);
             return;
         }
-        if (is_subclass_of($event->getEntityHit(),"game_system\pmmp\Entity\NPCBase")) return;
 
-        if ($entity instanceof \game_system\pmmp\Entity\Egg && $attacker instanceof Human) {
+        if ($bullet instanceof \game_system\pmmp\Entity\Egg && $victim instanceof TargetNPC) {
+            $damage = $this->gunSystemClient->receivedDamage($attacker, $victim);
+            if ($attacker instanceof Player) {
+                $health = $victim->getHealth() - $damage;
+                $attacker->sendMessage(strval($damage));
+                if ($health <= 0) {
+                    $nbt = new CompoundTag('', [
+                        'Pos' => new ListTag('Pos', [
+                            new DoubleTag('', $victim->getX()),
+                            new DoubleTag('', $victim->getY() + 0.5),
+                            new DoubleTag('', $victim->getZ())
+                        ]),
+                        'Motion' => new ListTag('Motion', [
+                            new DoubleTag('', 0),
+                            new DoubleTag('', 0),
+                            new DoubleTag('', 0)
+                        ]),
+                        'Rotation' => new ListTag('Rotation', [
+                            new FloatTag("", $victim->getYaw()),
+                            new FloatTag("", $victim->getPitch())
+                        ]),
+                    ]);
+                    $target = new TargetNPC($victim->getLevel(),$nbt);
+                    $victim->setHealth($health);
+                    $this->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $tick) use($target): void {
+                        $target->spawnToAll();
+                    }), 20 * 3);
+                } else {
+                    $victim->setHealth($health);
+                }
+            }
+            return;
+        }
+
+        if ($bullet instanceof \game_system\pmmp\Entity\Egg && $victim instanceof Player) {
             $item = $attacker->getInventory()->getItemInHand();
-            $damage = $this->gunSystemClient->receivedDamage($attacker, $event->getEntityHit());
-            $this->gameSystemListener->onReceivedDamage($attacker, $event->getEntityHit(), $item->getCustomName(), $damage);
+            $damage = $this->gunSystemClient->receivedDamage($attacker, $victim);
+            $this->gameSystemListener->onReceivedDamage($attacker, $victim, $item->getCustomName(), $damage);
+            return;
         }
     }
 

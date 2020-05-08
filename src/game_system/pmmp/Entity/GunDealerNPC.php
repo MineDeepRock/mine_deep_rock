@@ -5,7 +5,7 @@ namespace game_system\pmmp\Entity;
 
 
 use pocketmine\level\Level;
-use pocketmine\Player;
+use pocketmine\nbt\tag\CompoundTag;
 
 class GunDealerNPC extends NPCBase
 {
@@ -13,7 +13,7 @@ class GunDealerNPC extends NPCBase
     public $geometryId = "geometry.GunDealer";
     public $geometryName = "GunDealer.geo.json";
 
-    public function __construct(Level $level, Player $owner) {
-        parent::__construct($level, $owner);
+    public function __construct(Level $level, CompoundTag $nbt) {
+        parent::__construct($level, $nbt);
     }
 }

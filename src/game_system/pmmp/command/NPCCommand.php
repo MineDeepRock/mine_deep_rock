@@ -7,8 +7,13 @@ namespace game_system\pmmp\command;
 use game_system\GameSystemListener;
 use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
+use game_system\pmmp\Entity\TargetNPC;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\plugin\Plugin;
 
 class NPCCommand extends Command
@@ -38,14 +43,34 @@ class NPCCommand extends Command
                 return true;
             }
 
+            $nbt = new CompoundTag('', [
+                'Pos' => new ListTag('Pos', [
+                    new DoubleTag('', $player->getX()),
+                    new DoubleTag('', $player->getY() + 0.5),
+                    new DoubleTag('', $player->getZ())
+                ]),
+                'Motion' => new ListTag('Motion', [
+                    new DoubleTag('', 0),
+                    new DoubleTag('', 0),
+                    new DoubleTag('', 0)
+                ]),
+                'Rotation' => new ListTag('Rotation', [
+                    new FloatTag("", $player->getYaw()),
+                    new FloatTag("", $player->getPitch())
+                ]),
+            ]);
             switch ($args[1]) {
                 case "GunDealer":
-                    $dealer = new GunDealerNPC($player->getLevel(),$player);
+                    $dealer = new GunDealerNPC($player->getLevel(),$nbt);
                     $dealer->spawnToAll();
                     break;
                 case "GameMaster":
-                    $dealer = new GameMasterNPC($player->getLevel(),$player);
+                    $dealer = new GameMasterNPC($player->getLevel(),$nbt);
                     $dealer->spawnToAll();
+                    break;
+                case "Target":
+                    $target = new TargetNPC($player->getLevel(),$nbt);
+                    $target->spawnToAll();
                     break;
             }
         }

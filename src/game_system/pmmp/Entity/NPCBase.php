@@ -37,23 +37,7 @@ class NPCBase extends Human
     public $defaultHP = 1;
     public $uuid;
 
-    public function __construct(Level $level, Player $owner) {
-        $nbt = new CompoundTag('', [
-            'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $owner->getX()),
-                new DoubleTag('', $owner->getY() + 0.5),
-                new DoubleTag('', $owner->getZ())
-            ]),
-            'Motion' => new ListTag('Motion', [
-                new DoubleTag('', 0),
-                new DoubleTag('', 0),
-                new DoubleTag('', 0)
-            ]),
-            'Rotation' => new ListTag('Rotation', [
-                new FloatTag("", $owner->getYaw()),
-                new FloatTag("", $owner->getPitch())
-            ]),
-        ]);
+    public function __construct(Level $level, CompoundTag $nbt) {
         $this->uuid = UUID::fromRandom();
         $this->initSkin();
 
