@@ -40,14 +40,18 @@ class FlareBoxInterpreter
         $this->ownerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
 
         $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick): void {
-            $this->client->summonParticle(
-                $this->owner->getLevel(),
-                new Vector3(
-                    $this->flareBox->getCoordinate()->getX(),
-                    $this->flareBox->getCoordinate()->getY(),
-                    $this->flareBox->getCoordinate()->getZ()));
-            foreach ($this->getAroundEnemyPlayers() as $player) {
-                $this->effectOn($player);
+            if (!$this->owner->isOnline()) {
+                $this->stop();
+            } else {
+                $this->client->summonParticle(
+                    $this->owner->getLevel(),
+                    new Vector3(
+                        $this->flareBox->getCoordinate()->getX(),
+                        $this->flareBox->getCoordinate()->getY(),
+                        $this->flareBox->getCoordinate()->getZ()));
+                foreach ($this->getAroundEnemyPlayers() as $player) {
+                    $this->effectOn($player);
+                }
             }
         }), 20 * 2, 20 * 5);
     }
