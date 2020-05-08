@@ -6,6 +6,7 @@ use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
+use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
@@ -13,7 +14,6 @@ use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
-use game_system\pmmp\items\WeaponPurchaseItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use gun_system\EffectiveRangeLoader;
 use gun_system\GunSystemListener;
@@ -98,9 +98,6 @@ class Main extends PluginBase implements Listener
 
         ItemFactory::registerItem(new SubWeaponSelectItem(), true);
         Item::addCreativeItem(Item::get(SubWeaponSelectItem::ITEM_ID));
-
-        ItemFactory::registerItem(new WeaponPurchaseItem(), true);
-        Item::addCreativeItem(Item::get(WeaponPurchaseItem::ITEM_ID));
 
         ItemFactory::registerItem(new SpawnItem(), true);
         Item::addCreativeItem(Item::get(SpawnItem::ITEM_ID));
@@ -212,6 +209,7 @@ class Main extends PluginBase implements Listener
             $this->gameSystemListener->onBoxHitBullet($attacker,$entity);
             return;
         }
+        if (is_subclass_of($event->getEntityHit(),"game_system\pmmp\Entity\NPCBase")) return;
 
         if ($entity instanceof \game_system\pmmp\Entity\Egg && $attacker instanceof Human) {
             $item = $attacker->getInventory()->getItemInHand();
@@ -235,15 +233,6 @@ class Main extends PluginBase implements Listener
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === SubWeaponSelectItem::ITEM_ID) {
                 $this->gameSystemListener->displaySubWeaponSelectForm($player);
-            }
-        }
-    }
-
-    public function onTapByWeaponPurchaseItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === WeaponPurchaseItem::ITEM_ID) {
-                $this->gameSystemListener->displayWeaponPurchaseForm($player);
             }
         }
     }
@@ -297,9 +286,6 @@ class Main extends PluginBase implements Listener
                     case SubWeaponSelectItem::ITEM_ID:
                         $this->gameSystemListener->displaySubWeaponSelectForm($player);
                         break;
-                    case WeaponPurchaseItem::ITEM_ID:
-                        $this->gameSystemListener->displayWeaponPurchaseForm($player);
-                        break;
                     case SpawnItem::ITEM_ID:
                         $this->gameSystemListener->spawnOnTeamDeath($player->getName());
                         break;
@@ -324,6 +310,16 @@ class Main extends PluginBase implements Listener
         $entity = $event->getEntity();
         if ($entity instanceof Human) {
             $event->setCancelled();
+        }
+    }
+
+    public function tapDealer(EntityDamageEvent $event) {
+        $entity = $event->getEntity();
+        if ($event instanceof EntityDamageByEntityEvent) {
+            $player = $event->getDamager();
+            if ($entity instanceof GunDealerNPC) {
+                $this->gameSystemListener->displayWeaponPurchaseForm($player);
+            }
         }
     }
 
