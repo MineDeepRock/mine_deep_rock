@@ -4,6 +4,7 @@
 namespace game_system\model\map;
 
 
+use Closure;
 use game_system\model\Coordinate;
 use pocketmine\utils\TextFormat;
 
@@ -13,6 +14,8 @@ class DominationFlag
     private $gauge = 0;
     private $name;
 
+    private $onOccupied;
+
     public function __construct(string $name, Coordinate $coordinate) {
         $this->center = $coordinate;
         $this->name = $name;
@@ -20,11 +23,13 @@ class DominationFlag
 
     public function makeProgressByRed(): int {
         $this->gauge += 5;
+        if ($this->gauge === 100) ($this->onOccupied)($this->name,$this->gauge);
         return $this->gauge;
     }
 
     public function makeProgressByBlue(): int {
         $this->gauge -= 5;
+        if ($this->gauge === -100) ($this->onOccupied)($this->name,$this->gauge);
         return $this->gauge;
     }
 
@@ -54,5 +59,21 @@ class DominationFlag
         } else {
             return TextFormat::BLUE . $this->name . ":" . -$this->gauge . TextFormat::WHITE . "/100";
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $onOccupied
+     * @return DominationFlag
+     */
+    public function setOnOccupied(Closure $onOccupied) {
+        $this->onOccupied = $onOccupied;
+        return $this;
     }
 }

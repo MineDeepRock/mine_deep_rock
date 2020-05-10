@@ -17,6 +17,23 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
     private $flagSchedulerHandler;
 
     public function start(): bool {
+        foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
+            $flag->setOnOccupied(function ($name,$gauge) {
+                var_dump($name);
+                if ($gauge > 0) $this->client->changeColorRed($name);
+                if ($gauge < 0) $this->client->changeColorBlue($name);
+            });
+
+            $this->client->spawnFlag(
+                $flag->getName(),
+                Server::getInstance()->getLevelByName($this->getGameData()->getMap()->getName()),
+                new Vector3(
+                    $flag->getCenter()->getX(),
+                    $flag->getCenter()->getY(),
+                    $flag->getCenter()->getZ()
+                ));
+        }
+
         $this->flagSchedulerHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
             foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
                 if ($flag->isOccupied()) {
@@ -32,6 +49,7 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
     }
 
     protected function onFinished(): void {
+        $this->client->removeAllFlags();
         $this->flagSchedulerHandler->cancel();
         parent::onFinished();
     }
@@ -52,10 +70,16 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
     }
 
     public function addScoreByFlag(DominationFlag $flag): void {
+        $level = Server::getInstance()->getLevelByName($this->game->getMap()->getName());
+        $players = $level->getPlayers();
         if ($flag->isRedTeams()) {
-            $this->client->updateRedTeamScoreboard(++$this->game->redTeamScore, $this->game->getMap()->getName());
+            foreach ($players as $player){
+                $this->client->updateRedTeamScoreboard($player,++$this->game->redTeamScore);
+            }
         } else {
-            $this->client->updateBlueTeamScoreboard(++$this->game->blueTeamScore, $this->game->getMap()->getName());
+            foreach ($players as $player){
+                $this->client->updateBlueTeamScoreboard($player,++$this->game->blueTeamScore);
+            }
         }
     }
 

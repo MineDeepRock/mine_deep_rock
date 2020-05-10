@@ -10,6 +10,7 @@ use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
+use game_system\pmmp\Entity\FlagEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
@@ -23,6 +24,7 @@ use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
+use game_system\pmmp\WorldController;
 use gun_system\EffectiveRangeLoader;
 use gun_system\GunSystemListener;
 use gun_system\models\BulletId;
@@ -82,6 +84,10 @@ class Main extends PluginBase implements Listener
     private $weaponsListener;
 
     function onEnable() {
+        //TODO
+        $world = new WorldController();
+        $world->loadWorld("Apocalyptic City");
+
         $effectiveRangeLoader = new EffectiveRangeLoader();
         $effectiveRangeLoader->loadAll();
 
@@ -149,6 +155,8 @@ class Main extends PluginBase implements Listener
         Entity::registerEntity(GameMasterNPC::class, true, ['GameMaster']);
         Entity::registerEntity(TargetNPC::class, true, ['Target']);
         Entity::registerEntity(TrialGunDealerNPC::class, true, ['TrialGunDealer']);
+
+        Entity::registerEntity(FlagEntity::class, true, ['Flag']);
 
         $this->gameListener->initGame(\game_system\model\GameType::TeamDomination());
     }

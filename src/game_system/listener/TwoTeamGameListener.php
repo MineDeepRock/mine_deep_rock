@@ -27,6 +27,7 @@ use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
+use game_system\pmmp\WorldController;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\entity\Entity;
