@@ -184,6 +184,19 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    //エンティティをなぐるで一発だけ射撃
+    public function tryShootingByTapPlayer(EntityDamageEvent $event) {
+        if ($event instanceof EntityDamageByEntityEvent) {
+            $player = $event->getDamager();
+            if ($player instanceof Player
+                && $event->getCause() === EntityDamageEvent::MODIFIER_ARMOR) {
+                var_dump($player->getName());
+                $item = $player->getInventory()->getItemInHand();
+                $this->gunSystemClient->tryShootingOnce($player, $item);
+            }
+        }
+    }
+
     //銃を捨てるでリロード
     public function tryReloading(InventoryTransactionEvent $event): void {
         $player = $event->getTransaction()->getSource();
@@ -394,7 +407,7 @@ class Main extends PluginBase implements Listener
         $entity = $event->getEntity();
         if ($event instanceof EntityDamageByEntityEvent) {
             $player = $event->getDamager();
-            if ($player instanceof  Player) {
+            if ($player instanceof Player) {
                 if ($entity instanceof GunDealerNPC) {
                     $this->weaponsListener->displayWeaponPurchaseForm($player);
                 } else if ($entity instanceof GameMasterNPC) {
@@ -408,7 +421,7 @@ class Main extends PluginBase implements Listener
 
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
-        $this->usersListener->userLogin($player->getName(),$this->gameListener->getGameId());
+        $this->usersListener->userLogin($player->getName(), $this->gameListener->getGameId());
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
