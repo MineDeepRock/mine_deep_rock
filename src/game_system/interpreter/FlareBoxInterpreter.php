@@ -81,6 +81,7 @@ class FlareBoxInterpreter
         $players = $this->owner->getLevel()->getPlayers();
         return array_filter($players, function ($player) {
             $belongTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
+            if ($this->ownerTeamId === null) return false;
             if ($belongTeamId === null) return false;
             if ($this->ownerTeamId->equal($belongTeamId)) return false;
             $flarePosition = new Vector3(

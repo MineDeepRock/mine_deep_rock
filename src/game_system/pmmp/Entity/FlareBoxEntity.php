@@ -23,6 +23,7 @@ class FlareBoxEntity extends BoxEntity
     public $geometryName = "FlareBox.geo.json";
 
     private $interpreter;
+    private $handler;
 
     public function __construct(
         Level $level,
@@ -40,12 +41,13 @@ class FlareBoxEntity extends BoxEntity
                 $this->getZ()),
             $scheduler);
 
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
+        $this->handler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
         }), 20 * $this->interpreter->getFlareBox()->getSecondLimit());
     }
 
     protected function onDeath(): void {
+        $this->handler->cancel();
         $this->interpreter->stop();
         parent::onDeath();
     }

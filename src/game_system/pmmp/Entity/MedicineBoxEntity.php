@@ -19,6 +19,7 @@ class MedicineBoxEntity extends BoxEntity
     public $geometryName = "MedicineBox.geo.json";
 
     private $interpreter;
+    private $handler;
 
     public function __construct(
         Level $level,
@@ -35,7 +36,7 @@ class MedicineBoxEntity extends BoxEntity
             $usersService,
             $scheduler);
 
-        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
+        $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
         }), 20 * $this->interpreter->getMedicineBox()->getSecondLimit());
     }
@@ -44,6 +45,7 @@ class MedicineBoxEntity extends BoxEntity
         parent::onDeath();
         $this->interpreter->stop();
         $this->interpreter->giveAgain();
+        $this->handler->cancel();
     }
 
     public function getName(): string {
