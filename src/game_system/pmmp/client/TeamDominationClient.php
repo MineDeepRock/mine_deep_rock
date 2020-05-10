@@ -40,6 +40,8 @@ class TeamDominationClient extends TwoTeamGameClient
 
         $flag = new FlagEntity($level, $nbt);
         $flag->teleport($pos);
+        $flag->setNameTag($name);
+        $flag->setNameTagAlwaysVisible(true);
         $this->flags[$name] = $flag;
         $flag->spawnToAll();
     }
@@ -56,6 +58,7 @@ class TeamDominationClient extends TwoTeamGameClient
     public function changeColorBlue(string $name): void {
         $this->flags[$name]->changeColorBlue();
     }
+
     public function removeAllFlags() {
         foreach ($this->flags as $flag) {
             $flag->kill();
