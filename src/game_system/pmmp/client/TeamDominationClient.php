@@ -11,6 +11,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\utils\TextFormat;
 
 class TeamDominationClient extends TwoTeamGameClient
 {
@@ -40,22 +41,24 @@ class TeamDominationClient extends TwoTeamGameClient
 
         $flag = new FlagEntity($level, $nbt);
         $flag->teleport($pos);
-        $flag->setNameTag($name);
+        $flag->setNameTag(TextFormat::WHITE . $name);
         $flag->setNameTagAlwaysVisible(true);
         $this->flags[$name] = $flag;
         $flag->spawnToAll();
     }
 
     public function changeColorWhite(string $name): void {
+        $this->flags[$name]->setNameTag(TextFormat::WHITE . $name);
         $this->flags[$name]->changeColorWhite();
     }
 
     public function changeColorRed(string $name): void {
+        $this->flags[$name]->setNameTag(TextFormat::RED . $name);
         $this->flags[$name]->changeColorRed();
-
     }
 
     public function changeColorBlue(string $name): void {
+        $this->flags[$name]->setNameTag(TextFormat::BLUE . $name);
         $this->flags[$name]->changeColorBlue();
     }
 
