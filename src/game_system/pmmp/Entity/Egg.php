@@ -4,7 +4,7 @@
 namespace game_system\pmmp\Entity;
 
 
-use game_system\GameSystemListener;
+use game_system\GameSystemBinder;
 use gun_system\pmmp\GunSounds;
 use gun_system\pmmp\items\ItemShotGun;
 use pocketmine\block\Block;
@@ -40,7 +40,7 @@ class Egg extends Throwable
                 $distance = $blockPos->distance($player->getPosition());
                 if ($distance <= 2) {
                     GunSounds::play($player, GunSounds::bulletHitBlock());
-                    GameSystemListener::getInstance()->scare($player,$this->getOwningEntity());
+                    GameSystemBinder::getInstance()->getGameListener()->scare($player,$this->getOwningEntity());
                 } else if ($distance <= 10) {
                     GunSounds::play($player, GunSounds::bulletFly());
                 }

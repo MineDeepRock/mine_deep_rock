@@ -4,7 +4,6 @@
 namespace game_system\pmmp\command;
 
 
-use game_system\GameSystemListener;
 use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\TargetNPC;

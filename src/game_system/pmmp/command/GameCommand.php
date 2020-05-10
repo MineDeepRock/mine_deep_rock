@@ -4,7 +4,7 @@
 namespace game_system\pmmp\command;
 
 
-use game_system\GameSystemListener;
+use game_system\listener\TwoTeamGameListener;
 use game_system\pmmp\WorldController;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -18,7 +18,7 @@ class GameCommand extends Command
 
     private $scheduler;
 
-    public function __construct(Plugin $owner, GameSystemListener $listener, TaskScheduler $scheduler) {
+    public function __construct(Plugin $owner, TwoTeamGameListener $listener, TaskScheduler $scheduler) {
         parent::__construct("game", "", "");
         $this->setPermission("Game.Command");
         $this->listener = $listener;

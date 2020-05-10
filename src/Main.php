@@ -1,11 +1,15 @@
 <?php
 
-use game_system\GameSystemListener;
+use game_system\GameSystemBinder;
+use game_system\listener\TwoTeamGameListener;
+use game_system\listener\UsersListener;
+use game_system\listener\WeaponListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\NPCCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
+use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
@@ -30,6 +34,7 @@ use gun_system\pmmp\items\bullet\ItemRevolverBullet;
 use gun_system\pmmp\items\bullet\ItemShotgunBullet;
 use gun_system\pmmp\items\bullet\ItemSniperRifleBullet;
 use gun_system\pmmp\items\bullet\ItemSubMachineGunBullet;
+use gun_system\pmmp\items\ItemSniperRifle;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\entity\Entity;
@@ -62,20 +67,34 @@ use pocketmine\scheduler\ClosureTask;
 
 class Main extends PluginBase implements Listener
 {
-    private $gameSystemListener;
     private $gunSystemClient;
+    /**
+     * @var TwoTeamGameListener
+     */
+    private $gameListener;
+    /**
+     * @var UsersListener
+     */
+    private $usersListener;
+    /**
+     * @var WeaponListener
+     */
+    private $weaponsListener;
 
     function onEnable() {
         $effectiveRangeLoader = new EffectiveRangeLoader();
         $effectiveRangeLoader->loadAll();
 
         $this->gunSystemClient = new GunSystemListener();
-        $this->gameSystemListener = new GameSystemListener($this->getScheduler());
+        $gameSystemBinder = new GameSystemBinder($this->getScheduler());
+        $this->gameListener = $gameSystemBinder->getGameListener();
+        $this->usersListener = $gameSystemBinder->getUsersListener();
+        $this->weaponsListener = $gameSystemBinder->getWeaponListener();
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("gun", new GunCommand($this, $this->getScheduler(), $this->getServer()));
-        $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameSystemListener, $this->getScheduler()));
-        $this->getServer()->getCommandMap()->register("state", new StateCommand($this, $this->gameSystemListener));
+        $this->getServer()->getCommandMap()->register("game", new GameCommand($this, $this->gameListener, $this->getScheduler()));
+        $this->getServer()->getCommandMap()->register("state", new StateCommand($this, $this->usersListener));
         $this->getServer()->getCommandMap()->register("world", new WorldCommand($this));
         $this->getServer()->getCommandMap()->register("npc", new NPCCommand($this));
 
@@ -131,9 +150,7 @@ class Main extends PluginBase implements Listener
         Entity::registerEntity(TargetNPC::class, true, ['Target']);
         Entity::registerEntity(TrialGunDealerNPC::class, true, ['TrialGunDealer']);
 
-        $this->gameSystemListener->initGame([
-            new \game_system\model\map\ApocalypticCity(),
-            new \game_system\model\map\WaterfrontHome()][rand(0, 1)]);
+        $this->gameListener->initGame(\game_system\model\GameType::TeamDeathMatch());
     }
 
 
@@ -204,13 +221,16 @@ class Main extends PluginBase implements Listener
     public function onSneak(PlayerToggleSneakEvent $event) {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
-        $this->gameSystemListener->scopeSniperRifle($player, $item);
         if ($player->isSneaking()) {
+            $player->getArmorInventory()->removeItem(ItemFactory::get(Item::PUMPKIN));
             $player->removeEffect(Effect::SLOWNESS);
         } else {
             if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
                 $effectLevel = $item->getInterpreter()->getScope()->getMagnification()->getValue();
                 $player->addEffect(new EffectInstance(Effect::getEffect(Effect::SLOWNESS), null, $effectLevel, false));
+                if ($item instanceof ItemSniperRifle) {
+                    $player->getArmorInventory()->setHelmet(ItemFactory::get(Item::PUMPKIN));
+                }
             }
         }
     }
@@ -220,8 +240,8 @@ class Main extends PluginBase implements Listener
         $victim = $event->getEntityHit();
         $attacker = $bullet->getOwningEntity();
 
-        if (is_subclass_of($event->getEntityHit(), "game_system\pmmp\Entity\BoxEntity")) {
-            $this->gameSystemListener->onBoxHitBullet($attacker, $victim);
+        if ($attacker instanceof Player && $victim instanceof BoxEntity) {
+            $this->gameListener->onBoxHitBullet($attacker, $victim);
             return;
         }
 
@@ -247,9 +267,9 @@ class Main extends PluginBase implements Listener
                             new FloatTag("", $victim->getPitch())
                         ]),
                     ]);
-                    $target = new TargetNPC($victim->getLevel(),$nbt);
+                    $target = new TargetNPC($victim->getLevel(), $nbt);
                     $victim->setHealth($health);
-                    $this->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $tick) use($target): void {
+                    $this->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($target): void {
                         $target->spawnToAll();
                     }), 20 * 3);
                 } else {
@@ -262,7 +282,7 @@ class Main extends PluginBase implements Listener
         if ($bullet instanceof \game_system\pmmp\Entity\Egg && $victim instanceof Player) {
             $item = $attacker->getInventory()->getItemInHand();
             $damage = $this->gunSystemClient->receivedDamage($attacker, $victim);
-            $this->gameSystemListener->onReceivedDamage($attacker, $victim, $item->getCustomName(), $damage);
+            $this->gameListener->onReceivedDamage($attacker, $victim, $item->getCustomName(), $damage);
             return;
         }
     }
@@ -272,7 +292,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === WeaponSelectItem::ITEM_ID) {
-                $this->gameSystemListener->displayWeaponSelectForm($player);
+                $this->weaponsListener->displayWeaponSelectForm($player);
             }
         }
     }
@@ -281,7 +301,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === SubWeaponSelectItem::ITEM_ID) {
-                $this->gameSystemListener->displaySubWeaponSelectForm($player);
+                $this->weaponsListener->displaySubWeaponSelectForm($player);
             }
         }
     }
@@ -290,7 +310,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === SpawnItem::ITEM_ID) {
-                $this->gameSystemListener->spawnOnTeamDeath($player->getName());
+                $this->gameListener->spawnOnTeamDeath($player->getName());
             }
         }
     }
@@ -299,7 +319,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
-                $this->gameSystemListener->spawnAmmoBox($player);
+                $this->gameListener->spawnAmmoBox($player);
             }
         }
     }
@@ -308,7 +328,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
-                $this->gameSystemListener->spawnMedicineBox($player);
+                $this->gameListener->spawnMedicineBox($player);
             }
         }
     }
@@ -317,7 +337,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === MilitaryDepartmentSelectItem::ITEM_ID) {
-                $this->gameSystemListener->displayMilitaryDepartmentSelectForm($player);
+                $this->usersListener->displayMilitaryDepartmentSelectForm($player);
             }
         }
     }
@@ -330,25 +350,25 @@ class Main extends PluginBase implements Listener
                 $item = $event->getPlayer()->getInventory()->getItemInHand();
                 switch ($item->getId()) {
                     case WeaponSelectItem::ITEM_ID:
-                        $this->gameSystemListener->displayWeaponSelectForm($player);
+                        $this->weaponsListener->displayWeaponSelectForm($player);
                         break;
                     case SubWeaponSelectItem::ITEM_ID:
-                        $this->gameSystemListener->displaySubWeaponSelectForm($player);
+                        $this->weaponsListener->displaySubWeaponSelectForm($player);
                         break;
                     case SpawnItem::ITEM_ID:
-                        $this->gameSystemListener->spawnOnTeamDeath($player->getName());
+                        $this->gameListener->spawnOnTeamDeath($player->getName());
                         break;
                     case SpawnAmmoBoxItem::ITEM_ID:
-                        $this->gameSystemListener->spawnAmmoBox($player);
+                        $this->gameListener->spawnAmmoBox($player);
                         break;
                     case SpawnMedicineBoxItem::ITEM_ID:
-                        $this->gameSystemListener->spawnMedicineBox($player);
+                        $this->gameListener->spawnMedicineBox($player);
                         break;
                     case MilitaryDepartmentSelectItem::ITEM_ID:
-                        $this->gameSystemListener->displayMilitaryDepartmentSelectForm($player);
+                        $this->usersListener->displayMilitaryDepartmentSelectForm($player);
                         break;
                     case SpawnFlareBoxItem::ITEM_ID:
-                        $this->gameSystemListener->spawnFlareBox($player);
+                        $this->gameListener->spawnFlareBox($player);
                         break;
                 }
             }
@@ -366,19 +386,21 @@ class Main extends PluginBase implements Listener
         $entity = $event->getEntity();
         if ($event instanceof EntityDamageByEntityEvent) {
             $player = $event->getDamager();
-            if ($entity instanceof GunDealerNPC) {
-                $this->gameSystemListener->displayWeaponPurchaseForm($player);
-            } else if ($entity instanceof GameMasterNPC) {
-                $this->gameSystemListener->joinGame($player);
-            } else if ($entity instanceof TrialGunDealerNPC) {
-                $this->gameSystemListener->displayTrialWeaponSelectForm($player);
+            if ($player instanceof  Player) {
+                if ($entity instanceof GunDealerNPC) {
+                    $this->weaponsListener->displayWeaponPurchaseForm($player);
+                } else if ($entity instanceof GameMasterNPC) {
+                    $this->gameListener->joinGame($player);
+                } else if ($entity instanceof TrialGunDealerNPC) {
+                    $this->weaponsListener->displayTrialWeaponSelectForm($player);
+                }
             }
         }
     }
 
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
-        $this->gameSystemListener->userLogin($player->getName());
+        $this->usersListener->userLogin($player->getName(),$this->gameListener->getGameId());
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
@@ -387,6 +409,6 @@ class Main extends PluginBase implements Listener
     public function onQuit(PlayerQuitEvent $event) {
         $playerName = $event->getPlayer()->getName();
 
-        $this->gameSystemListener->quitGame($playerName);
+        $this->gameListener->quitGame($playerName);
     }
 }

@@ -174,7 +174,7 @@ class TwoTeamGameInterpreter
         }
     }
 
-    public function onReceiveDamage(Player $attackerPlayer, Entity $targetEntity, string $weaponName, int $damage): void {
+    public function onReceiveDamage(Player $attackerPlayer, Entity $targetEntity, string $weaponName, float $damage): void {
         $health = $targetEntity->getHealth() - $damage;
         if ($this->game !== null) {
             if ($targetEntity->getLevel()->getName() === $this->game->getMap()->getName()) {
