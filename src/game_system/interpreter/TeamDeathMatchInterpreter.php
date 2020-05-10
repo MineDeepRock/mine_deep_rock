@@ -6,6 +6,7 @@ namespace game_system\interpreter;
 
 use game_system\model\User;
 use pocketmine\Player;
+use pocketmine\Server;
 
 class TeamDeathMatchInterpreter extends TwoTeamGameInterpreter
 {
@@ -17,9 +18,15 @@ class TeamDeathMatchInterpreter extends TwoTeamGameInterpreter
     public function addScoreByKilling(User $attacker): void {
         $attackerTeamId = $attacker->getBelongTeamId();
         if ($attackerTeamId->equal($this->game->getRedTeam()->getId())) {
-            $this->client->updateRedTeamScoreboard(++$this->game->redTeamScore, $this->game->getMap()->getName());
+            $players = Server::getInstance()->getLevelByName($this->game->getMap()->getName())->getPlayers();
+            foreach ($players as $player) {
+                $this->client->updateRedTeamScoreboard($player, ++$this->game->redTeamScore);
+            }
         } else {
-            $this->client->updateBlueTeamScoreboard(++$this->game->blueTeamScore, $this->game->getMap()->getName());
+            $players = Server::getInstance()->getLevelByName($this->game->getMap()->getName())->getPlayers();
+            foreach ($players as $player) {
+                $this->client->updateBlueTeamScoreboard($player, ++$this->game->blueTeamScore);
+            }
         }
     }
 }

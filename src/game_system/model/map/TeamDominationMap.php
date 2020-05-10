@@ -11,14 +11,13 @@ class TeamDominationMap extends Map
     private $redTeamSpawnPoints;
     private $blueTeamSpawnPoints;
 
-    private $pointACoordinate;
-    private $pointBCoordinate;
-    private $pointCCoordinate;
+    private $flags;
 
-    public function __construct(string $name, string $creatorName, $redTeamSpawnPoints, $blueTeamSpawnPoints) {
+    public function __construct(string $name, string $creatorName, $redTeamSpawnPoints, $blueTeamSpawnPoints, array $flags) {
         parent::__construct($name, $creatorName, GameType::TeamDomination());
         $this->redTeamSpawnPoints = $redTeamSpawnPoints;
         $this->blueTeamSpawnPoints = $blueTeamSpawnPoints;
+        $this->flags = $flags;
     }
 
     /**
@@ -33,5 +32,12 @@ class TeamDominationMap extends Map
      */
     public function getBlueTeamSpawnPoints() {
         return $this->blueTeamSpawnPoints;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFlags(): array {
+        return $this->flags;
     }
 }

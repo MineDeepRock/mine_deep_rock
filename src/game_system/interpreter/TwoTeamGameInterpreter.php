@@ -92,7 +92,7 @@ class TwoTeamGameInterpreter
         return true;
     }
 
-    private function onFinished(): void {
+    protected function onFinished(): void {
         $this->taskHandler->cancel();
         $participants = $this->usersService->getParticipants($this->game->getId());
         $winTeam = $this->game->getWinTeam();

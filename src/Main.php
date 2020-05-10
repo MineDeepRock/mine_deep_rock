@@ -150,7 +150,7 @@ class Main extends PluginBase implements Listener
         Entity::registerEntity(TargetNPC::class, true, ['Target']);
         Entity::registerEntity(TrialGunDealerNPC::class, true, ['TrialGunDealer']);
 
-        $this->gameListener->initGame(\game_system\model\GameType::TeamDeathMatch());
+        $this->gameListener->initGame(\game_system\model\GameType::TeamDomination());
     }
 
 

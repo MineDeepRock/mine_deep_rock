@@ -6,14 +6,17 @@ namespace game_system\listener;
 
 use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\interpreter\TeamDeathMatchInterpreter;
+use game_system\interpreter\TeamDominationInterpreter;
 use game_system\interpreter\TwoTeamGameInterpreter;
 use game_system\model\GameId;
 use game_system\model\GameType;
 use game_system\model\map\ApocalypticCity;
+use game_system\model\map\ApocalypticCityForDomination;
 use game_system\model\map\WaterfrontHome;
 use game_system\model\TeamDeathMatch;
 use game_system\model\TeamDomination;
 use game_system\pmmp\client\TeamDeathMatchClient;
+use game_system\pmmp\client\TeamDominationClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
@@ -66,9 +69,13 @@ class TwoTeamGameListener
                 $this->onFinished($gameType);
             });
         } else if ($gameType->equal(GameType::TeamDomination())) {
-            $this->interpreter;
-            //TODO
-            $match = new TeamDomination(null);
+            $this->interpreter = new TeamDominationInterpreter(
+                new TeamDominationClient(),
+                $this->usersService,
+                $this->weaponService,
+                $this->scheduler
+            );
+            $match = new TeamDomination(new ApocalypticCityForDomination());
             return $this->interpreter->init($match, 600, function () use ($gameType) {
                 $this->onFinished($gameType);
             });

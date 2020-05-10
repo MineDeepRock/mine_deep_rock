@@ -55,8 +55,8 @@ class TwoTeamGameClient
 
             $api = EasyScoreboardAPI::getInstance();
             $api->sendScoreboard($player, "sidebar", $this->gameName, false);
-            $api->setScore($player, "sidebar", "RedTeamScore:", $redTeamScore, 2);
-            $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
+            $this->updateRedTeamScoreboard($player, $redTeamScore);
+            $this->updateBlueTeamScoreboard($player, $blueTeamScore);
         }
     }
 
@@ -91,8 +91,8 @@ class TwoTeamGameClient
 
         $api = EasyScoreboardAPI::getInstance();
         $api->sendScoreboard($player, "sidebar", $this->gameName, false);
-        $api->setScore($player, "sidebar", "RedTeamScore:", $redTeamScore, 2);
-        $api->setScore($player, "sidebar", "BlueTeamScore:", $blueTeamScore, 3);
+        $this->updateRedTeamScoreboard($player, $redTeamScore);
+        $this->updateBlueTeamScoreboard($player, $blueTeamScore);
     }
 
     //TODO:リファクタリング
@@ -172,7 +172,7 @@ class TwoTeamGameClient
         GunSounds::play($targetPlayer, GunSounds::bulletHitPlayer(), 10, 1);
 
         if ($health <= 0) {
-            $this->onDead($attacker,$targetPlayer,$weaponName);
+            $this->onDead($attacker, $targetPlayer, $weaponName);
             $attacker->addTitle(TextFormat::RED . "><", "", 0, 1, 0);
         } else {
             $targetPlayer->setHealth($health);
@@ -220,26 +220,21 @@ class TwoTeamGameClient
 
         $api = EasyScoreboardAPI::getInstance();
         foreach ($players as $player) {
-            $api->setScore($player, "sidebar", "残り時間:", $time, 1);
+            $api->removeScore($player, "sidebar", 1);
+            $api->setScore($player, "sidebar", "残り時間:" . $time, 1, 1);
         }
     }
 
-    public function updateRedTeamScoreboard(int $score, string $mapName): void {
-        $players = Server::getInstance()->getLevelByName($mapName)->getPlayers();
+    public function updateRedTeamScoreboard(Player $player, int $score): void {
         $api = EasyScoreboardAPI::getInstance();
-
-        foreach ($players as $player) {
-            $api->setScore($player, "sidebar", "RedTeamScore:", $score, 2);
-        }
+        $api->removeScore($player, "sidebar", 2);
+        $api->setScore($player, "sidebar", TextFormat::RED . "Red:" . TextFormat::WHITE . $score, 2, 2);
     }
 
-    public function updateBlueTeamScoreboard(int $score, string $mapName): void {
-        $players = Server::getInstance()->getLevelByName($mapName)->getPlayers();
+    public function updateBlueTeamScoreboard(Player $player, int $score): void {
         $api = EasyScoreboardAPI::getInstance();
-
-        foreach ($players as $player) {
-            $api->setScore($player, "sidebar", "BlueTeamScore:", $score, 3);
-        }
+        $api->removeScore($player, "sidebar", 3);
+        $api->setScore($player, "sidebar", TextFormat::BLUE . "Blue:" . TextFormat::WHITE . $score, 3, 3);
     }
 
     public function quitGame(string $userName): void {
