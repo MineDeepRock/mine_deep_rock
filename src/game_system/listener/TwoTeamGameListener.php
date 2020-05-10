@@ -66,7 +66,7 @@ class TwoTeamGameListener
             $match = new TeamDeathMatch([
                 new ApocalypticCity(),
                 new WaterfrontHome()][rand(0, 1)]);
-            return $this->interpreter->init($match, 30, function () use ($gameType) {
+            return $this->interpreter->init($match, 600, function () use ($gameType) {
                 $this->onFinished($gameType);
             });
         } else if ($gameType->equal(GameType::TeamDomination())) {
