@@ -22,6 +22,6 @@ class Model1900 extends Shotgun
             new BulletSpeed(500),
             2, new ClipReloadingType(2, 2, 2.4, 3.2),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
-            new GunPrecision(90, 90));
+            new GunPrecision(88, 88));
     }
 }
