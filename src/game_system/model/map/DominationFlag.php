@@ -23,13 +23,13 @@ class DominationFlag
 
     public function makeProgressByRed(): int {
         $this->gauge += 5;
-        if ($this->gauge === 100) ($this->onOccupied)($this->name,$this->gauge);
+        if ($this->gauge === 100) ($this->onOccupied)($this->name, $this->gauge);
         return $this->gauge;
     }
 
     public function makeProgressByBlue(): int {
         $this->gauge -= 5;
-        if ($this->gauge === -100) ($this->onOccupied)($this->name,$this->gauge);
+        if ($this->gauge === -100) ($this->onOccupied)($this->name, $this->gauge);
         return $this->gauge;
     }
 
@@ -53,12 +53,22 @@ class DominationFlag
     }
 
     public function toString(): string {
-        if ($this->gauge === 0) return TextFormat::WHITE . $this->name . ":0/100";
+        $nameText = TextFormat::WHITE . $this->name;
+        $gaugeText = TextFormat::WHITE . "0/100";
+
         if ($this->gauge > 0) {
-            return TextFormat::RED . $this->name . ":" . $this->gauge . TextFormat::WHITE . "/100";
-        } else {
-            return TextFormat::BLUE . $this->name . ":" . -$this->gauge . TextFormat::WHITE . "/100";
+            $gaugeText = TextFormat::RED . $this->gauge . TextFormat::WHITE . "/100";
+        } else if ($this->gauge < 0) {
+            $gaugeText = TextFormat::BLUE . -$this->gauge . TextFormat::WHITE . "/100";
         }
+
+        if ($this->isRedTeams()) {
+            $nameText = TextFormat::RED . $this->name;
+        } else if ($this->isBlueTeams()) {
+            $nameText = TextFormat::BLUE . $this->name;
+        }
+
+        return $nameText . ":" . $gaugeText;
     }
 
     /**
