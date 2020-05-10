@@ -18,8 +18,7 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
 
     public function start(): bool {
         foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
-            $flag->setOnOccupied(function ($name,$gauge) {
-                var_dump($name);
+            $flag->setOnOccupied(function ($name, $gauge) {
                 if ($gauge > 0) $this->client->changeColorRed($name);
                 if ($gauge < 0) $this->client->changeColorBlue($name);
             });
@@ -36,11 +35,8 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
 
         $this->flagSchedulerHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
             foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
-                if ($flag->isOccupied()) {
-                    $this->addScoreByFlag($flag);
-                } else {
-                    $this->makeFlagProgress($flag);
-                }
+                if ($flag->isOccupied()) $this->addScoreByFlag($flag);
+                $this->makeFlagProgress($flag);
             }
             $this->updateFlagStatus($this->getGameData()->getMap()->getFlags());
         }), 20 * 1);
@@ -73,12 +69,12 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         $level = Server::getInstance()->getLevelByName($this->game->getMap()->getName());
         $players = $level->getPlayers();
         if ($flag->isRedTeams()) {
-            foreach ($players as $player){
-                $this->client->updateRedTeamScoreboard($player,++$this->game->redTeamScore);
+            foreach ($players as $player) {
+                $this->client->updateRedTeamScoreboard($player, ++$this->game->redTeamScore);
             }
-        } else {
-            foreach ($players as $player){
-                $this->client->updateBlueTeamScoreboard($player,++$this->game->blueTeamScore);
+        } else if ($flag->isBlueTeams()) {
+            foreach ($players as $player) {
+                $this->client->updateBlueTeamScoreboard($player, ++$this->game->blueTeamScore);
             }
         }
     }
