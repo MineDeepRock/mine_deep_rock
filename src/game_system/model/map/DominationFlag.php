@@ -14,6 +14,9 @@ class DominationFlag
     private $gauge = 0;
     private $name;
 
+    private $isRedTeam = false;
+    private $isBlueTeam = false;
+
     private $onOccupied;
 
     public function __construct(string $name, Coordinate $coordinate) {
@@ -21,19 +24,35 @@ class DominationFlag
         $this->name = $name;
     }
 
-    public function makeProgressByRed(): int {
+    public function makeProgressByRed(): bool {
         if ($this->gauge === 100) return false;
 
         $this->gauge += 5;
-        if ($this->gauge === 100) ($this->onOccupied)($this->name, $this->gauge);
+        if ($this->gauge === 0) {
+            $this->isBlueTeam = false;
+            $this->isRedTeam = false;
+        }
+        if ($this->gauge === 100) {
+            $this->isBlueTeam = false;
+            $this->isRedTeam = true;
+            ($this->onOccupied)($this->name, $this->gauge);
+        }
         return true;
     }
 
-    public function makeProgressByBlue(): int {
+    public function makeProgressByBlue(): bool {
         if ($this->gauge === -100) return false;
 
         $this->gauge -= 5;
-        if ($this->gauge === -100) ($this->onOccupied)($this->name, $this->gauge);
+        if ($this->gauge === 0) {
+            $this->isBlueTeam = false;
+            $this->isRedTeam = false;
+        }
+        if ($this->gauge === -100) {
+            $this->isBlueTeam = true;
+            $this->isRedTeam = false;
+            ($this->onOccupied)($this->name, $this->gauge);
+        }
         return true;
     }
 
@@ -41,13 +60,15 @@ class DominationFlag
         return $this->isBlueTeams() || $this->isRedTeams();
     }
 
-    public function isBlueTeams(): bool {
-        return $this->gauge === -100;
+    public function isRedTeams(): bool {
+        return $this->isRedTeam;
     }
 
-    public function isRedTeams(): bool {
-        return $this->gauge === 100;
+    public function isBlueTeams(): bool {
+        return $this->isBlueTeam;
     }
+
+
 
     /**
      * @return Coordinate
@@ -89,5 +110,12 @@ class DominationFlag
     public function setOnOccupied(Closure $onOccupied) {
         $this->onOccupied = $onOccupied;
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGauge(): int {
+        return $this->gauge;
     }
 }
