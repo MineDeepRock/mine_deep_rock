@@ -28,6 +28,7 @@ use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
 use game_system\pmmp\WorldController;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\entity\Entity;
@@ -43,10 +44,12 @@ class TwoTeamGameListener
     protected $weaponService;
     protected $interpreter;
     protected $scheduler;
+    private $gameScoresService;
 
-    public function __construct(UsersService $usersService, WeaponsService $weaponService, TaskScheduler $scheduler) {
+    public function __construct(UsersService $usersService, WeaponsService $weaponService, GameScoresService $gameScoresService ,TaskScheduler $scheduler) {
         $this->usersService = $usersService;
         $this->weaponService = $weaponService;
+        $this->gameScoresService = $gameScoresService;
         $this->scheduler = $scheduler;
     }
 
@@ -60,6 +63,7 @@ class TwoTeamGameListener
                 new TeamDeathMatchClient(),
                 $this->usersService,
                 $this->weaponService,
+                $this->gameScoresService,
                 $this->scheduler
             );
 
@@ -74,6 +78,7 @@ class TwoTeamGameListener
                 new TeamDominationClient(),
                 $this->usersService,
                 $this->weaponService,
+                $this->gameScoresService,
                 $this->scheduler
             );
             $match = new TeamDomination(new ApocalypticCityForDomination());

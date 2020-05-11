@@ -11,6 +11,7 @@ use game_system\model\User;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\BulletId;
@@ -31,6 +32,7 @@ class TwoTeamGameInterpreter
     protected $client;
     protected $usersService;
     protected $weaponService;
+    protected $gameScoresService;
     protected $scheduler;
 
     private $taskHandler;
@@ -39,11 +41,12 @@ class TwoTeamGameInterpreter
     protected $game;
     private $limitSecond;
 
-    public function __construct(TwoTeamGameClient $client, UsersService $userService, WeaponsService $weaponService, TaskScheduler $scheduler) {
+    public function __construct(TwoTeamGameClient $client, UsersService $userService, WeaponsService $weaponService, GameScoresService $gameScoresService, TaskScheduler $scheduler) {
         $this->client = $client;
         $this->usersService = $userService;
-        $this->scheduler = $scheduler;
         $this->weaponService = $weaponService;
+        $this->gameScoresService = $gameScoresService;
+        $this->scheduler = $scheduler;
     }
 
     public function getGameData(): TwoTeamGame {

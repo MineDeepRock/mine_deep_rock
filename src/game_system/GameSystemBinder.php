@@ -7,6 +7,7 @@ namespace game_system;
 use game_system\listener\TwoTeamGameListener;
 use game_system\listener\UsersListener;
 use game_system\listener\WeaponListener;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\scheduler\TaskScheduler;
@@ -21,14 +22,17 @@ class GameSystemBinder
     private $weaponListener;
     private $usersService;
     private $weaponsService;
+    private $gameScoresService;
 
     public function __construct(TaskScheduler $scheduler) {
         $this->usersService = new UsersService();
         $this->weaponsService = new WeaponsService();
+        $this->gameScoresService = new GameScoresService();
 
         $this->gameListener = new TwoTeamGameListener(
             $this->usersService,
             $this->weaponsService,
+            $this->gameScoresService,
             $scheduler
         );
         $this->usersListener = new UsersListener(

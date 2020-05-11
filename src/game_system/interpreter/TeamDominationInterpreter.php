@@ -7,7 +7,9 @@ namespace game_system\interpreter;
 use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\map\DominationFlag;
 use game_system\model\TeamId;
+use game_system\model\User;
 use pocketmine\math\Vector3;
+use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 
@@ -51,17 +53,27 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
     }
 
     public function makeFlagProgress(DominationFlag $flag): void {
-        $teamId = $this->getFlagAroundTeam(new Vector3(
+        //TODO:リファクタリング
+        $flagAroundStatus = $this->getFlagAroundTeam(new Vector3(
             $flag->getCenter()->getX(),
             $flag->getCenter()->getY(),
             $flag->getCenter()->getZ()
         ));
 
+        $teamId = $flagAroundStatus[0];
+        $teamPlayers = $flagAroundStatus[1];
+
         if ($teamId === null) return;
         if ($teamId->equal($this->getGameData()->getRedTeam()->getId())) {
-            $flag->makeProgressByRed();
+            $result = $flag->makeProgressByRed();
         } else {
-            $flag->makeProgressByBlue();
+            $result = $flag->makeProgressByBlue();
+        }
+
+        if ($result) {
+            foreach ($teamPlayers as $player) {
+                $this->gameScoresService->addPoint($player->getName(),$this->getGameData()->getId(),10);
+            }
         }
     }
 
@@ -94,29 +106,37 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         }
     }
 
-    private function getFlagAroundTeam(Vector3 $flagPosition): ?TeamId {
+    //TODO:リファクタリング
+    private function getFlagAroundTeam(Vector3 $flagPosition): array {
         $level = Server::getInstance()->getLevelByName($this->game->getMap()->getName());
 
-        $aroundRedPlayers = 0;
-        $aroundBluePlayers = 0;
         $players = $level->getPlayers();
+        $redTeamPlayers = [];
+        $blueTeamPlayers = [];
         foreach ($players as $player) {
-            if ($flagPosition->distance($player->getPosition()) <= 15) {
+            if ($flagPosition->distance($player->getPosition()) <= 8) {
                 $playerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
                 if ($playerTeamId->equal($this->getGameData()->getRedTeam()->getId())) {
-                    $aroundRedPlayers++;
+                    $redTeamPlayers[] = $player;
                 } else {
-                    $aroundBluePlayers++;
+                    $blueTeamPlayers[] = $player;
                 }
             }
         }
 
-        if ($aroundRedPlayers > $aroundBluePlayers) {
-            return $this->getGameData()->getRedTeam()->getId();
-        } else if ($aroundRedPlayers === $aroundBluePlayers) {
-            return null;
+        if (count($redTeamPlayers) > count($blueTeamPlayers)) {
+            return [$this->getGameData()->getRedTeam()->getId(),$redTeamPlayers];
+        } else if (count($redTeamPlayers) === count($blueTeamPlayers)) {
+            return [null,[]];
         } else {
-            return $this->getGameData()->getBlueTeam()->getId();
+            return [$this->getGameData()->getBlueTeam()->getId(),$blueTeamPlayers];
         }
+    }
+
+    protected function onDead(Player $attackerPlayer, string $attackerWeaponName, Player $targetPlayer, User $attackerUser, User $targetUser): void {
+        $this->gameScoresService->addKillCount($attackerUser->getName(),$this->getGameData()->getId());
+        $this->gameScoresService->addPoint($attackerUser->getName(),$this->getGameData()->getId(),2);
+
+        parent::onDead($attackerPlayer, $attackerWeaponName, $targetPlayer, $attackerUser, $targetUser);
     }
 }

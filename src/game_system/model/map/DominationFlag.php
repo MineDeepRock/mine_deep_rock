@@ -22,19 +22,19 @@ class DominationFlag
     }
 
     public function makeProgressByRed(): int {
-        if ($this->gauge !== 100) {
-            $this->gauge += 5;
-            if ($this->gauge === 100) ($this->onOccupied)($this->name, $this->gauge);
-        }
-        return $this->gauge;
+        if ($this->gauge === 100) return false;
+
+        $this->gauge += 5;
+        if ($this->gauge === 100) ($this->onOccupied)($this->name, $this->gauge);
+        return true;
     }
 
     public function makeProgressByBlue(): int {
-        if ($this->gauge !== -100) {
-            $this->gauge -= 5;
-            if ($this->gauge === -100) ($this->onOccupied)($this->name, $this->gauge);
-        }
-        return $this->gauge;
+        if ($this->gauge === -100) return false;
+
+        $this->gauge -= 5;
+        if ($this->gauge === -100) ($this->onOccupied)($this->name, $this->gauge);
+        return true;
     }
 
     public function isOccupied(): bool {
