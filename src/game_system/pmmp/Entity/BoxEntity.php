@@ -79,10 +79,10 @@ class BoxEntity extends Human
     private function initSkin(): void {
         $this->setSkin(new Skin(
             $this->skinId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\\textures\\" . $this->skinName . ".skin"),
+            file_get_contents("./plugin_data/MineDeepRock/skin/" . $this->skinName . ".skin"),
             $this->capeData,
             $this->geometryId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\models\\" . $this->geometryName)
+            file_get_contents("./plugin_data/MineDeepRock/models/" . $this->geometryName)
         ));
     }
 

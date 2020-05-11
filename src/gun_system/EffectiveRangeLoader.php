@@ -88,7 +88,7 @@ class EffectiveRangeLoader
 
     public function loadAll() {
         foreach ($this->ranges as $name => $range) {
-            $path = "D:\pmmp\plugins\mine_deep_rock\src\gun_system\data\\effective_ranges\\" . $name . ".png";
+            $path = "./plugin_data/MineDeepRock/effective_ranges/" . $name . ".png";
             if (file_exists($path)) {
                 $this->ranges[$name] = $this->load($path);
             } else {

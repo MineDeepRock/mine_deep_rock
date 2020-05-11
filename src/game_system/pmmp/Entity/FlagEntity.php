@@ -24,10 +24,10 @@ class FlagEntity extends NPCBase
     public function changeColorWhite(): void {
         $this->setSkin(new Skin(
             $this->skinId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\\textures\WhiteFlag.skin"),
+            file_get_contents("./plugin_data/MineDeepRock/skin/WhiteFlag.skin"),
             $this->capeData,
             $this->geometryId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\models\\" . $this->geometryName)
+            file_get_contents("./plugin_data/MineDeepRock/models/" . $this->geometryName)
         ));
         $this->sendSkin();
     }
@@ -35,10 +35,10 @@ class FlagEntity extends NPCBase
     public function changeColorRed(): void {
         $this->setSkin(new Skin(
             $this->skinId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\\textures\RedFlag.skin"),
+            file_get_contents("./plugin_data/MineDeepRock/skin/RedFlag.skin"),
             $this->capeData,
             $this->geometryId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\models\\" . $this->geometryName)
+            file_get_contents("./plugin_data/MineDeepRock/models/" . $this->geometryName)
         ));
         $this->sendSkin();
     }
@@ -46,10 +46,10 @@ class FlagEntity extends NPCBase
     public function changeColorBlue(): void {
         $this->setSkin(new Skin(
             $this->skinId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\\textures\BlueFlag.skin"),
+            file_get_contents("./plugin_data/MineDeepRock/skin/BlueFlag.skin"),
             $this->capeData,
             $this->geometryId,
-            file_get_contents("D:\pmmp\plugins\mine_deep_rock\src\game_system\pmmp\Entity\models\\" . $this->geometryName)
+            file_get_contents("./plugin_data/MineDeepRock/models/" . $this->geometryName)
         ));
         $this->sendSkin();
     }
