@@ -190,7 +190,6 @@ class Main extends PluginBase implements Listener
             $player = $event->getDamager();
             if ($player instanceof Player
                 && $event->getCause() === EntityDamageEvent::MODIFIER_ARMOR) {
-                var_dump($player->getName());
                 $item = $player->getInventory()->getItemInHand();
                 $this->gunSystemClient->tryShootingOnce($player, $item);
             }
