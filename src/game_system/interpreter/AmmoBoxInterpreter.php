@@ -60,11 +60,13 @@ class AmmoBoxInterpreter
                     $subGun = GunList::fromString($user->getSelectedSubWeaponName());
                     //TODO:武器ごとにかえる
                     $this->client->useAmmoBox(
-                        $player->getName(),
+                        $this->owner,
+                        $player,
                         $gun->getType(),
                         10);
                     $this->client->useAmmoBox(
-                        $player->getName(),
+                        $this->owner,
+                        $player,
                         $subGun->getType(),
                         5);
                 }

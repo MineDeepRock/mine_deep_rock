@@ -9,14 +9,18 @@ use pocketmine\command\ConsoleCommandSender;
 use pocketmine\level\Level;
 use pocketmine\level\particle\HappyVillagerParticle;
 use pocketmine\math\Vector3;
+use pocketmine\Player;
 use pocketmine\Server;
 
 class AmmoBoxClient
 {
-    public function useAmmoBox(string $playerName, GunType $gunType, int $count): void {
+    public function useAmmoBox(Player $owner,Player $player, GunType $gunType, int $count): void {
+        $player->sendPopup($owner->getName() . "から弾薬補給を受けました");
+        $owner->sendPopup($player->getName() . "に弾薬をわたしました");
+
         Server::getInstance()->dispatchCommand(
             new ConsoleCommandSender(),
-            "gun ammo \"" . $playerName . "\" " . $gunType->getTypeText() . " " . $count);
+            "gun ammo \"" . $player->getName() . "\" " . $gunType->getTypeText() . " " . $count);
     }
 
     public function summonParticle(Level $level,Vector3 $pos){

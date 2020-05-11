@@ -57,7 +57,7 @@ class FlareBoxInterpreter
     }
 
     public function effectOn(Player $player): void {
-        $this->client->effectOn($player);
+        $this->client->effectOn($this->owner, $player);
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player): void {
             if ($player->isOnline()) {
                 $this->release($player);

@@ -13,7 +13,10 @@ use pocketmine\Player;
 
 class MedicineBoxClient
 {
-    public function useMedicineBox(Player $player): void {
+    public function useMedicineBox(Player $owner,Player $player): void {
+        $player->sendPopup($owner->getName() . "から回復を受けました");
+        $owner->sendPopup($player->getName() . "を治療をしました");
+
         $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 3, 2, false));
     }
 

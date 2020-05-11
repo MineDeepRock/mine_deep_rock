@@ -51,7 +51,7 @@ class MedicineBoxInterpreter
                         $this->medicineBox->getCoordinate()->getY(),
                         $this->medicineBox->getCoordinate()->getZ()));
                 foreach ($this->getAroundTeamPlayers() as $player) {
-                    $this->client->useMedicineBox($player);
+                    $this->client->useMedicineBox($this->owner, $player);
                 }
             }
         }), 20 * 2, 20 * 5);
