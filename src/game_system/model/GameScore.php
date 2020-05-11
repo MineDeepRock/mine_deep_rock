@@ -27,4 +27,8 @@ class GameScore
 
         return new GameScore($gameId, $name, $killCount, $point);
     }
+
+    public function toString() :string {
+        return "name:" . $this->name . " kill:" . $this->killCount . " point:" . $this->point;
+    }
 }

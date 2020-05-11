@@ -17,12 +17,16 @@ class GameScoresService extends Service
         $this->repository = new GameScoresRepository();
     }
 
-    public function getScores(string $name): array {
-        return $this->repository->getScores($name);
+    public function getScores(GameId $gameId): array {
+        return $this->repository->getScores($gameId->value());
     }
 
-    public function getScore(string $name, GameId $gameId): GameScore {
-        return $this->repository->getScore($name, $gameId->value());
+    public function getUserScores(string $name): array {
+        return $this->repository->getUserScores($name);
+    }
+
+    public function getUserScore(string $name, GameId $gameId): GameScore {
+        return $this->repository->getUserScore($name, $gameId->value());
     }
 
     public function addScore(string $name, GameId $gameId): void {

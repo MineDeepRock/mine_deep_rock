@@ -10,7 +10,25 @@ use Repository;
 class GameScoresRepository extends Repository
 {
 
-    public function getScores(string $name): array {
+    public function getScores(string $gameId): array {
+        $result = $this->db->query("SELECT * FROM scores WHERE game_id='{$gameId}'");
+
+        $scores = [];
+
+        if ($result->num_rows === 0) {
+            return $scores;
+        }
+        if ($result->num_rows === 1) {
+            return [GameScore::fromJson($result->fetch_assoc())];
+        }
+
+        while ($row = $result->fetch_assoc())
+            array_push($scores, GameScore::fromJson($row));
+
+        return $scores;
+    }
+
+    public function getUserScores(string $name): array {
         $result = $this->db->query("SELECT * FROM scores WHERE name='{$name}'");
 
         $scores = [];
@@ -28,7 +46,7 @@ class GameScoresRepository extends Repository
         return $scores;
     }
 
-    public function getScore(string $name, string $gameId): GameScore {
+    public function getUserScore(string $name, string $gameId): GameScore {
         $result = $this->db->query("SELECT * FROM scores WHERE name='{$name}' AND game_id='{$gameId}'");
 
         return GameScore::fromJson($result->fetch_assoc());

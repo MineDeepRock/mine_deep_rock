@@ -10,6 +10,7 @@ use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
 use game_system\model\Weapon;
+use game_system\pmmp\form\game_score_form\GameScoreForm;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
@@ -60,7 +61,7 @@ class TwoTeamGameClient
         }
     }
 
-    public function onFinish(Team $winTeam, array $participants): void {
+    public function onFinish(Team $winTeam, array $participants, array $scores): void {
         $worldController = new WorldController();
         $winTeamId = $winTeam->getId();
 
@@ -76,6 +77,7 @@ class TwoTeamGameClient
             } else {
                 $player->addTitle("負け");
             }
+            $player->sendForm(new GameScoreForm($scores));
         }
     }
 

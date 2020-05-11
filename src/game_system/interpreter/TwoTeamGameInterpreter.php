@@ -8,6 +8,7 @@ use Closure;
 use game_system\model\GadgetType;
 use game_system\model\TwoTeamGame;
 use game_system\model\User;
+use game_system\pmmp\form\game_score_form\GameScoreForm;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
@@ -106,9 +107,10 @@ class TwoTeamGameInterpreter
             }
             $this->usersService->quitGame($participant->getName());
         }
-        $this->game = null;
-        $this->client->onFinish($winTeam, $participants);
+        $scores = $this->gameScoresService->getScores($this->game->getId());
+        $this->client->onFinish($winTeam, $participants, $scores);
         ($this->onFinished)();
+        $this->game = null;
     }
 
     public function join(string $userName): bool {
@@ -119,7 +121,7 @@ class TwoTeamGameInterpreter
         if ($user->getParticipatedGameId() !== null)
             return false;
 
-        $this->gameScoresService->addScore($userName,$this->game->getId());
+        $this->gameScoresService->addScore($userName, $this->game->getId());
         if ($this->game->isStarted()) {
             if ($user->getLastBelongTeamId() === null) {
                 $this->usersService->joinGame(
