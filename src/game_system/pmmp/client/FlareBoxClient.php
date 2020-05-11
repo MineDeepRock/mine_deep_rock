@@ -24,7 +24,7 @@ class FlareBoxClient
 
     public function effectOn(Player $owner, Player $player): void {
         $player->sendPopup("スポットされました。4秒間自分のネームタグが表示されます");
-        $owner->sendPopup("敵をスポットしました。4秒間敵のネームタグを表示します");
+        $owner->sendPopup("敵をスポットしました+2");
 
         $player->setNameTagAlwaysVisible(true);
     }

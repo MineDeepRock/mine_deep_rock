@@ -73,6 +73,7 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         if ($result) {
             foreach ($teamPlayers as $player) {
                 $this->gameScoresService->addPoint($player->getName(),$this->getGameData()->getId(),10);
+                $player->sendPopup($player->getName() . "拠点を占領中+10");
             }
         }
     }

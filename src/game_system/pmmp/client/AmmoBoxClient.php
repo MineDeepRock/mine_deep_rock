@@ -16,7 +16,7 @@ class AmmoBoxClient
 {
     public function useAmmoBox(Player $owner,Player $player, GunType $gunType, int $count): void {
         $player->sendPopup($owner->getName() . "から弾薬補給を受けました");
-        $owner->sendPopup($player->getName() . "に弾薬をわたしました");
+        $owner->sendPopup($player->getName() . "に弾薬をわたしました+2");
 
         Server::getInstance()->dispatchCommand(
             new ConsoleCommandSender(),

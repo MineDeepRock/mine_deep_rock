@@ -15,7 +15,7 @@ class MedicineBoxClient
 {
     public function useMedicineBox(Player $owner,Player $player): void {
         $player->sendPopup($owner->getName() . "から回復を受けました");
-        $owner->sendPopup($player->getName() . "を治療をしました");
+        $owner->sendPopup($player->getName() . "を治療をしました+2");
 
         $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 3, 2, false));
     }
