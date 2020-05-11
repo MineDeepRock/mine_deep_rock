@@ -10,6 +10,9 @@ use pocketmine\nbt\tag\CompoundTag;
 
 class FlagEntity extends NPCBase
 {
+    public $width = 0.05;
+    public $height = 3;
+
     public $skinName = "WhiteFlag";
     public $geometryId = "geometry.Flag";
     public $geometryName = "Flag.geo.json";
