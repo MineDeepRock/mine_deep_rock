@@ -6,6 +6,7 @@ namespace game_system\pmmp\Entity;
 
 use game_system\interpreter\MedicineBoxInterpreter;
 use game_system\model\Coordinate;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\level\Level;
 use pocketmine\Player;
@@ -25,6 +26,7 @@ class MedicineBoxEntity extends BoxEntity
         Level $level,
         Player $owner,
         UsersService $usersService,
+        GameScoresService $gameScoresService,
         TaskScheduler $scheduler) {
         parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new MedicineBoxInterpreter(
@@ -34,6 +36,7 @@ class MedicineBoxEntity extends BoxEntity
                 $this->getY(),
                 $this->getZ()),
             $usersService,
+            $gameScoresService,
             $scheduler);
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {

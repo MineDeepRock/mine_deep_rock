@@ -9,6 +9,7 @@ use game_system\model\MedicineBox;
 use game_system\model\military_department\NursingSoldier;
 use game_system\pmmp\client\MedicineBoxClient;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -19,6 +20,7 @@ class MedicineBoxInterpreter
 {
     private $client;
     private $usersService;
+    private $gameScoresService;
     private $scheduler;
     private $handler;
 
@@ -31,16 +33,20 @@ class MedicineBoxInterpreter
         Player $player,
         Coordinate $coordinate,
         UsersService $usersService,
+        GameScoresService $gameScoresService,
         TaskScheduler $scheduler) {
         $this->usersService = $usersService;
+        $this->gameScoresService = $gameScoresService;
         $this->client = new MedicineBoxClient();
         $this->scheduler = $scheduler;
 
         $this->medicineBox = new MedicineBox(40, $coordinate);
         $this->owner = $player;
-        $this->ownerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
+        $user = $this->usersService->getUserData($player->getName());
+        $gameId = $user->getParticipatedGameId();
+        $this->ownerTeamId = $user->getBelongTeamId();
 
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick): void {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($gameId): void {
             if (!$this->owner->isOnline()) {
                 $this->stop();
             } else {
@@ -51,6 +57,7 @@ class MedicineBoxInterpreter
                         $this->medicineBox->getCoordinate()->getY(),
                         $this->medicineBox->getCoordinate()->getZ()));
                 foreach ($this->getAroundTeamPlayers() as $player) {
+                    $this->gameScoresService->addPoint($this->owner->getName(),$gameId,2);
                     $this->client->useMedicineBox($this->owner, $player);
                 }
             }

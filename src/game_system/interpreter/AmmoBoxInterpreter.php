@@ -9,6 +9,7 @@ use game_system\model\Coordinate;
 use game_system\model\military_department\AssaultSoldier;
 use game_system\pmmp\client\AmmoBoxClient;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use gun_system\models\GunList;
@@ -22,6 +23,7 @@ class AmmoBoxInterpreter
     private $client;
     private $usersService;
     private $weaponService;
+    private $gameScoresService;
     private $scheduler;
     private $handler;
 
@@ -34,17 +36,21 @@ class AmmoBoxInterpreter
         Coordinate $coordinate,
         UsersService $usersService,
         WeaponsService $weaponService,
+        GameScoresService $gameScoresService,
         TaskScheduler $scheduler) {
         $this->usersService = $usersService;
         $this->weaponService = $weaponService;
+        $this->gameScoresService = $gameScoresService;
         $this->client = new AmmoBoxClient();
         $this->scheduler = $scheduler;
 
         $this->ammoBox = new AmmoBox(40, $coordinate);
         $this->owner = $player;
-        $this->ownerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
+        $user = $this->usersService->getUserData($player->getName());
+        $gameId = $user->getParticipatedGameId();
+        $this->ownerTeamId = $user->getBelongTeamId();
 
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick): void {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($gameId): void {
             if (!$this->owner->isOnline()) {
                 $this->stop();
             } else {
@@ -58,6 +64,7 @@ class AmmoBoxInterpreter
                     $user = $this->usersService->getUserData($player->getName());
                     $gun = GunList::fromString($user->getSelectedWeaponName());
                     $subGun = GunList::fromString($user->getSelectedSubWeaponName());
+                    $this->gameScoresService->addPoint($this->owner->getName(), $gameId, 2);
                     //TODO:武器ごとにかえる
                     $this->client->useAmmoBox(
                         $this->owner,

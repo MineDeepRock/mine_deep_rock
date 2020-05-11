@@ -6,6 +6,7 @@ namespace game_system\pmmp\Entity;
 
 use game_system\interpreter\AmmoBoxInterpreter;
 use game_system\model\Coordinate;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
 use pocketmine\level\Level;
@@ -27,6 +28,7 @@ class AmmoBoxEntity extends BoxEntity
         Player $owner,
         UsersService $usersService,
         WeaponsService $weaponService,
+        GameScoresService $gameScoresService,
         TaskScheduler $scheduler) {
         parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new AmmoBoxInterpreter(
@@ -37,6 +39,7 @@ class AmmoBoxEntity extends BoxEntity
                 $this->getZ()),
             $usersService,
             $weaponService,
+            $gameScoresService,
             $scheduler);
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {

@@ -9,6 +9,7 @@ use game_system\model\FlareBox;
 use game_system\model\military_department\Scout;
 use game_system\pmmp\client\FlareBoxClient;
 use game_system\pmmp\items\SpawnFlareBoxItem;
+use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -19,6 +20,7 @@ class FlareBoxInterpreter
 {
     private $client;
     private $usersService;
+    private $gameScoresService;
     private $scheduler;
     private $handler;
 
@@ -29,17 +31,21 @@ class FlareBoxInterpreter
     function __construct(
         Player $player,
         UsersService $usersService,
+        GameScoresService $gameScoresService,
         Coordinate $coordinate,
         TaskScheduler $scheduler) {
         $this->usersService = $usersService;
+        $this->gameScoresService = $gameScoresService;
         $this->client = new FlareBoxClient();
         $this->scheduler = $scheduler;
 
         $this->flareBox = new FlareBox(40, $coordinate);
         $this->owner = $player;
-        $this->ownerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
+        $user = $this->usersService->getUserData($player->getName());
+        $gameId = $user->getParticipatedGameId();
+        $this->ownerTeamId = $user->getBelongTeamId();
 
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick): void {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($gameId): void {
             if (!$this->owner->isOnline()) {
                 $this->stop();
             } else {
@@ -50,6 +56,7 @@ class FlareBoxInterpreter
                         $this->flareBox->getCoordinate()->getY(),
                         $this->flareBox->getCoordinate()->getZ()));
                 foreach ($this->getAroundEnemyPlayers() as $player) {
+                    $this->gameScoresService->addPoint($this->owner->getName(), $gameId, 2);
                     $this->effectOn($player);
                 }
             }

@@ -119,6 +119,7 @@ class TwoTeamGameInterpreter
         if ($user->getParticipatedGameId() !== null)
             return false;
 
+        $this->gameScoresService->addScore($userName,$this->game->getId());
         if ($this->game->isStarted()) {
             if ($user->getLastBelongTeamId() === null) {
                 $this->usersService->joinGame(

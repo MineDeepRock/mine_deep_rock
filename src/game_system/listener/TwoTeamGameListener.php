@@ -163,6 +163,7 @@ class TwoTeamGameListener
             $player,
             $this->usersService,
             $this->weaponService,
+            $this->gameScoresService,
             $this->scheduler);
         $ammoBox->spawnToAll();
         $this->setBoxNameTag($ammoBox, $player->getName());
@@ -174,6 +175,7 @@ class TwoTeamGameListener
             $player->getLevel(),
             $player,
             $this->usersService,
+            $this->gameScoresService,
             $this->scheduler);
         $medicineBox->spawnToAll();
         $this->setBoxNameTag($medicineBox, $player->getName());
@@ -186,6 +188,7 @@ class TwoTeamGameListener
             $player->getLevel(),
             $player,
             $this->usersService,
+            $this->gameScoresService,
             $this->scheduler);
 
         $flareBox->spawnToAll();
