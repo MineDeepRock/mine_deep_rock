@@ -65,15 +65,28 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
 
         if ($teamId === null) return;
         if ($teamId->equal($this->getGameData()->getRedTeam()->getId())) {
-            $result = $flag->makeProgressByRed();
-        } else {
-            $result = $flag->makeProgressByBlue();
-        }
-
-        if ($result) {
+            $i = 0;
             foreach ($teamPlayers as $player) {
-                $this->gameScoresService->addPoint($player->getName(), $this->getGameData()->getId(), 10);
-                $player->sendPopup($player->getName() . "拠点を占領中+10");
+                if ($i <= 4) {
+                    $result = $flag->makeProgressByRed();
+                    if ($result) {
+                        $this->gameScoresService->addPoint($player->getName(), $this->getGameData()->getId(), 10);
+                        $player->sendPopup($player->getName() . "拠点を占領中+10");
+                    }
+                    $i++;
+                }
+            }
+        } else {
+            $i = 0;
+            foreach ($teamPlayers as $player) {
+                if ($i <= 4) {
+                    $result = $flag->makeProgressByBlue();
+                    if ($result) {
+                        $this->gameScoresService->addPoint($player->getName(), $this->getGameData()->getId(), 10);
+                        $player->sendPopup($player->getName() . "拠点を占領中+10");
+                    }
+                    $i++;
+                }
             }
         }
     }
