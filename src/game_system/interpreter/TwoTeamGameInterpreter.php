@@ -37,6 +37,7 @@ class TwoTeamGameInterpreter
     protected $scheduler;
 
     private $taskHandler;
+    private $startTaskHandler;
     private $onFinished;
 
     protected $game;
@@ -125,6 +126,12 @@ class TwoTeamGameInterpreter
         $user = $this->usersService->getUserData($userName);
         if ($user->getParticipatedGameId() !== null)
             return false;
+
+        if (count($this->usersService->getParticipants($this->game->getId())) >= 4) {
+            $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function(int $tick):void{
+                $this->start();
+            }),20 * 30);
+        }
 
         $this->gameScoresService->addScore($userName, $this->game->getId());
         if ($this->game->isStarted()) {
@@ -315,6 +322,9 @@ class TwoTeamGameInterpreter
         if ($this->game === null)
             return false;
 
+        if (count($this->usersService->getParticipants($this->game->getId())) < 4) {
+            $this->startTaskHandler->cancel();
+        }
         $this->client->quitGame($userName);
         $this->usersService->quitGame($userName);
         return true;
