@@ -48,7 +48,7 @@ class TwoTeamGameListener
     protected $scheduler;
     private $gameScoresService;
 
-    public function __construct(UsersService $usersService, WeaponsService $weaponService, GameScoresService $gameScoresService ,TaskScheduler $scheduler) {
+    public function __construct(UsersService $usersService, WeaponsService $weaponService, GameScoresService $gameScoresService, TaskScheduler $scheduler) {
         $this->usersService = $usersService;
         $this->weaponService = $weaponService;
         $this->gameScoresService = $gameScoresService;
@@ -92,19 +92,11 @@ class TwoTeamGameListener
         return false;
     }
 
-    protected function onFinished(GameType $gameType) {
-        $this->initGame($gameType);
-        $api = EasyScoreboardAPI::getInstance();
-        $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
-        $game = $this->interpreter->getGameData();
-        if (!$game->isStarted()) {
-            foreach ($lobbyPlayers as $player) {
-                $player->getInventory()->addItem(new MilitaryDepartmentSelectItem());
-                $player->getInventory()->addItem(new WeaponSelectItem());
-                $player->getInventory()->addItem(new SubWeaponSelectItem());
-                $api->sendScoreboard($player, "sidebar", "Lobby", false);
-                $api->setScore($player, "sidebar", "ゲーム参加人数:", 0, 1);
-            }
+    protected function onFinished(?GameType $gameType) {
+        if ($gameType === null) {
+            $this->initGame([GameType::TeamDeathMatch(),GameType::TeamDomination()][rand(0,1)]);
+        } else {
+            $this->initGame($gameType);
         }
     }
 
@@ -112,7 +104,7 @@ class TwoTeamGameListener
         $this->interpreter->onReceiveDamage($attacker, $target, $weaponName, $damage);
     }
 
-    public function displayParticipantCount():void{
+    public function displayParticipantCount(): void {
         $this->interpreter->displayParticipantCount();
     }
 

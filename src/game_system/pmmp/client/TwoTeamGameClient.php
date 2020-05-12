@@ -56,6 +56,7 @@ class TwoTeamGameClient
 
             $api = EasyScoreboardAPI::getInstance();
             $api->sendScoreboard($player, "sidebar", $this->gameName, false);
+            $api->setScore($player, "sidebar", "============", 0, 0);
             $this->updateRedTeamScoreboard($player, $redTeamScore);
             $this->updateBlueTeamScoreboard($player, $blueTeamScore);
         }
@@ -67,7 +68,13 @@ class TwoTeamGameClient
 
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
-            EasyScoreboardAPI::getInstance()->deleteScoreboard($player, "sidebar");
+            $api = EasyScoreboardAPI::getInstance();
+            $api->deleteScoreboard($player, "sidebar");
+
+            $player->getInventory()->addItem(new MilitaryDepartmentSelectItem());
+            $player->getInventory()->addItem(new WeaponSelectItem());
+            $player->getInventory()->addItem(new SubWeaponSelectItem());
+
             $player->getInventory()->setContents([]);
             $player->setGamemode(Player::ADVENTURE);
             $worldController->teleport($player, "lobby");
@@ -93,6 +100,7 @@ class TwoTeamGameClient
 
         $api = EasyScoreboardAPI::getInstance();
         $api->sendScoreboard($player, "sidebar", $this->gameName, false);
+        $api->setScore($player, "sidebar", "============", 0, 0);
         $this->updateRedTeamScoreboard($player, $redTeamScore);
         $this->updateBlueTeamScoreboard($player, $blueTeamScore);
     }
@@ -221,10 +229,11 @@ class TwoTeamGameClient
         $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
         $api = EasyScoreboardAPI::getInstance();
         foreach ($lobbyPlayers as $player) {
-            if (!$api->hasScoreboard($player,"sidebar")) {
+            if (!$api->hasScoreboard($player, "sidebar")) {
                 $api->sendScoreboard($player, "sidebar", "MineDeepRock", false);
+                $api->setScore($player, "sidebar", "============", 0, 0);
             }
-            $api->removeScore($player,  "sidebar",1);
+            $api->removeScore($player, "sidebar", 1);
             $api->setScore($player, "sidebar", "参加人数:" . $count, 1, 1);
         }
     }

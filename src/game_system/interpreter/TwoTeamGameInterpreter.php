@@ -115,8 +115,9 @@ class TwoTeamGameInterpreter
         }
         $scores = $this->gameScoresService->getScores($this->game->getId());
         $this->client->onFinish($winTeam, $participants, $scores);
-        ($this->onFinished)();
+        $this->displayParticipantCount(0);
         $this->game = null;
+        ($this->onFinished)();
     }
 
     public function join(string $userName): bool {
@@ -331,8 +332,8 @@ class TwoTeamGameInterpreter
         return true;
     }
 
-    public function displayParticipantCount(){
-        $count = count($this->usersService->getParticipants($this->game->getId()));
+    public function displayParticipantCount(?int $count = null){
+        $count = $count ?? count($this->usersService->getParticipants($this->game->getId()));
         $this->client->displayParticipantCount($count);
     }
 }
