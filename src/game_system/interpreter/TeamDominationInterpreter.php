@@ -72,7 +72,7 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
 
         if ($result) {
             foreach ($teamPlayers as $player) {
-                $this->gameScoresService->addPoint($player->getName(),$this->getGameData()->getId(),10);
+                $this->gameScoresService->addPoint($player->getName(), $this->getGameData()->getId(), 10);
                 $player->sendPopup($player->getName() . "拠点を占領中+10");
             }
         }
@@ -83,12 +83,12 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         $players = $level->getPlayers();
         if ($flag->isRedTeams()) {
             foreach ($players as $player) {
-                $this->game->redTeamScore += intval($flag->getGauge()/10);
+                $this->game->redTeamScore += intval($flag->getGauge() / 10);
                 $this->client->updateRedTeamScoreboard($player, $this->game->redTeamScore);
             }
         } else if ($flag->isBlueTeams()) {
             foreach ($players as $player) {
-                $this->game->blueTeamScore += intval(-$flag->getGauge()/10);
+                $this->game->blueTeamScore += intval(-$flag->getGauge() / 10);
                 $this->client->updateBlueTeamScoreboard($player, $this->game->blueTeamScore);
             }
         }
@@ -117,7 +117,7 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         $redTeamPlayers = [];
         $blueTeamPlayers = [];
         foreach ($players as $player) {
-            if ($flagPosition->distance($player->getPosition()) <= 8) {
+            if ($flagPosition->distance($player->getPosition()) <= 8 && $player->getGamemode() === Player::ADVENTURE) {
                 $playerTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
                 if ($playerTeamId->equal($this->getGameData()->getRedTeam()->getId())) {
                     $redTeamPlayers[] = $player;
@@ -128,17 +128,17 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         }
 
         if (count($redTeamPlayers) > count($blueTeamPlayers)) {
-            return [$this->getGameData()->getRedTeam()->getId(),$redTeamPlayers];
+            return [$this->getGameData()->getRedTeam()->getId(), $redTeamPlayers];
         } else if (count($redTeamPlayers) === count($blueTeamPlayers)) {
-            return [null,[]];
+            return [null, []];
         } else {
-            return [$this->getGameData()->getBlueTeam()->getId(),$blueTeamPlayers];
+            return [$this->getGameData()->getBlueTeam()->getId(), $blueTeamPlayers];
         }
     }
 
     protected function onDead(Player $attackerPlayer, string $attackerWeaponName, Player $targetPlayer, User $attackerUser, User $targetUser): void {
-        $this->gameScoresService->addKillCount($attackerUser->getName(),$this->getGameData()->getId());
-        $this->gameScoresService->addPoint($attackerUser->getName(),$this->getGameData()->getId(),2);
+        $this->gameScoresService->addKillCount($attackerUser->getName(), $this->getGameData()->getId());
+        $this->gameScoresService->addPoint($attackerUser->getName(), $this->getGameData()->getId(), 2);
 
         parent::onDead($attackerPlayer, $attackerWeaponName, $targetPlayer, $attackerUser, $targetUser);
     }
