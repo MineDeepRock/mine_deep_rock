@@ -7,6 +7,7 @@ namespace game_system\interpreter;
 use game_system\model\AmmoBox;
 use game_system\model\Coordinate;
 use game_system\model\military_department\AssaultSoldier;
+use game_system\model\military_department\Scout;
 use game_system\pmmp\client\AmmoBoxClient;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\service\GameScoresService;
@@ -116,8 +117,8 @@ class AmmoBoxInterpreter
             if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
 
             $user = $this->usersService->getUserData($this->owner->getName());
-            $assaultSoldier = new AssaultSoldier();
-            if ($user->getMilitaryDepartment()->getName() !== $assaultSoldier->getName()) return;
+            $scout = new Scout();
+            if ($user->getMilitaryDepartment()->getName() !== $scout->getName()) return;
 
             $contain = $this->owner->getInventory()->contains(new SpawnAmmoBoxItem());
             if ($contain) return;
