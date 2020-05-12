@@ -199,8 +199,14 @@ class TwoTeamGameListener
     public function onBoxHitBullet(Player $attacker, BoxEntity $boxEntity): void {
         $ownerUser = $this->usersService->getUserData($boxEntity->getOwner()->getName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
-        if ($ownerUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) $boxEntity->kill();
-        if (!$ownerUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) $boxEntity->kill();
+        if ($ownerUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) {
+            $boxEntity->kill();
+            return;
+        }
+        if (!$ownerUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
+            $boxEntity->kill();
+            return;
+        }
     }
 
     private function setBoxNameTag(BoxEntity $entity, string $ownerName) {
