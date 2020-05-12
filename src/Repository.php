@@ -11,14 +11,10 @@ abstract class Repository
 
     public function __construct() {
 
-        //sql jsonへのパス
-        $jsonData = file_get_contents("D:\pmmp\plugins\mine_deep_rock\sql.json");
-        $decodedJson = json_decode($jsonData, true);
-
-        $host = $decodedJson["host"];
-        $user_name = $decodedJson["user_name"];
-        $password = $decodedJson["password"];
-        $db_name = $decodedJson["db_name"];
+        $host = "118.27.8.40";
+        $user_name = "mine_deep_rock_user";
+        $password = "mine_deep_rock";
+        $db_name = "mine_deep_rock";
 
         $this->db = new mysqli($host, $user_name, $password, $db_name);
 
