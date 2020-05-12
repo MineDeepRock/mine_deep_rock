@@ -23,9 +23,9 @@ class ApocalypticCityForDomination extends TeamDominationMap
                 new Coordinate(-89, 18, -32),
             ],
             [
-                new DominationFlag("A",new Coordinate(-44, 19, 10)),
-                new DominationFlag("B",new Coordinate(-37, 13, -34)),
-                new DominationFlag("C",new Coordinate(-1, 13, 2)),
+                new DominationFlag("Apple",new Coordinate(-44, 19, 10)),
+                new DominationFlag("Beef",new Coordinate(-37, 13, -34)),
+                new DominationFlag("Chai",new Coordinate(-1, 13, 2)),
             ]
         );
     }
