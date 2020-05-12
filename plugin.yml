@@ -1,5 +1,5 @@
 name: MineDeepRock
-main: main
+main: Main
 version: 1.0.0
 api: 3.0.0
 
@@ -18,5 +18,8 @@ permissions:
         default: true
         description: "ステートコマンド"
       World.Command:
+        default: true
+        description: "ワールドコマンド"
+      NPC.Command:
         default: true
         description: "ワールドコマンド"
