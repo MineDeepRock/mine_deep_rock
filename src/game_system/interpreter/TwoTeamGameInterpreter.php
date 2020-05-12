@@ -97,6 +97,11 @@ class TwoTeamGameInterpreter
     }
 
     protected function onFinished(): void {
+        $level = Server::getInstance()->getLevelByName($this->game->getMap()->getName());
+        foreach ($level->getEntities() as $entity) {
+            if (!($entity instanceof Player)) $entity->kill();
+        }
+
         $this->taskHandler->cancel();
         $participants = $this->usersService->getParticipants($this->game->getId());
         $winTeam = $this->game->getWinTeam();

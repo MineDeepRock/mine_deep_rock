@@ -63,8 +63,6 @@ class TeamDominationClient extends TwoTeamGameClient
     }
 
     public function removeAllFlags() {
-        foreach ($this->flags as $flag) {
-            $flag->kill();
-        }
+        $this->flags = [];
     }
 }

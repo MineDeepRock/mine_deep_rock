@@ -44,7 +44,7 @@ class FlareBoxEntity extends BoxEntity
                 $this->getZ()),
             $scheduler);
 
-        $this->handler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
+        $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
         }), 20 * $this->interpreter->getFlareBox()->getSecondLimit());
     }
