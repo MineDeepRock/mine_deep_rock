@@ -53,12 +53,7 @@ class TwoTeamGameClient
             } else {
                 $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
             }
-
-            $api = EasyScoreboardAPI::getInstance();
-            $api->sendScoreboard($player, "sidebar", $this->gameName, false);
-            $api->setScore($player, "sidebar", "============", 0, 0);
-            $this->updateRedTeamScoreboard($player, $redTeamScore);
-            $this->updateBlueTeamScoreboard($player, $blueTeamScore);
+            $this->displayBaseGameScoreboard($player,$redTeamScore,$blueTeamScore);
         }
     }
 
@@ -97,12 +92,7 @@ class TwoTeamGameClient
         } else {
             $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
         }
-
-        $api = EasyScoreboardAPI::getInstance();
-        $api->sendScoreboard($player, "sidebar", $this->gameName, false);
-        $api->setScore($player, "sidebar", "============", 0, 0);
-        $this->updateRedTeamScoreboard($player, $redTeamScore);
-        $this->updateBlueTeamScoreboard($player, $blueTeamScore);
+        $this->displayBaseGameScoreboard($player,$redTeamScore,$blueTeamScore);
     }
 
     //TODO:リファクタリング
@@ -223,6 +213,14 @@ class TwoTeamGameClient
             $player->getArmorInventory()->setLeggings(new GoldLeggings());
             $player->getArmorInventory()->setBoots(new GoldBoots());
         }
+    }
+
+    public function displayBaseGameScoreboard(Player $player, $redTeamScore, $blueTeamScore): void {
+        $api = EasyScoreboardAPI::getInstance();
+        $api->sendScoreboard($player, "sidebar", $this->gameName, false);
+        $api->setScore($player, "sidebar", "============", 0, 0);
+        $this->updateRedTeamScoreboard($player, $redTeamScore);
+        $this->updateBlueTeamScoreboard($player, $blueTeamScore);
     }
 
     public function displayParticipantCount(int $count) {

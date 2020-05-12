@@ -4,9 +4,7 @@
 namespace game_system\interpreter;
 
 
-use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\map\DominationFlag;
-use game_system\model\TeamId;
 use game_system\model\User;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -108,18 +106,9 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
     }
 
     public function updateFlagStatus(array $flags): void {
-        $api = EasyScoreboardAPI::getInstance();
         $level = Server::getInstance()->getLevelByName($this->game->getMap()->getName());
-
         $players = $level->getPlayers();
-        foreach ($players as $player) {
-            $index = 4;
-            foreach ($flags as $flag) {
-                $api->removeScore($player, "sidebar", $index);
-                $api->setScore($player, "sidebar", $flag->toString(), $index, $index);
-                $index++;
-            }
-        }
+        $this->client->updateFlagStatus($players,$flags);
     }
 
     //TODO:リファクタリング
