@@ -112,9 +112,7 @@ class TwoTeamGameListener
         $this->interpreter->onReceiveDamage($attacker, $target, $weaponName, $damage);
     }
 
-    public function displayParticipantCount(Player $player):void{
-        $api = EasyScoreboardAPI::getInstance();
-        $api->sendScoreboard($player, "sidebar", "Lobby", false);
+    public function displayParticipantCount():void{
         $this->interpreter->displayParticipantCount();
     }
 

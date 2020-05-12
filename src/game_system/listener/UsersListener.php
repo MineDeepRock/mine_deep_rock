@@ -50,8 +50,9 @@ class UsersListener
         }));
     }
 
-    public function userLogin(string $userName,GameId $gameId): void {
-        $player = Server::getInstance()->getPlayer($userName);
+    public function userLogin(player $player): void {
+        $this->printDescription($player);
+
         $player->getInventory()->setContents([]);
         $worldController = new WorldController();
         $worldController->teleport($player, "lobby");
@@ -60,14 +61,21 @@ class UsersListener
         $player->getInventory()->addItem(new SubWeaponSelectItem());
         $player->setGamemode(Player::ADVENTURE);
 
-        if (!$this->usersService->exists($userName)) {
-            $this->weaponService->register($userName, M1907SL::NAME);
-            $this->weaponService->register($userName, Mle1903::NAME);
-            $this->weaponService->register($userName, Chauchat::NAME);
-            $this->weaponService->register($userName, M1897::NAME);
-            $this->weaponService->register($userName, SMLEMK3::NAME);
-            $this->weaponService->register($userName, MP18::NAME);
+        if (!$this->usersService->exists($player->getName())) {
+            $this->weaponService->register($player->getName(), M1907SL::NAME);
+            $this->weaponService->register($player->getName(), Mle1903::NAME);
+            $this->weaponService->register($player->getName(), Chauchat::NAME);
+            $this->weaponService->register($player->getName(), M1897::NAME);
+            $this->weaponService->register($player->getName(), SMLEMK3::NAME);
+            $this->weaponService->register($player->getName(), MP18::NAME);
         }
-        $this->usersService->userLogin($userName);
+        $this->usersService->userLogin($player->getName());
+    }
+
+    private function printDescription(Player $player){
+        $text = "ようこそ！MineDeepRockへ！\n";
+        $text .= "BF1をリスペクトした銃PvPサーバーです！\n";
+        $text .= "兵科ごとに異なる武器やガジェットを活かして戦いましょう！\n";
+        $player->sendMessage($text);
     }
 }

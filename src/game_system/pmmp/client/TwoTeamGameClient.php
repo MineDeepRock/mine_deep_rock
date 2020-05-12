@@ -221,7 +221,10 @@ class TwoTeamGameClient
         $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
         $api = EasyScoreboardAPI::getInstance();
         foreach ($lobbyPlayers as $player) {
-            $api->removeScore($player,  "sidebar",2);
+            if (!$api->hasScoreboard($player,"sidebar")) {
+                $api->sendScoreboard($player, "sidebar", "MineDeepRock", false);
+            }
+            $api->removeScore($player,  "sidebar",1);
             $api->setScore($player, "sidebar", "参加人数:" . $count, 1, 1);
         }
     }

@@ -127,12 +127,6 @@ class TwoTeamGameInterpreter
         if ($user->getParticipatedGameId() !== null)
             return false;
 
-        if (count($this->usersService->getParticipants($this->game->getId())) >= 4) {
-            $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function(int $tick):void{
-                $this->start();
-            }),20 * 30);
-        }
-
         $this->gameScoresService->addScore($userName, $this->game->getId());
         if ($this->game->isStarted()) {
             if ($user->getLastBelongTeamId() === null) {
@@ -166,13 +160,18 @@ class TwoTeamGameInterpreter
                 $this->game->blueTeamScore);
 
             $this->spawn($user);
-            return true;
         } else {
             $this->usersService->joinGame(
                 $userName,
                 $this->game->getId(),
                 $this->game->getBlueTeam()->getId(),
                 $this->game->getRedTeam()->getId());
+        }
+
+        if (count($this->usersService->getParticipants($this->game->getId())) >= 4) {
+            $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function(int $tick):void{
+                $this->start();
+            }),20 * 30);
         }
         return true;
     }
