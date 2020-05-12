@@ -217,6 +217,15 @@ class TwoTeamGameClient
         }
     }
 
+    public function displayParticipantCount(int $count) {
+        $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
+        $api = EasyScoreboardAPI::getInstance();
+        foreach ($lobbyPlayers as $player) {
+            $api->removeScore($player,  "sidebar",2);
+            $api->setScore($player, "sidebar", "参加人数:" . $count, 1, 1);
+        }
+    }
+
     public function displayRemainingTime(int $time, string $mapName): void {
         $players = Server::getInstance()->getLevelByName($mapName)->getPlayers();
 

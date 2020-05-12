@@ -323,10 +323,17 @@ class TwoTeamGameInterpreter
             return false;
 
         if (count($this->usersService->getParticipants($this->game->getId())) < 4) {
-            $this->startTaskHandler->cancel();
+            if ($this->startTaskHandler !== null) {
+                $this->startTaskHandler->cancel();
+            }
         }
         $this->client->quitGame($userName);
         $this->usersService->quitGame($userName);
         return true;
+    }
+
+    public function displayParticipantCount(){
+        $count = count($this->usersService->getParticipants($this->game->getId()));
+        $this->client->displayParticipantCount($count);
     }
 }

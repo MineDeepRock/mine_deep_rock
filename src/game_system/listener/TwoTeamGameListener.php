@@ -21,14 +21,12 @@ use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
-use game_system\pmmp\form\game_score_form\GameScoreForm;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
-use game_system\pmmp\WorldController;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
@@ -43,6 +41,9 @@ class TwoTeamGameListener
 
     protected $usersService;
     protected $weaponService;
+    /**
+     * @var TwoTeamGameInterpreter
+     */
     protected $interpreter;
     protected $scheduler;
     private $gameScoresService;
@@ -111,15 +112,14 @@ class TwoTeamGameListener
         $this->interpreter->onReceiveDamage($attacker, $target, $weaponName, $damage);
     }
 
-    public function startGame(): bool {
-        $result = $this->interpreter->start();
-        $this->updateNumberOfParticipants();
-        return $result;
+    public function displayParticipantCount(Player $player):void{
+        $api = EasyScoreboardAPI::getInstance();
+        $api->sendScoreboard($player, "sidebar", "Lobby", false);
+        $this->interpreter->displayParticipantCount();
     }
 
     public function joinGame(Player $player): void {
         $result = $this->interpreter->join($player->getName());
-        $this->updateNumberOfParticipants();
         if (!$result) {
             $player->sendMessage("試合が開かれていないか、すでに参加しています");
             return;
@@ -128,32 +128,16 @@ class TwoTeamGameListener
         $onlinePlayers = Server::getInstance()->getOnlinePlayers();
         foreach ($onlinePlayers as $onlinePlayer)
             $onlinePlayer->sendMessage($player->getName() . "が試合に参加しました");
+        $this->interpreter->displayParticipantCount();
     }
 
     public function quitGame(string $userName): bool {
-        $result = $this->interpreter->quitGame($userName);
-        $this->updateNumberOfParticipants();
-        return $result;
+        $this->interpreter->displayParticipantCount();
+        return $this->interpreter->quitGame($userName);
     }
 
     public function closeGame(): bool {
         return $this->interpreter->closeGame();
-    }
-
-    public function updateNumberOfParticipants() {
-        $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
-        $api = EasyScoreboardAPI::getInstance();
-        $game = $this->interpreter->getGameData();
-        if (!$game->isStarted()) {
-            foreach ($lobbyPlayers as $player) {
-                $numberOfParticipants = $this->usersService->getParticipants($game->getId());
-                $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 2);
-            }
-        } else {
-            foreach ($lobbyPlayers as $player) {
-                $api->removeScore($player, "sidebar", 2);
-            }
-        }
     }
 
     public function spawnAmmoBox(Player $player) {

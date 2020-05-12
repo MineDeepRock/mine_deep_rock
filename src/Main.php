@@ -421,6 +421,7 @@ class Main extends PluginBase implements Listener
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
         $this->usersListener->userLogin($player->getName(), $this->gameListener->getGameId());
+        $this->gameListener->displayParticipantCount($player);
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);

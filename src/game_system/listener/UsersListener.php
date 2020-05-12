@@ -60,15 +60,6 @@ class UsersListener
         $player->getInventory()->addItem(new SubWeaponSelectItem());
         $player->setGamemode(Player::ADVENTURE);
 
-        $api = EasyScoreboardAPI::getInstance();
-        $api->sendScoreboard($player, "sidebar", "Lobby", false);
-        $lobbyPlayers = Server::getInstance()->getLevelByName("lobby")->getPlayers();
-
-        foreach ($lobbyPlayers as $player) {
-            $numberOfParticipants = $this->usersService->getParticipants($gameId);
-            $api->setScore($player, "sidebar", "ゲーム参加人数:", count($numberOfParticipants), 1);
-        }
-
         if (!$this->usersService->exists($userName)) {
             $this->weaponService->register($userName, M1907SL::NAME);
             $this->weaponService->register($userName, Mle1903::NAME);
