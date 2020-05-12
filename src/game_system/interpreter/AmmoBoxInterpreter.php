@@ -83,6 +83,7 @@ class AmmoBoxInterpreter
 
     public function stop(): void {
         $this->handler->cancel();
+        $this->giveAgain();
     }
 
     public function getAmmoBox(): AmmoBox {

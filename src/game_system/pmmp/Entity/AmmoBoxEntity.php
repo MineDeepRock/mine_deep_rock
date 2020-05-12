@@ -48,10 +48,9 @@ class AmmoBoxEntity extends BoxEntity
     }
 
     protected function onDeath(): void {
-        parent::onDeath();
         $this->handler->cancel();
         $this->interpreter->stop();
-        $this->interpreter->giveAgain();
+        parent::onDeath();
     }
 
     public function getName(): string {

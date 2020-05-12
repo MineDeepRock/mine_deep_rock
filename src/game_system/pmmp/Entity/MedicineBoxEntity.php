@@ -45,10 +45,9 @@ class MedicineBoxEntity extends BoxEntity
     }
 
     protected function onDeath(): void {
-        parent::onDeath();
         $this->interpreter->stop();
-        $this->interpreter->giveAgain();
         $this->handler->cancel();
+        parent::onDeath();
     }
 
     public function getName(): string {
