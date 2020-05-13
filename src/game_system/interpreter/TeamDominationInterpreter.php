@@ -4,8 +4,10 @@
 namespace game_system\interpreter;
 
 
+use game_system\model\Coordinate;
 use game_system\model\map\DominationFlag;
 use game_system\model\User;
+use game_system\pmmp\form\SpawnPointSelectForm;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -108,7 +110,7 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
     public function updateFlagStatus(array $flags): void {
         $level = Server::getInstance()->getLevelByName($this->game->getMap()->getName());
         $players = $level->getPlayers();
-        $this->client->updateFlagStatus($players,$flags);
+        $this->client->updateFlagStatus($players, $flags);
     }
 
     //TODO:リファクタリング
@@ -143,5 +145,49 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         $this->gameScoresService->addPoint($attackerUser->getName(), $this->getGameData()->getId(), 2);
 
         parent::onDead($attackerPlayer, $attackerWeaponName, $targetPlayer, $attackerUser, $targetUser);
+    }
+
+    public function spawn(User $user, ?Coordinate $spawnPoint = null): void {
+        $player = Server::getInstance()->getPlayer($user->getName());
+        $userTeamId = $user->getBelongTeamId();
+
+        $flags = array_filter($this->getGameData()->getMap()->getFlags(), function (DominationFlag $flag) use ($userTeamId) {
+            if (!$flag->isOccupied()) return false;
+            if ($this->getGameData()->getRedTeam()->getId()->equal($userTeamId)) {
+                return $flag->isRedTeams();
+            } else {
+                return $flag->isBlueTeams();
+            }
+        });
+        if (count($flags) === 0) {
+            parent::spawn($user);
+            return;
+        }
+
+        $player->sendForm(new SpawnPointSelectForm(function (?DominationFlag $flag) use ($user, $userTeamId) {
+            if ($flag === null) {
+                parent::spawn($user);
+                return;
+            }
+
+            if (!$flag->isOccupied()) {
+                parent::spawn($user);
+                return;
+            }
+
+            if ($this->getGameData()->getRedTeam()->getId()->equal($userTeamId)) {
+                if ($flag->isRedTeams()) {
+                    parent::spawn($user,$flag->getCenter());
+                    return;
+                }
+            } else {
+                if ($flag->isBlueTeams()) {
+                    parent::spawn($user,$flag->getCenter());
+                    return;
+                }
+            }
+
+            parent::spawn($user);
+        }, $flags));
     }
 }

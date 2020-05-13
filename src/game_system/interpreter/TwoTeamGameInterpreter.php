@@ -5,6 +5,7 @@ namespace game_system\interpreter;
 
 
 use Closure;
+use game_system\model\Coordinate;
 use game_system\model\GadgetType;
 use game_system\model\TwoTeamGame;
 use game_system\model\User;
@@ -263,7 +264,7 @@ class TwoTeamGameInterpreter
         return ItemFactory::get(Item::COOKED_BEEF, 0, 30);
     }
 
-    public function spawn(User $user): void {
+    public function spawn(User $user, ?Coordinate $spawnPoint = null): void {
         $player = Server::getInstance()->getPlayer($user->getName());
 
         if (!$player->isOnline())
@@ -314,7 +315,7 @@ class TwoTeamGameInterpreter
             $selectedSubWeapon,
             $selectedSubWeaponType,
             $mapName,
-            $this->game->getSpawnPoint($user->getBelongTeamId()));
+            $spawnPoint ?? $this->game->getSpawnPoint($user->getBelongTeamId()));
     }
 
     public function closeGame(): bool {
