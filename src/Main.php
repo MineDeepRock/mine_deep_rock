@@ -48,6 +48,7 @@ use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
@@ -421,7 +422,7 @@ class Main extends PluginBase implements Listener
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
         $this->usersListener->userLogin($player);
-        $this->gameListener->displayParticipantCount($player);
+        $this->gameListener->displayParticipantCount();
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
@@ -431,5 +432,17 @@ class Main extends PluginBase implements Listener
         $playerName = $event->getPlayer()->getName();
 
         $this->gameListener->quitGame($playerName);
+    }
+
+    public function cancelMoving(PlayerMoveEvent $event): void {
+        $player = $event->getPlayer();
+        $contain = $player->getInventory()->contains(new SpawnItem());
+        if ($contain) {
+            $from = $event->getFrom();
+            $to = $event->getTo();
+            //スペクテイターでエイム動かしたときの値が0.0010000000000003
+            if ($from->distance($to) < 0.0011) return;
+            $event->setCancelled();
+        }
     }
 }
