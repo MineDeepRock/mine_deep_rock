@@ -220,7 +220,7 @@ class TwoTeamGameListener
             $this->gameScoresService,
             $this->scheduler
         );
-
+        $fragGrenade->setMotion($fragGrenade->getMotion()->multiply(1));
         $fragGrenade->spawnToAll();
     }
 }

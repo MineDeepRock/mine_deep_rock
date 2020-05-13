@@ -31,13 +31,13 @@ class GrenadeEntity extends Throwable
         $nbt = new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
                 new DoubleTag('', $shootingEntity->getX()),
-                new DoubleTag('', $shootingEntity->getY() + 0.5),
+                new DoubleTag('', $shootingEntity->getY() + $shootingEntity->getEyeHeight()),
                 new DoubleTag('', $shootingEntity->getZ())
             ]),
             'Motion' => new ListTag('Motion', [
-                new DoubleTag('', 0),
-                new DoubleTag('', 0),
-                new DoubleTag('', 0)
+                new DoubleTag('', $shootingEntity->getDirectionVector()->getX()),
+                new DoubleTag('', $shootingEntity->getDirectionVector()->getY()),
+                new DoubleTag('', $shootingEntity->getDirectionVector()->getZ())
             ]),
             'Rotation' => new ListTag('Rotation', [
                 new FloatTag("", $shootingEntity->getYaw()),
