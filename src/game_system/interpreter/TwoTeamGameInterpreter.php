@@ -169,10 +169,12 @@ class TwoTeamGameInterpreter
                 $this->game->getRedTeam()->getId());
         }
 
-        if (count($this->usersService->getParticipants($this->game->getId())) >= 1) {
-            $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function(int $tick):void{
-                $this->start();
-            }),20 * 3);
+        if (count($this->usersService->getParticipants($this->game->getId())) >= 4) {
+            if (!$this->game->isStarted()) {
+                $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function(int $tick):void{
+                    $this->start();
+                }),20 * 30);
+            }
         }
         return true;
     }
