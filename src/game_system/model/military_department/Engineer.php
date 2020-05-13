@@ -14,6 +14,7 @@ class Engineer extends MilitaryDepartment
 {
     public function __construct() {
         parent::__construct("Engineer",
+            "工兵",
             [
                 GunType::LMG(),
             ],

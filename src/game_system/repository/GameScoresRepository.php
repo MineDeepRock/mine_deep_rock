@@ -28,6 +28,24 @@ class GameScoresRepository extends Repository
         return $scores;
     }
 
+    public function getTeamScores(string $teamId): array {
+        $result = $this->db->query("SELECT * FROM scores WHERE team_id='{$teamId}'");
+
+        $scores = [];
+
+        if ($result->num_rows === 0) {
+            return $scores;
+        }
+        if ($result->num_rows === 1) {
+            return [GameScore::fromJson($result->fetch_assoc())];
+        }
+
+        while ($row = $result->fetch_assoc())
+            array_push($scores, GameScore::fromJson($row));
+
+        return $scores;
+    }
+
     public function getUserScores(string $name): array {
         $result = $this->db->query("SELECT * FROM scores WHERE name='{$name}'");
 
@@ -52,8 +70,8 @@ class GameScoresRepository extends Repository
         return GameScore::fromJson($result->fetch_assoc());
     }
 
-    public function addScore(string $name, string $gameId): void {
-        $result = $this->db->query("INSERT INTO scores(name,game_id) VALUES('{$name}','{$gameId}')");
+    public function addScore(string $name, string $gameId,string $teamId): void {
+        $result = $this->db->query("INSERT INTO scores(name,game_id,team_id) VALUES('{$name}','{$gameId}','{$teamId}')");
 
         if (!$result) {
             $sql_error = $this->db->error;

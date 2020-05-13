@@ -13,6 +13,7 @@ class AssaultSoldier extends MilitaryDepartment
 {
     public function __construct() {
         parent::__construct("AssaultSoldier",
+            "突撃兵",
             [
                 GunType::AssaultRifle(),
                 GunType::Shotgun(),

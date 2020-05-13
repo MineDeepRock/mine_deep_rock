@@ -12,6 +12,7 @@ class Scout extends MilitaryDepartment
 {
     public function __construct() {
         parent::__construct("Scout",
+            "斥候兵",
             [
                 GunType::SniperRifle(),
             ],

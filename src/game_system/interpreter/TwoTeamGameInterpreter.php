@@ -113,8 +113,10 @@ class TwoTeamGameInterpreter
             }
             $this->usersService->quitGame($participant->getName());
         }
-        $scores = $this->gameScoresService->getScores($this->game->getId());
-        $this->client->onFinish($winTeam, $participants, $scores);
+        $redTeamScores = $this->gameScoresService->getTeamScores($this->game->getRedTeam()->getId());
+        $blueTeamScores = $this->gameScoresService->getTeamScores($this->game->getBlueTeam()->getId());
+
+        $this->client->onFinish($winTeam, $participants, $redTeamScores, $blueTeamScores);
         $this->displayParticipantCount(0);
         $this->game = null;
         ($this->onFinished)();
@@ -128,7 +130,6 @@ class TwoTeamGameInterpreter
         if ($user->getParticipatedGameId() !== null)
             return false;
 
-        $this->gameScoresService->addScore($userName, $this->game->getId());
         if ($this->game->isStarted()) {
             if ($user->getLastBelongTeamId() === null) {
                 $this->usersService->joinGame(
@@ -169,11 +170,14 @@ class TwoTeamGameInterpreter
                 $this->game->getRedTeam()->getId());
         }
 
+        //更新するためにもう一度取得する
+        $user = $this->usersService->getUserData($userName);
+        $this->gameScoresService->addScore($userName, $this->game->getId(), $user->getBelongTeamId());
         if (count($this->usersService->getParticipants($this->game->getId())) >= 4) {
             if (!$this->game->isStarted()) {
-                $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function(int $tick):void{
+                $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
                     $this->start();
-                }),20 * 30);
+                }), 20 * 30);
             }
         }
         return true;
@@ -302,7 +306,7 @@ class TwoTeamGameInterpreter
             $player,
             $user->getBelongTeamId(),
             $this->game->getRedTeam()->getId(),
-            $user->getMilitaryDepartment()->getName(),
+            $user->getMilitaryDepartment()->getJpaName(),
             $spawnGadgetItems,
             $user->getMilitaryDepartment()->getEffects(),
             $selectedWeapon,
@@ -334,7 +338,7 @@ class TwoTeamGameInterpreter
         return true;
     }
 
-    public function displayParticipantCount(?int $count = null){
+    public function displayParticipantCount(?int $count = null) {
         $count = $count ?? count($this->usersService->getParticipants($this->game->getId()));
         $this->client->displayParticipantCount($count);
     }

@@ -13,6 +13,7 @@ class NursingSoldier extends MilitaryDepartment
 {
     public function __construct() {
         parent::__construct("NursingSoldier",
+            "看護兵",
             [
                 GunType::SMG(),
             ],

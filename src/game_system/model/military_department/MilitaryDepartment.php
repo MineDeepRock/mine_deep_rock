@@ -7,6 +7,7 @@ namespace game_system\model\military_department;
 abstract class MilitaryDepartment
 {
     private $name = "";
+    private $jpaName = "";
     private $canEquipGunTypes = [];
     private $canEquipGadgetTypes = [];
     private $effectIds = [];
@@ -15,12 +16,14 @@ abstract class MilitaryDepartment
 
     public function __construct(
         string $name,
+        string $jpaName,
         array $canEquipGunTypes,
         array $canEquipGadgetTypes,
         array $effects,
         string $defaultWeaponName) {
 
         $this->name = $name;
+        $this->jpaName = $jpaName;
         $this->canEquipGunTypes = $canEquipGunTypes;
         $this->canEquipGadgetTypes = $canEquipGadgetTypes;
         $this->effectIds = $effects;
@@ -80,5 +83,12 @@ abstract class MilitaryDepartment
      */
     public function getDefaultWeaponName(): string {
         return $this->defaultWeaponName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJpaName(): string {
+        return $this->jpaName;
     }
 }

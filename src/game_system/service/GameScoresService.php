@@ -6,6 +6,7 @@ namespace game_system\service;
 
 use game_system\model\GameId;
 use game_system\model\GameScore;
+use game_system\model\TeamId;
 use game_system\repository\GameScoresRepository;
 use Service;
 
@@ -21,6 +22,10 @@ class GameScoresService extends Service
         return $this->repository->getScores($gameId->value());
     }
 
+    public function getTeamScores(TeamId $teamId): array {
+        return $this->repository->getTeamScores($teamId->value());
+    }
+
     public function getUserScores(string $name): array {
         return $this->repository->getUserScores($name);
     }
@@ -29,8 +34,8 @@ class GameScoresService extends Service
         return $this->repository->getUserScore($name, $gameId->value());
     }
 
-    public function addScore(string $name, GameId $gameId): void {
-        $this->repository->addScore($name, $gameId->value());
+    public function addScore(string $name, GameId $gameId, TeamId $teamId): void {
+        $this->repository->addScore($name, $gameId->value(), $teamId->value());
     }
 
     public function addKillCount(string $name, GameId $gameId): void {
@@ -38,6 +43,6 @@ class GameScoresService extends Service
     }
 
     public function addPoint(string $name, GameId $gameId, int $value): void {
-        $this->repository->addPoint($name, $gameId->value(),$value);
+        $this->repository->addPoint($name, $gameId->value(), $value);
     }
 }

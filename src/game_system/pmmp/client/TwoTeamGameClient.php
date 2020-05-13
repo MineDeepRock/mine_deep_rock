@@ -53,11 +53,11 @@ class TwoTeamGameClient
             } else {
                 $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
             }
-            $this->displayBaseGameScoreboard($player,$redTeamScore,$blueTeamScore);
+            $this->displayBaseGameScoreboard($player, $redTeamScore, $blueTeamScore);
         }
     }
 
-    public function onFinish(Team $winTeam, array $participants, array $scores): void {
+    public function onFinish(Team $winTeam, array $participants, array $redTeamScores, array $blueTeamScores): void {
         $worldController = new WorldController();
         $winTeamId = $winTeam->getId();
 
@@ -79,7 +79,7 @@ class TwoTeamGameClient
             } else {
                 $player->addTitle("負け");
             }
-            $player->sendForm(new GameScoreForm($scores));
+            $player->sendForm(new GameScoreForm($redTeamScores,$blueTeamScores));
         }
     }
 
@@ -92,7 +92,7 @@ class TwoTeamGameClient
         } else {
             $player->sendMessage(TextFormat::BLUE . "あなたは青チームです");
         }
-        $this->displayBaseGameScoreboard($player,$redTeamScore,$blueTeamScore);
+        $this->displayBaseGameScoreboard($player, $redTeamScore, $blueTeamScore);
     }
 
     //TODO:リファクタリング
@@ -194,7 +194,7 @@ class TwoTeamGameClient
         $target->getInventory()->addItem(new SpawnItem());
 
         foreach ($players as $player) {
-            $player->sendMessage($attacker->getName() . " が " . $target->getName() . " を倒した [" . $weaponName . "]");
+            $player->sendMessage($attacker->getNameTag() . TextFormat::WHITE . " " . $weaponName . " " . $target->getNameTag());
         }
     }
 
