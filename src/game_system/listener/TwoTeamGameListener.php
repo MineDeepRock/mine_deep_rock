@@ -20,7 +20,9 @@ use game_system\pmmp\client\TeamDominationClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
+use game_system\pmmp\Entity\FragGrenadeEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
+use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
@@ -206,5 +208,19 @@ class TwoTeamGameListener
         $attackerUser = $this->usersService->getUserData($attacker->getName());
 
         $this->interpreter->scare($targetUser, $attackerUser, $item);
+    }
+
+    public function spawnFragGrenadeEntity(Player $player){
+        $player->getInventory()->remove(new FragGrenadeItem());
+
+        $fragGrenade = new FragGrenadeEntity(
+            $player->getLevel(),
+            $player,
+            $this->usersService,
+            $this->gameScoresService,
+            $this->scheduler
+        );
+
+        $fragGrenade->spawnToAll();
     }
 }

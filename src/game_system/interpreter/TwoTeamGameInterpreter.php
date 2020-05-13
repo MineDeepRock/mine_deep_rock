@@ -9,7 +9,7 @@ use game_system\model\Coordinate;
 use game_system\model\GadgetType;
 use game_system\model\TwoTeamGame;
 use game_system\model\User;
-use game_system\pmmp\form\game_score_form\GameScoreForm;
+use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
@@ -299,6 +299,9 @@ class TwoTeamGameInterpreter
                     break;
                 case GadgetType::FlareBox()->getTypeText():
                     $spawnGadgetItems[] = new SpawnFlareBoxItem();
+                    break;
+                case GadgetType::FragGrenade()->getTypeText():
+                    $spawnGadgetItems[] = new FragGrenadeItem();
                     break;
             }
         }

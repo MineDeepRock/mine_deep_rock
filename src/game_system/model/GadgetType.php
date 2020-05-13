@@ -25,6 +25,9 @@ class GadgetType
     public static function FlareBox():GadgetType {
         return new GadgetType("FlareBox");
     }
+    public static function FragGrenade():GadgetType {
+        return new GadgetType("FragGrenade");
+    }
     /**
      * @return mixed
      */

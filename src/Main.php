@@ -17,6 +17,7 @@ use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\Entity\TargetNPC;
 use game_system\pmmp\Entity\TrialGunDealerNPC;
+use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
@@ -359,6 +360,15 @@ class Main extends PluginBase implements Listener
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === MilitaryDepartmentSelectItem::ITEM_ID) {
                 $this->usersListener->displayMilitaryDepartmentSelectForm($player);
+            }
+        }
+    }
+
+    public function onTapByFragGrenadeItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === FragGrenadeItem::ITEM_ID) {
+                $this->gameListener->spawnFragGrenadeEntity($player);
             }
         }
     }

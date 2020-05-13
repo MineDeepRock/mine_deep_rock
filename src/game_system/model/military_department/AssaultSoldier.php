@@ -4,6 +4,7 @@
 namespace game_system\model\military_department;
 
 
+use game_system\model\GadgetType;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\GunType;
 use pocketmine\entity\Effect;
@@ -18,7 +19,9 @@ class AssaultSoldier extends MilitaryDepartment
                 GunType::AssaultRifle(),
                 GunType::Shotgun(),
             ],
-            [],
+            [
+                GadgetType::FragGrenade()
+            ],
             [
                 new EffectInstance(Effect::getEffect(EFFECT::SPEED), null, 0, false)
             ],
