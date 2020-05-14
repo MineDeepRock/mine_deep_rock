@@ -19,10 +19,12 @@ use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\client\TeamDominationClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
+use game_system\pmmp\Entity\FlameBottleEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\FragGrenadeEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\Entity\SmokeGrenadeEntity;
+use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
@@ -230,6 +232,20 @@ class TwoTeamGameListener
         $player->getInventory()->remove(new SmokeGrenadeItem());
 
         $fragGrenade = new SmokeGrenadeEntity(
+            $player->getLevel(),
+            $player,
+            $this->usersService,
+            $this->gameScoresService,
+            $this->scheduler
+        );
+        $fragGrenade->setMotion($fragGrenade->getMotion()->multiply(1));
+        $fragGrenade->spawnToAll();
+    }
+
+    public function spawnFlameBottleEntity(Player $player){
+        $player->getInventory()->remove(new FlameBottleItem());
+
+        $fragGrenade = new FlameBottleEntity(
             $player->getLevel(),
             $player,
             $this->usersService,

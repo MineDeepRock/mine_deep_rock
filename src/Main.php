@@ -17,6 +17,7 @@ use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\Entity\TargetNPC;
 use game_system\pmmp\Entity\TrialGunDealerNPC;
+use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
@@ -383,6 +384,15 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    public function onTapByFlameBottleItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === FlameBottleItem::ITEM_ID) {
+                $this->gameListener->spawnFlameBottleEntity($player);
+            }
+        }
+    }
+
     public function onTapByForTapUser(DataPacketReceiveEvent $event) {
         $packet = $event->getPacket();
         if ($packet instanceof LevelSoundEventPacket) {
@@ -416,6 +426,9 @@ class Main extends PluginBase implements Listener
                         break;
                     case SmokeGrenadeItem::ITEM_ID:
                         $this->gameListener->spawnSmokeGrenadeEntity($player);
+                        break;
+                    case FlameBottleItem::ITEM_ID:
+                        $this->gameListener->spawnFlameBottleEntity($player);
                         break;
                 }
             }
