@@ -9,7 +9,9 @@ use game_system\GameSystemBinder;
 use game_system\model\FlameBottle;
 use game_system\model\military_department\Engineer;
 use game_system\model\SmokeGrenade;
+use game_system\pmmp\client\FlameBottleClient;
 use game_system\pmmp\client\SmokeGrenadeClient;
+use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -24,7 +26,7 @@ class FlameBottleInterpreter extends GrenadeBaseInterpreter
 
     public function __construct(Player $owner, UsersService $usersService, GameScoresService $gameScoreService, TaskScheduler $scheduler) {
         parent::__construct($owner, $usersService, $gameScoreService, $scheduler);
-        $this->client = new SmokeGrenadeClient();
+        $this->client = new FlameBottleClient();
         $this->grenade = new FlameBottle();
     }
 
@@ -36,14 +38,14 @@ class FlameBottleInterpreter extends GrenadeBaseInterpreter
         $level = $this->owner->getLevel();
         $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $pos, $onExploded): void {
             if ($this->owner->isOnline()) {
-                for ($i = 0; $i < 20; ++$i) {
+                for ($i = 0; $i < 15; ++$i) {
                     $this->client->explodeParticle($level, new Vector3(
                         $pos->getX() + rand(0, FlameBottle::RANGE),
-                        $pos->getY(),
+                        $pos->getY() + 0.5,
                         $pos->getZ() + rand(0, FlameBottle::RANGE)
                     ));
                 }
-                parent::explode($pos, $onExploded);
+                parent::explode($pos, function(){});
             }
         }), 20 * SmokeGrenade::DELAY, 20 * 0.5);
     }
@@ -61,10 +63,10 @@ class FlameBottleInterpreter extends GrenadeBaseInterpreter
             $engineer = new Engineer();
             if ($user->getMilitaryDepartment()->getName() !== $engineer->getName()) return;
 
-            $contain = $this->owner->getInventory()->contains(new SmokeGrenadeItem());
+            $contain = $this->owner->getInventory()->contains(new FlameBottleItem());
             if ($contain) return;
 
-            $this->owner->getInventory()->addItem(new SmokeGrenadeItem());
+            $this->owner->getInventory()->addItem(new FlameBottleItem());
         }), 20 * 15);
     }
 }

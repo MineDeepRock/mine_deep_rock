@@ -31,6 +31,9 @@ class GadgetType
     public static function SmokeGrenade():GadgetType {
         return new GadgetType("SmokeGrenade");
     }
+    public static function FlameBottle():GadgetType {
+        return new GadgetType("FlameBottle");
+    }
     /**
      * @return mixed
      */

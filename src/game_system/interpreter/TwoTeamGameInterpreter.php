@@ -9,6 +9,7 @@ use game_system\model\Coordinate;
 use game_system\model\GadgetType;
 use game_system\model\TwoTeamGame;
 use game_system\model\User;
+use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
@@ -305,6 +306,9 @@ class TwoTeamGameInterpreter
                     break;
                 case GadgetType::SmokeGrenade()->getTypeText():
                     $spawnGadgetItems[] = new SmokeGrenadeItem();
+                    break;
+                case GadgetType::FlameBottle()->getTypeText():
+                    $spawnGadgetItems[] = new FlameBottleItem();
                     break;
             }
         }

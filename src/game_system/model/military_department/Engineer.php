@@ -19,7 +19,8 @@ class Engineer extends MilitaryDepartment
                 GunType::LMG(),
             ],
             [
-                GadgetType::AmmoBox()
+                GadgetType::AmmoBox(),
+                GadgetType::FlameBottle(),
             ],
             [],
             Chauchat::NAME

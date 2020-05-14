@@ -5,12 +5,9 @@ namespace game_system\interpreter;
 
 
 use Closure;
-use game_system\model\Coordinate;
 use game_system\model\Grenade;
 use game_system\model\military_department\AssaultSoldier;
-use game_system\model\military_department\Scout;
 use game_system\pmmp\items\FragGrenadeItem;
-use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\math\Vector3;
@@ -63,12 +60,12 @@ abstract class GrenadeBaseInterpreter
             if ($belongTeamId === null) return false;
 
             if ($player->getName() === $this->owner->getName()) {
-                return $pos->distance($player->getPosition()) <= $this->grenade->getRange();
+                return $pos->distance($player->getPosition()) <= $this->grenade::RANGE;
             }
 
             if ($this->ownerTeamId->equal($belongTeamId)) return false;
 
-            return $pos->distance($player->getPosition()) <= $this->grenade->getRange();
+            return $pos->distance($player->getPosition()) <= $this->grenade::RANGE;
         });
     }
 

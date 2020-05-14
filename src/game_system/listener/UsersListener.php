@@ -4,6 +4,7 @@
 namespace game_system\listener;
 
 
+use game_system\model\FlameBottle;
 use game_system\model\FragGrenade;
 use game_system\pmmp\form\MilitaryDepartmentSelectForm;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
@@ -68,6 +69,7 @@ class UsersListener
             $this->weaponService->register($player->getName(), MP18::NAME);
 
             $this->weaponService->register($player->getName(), FragGrenade::NAME);
+            $this->weaponService->register($player->getName(), FlameBottle::NAME);
         }
         $this->usersService->userLogin($player->getName());
     }
