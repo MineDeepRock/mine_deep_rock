@@ -61,6 +61,11 @@ abstract class GrenadeBaseInterpreter
             $belongTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
             if ($this->ownerTeamId === null) return false;
             if ($belongTeamId === null) return false;
+
+            if ($player->getName() === $this->owner->getName()) {
+                return $pos->distance($player->getPosition()) <= $this->grenade->getRange();
+            }
+
             if ($this->ownerTeamId->equal($belongTeamId)) return false;
 
             return $pos->distance($player->getPosition()) <= $this->grenade->getRange();
@@ -82,6 +87,6 @@ abstract class GrenadeBaseInterpreter
             if ($contain) return;
 
             $this->owner->getInventory()->addItem(new FragGrenadeItem());
-        }), 20 * 10);
+        }), 20 * 15);
     }
 }
