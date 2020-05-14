@@ -7,27 +7,11 @@ namespace game_system\model;
 abstract class Box
 {
     const NAME = "";
-    private $secondLimit;
-    protected $playerUsed = [];
+    const SECOND_LIMIT = 0;
     private $coordinate;
 
-    public function __construct(int $secondLimit, Coordinate $coordinate) {
-        $this->secondLimit = $secondLimit;
+    public function __construct(Coordinate $coordinate) {
         $this->coordinate = $coordinate;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSecondLimit(): int {
-        return $this->secondLimit;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPlayerUsed(): array {
-        return $this->playerUsed;
     }
 
     /**

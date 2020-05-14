@@ -58,10 +58,10 @@ class FlareBoxEntity extends BoxEntity
         $this->isOnGroundHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($owner, $usersService, $gameScoresService, $scheduler): void {
             if ($this->isOnGround()) {
                 $this->interpreter = new FlareBoxInterpreter(
-                    new FlareBox(40, new Coordinate(
+                    new Coordinate(
                         $this->getX(),
                         $this->getY(),
-                        $this->getZ())),
+                        $this->getZ()),
                     $owner,
                     $usersService,
                     $gameScoresService,
@@ -72,7 +72,7 @@ class FlareBoxEntity extends BoxEntity
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
-        }), 20 * 40);//TODO:
+        }), 20 * FlareBox::SECOND_LIMIT);
     }
 
     protected function onDeath(): void {

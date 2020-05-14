@@ -45,7 +45,7 @@ class AmmoBoxInterpreter
         $this->client = new AmmoBoxClient();
         $this->scheduler = $scheduler;
 
-        $this->ammoBox = new AmmoBox(40, $coordinate);
+        $this->ammoBox = new AmmoBox($coordinate);
         $this->owner = $player;
         $user = $this->usersService->getUserData($player->getName());
         $gameId = $user->getParticipatedGameId();

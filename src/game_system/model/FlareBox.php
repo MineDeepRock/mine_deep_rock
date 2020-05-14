@@ -4,29 +4,12 @@
 namespace game_system\model;
 
 
-class FlareBox
+class FlareBox extends Box
 {
-    const NAME = "";
-    private $secondLimit;
-    private $coordinate;
+    const NAME = "FlareBox";
+    const SECOND_LIMIT = 40;
 
-    public function __construct(int $secondLimit, Coordinate $coordinate) {
-        $this->secondLimit = $secondLimit;
-        $this->coordinate = $coordinate;
+    public function __construct(Coordinate $coordinate) {
+        parent::__construct($coordinate);
     }
-
-    /**
-     * @return Coordinate
-     */
-    public function getCoordinate(): Coordinate {
-        return $this->coordinate;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSecondLimit(): int {
-        return $this->secondLimit;
-    }
-
 }

@@ -5,6 +5,7 @@ namespace game_system\pmmp\Entity;
 
 
 use game_system\interpreter\AmmoBoxInterpreter;
+use game_system\model\AmmoBox;
 use game_system\model\Coordinate;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -44,7 +45,7 @@ class AmmoBoxEntity extends BoxEntity
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
-        }), 20 * $this->interpreter->getAmmoBox()->getSecondLimit());
+        }), 20 * AmmoBox::SECOND_LIMIT);
     }
 
     protected function onDeath(): void {

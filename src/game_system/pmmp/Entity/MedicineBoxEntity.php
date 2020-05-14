@@ -6,6 +6,7 @@ namespace game_system\pmmp\Entity;
 
 use game_system\interpreter\MedicineBoxInterpreter;
 use game_system\model\Coordinate;
+use game_system\model\MedicineBox;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\level\Level;
@@ -41,7 +42,7 @@ class MedicineBoxEntity extends BoxEntity
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
-        }), 20 * $this->interpreter->getMedicineBox()->getSecondLimit());
+        }), 20 * MedicineBox::SECOND_LIMIT);
     }
 
     protected function onDeath(): void {

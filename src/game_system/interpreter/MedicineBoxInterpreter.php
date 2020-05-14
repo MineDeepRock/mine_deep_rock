@@ -40,7 +40,7 @@ class MedicineBoxInterpreter
         $this->client = new MedicineBoxClient();
         $this->scheduler = $scheduler;
 
-        $this->medicineBox = new MedicineBox(40, $coordinate);
+        $this->medicineBox = new MedicineBox($coordinate);
         $this->owner = $player;
         $user = $this->usersService->getUserData($player->getName());
         $gameId = $user->getParticipatedGameId();
