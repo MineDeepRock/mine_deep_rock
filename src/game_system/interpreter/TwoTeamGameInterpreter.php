@@ -206,26 +206,25 @@ class TwoTeamGameInterpreter
                 $attacker = $this->usersService->getUserData($attackerPlayer->getName());
                 $target = $this->usersService->getUserData($targetEntity->getName());
 
-                if (!($attacker->getBelongTeamId()->equal($target->getBelongTeamId()))) {
+                if ($targetEntity instanceof Player) {
+                    if (!($attacker->getBelongTeamId()->equal($target->getBelongTeamId()))
+                        || $attackerPlayer->getName() === $targetEntity->getName()) {
+                        if ($health <= 0) $this->onDead($attackerPlayer, $weaponName, $targetEntity, $attacker, $target);
 
-                    $targetPlayer = Server::getInstance()->getPlayer($targetEntity->getName());
-
-                    if ($health <= 0) $this->onDead($attackerPlayer, $weaponName, $targetPlayer, $attacker, $target);
-
-                    $this->scare($target, $attacker, $targetPlayer->getInventory()->getItemInHand());
-                    $this->client->onReceiveDamage($attackerPlayer, $targetPlayer, $damage, $weaponName);
+                        $this->scare($target, $attacker, $targetEntity->getInventory()->getItemInHand());
+                        $this->client->onReceiveDamage($attackerPlayer, $targetEntity, $damage, $weaponName);
+                    }
                 }
             }
         }
     }
 
     protected function onDead(Player $attackerPlayer, string $attackerWeaponName, Player $targetPlayer, User $attackerUser, User $targetUser): void {
-        //弾薬回復
-        $attackerPlayer->getInventory()->addItem($this->getAmmo($attackerWeaponName));
-
-        $attackerName = $attackerPlayer->getName();
-        $this->weaponService->addKillCount($attackerPlayer->getName(), $attackerWeaponName);
-        $this->usersService->addMoney($attackerName, 100);
+        if ($attackerPlayer->getName() !== $targetPlayer->getName()) {
+            $attackerName = $attackerPlayer->getName();
+            $this->weaponService->addKillCount($attackerPlayer->getName(), $attackerWeaponName);
+            $this->usersService->addMoney($attackerName, 100);
+        }
 
         $targetPlayer->setGamemode(Player::SPECTATOR);
         $targetPlayer->teleport(new Vector3(
