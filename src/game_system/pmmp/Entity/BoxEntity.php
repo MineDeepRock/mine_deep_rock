@@ -41,8 +41,8 @@ class BoxEntity extends Human
     protected $owner;
     protected $scheduler;
 
-    public function __construct(Level $level,Player $owner,TaskScheduler $scheduler) {
-        $nbt = new CompoundTag('', [
+    public function __construct(Level $level, Player $owner, TaskScheduler $scheduler, ?CompoundTag $nbt = null) {
+        $nbt = $nbt ?? new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
                 new DoubleTag('', $owner->getX()),
                 new DoubleTag('', $owner->getY() + 0.5),
