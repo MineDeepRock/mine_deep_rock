@@ -18,7 +18,8 @@ class NursingSoldier extends MilitaryDepartment
                 GunType::SMG(),
             ],
             [
-                GadgetType::MedicineBox()
+                GadgetType::MedicineBox(),
+                GadgetType::SmokeGrenade(),
             ],
             [],
             MP18::NAME

@@ -22,8 +22,10 @@ use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\FragGrenadeEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
+use game_system\pmmp\Entity\SmokeGrenadeEntity;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
+use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
@@ -214,6 +216,20 @@ class TwoTeamGameListener
         $player->getInventory()->remove(new FragGrenadeItem());
 
         $fragGrenade = new FragGrenadeEntity(
+            $player->getLevel(),
+            $player,
+            $this->usersService,
+            $this->gameScoresService,
+            $this->scheduler
+        );
+        $fragGrenade->setMotion($fragGrenade->getMotion()->multiply(1));
+        $fragGrenade->spawnToAll();
+    }
+
+    public function spawnSmokeGrenadeEntity(Player $player){
+        $player->getInventory()->remove(new SmokeGrenadeItem());
+
+        $fragGrenade = new SmokeGrenadeEntity(
             $player->getLevel(),
             $player,
             $this->usersService,

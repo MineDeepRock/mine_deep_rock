@@ -18,6 +18,7 @@ use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\Entity\TargetNPC;
 use game_system\pmmp\Entity\TrialGunDealerNPC;
 use game_system\pmmp\items\FragGrenadeItem;
+use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
@@ -373,6 +374,15 @@ class Main extends PluginBase implements Listener
         }
     }
 
+    public function onTapBySmokeGrenadeItem(PlayerInteractEvent $event) {
+        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            $player = $event->getPlayer();
+            if ($player->getInventory()->getItemInHand()->getId() === SmokeGrenadeItem::ITEM_ID) {
+                $this->gameListener->spawnFragGrenadeEntity($player);
+            }
+        }
+    }
+
     public function onTapByForTapUser(DataPacketReceiveEvent $event) {
         $packet = $event->getPacket();
         if ($packet instanceof LevelSoundEventPacket) {
@@ -403,6 +413,9 @@ class Main extends PluginBase implements Listener
                         break;
                     case FragGrenadeItem::ITEM_ID:
                         $this->gameListener->spawnFragGrenadeEntity($player);
+                        break;
+                    case SmokeGrenadeItem::ITEM_ID:
+                        $this->gameListener->spawnSmokeGrenadeEntity($player);
                         break;
                 }
             }

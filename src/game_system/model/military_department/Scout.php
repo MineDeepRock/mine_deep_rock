@@ -18,6 +18,7 @@ class Scout extends MilitaryDepartment
             ],
             [
                 GadgetType::FlareBox(),
+                GadgetType::SmokeGrenade(),
             ],
             [],
             SMLEMK3::NAME
