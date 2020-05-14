@@ -29,4 +29,9 @@ class FragGrenadeEntity extends GrenadeEntity
             $gameScoresService,
             $scheduler);
     }
+
+    protected function onDeath(): void {
+        $this->interpreter->giveAgain();
+        parent::onDeath();
+    }
 }

@@ -7,6 +7,10 @@ namespace game_system\interpreter;
 use Closure;
 use game_system\model\Coordinate;
 use game_system\model\Grenade;
+use game_system\model\military_department\AssaultSoldier;
+use game_system\model\military_department\Scout;
+use game_system\pmmp\items\FragGrenadeItem;
+use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\math\Vector3;
@@ -64,4 +68,20 @@ abstract class GrenadeBaseInterpreter
     }
 
     abstract function effectOn(Player $player, int $distance): void;
+
+    public function giveAgain(): void {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
+            if (!$this->owner->isOnline()) return;
+            if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
+
+            $user = $this->usersService->getUserData($this->owner->getName());
+            $assaultSoldier = new AssaultSoldier();
+            if ($user->getMilitaryDepartment()->getName() !== $assaultSoldier->getName()) return;
+
+            $contain = $this->owner->getInventory()->contains(new FragGrenadeItem());
+            if ($contain) return;
+
+            $this->owner->getInventory()->addItem(new FragGrenadeItem());
+        }), 20 * 10);
+    }
 }
