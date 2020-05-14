@@ -48,7 +48,7 @@ class GrenadeEntity extends Throwable
     }
 
     protected function onHitBlock(Block $blockHit, RayTraceResult $hitResult): void {
-        $this->interpreter->explode($blockHit, function () { $this->kill(); });
+        $this->interpreter->explode($this->getPosition(), function () { $this->kill(); });
         return;
     }
 
@@ -57,6 +57,7 @@ class GrenadeEntity extends Throwable
     }
 
     protected function onHitEntity(Entity $entityHit, RayTraceResult $hitResult): void {
+        $this->interpreter->explode($this->getPosition(), function () { $this->kill(); });
         return;
     }
 }

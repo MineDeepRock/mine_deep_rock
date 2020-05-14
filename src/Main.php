@@ -401,6 +401,9 @@ class Main extends PluginBase implements Listener
                     case SpawnFlareBoxItem::ITEM_ID:
                         $this->gameListener->spawnFlareBox($player);
                         break;
+                    case FragGrenadeItem::ITEM_ID:
+                        $this->gameListener->spawnFragGrenadeEntity($player);
+                        break;
                 }
             }
         }
