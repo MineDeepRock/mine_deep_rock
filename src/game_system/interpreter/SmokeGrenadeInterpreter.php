@@ -24,7 +24,6 @@ class SmokeGrenadeInterpreter extends GrenadeBaseInterpreter
     public function __construct(Player $owner, UsersService $usersService, GameScoresService $gameScoreService, TaskScheduler $scheduler) {
         parent::__construct($owner, $usersService, $gameScoreService, $scheduler);
         $this->client = new SmokeGrenadeClient();
-        $this->grenade = new SmokeGrenade();
     }
 
     public function stop() {
@@ -35,7 +34,7 @@ class SmokeGrenadeInterpreter extends GrenadeBaseInterpreter
         $level = $this->owner->getLevel();
         $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $pos, $onExploded): void {
             if ($this->owner->isOnline()) {
-                for ($i = 0; $i < 15; ++$i) {
+                for ($i = 0; $i < 5; ++$i) {
                     $this->client->explodeParticle($level, new Vector3(
                         $pos->getX() + rand(0, 2),
                         $pos->getY() + rand(0, 2),
@@ -43,7 +42,7 @@ class SmokeGrenadeInterpreter extends GrenadeBaseInterpreter
                     ));
                 }
             }
-        }), 20 * $this->grenade->getDelay(), 20 * 0.2);
+        }), 20 * SmokeGrenade::DELAY, 2);
     }
 
     public function effectOn(Player $player, int $distance): void { }

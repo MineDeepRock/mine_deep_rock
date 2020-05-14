@@ -4,6 +4,7 @@
 namespace game_system\pmmp\client;
 
 
+use game_system\model\SmokeGrenade;
 use pocketmine\level\Level;
 use pocketmine\level\particle\MobSpawnParticle;
 use pocketmine\math\Vector3;
@@ -11,7 +12,7 @@ use pocketmine\math\Vector3;
 class SmokeGrenadeClient
 {
     public function explodeParticle(Level $level, Vector3 $pos): void {
-        $level->addParticle(new MobSpawnParticle($pos,5,2));
+        $level->addParticle(new MobSpawnParticle($pos,SmokeGrenade::RANGE,4));
     }
 
     public function playSound(Level $level, Vector3 $pos): void {

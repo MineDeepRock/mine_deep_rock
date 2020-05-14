@@ -4,10 +4,7 @@
 namespace game_system\listener;
 
 
-use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\FragGrenade;
-use game_system\model\Game;
-use game_system\model\GameId;
 use game_system\pmmp\form\MilitaryDepartmentSelectForm;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
@@ -70,8 +67,7 @@ class UsersListener
             $this->weaponService->register($player->getName(), SMLEMK3::NAME);
             $this->weaponService->register($player->getName(), MP18::NAME);
 
-            $fragGrenade = new FragGrenade();
-            $this->weaponService->register($player->getName(), $fragGrenade->getName());
+            $this->weaponService->register($player->getName(), FragGrenade::NAME);
         }
         $this->usersService->userLogin($player->getName());
     }

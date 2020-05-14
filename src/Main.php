@@ -378,7 +378,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             if ($player->getInventory()->getItemInHand()->getId() === SmokeGrenadeItem::ITEM_ID) {
-                $this->gameListener->spawnFragGrenadeEntity($player);
+                $this->gameListener->spawnSmokeGrenadeEntity($player);
             }
         }
     }

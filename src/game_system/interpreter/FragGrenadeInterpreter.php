@@ -19,7 +19,6 @@ class FragGrenadeInterpreter extends GrenadeBaseInterpreter
     public function __construct(Player $owner, UsersService $usersService, GameScoresService $gameScoreService, TaskScheduler $scheduler) {
         parent::__construct($owner, $usersService, $gameScoreService, $scheduler);
         $this->client = new FragGrenadeClient();
-        $this->grenade = new FragGrenade();
     }
 
     public function explode(Vector3 $pos, Closure $onExploded) {
@@ -33,9 +32,9 @@ class FragGrenadeInterpreter extends GrenadeBaseInterpreter
 
     public function effectOn(Player $player, int $distance): void {
         if ($distance <= 3) {
-            GameSystemBinder::getInstance()->getGameListener()->onReceivedDamage($this->owner, $player, $this->grenade->getName(), 20);
+            GameSystemBinder::getInstance()->getGameListener()->onReceivedDamage($this->owner, $player, FragGrenade::NAME, 20);
         } else {
-            GameSystemBinder::getInstance()->getGameListener()->onReceivedDamage($this->owner, $player, $this->grenade->getName(), 15 - $distance);
+            GameSystemBinder::getInstance()->getGameListener()->onReceivedDamage($this->owner, $player, FragGrenade::NAME, 15 - $distance);
         }
     }
 }

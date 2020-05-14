@@ -31,11 +31,10 @@ class SmokeGrenadeEntity extends GrenadeEntity
             $gameScoresService,
             $scheduler);
 
-        $smokeGrenade = new SmokeGrenade();
 
         $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
             if ($this->isAlive()) $this->kill();
-        }), 20 * $smokeGrenade->getDuration());
+        }), 20 * SmokeGrenade::DURATION);
     }
 
     protected function onDeath(): void {

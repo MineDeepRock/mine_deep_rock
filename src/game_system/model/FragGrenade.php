@@ -6,7 +6,8 @@ namespace game_system\model;
 
 class FragGrenade extends Grenade
 {
-    public function __construct() {
-        parent::__construct("FragGrenade", 8, 3);
-    }
+    const NAME = "FragGrenade";
+    const RANGE = 8;
+    const DELAY = 2;
+    const DURATION = 0;
 }

@@ -175,11 +175,11 @@ class TwoTeamGameInterpreter
         //更新するためにもう一度取得する
         $user = $this->usersService->getUserData($userName);
         $this->gameScoresService->addScore($userName, $this->game->getId(), $user->getBelongTeamId());
-        if (count($this->usersService->getParticipants($this->game->getId())) >= 4) {
+        if (count($this->usersService->getParticipants($this->game->getId())) >= 1) {
             if (!$this->game->isStarted()) {
                 $this->startTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
                     $this->start();
-                }), 20 * 30);
+                }), 20 * 3);
             }
         }
         return true;
