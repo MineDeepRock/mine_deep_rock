@@ -24,6 +24,7 @@ class SmokeGrenadeInterpreter extends GrenadeBaseInterpreter
     public function __construct(Player $owner, UsersService $usersService, GameScoresService $gameScoreService, TaskScheduler $scheduler) {
         parent::__construct($owner, $usersService, $gameScoreService, $scheduler);
         $this->client = new SmokeGrenadeClient();
+        $this->grenade = new SmokeGrenade();
     }
 
     public function stop() {

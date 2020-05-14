@@ -49,7 +49,7 @@ abstract class GrenadeBaseInterpreter
                 $this->effectOn($player,$pos->distance($player->getPosition()));
             }
             $onExploded();
-        }), 20 * $this->grenade->getDelay());
+        }), 20 * $this->grenade::DELAY);
     }
 
     public function getAroundEnemyPlayers(Vector3 $pos): array {

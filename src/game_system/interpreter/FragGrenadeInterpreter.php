@@ -19,6 +19,7 @@ class FragGrenadeInterpreter extends GrenadeBaseInterpreter
     public function __construct(Player $owner, UsersService $usersService, GameScoresService $gameScoreService, TaskScheduler $scheduler) {
         parent::__construct($owner, $usersService, $gameScoreService, $scheduler);
         $this->client = new FragGrenadeClient();
+        $this->grenade = new FragGrenade();
     }
 
     public function explode(Vector3 $pos, Closure $onExploded) {
