@@ -32,7 +32,6 @@ class FragGrenadeInterpreter extends GrenadeBaseInterpreter
     }
 
     public function effectOn(Player $player, int $distance): void {
-        var_dump($distance);
         if ($distance <= 3) {
             GameSystemBinder::getInstance()->getGameListener()->onReceivedDamage($this->owner, $player, $this->grenade->getName(), 20);
         } else {
