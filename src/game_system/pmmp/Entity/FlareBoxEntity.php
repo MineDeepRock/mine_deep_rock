@@ -6,6 +6,7 @@ namespace game_system\pmmp\Entity;
 
 use game_system\interpreter\FlareBoxInterpreter;
 use game_system\model\Coordinate;
+use game_system\model\FlareBox;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\level\Level;
@@ -53,24 +54,25 @@ class FlareBoxEntity extends BoxEntity
         parent::__construct($level, $owner, $scheduler, $nbt);
         $this->setMotion($this->getMotion()->multiply(1.5));
 
-        $this->isOnGroundHandler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($owner, $usersService, $gameScoresService,$scheduler): void {
+
+        $this->isOnGroundHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($owner, $usersService, $gameScoresService, $scheduler): void {
             if ($this->isOnGround()) {
                 $this->interpreter = new FlareBoxInterpreter(
+                    new FlareBox(40, new Coordinate(
+                        $this->getX(),
+                        $this->getY(),
+                        $this->getZ())),
                     $owner,
                     $usersService,
                     $gameScoresService,
-                    new Coordinate(
-                        $this->getX(),
-                        $this->getY(),
-                        $this->getZ()),
                     $scheduler);
+                $this->isOnGroundHandler->cancel();
             }
-            $this->isOnGroundHandler->cancel();
         }), 20 * 0.5);
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
-        }), 20 * $this->interpreter->getFlareBox()->getSecondLimit());
+        }), 20 * 40);//TODO:
     }
 
     protected function onDeath(): void {

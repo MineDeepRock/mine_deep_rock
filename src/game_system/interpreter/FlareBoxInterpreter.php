@@ -29,17 +29,17 @@ class FlareBoxInterpreter
     private $flareBox;
 
     function __construct(
+        FlareBox $flareBox,
         Player $player,
         UsersService $usersService,
         GameScoresService $gameScoresService,
-        Coordinate $coordinate,
         TaskScheduler $scheduler) {
         $this->usersService = $usersService;
         $this->gameScoresService = $gameScoresService;
         $this->client = new FlareBoxClient();
         $this->scheduler = $scheduler;
 
-        $this->flareBox = new FlareBox(40, $coordinate);
+        $this->flareBox = $flareBox;
         $this->owner = $player;
         $user = $this->usersService->getUserData($player->getName());
         $gameId = $user->getParticipatedGameId();
