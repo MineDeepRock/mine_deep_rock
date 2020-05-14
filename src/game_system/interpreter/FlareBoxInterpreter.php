@@ -107,8 +107,8 @@ class FlareBoxInterpreter
             if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
 
             $user = $this->usersService->getUserData($this->owner->getName());
-            $assaultSoldier = new Scout();
-            if ($user->getMilitaryDepartment()->getName() !== $assaultSoldier->getName()) return;
+            $scout = new Scout();
+            if ($user->getMilitaryDepartment()->getName() !== $scout->getName()) return;
 
             $contain = $this->owner->getInventory()->contains(new SpawnFlareBoxItem());
             if ($contain) return;
