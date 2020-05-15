@@ -41,7 +41,7 @@ class FlameBottleInterpreter extends GrenadeBaseInterpreter
                 for ($i = 0; $i < 15; ++$i) {
                     $this->client->explodeParticle($level, new Vector3(
                         $pos->getX() + rand(-FlameBottle::RANGE, FlameBottle::RANGE),
-                        $pos->getY() + 0.5,
+                        $pos->getY() + rand(0,2),
                         $pos->getZ() + rand(-FlameBottle::RANGE, FlameBottle::RANGE)
                     ));
                 }
