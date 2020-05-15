@@ -151,14 +151,18 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         $player = Server::getInstance()->getPlayer($user->getName());
         $userTeamId = $user->getBelongTeamId();
 
-        $flags = array_filter($this->getGameData()->getMap()->getFlags(), function (DominationFlag $flag) use ($userTeamId) {
-            if (!$flag->isOccupied()) return false;
-            if ($this->getGameData()->getRedTeam()->getId()->equal($userTeamId)) {
-                return $flag->isRedTeams();
-            } else {
-                return $flag->isBlueTeams();
+        $flags = [];
+
+        foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
+            if ($flag->isOccupied()) {
+                if ($this->getGameData()->getRedTeam()->getId()->equal($userTeamId)) {
+                    if ($flag->isRedTeams())  $flags[] = $flag;
+                } else {
+                    if ($flag->isBlueTeams())  $flags[] = $flag;
+                }
             }
-        });
+        }
+
         if (count($flags) === 0) {
             parent::spawn($user);
             return;
