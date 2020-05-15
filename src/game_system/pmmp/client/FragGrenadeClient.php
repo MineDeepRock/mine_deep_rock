@@ -19,17 +19,14 @@ class FragGrenadeClient
         $players = $level->getPlayers();
 
         foreach ($players as $player) {
-            $distance = $pos->distance($player->getPosition());
-            if ($distance < 30) {
-                $packet = new PlaySoundPacket();
-                $packet->x = $player->x;
-                $packet->y = $player->y;
-                $packet->z = $player->z;
-                $packet->volume = 3 - $distance / 10;
-                $packet->pitch = 2;
-                $packet->soundName = "random.explode";
-                $player->sendDataPacket($packet);
-            }
+            $packet = new PlaySoundPacket();
+            $packet->x = $pos->x;
+            $packet->y = $pos->y;
+            $packet->z = $pos->z;
+            $packet->volume = 3;
+            $packet->pitch = 2;
+            $packet->soundName = "random.explode";
+            $player->sendDataPacket($packet);
         }
     }
 }
