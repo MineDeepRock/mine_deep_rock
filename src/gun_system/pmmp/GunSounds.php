@@ -4,6 +4,8 @@
 namespace gun_system\pmmp;
 
 
+use pocketmine\level\sound\AnvilBreakSound;
+use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\Player;
 
@@ -44,15 +46,18 @@ class GunSounds extends ShootSounds
         return new GunSounds("gun.bullet.hit.block");
     }
 
-    public static function bulletHitPlayer():GunSounds {
+    public static function bulletHitPlayer(): GunSounds {
         return new GunSounds("game.player.hurt");
     }
 
-    public static function play(Player $owner, GunSounds $soundName,int $volume = 10,int $pitch = 2): void {
+    public static function play(Player $owner, GunSounds $soundName, int $volume = 10, int $pitch = 2,$pos = null): void {
+
+        $pos = $pos ?? $owner->getPosition();
+
         $packet = new PlaySoundPacket();
-        $packet->x = $owner->x;
-        $packet->y = $owner->y;
-        $packet->z = $owner->z;
+        $packet->x = $pos->x;
+        $packet->y = $pos->y;
+        $packet->z = $pos->z;
         $packet->volume = $volume;
         $packet->pitch = $pitch;
         $packet->soundName = $soundName->getText();
@@ -64,17 +69,14 @@ class GunSounds extends ShootSounds
         self::play($owner, $soundName);
 
         foreach ($players as $player) {
-            $distance = $owner->getPosition()->distance($player->getPosition());
-            if ($distance < 30) {
-                $packet = new PlaySoundPacket();
-                $packet->x = $player->x;
-                $packet->y = $player->y;
-                $packet->z = $player->z;
-                $packet->volume = 3 - $distance/10;
-                $packet->pitch = 2;
-                $packet->soundName = $soundName->getText();
-                $player->sendDataPacket($packet);
-            }
+            $packet = new PlaySoundPacket();
+            $packet->x = $owner->x;
+            $packet->y = $owner->y;
+            $packet->z = $owner->z;
+            $packet->volume = 3;
+            $packet->pitch = 2;
+            $packet->soundName = $soundName->getText();
+            $player->sendDataPacket($packet);
         }
     }
 
