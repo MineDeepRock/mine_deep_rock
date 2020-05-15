@@ -33,19 +33,7 @@ class GameCommand extends Command
         }
         $player = $sender->getServer()->getPlayer($sender->getName());
         $method = $args[0];
-        if ($method === "start") {
-            if (!$player->isOp()) {
-                $sender->sendMessage("権限がありません");
-                return false;
-            }
-            $result = $this->startGame();
-            if (!$result) {
-                $player->sendMessage("試合が作られていません");
-                return false;
-            }
-
-            $player->sendMessage("試合を開始しました");
-        } else if ($method === "close") {
+        if ($method === "close") {
             if (!$player->isOp()) {
                 $sender->sendMessage("権限がありません");
                 return false;
@@ -62,10 +50,6 @@ class GameCommand extends Command
             $player->sendMessage("試合から抜けました");
         }
         return true;
-    }
-
-    public function startGame(): bool {
-        return $this->listener->startGame();
     }
 
     private function closeGame(): bool {
