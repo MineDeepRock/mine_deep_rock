@@ -6,7 +6,9 @@ namespace game_system\interpreter;
 
 use game_system\model\Coordinate;
 use game_system\model\map\DominationFlag;
+use game_system\model\SpawnBeacon;
 use game_system\model\User;
+use game_system\pmmp\Entity\SpawnBeaconEntity;
 use game_system\pmmp\form\SpawnPointSelectForm;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -156,42 +158,61 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
             if ($flag->isOccupied()) {
                 if ($this->getGameData()->getRedTeam()->getId()->equal($userTeamId)) {
-                    if ($flag->isRedTeams())  $flags[] = $flag;
+                    if ($flag->isRedTeams()) $flags[] = $flag;
                 } else {
-                    if ($flag->isBlueTeams())  $flags[] = $flag;
+                    if ($flag->isBlueTeams()) $flags[] = $flag;
                 }
             }
         }
 
-        if (count($flags) === 0) {
+        $spawnBeacons = [];
+        foreach ($player->getLevel()->getEntities() as $entity) {
+            if($entity instanceof SpawnBeaconEntity) {
+                $spawnBeacon = $entity->getSpawnBeaconData();
+                if ($spawnBeacon->getOwnerTeamId()->equal($user->getBelongTeamId())) {
+                    $spawnBeacons[] = $spawnBeacon;
+                }
+            };
+        }
+
+        if (count($flags) === 0 && count($spawnBeacons) === 0) {
             parent::spawn($user);
             return;
         }
 
-        $player->sendForm(new SpawnPointSelectForm(function (?DominationFlag $flag) use ($user, $userTeamId) {
-            if ($flag === null) {
+        $player->sendForm(new SpawnPointSelectForm(function ($flagOrBeacon) use ($user, $userTeamId) {
+            if ($flagOrBeacon === null) {
                 parent::spawn($user);
                 return;
             }
 
-            if (!$flag->isOccupied()) {
-                parent::spawn($user);
+            if ($flagOrBeacon instanceof DominationFlag) {
+                if (!$flagOrBeacon->isOccupied()) {
+                    parent::spawn($user);
+                    return;
+                }
+
+                if ($this->getGameData()->getRedTeam()->getId()->equal($userTeamId)) {
+                    if ($flagOrBeacon->isRedTeams()) {
+                        parent::spawn($user, $flagOrBeacon->getCenter());
+                        return;
+                    }
+                } else {
+                    if ($flagOrBeacon->isBlueTeams()) {
+                        parent::spawn($user, $flagOrBeacon->getCenter());
+                        return;
+                    }
+                }
+            }
+
+            if ($flagOrBeacon instanceof SpawnBeacon) {
+                if (!$flagOrBeacon->isAvailable()) {
+                    parent::spawn($user);
+                    return;
+                }
+                parent::spawn($user, $flagOrBeacon->getPosition());
                 return;
             }
-
-            if ($this->getGameData()->getRedTeam()->getId()->equal($userTeamId)) {
-                if ($flag->isRedTeams()) {
-                    parent::spawn($user,$flag->getCenter());
-                    return;
-                }
-            } else {
-                if ($flag->isBlueTeams()) {
-                    parent::spawn($user,$flag->getCenter());
-                    return;
-                }
-            }
-
-            parent::spawn($user);
-        }, $flags));
+        }, $flags, $spawnBeacons));
     }
 }

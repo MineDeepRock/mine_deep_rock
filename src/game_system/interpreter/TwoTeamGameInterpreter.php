@@ -13,6 +13,7 @@ use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
+use game_system\pmmp\items\SpawnBeaconItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\service\GameScoresService;
@@ -309,6 +310,9 @@ class TwoTeamGameInterpreter
                     break;
                 case GadgetType::FlameBottle()->getTypeText():
                     $spawnGadgetItems[] = new FlameBottleItem();
+                    break;
+                case GadgetType::SpawnBeacon()->getTypeText():
+                    $spawnGadgetItems[] = new SpawnBeaconItem();
                     break;
             }
         }

@@ -13,6 +13,7 @@ use game_system\model\GameType;
 use game_system\model\map\ApocalypticCity;
 use game_system\model\map\ApocalypticCityForDomination;
 use game_system\model\map\WaterfrontHome;
+use game_system\model\SpawnBeacon;
 use game_system\model\TeamDeathMatch;
 use game_system\model\TeamDomination;
 use game_system\pmmp\client\TeamDeathMatchClient;
@@ -24,11 +25,13 @@ use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\FragGrenadeEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\Entity\SmokeGrenadeEntity;
+use game_system\pmmp\Entity\SpawnBeaconEntity;
 use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
+use game_system\pmmp\items\SpawnBeaconItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
@@ -254,5 +257,21 @@ class TwoTeamGameListener
         );
         $fragGrenade->setMotion($fragGrenade->getMotion()->multiply(1));
         $fragGrenade->spawnToAll();
+    }
+
+    public function spawnSpawnBeacon(Player $player) {
+        $player->getInventory()->remove(new SpawnBeaconItem());
+
+        $fragGrenade = new SpawnBeaconEntity(
+            $player->getLevel(),
+            $player,
+            $this->usersService,
+            $this->gameScoresService,
+            $this->scheduler
+        );
+        $fragGrenade->spawnToAll();
+    }
+
+    public function onSpawnBeaconHitBullet(SpawnBeaconEntity $spawnBeaconEntity){
     }
 }

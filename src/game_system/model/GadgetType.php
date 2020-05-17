@@ -34,6 +34,9 @@ class GadgetType
     public static function FlameBottle():GadgetType {
         return new GadgetType("FlameBottle");
     }
+    public static function SpawnBeacon():GadgetType {
+        return new GadgetType("SpawnBeacon");
+    }
     /**
      * @return mixed
      */

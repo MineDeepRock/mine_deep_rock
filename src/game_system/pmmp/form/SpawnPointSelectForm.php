@@ -12,10 +12,12 @@ class SpawnPointSelectForm implements Form
 {
     private $onSelected;
     private $flags;
+    private $spawnBeacons;
 
-    public function __construct(Closure $onSelected, array $flags) {
+    public function __construct(Closure $onSelected, array $flags, array $spawnBeacons) {
         $this->onSelected = $onSelected;
         $this->flags = $flags;
+        $this->spawnBeacons = $spawnBeacons;
     }
 
     public function handleResponse(Player $player, $data): void {
@@ -24,7 +26,9 @@ class SpawnPointSelectForm implements Form
             return;
         }
 
-        ($this->onSelected)($this->flags[$data]);
+        $buttons = $this->flags+$this->spawnBeacons;
+
+        ($this->onSelected)($buttons[$data]);
     }
 
     public function jsonSerialize() {
@@ -32,6 +36,10 @@ class SpawnPointSelectForm implements Form
         foreach ($this->flags as $flag) {
             $buttons[] = ["text" => $flag->getName()];
         }
+        foreach ($this->spawnBeacons as $spawnBeacon) {
+            $buttons[] = ["text" => $spawnBeacon->getOwnerName()];
+        }
+
         return [
             'type' => 'form',
             'title' => 'スポーン地点の選択',
