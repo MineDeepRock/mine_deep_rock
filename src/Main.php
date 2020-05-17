@@ -20,6 +20,7 @@ use game_system\pmmp\Entity\TargetNPC;
 use game_system\pmmp\Entity\TrialGunDealerNPC;
 use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
+use game_system\pmmp\items\SandbagItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnBeaconItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
@@ -271,11 +272,6 @@ class Main extends PluginBase implements Listener
             return;
         }
 
-        if ($attacker instanceof Player && $victim instanceof SpawnBeaconEntity) {
-            $this->gameListener->onSpawnBeaconHitBullet($victim);
-            return;
-        }
-
         if ($bullet instanceof \game_system\pmmp\Entity\Egg && $victim instanceof TargetNPC) {
             $damage = $this->gunSystemClient->receivedDamage($attacker, $victim);
             if ($attacker instanceof Player) {
@@ -319,92 +315,47 @@ class Main extends PluginBase implements Listener
     }
 
     //GameSystemListener
-    public function onTapByWeaponSelectItem(PlayerInteractEvent $event) {
+    public function onTapByItem(PlayerInteractEvent $event) {
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === WeaponSelectItem::ITEM_ID) {
-                $this->weaponsListener->displayWeaponSelectForm($player);
-            }
-        }
-    }
-
-    public function onTapBySubWeaponSelectItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === SubWeaponSelectItem::ITEM_ID) {
-                $this->weaponsListener->displaySubWeaponSelectForm($player);
-            }
-        }
-    }
-
-    public function onTapBySpawnItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === SpawnItem::ITEM_ID) {
-                $this->gameListener->spawnOnTeamDeath($player->getName());
-            }
-        }
-    }
-
-    public function onTapBySpawnAmmoBoxItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
-                $this->gameListener->spawnAmmoBox($player);
-            }
-        }
-    }
-
-    public function onTapBySpawnMedicineBoxItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === SpawnAmmoBoxItem::ITEM_ID) {
-                $this->gameListener->spawnMedicineBox($player);
-            }
-        }
-    }
-
-    public function onTapByMilitaryDepartmentSelectItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === MilitaryDepartmentSelectItem::ITEM_ID) {
-                $this->usersListener->displayMilitaryDepartmentSelectForm($player);
-            }
-        }
-    }
-
-    public function onTapByFragGrenadeItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === FragGrenadeItem::ITEM_ID) {
-                $this->gameListener->spawnFragGrenadeEntity($player);
-            }
-        }
-    }
-
-    public function onTapBySmokeGrenadeItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === SmokeGrenadeItem::ITEM_ID) {
-                $this->gameListener->spawnSmokeGrenadeEntity($player);
-            }
-        }
-    }
-
-    public function onTapByFlameBottleItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === FlameBottleItem::ITEM_ID) {
-                $this->gameListener->spawnFlameBottleEntity($player);
-            }
-        }
-    }
-
-    public function onTapBySpawnBeaconItem(PlayerInteractEvent $event) {
-        if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-            $player = $event->getPlayer();
-            if ($player->getInventory()->getItemInHand()->getId() === SpawnBeaconItem::ITEM_ID) {
-                $this->gameListener->spawnSpawnBeacon($player);
+            $item = $player->getInventory()->getItemInHand();
+            switch ($item->getId()) {
+                case WeaponSelectItem::ITEM_ID:
+                    $this->weaponsListener->displayWeaponSelectForm($player);
+                    break;
+                case SubWeaponSelectItem::ITEM_ID:
+                    $this->weaponsListener->displaySubWeaponSelectForm($player);
+                    break;
+                case SpawnItem::ITEM_ID:
+                    $this->gameListener->spawnOnTeamDeath($player->getName());
+                    break;
+                case SpawnAmmoBoxItem::ITEM_ID:
+                    $this->gameListener->spawnAmmoBox($player);
+                    break;
+                case SpawnMedicineBoxItem::ITEM_ID:
+                    $this->gameListener->spawnMedicineBox($player);
+                    break;
+                case MilitaryDepartmentSelectItem::ITEM_ID:
+                    $this->usersListener->displayMilitaryDepartmentSelectForm($player);
+                    break;
+                case SpawnFlareBoxItem::ITEM_ID:
+                    $this->gameListener->spawnFlareBox($player);
+                    break;
+                case FragGrenadeItem::ITEM_ID:
+                    $this->gameListener->spawnFragGrenadeEntity($player);
+                    break;
+                case SmokeGrenadeItem::ITEM_ID:
+                    $this->gameListener->spawnSmokeGrenadeEntity($player);
+                    break;
+                case FlameBottleItem::ITEM_ID:
+                    $this->gameListener->spawnFlameBottleEntity($player);
+                    break;
+                case SpawnBeaconItem::ITEM_ID:
+                    $this->gameListener->spawnSpawnBeacon($player);
+                    break;
+                case SandbagItem::ITEM_ID:
+                    $this->gameListener->spawnSandbag($player);
+                    break;
             }
         }
     }
@@ -449,17 +400,20 @@ class Main extends PluginBase implements Listener
                     case SpawnBeaconItem::ITEM_ID:
                         $this->gameListener->spawnSpawnBeacon($player);
                         break;
+                    case SandbagItem::ITEM_ID:
+                        $this->gameListener->spawnSandbag($player);
+                        break;
                 }
             }
         }
     }
 
-    //public function onDamage(EntityDamageEvent $event) {
-    //    $entity = $event->getEntity();
-    //    if ($entity instanceof Human) {
-    //        $event->setCancelled();
-    //    }
-    //}
+    public function onDamage(EntityDamageEvent $event) {
+        $entity = $event->getEntity();
+        if ($entity instanceof Human) {
+            $event->setCancelled();
+        }
+    }
 
     public function tapDealer(EntityDamageEvent $event) {
         $entity = $event->getEntity();

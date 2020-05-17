@@ -37,6 +37,9 @@ class GadgetType
     public static function SpawnBeacon():GadgetType {
         return new GadgetType("SpawnBeacon");
     }
+    public static function Sandbag():GadgetType {
+        return new GadgetType("Sandbag");
+    }
     /**
      * @return mixed
      */

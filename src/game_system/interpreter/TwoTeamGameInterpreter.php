@@ -11,6 +11,7 @@ use game_system\model\TwoTeamGame;
 use game_system\model\User;
 use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
+use game_system\pmmp\items\SandbagItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnBeaconItem;
@@ -313,6 +314,9 @@ class TwoTeamGameInterpreter
                     break;
                 case GadgetType::SpawnBeacon()->getTypeText():
                     $spawnGadgetItems[] = new SpawnBeaconItem();
+                    break;
+                case GadgetType::Sandbag()->getTypeText():
+                    $spawnGadgetItems[] = new SandbagItem();
                     break;
             }
         }

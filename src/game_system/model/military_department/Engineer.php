@@ -21,6 +21,7 @@ class Engineer extends MilitaryDepartment
             [
                 GadgetType::AmmoBox(),
                 GadgetType::FlameBottle(),
+                GadgetType::Sandbag(),
             ],
             [],
             Chauchat::NAME

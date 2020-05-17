@@ -24,11 +24,13 @@ use game_system\pmmp\Entity\FlameBottleEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\FragGrenadeEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
+use game_system\pmmp\Entity\SandbagEntity;
 use game_system\pmmp\Entity\SmokeGrenadeEntity;
 use game_system\pmmp\Entity\SpawnBeaconEntity;
 use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
+use game_system\pmmp\items\SandbagItem;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnBeaconItem;
@@ -103,7 +105,7 @@ class TwoTeamGameListener
 
     protected function onFinished(?GameType $gameType) {
         if ($gameType === null) {
-            $this->initGame([GameType::TeamDeathMatch(),GameType::TeamDomination()][rand(0,1)]);
+            $this->initGame([GameType::TeamDeathMatch(), GameType::TeamDomination()][rand(0, 1)]);
         } else {
             $this->initGame($gameType);
         }
@@ -217,7 +219,7 @@ class TwoTeamGameListener
         $this->interpreter->scare($targetUser, $attackerUser, $item);
     }
 
-    public function spawnFragGrenadeEntity(Player $player){
+    public function spawnFragGrenadeEntity(Player $player) {
         $player->getInventory()->remove(new FragGrenadeItem());
 
         $fragGrenade = new FragGrenadeEntity(
@@ -231,7 +233,7 @@ class TwoTeamGameListener
         $fragGrenade->spawnToAll();
     }
 
-    public function spawnSmokeGrenadeEntity(Player $player){
+    public function spawnSmokeGrenadeEntity(Player $player) {
         $player->getInventory()->remove(new SmokeGrenadeItem());
 
         $fragGrenade = new SmokeGrenadeEntity(
@@ -245,7 +247,7 @@ class TwoTeamGameListener
         $fragGrenade->spawnToAll();
     }
 
-    public function spawnFlameBottleEntity(Player $player){
+    public function spawnFlameBottleEntity(Player $player) {
         $player->getInventory()->remove(new FlameBottleItem());
 
         $fragGrenade = new FlameBottleEntity(
@@ -272,6 +274,10 @@ class TwoTeamGameListener
         $fragGrenade->spawnToAll();
     }
 
-    public function onSpawnBeaconHitBullet(SpawnBeaconEntity $spawnBeaconEntity){
+    public function spawnSandbag(Player $player) {
+        $player->getInventory()->remove(new SandbagItem());
+
+        $sandbag = new SandbagEntity($player->getLevel(), $player, $this->scheduler);
+        $sandbag->spawnToAll();
     }
 }
