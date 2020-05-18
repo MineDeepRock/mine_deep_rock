@@ -156,7 +156,7 @@ class TwoTeamGameListener
             $this->gameScoresService,
             $this->scheduler);
         $ammoBox->spawnToAll();
-        $this->setBoxNameTag($ammoBox, $player->getName());
+        $this->setGadgetNameTag($ammoBox, $player->getName());
     }
 
     public function spawnMedicineBox(Player $player) {
@@ -168,7 +168,7 @@ class TwoTeamGameListener
             $this->gameScoresService,
             $this->scheduler);
         $medicineBox->spawnToAll();
-        $this->setBoxNameTag($medicineBox, $player->getName());
+        $this->setGadgetNameTag($medicineBox, $player->getName());
     }
 
     public function spawnFlareBox(Player $player) {
@@ -182,7 +182,7 @@ class TwoTeamGameListener
             $this->scheduler);
 
         $flareBox->spawnToAll();
-        $this->setBoxNameTag($flareBox, $player->getName());
+        $this->setGadgetNameTag($flareBox, $player->getName());
     }
 
     public function onGadgetHitBullet(Player $attacker, GadgetEntity $gadget): void {
@@ -204,7 +204,7 @@ class TwoTeamGameListener
         }
     }
 
-    private function setBoxNameTag(BoxEntity $entity, string $ownerName) {
+    private function setGadgetNameTag(GadgetEntity $entity, string $ownerName) {
         $user = $this->usersService->getUserData($ownerName);
         if ($user->getBelongTeamId() === null) return;
         if ($this->interpreter->getGameData() === null) return;
@@ -282,6 +282,7 @@ class TwoTeamGameListener
             $this->scheduler
         );
         $fragGrenade->spawnToAll();
+        $this->setGadgetNameTag($fragGrenade, $player->getName());
     }
 
     public function spawnSandbag(Player $player) {
