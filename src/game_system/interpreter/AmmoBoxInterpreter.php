@@ -7,6 +7,7 @@ namespace game_system\interpreter;
 use game_system\model\AmmoBox;
 use game_system\model\Coordinate;
 use game_system\model\military_department\AssaultSoldier;
+use game_system\model\military_department\Engineer;
 use game_system\model\military_department\Scout;
 use game_system\pmmp\client\AmmoBoxClient;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
@@ -62,21 +63,12 @@ class AmmoBoxInterpreter
                         $this->ammoBox->getCoordinate()->getY(),
                         $this->ammoBox->getCoordinate()->getZ()));
                 foreach ($this->getAroundTeamPlayers() as $player) {
-                    $user = $this->usersService->getUserData($player->getName());
-                    $gun = GunList::fromString($user->getSelectedWeaponName());
-                    $subGun = GunList::fromString($user->getSelectedSubWeaponName());
-                    $this->gameScoresService->addPoint($this->owner->getName(), $gameId, 2);
-                    //TODO:武器ごとにかえる
                     $this->client->useAmmoBox(
                         $this->owner,
                         $player,
-                        $gun->getType(),
-                        10);
-                    $this->client->useAmmoBox(
-                        $this->owner,
-                        $player,
-                        $subGun->getType(),
-                        5);
+                        function () use ($gameId) {
+                            $this->gameScoresService->addPoint($this->owner->getName(), $gameId, 2);
+                        });
                 }
             }
         }), 20 * 2, 20 * 5);
@@ -117,8 +109,8 @@ class AmmoBoxInterpreter
             if ($this->owner->getGamemode() !== Player::ADVENTURE) return;
 
             $user = $this->usersService->getUserData($this->owner->getName());
-            $scout = new Scout();
-            if ($user->getMilitaryDepartment()->getName() !== $scout->getName()) return;
+            $engineer = new Engineer();
+            if ($user->getMilitaryDepartment()->getName() !== $engineer->getName()) return;
 
             $contain = $this->owner->getInventory()->contains(new SpawnAmmoBoxItem());
             if ($contain) return;
