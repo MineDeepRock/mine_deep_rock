@@ -4,6 +4,7 @@
 namespace game_system\model;
 
 
+use pocketmine\math\Vector3;
 use ValueObject;
 
 class Coordinate extends ValueObject
@@ -37,5 +38,13 @@ class Coordinate extends ValueObject
      */
     public function getZ(): int {
         return $this->z;
+    }
+
+    public function toVector3(): Vector3 {
+        return new Vector3(
+          $this->x,
+          $this->y,
+          $this->z
+        );
     }
 }

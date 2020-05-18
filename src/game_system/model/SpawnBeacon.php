@@ -10,13 +10,15 @@ class SpawnBeacon
     private $ownerName;
     private $ownerTeamId;
     private $position;
+    private $describe;
     private $isAvailable = true;
 
-    public function __construct(string $ownerName, TeamID $ownerTeamId, Coordinate $position) {
+    public function __construct(string $ownerName, TeamID $ownerTeamId, Coordinate $position, string $describe = "") {
         $this->id = SpawnBeaconId::asNew();
         $this->ownerName = $ownerName;
         $this->ownerTeamId = $ownerTeamId;
         $this->position = $position;
+        $this->describe = $describe;
     }
 
     /**
@@ -59,5 +61,19 @@ class SpawnBeacon
      */
     public function setIsAvailable(bool $isAvailable): void {
         $this->isAvailable = $isAvailable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescribe(): string {
+        return $this->describe;
+    }
+
+    /**
+     * @param string $describe
+     */
+    public function setDescribe(string $describe): void {
+        $this->describe = $describe;
     }
 }

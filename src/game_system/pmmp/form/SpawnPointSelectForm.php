@@ -5,6 +5,7 @@ namespace game_system\pmmp\form;
 
 
 use Closure;
+use game_system\model\SpawnBeacon;
 use pocketmine\form\Form;
 use pocketmine\Player;
 
@@ -26,18 +27,20 @@ class SpawnPointSelectForm implements Form
             return;
         }
 
-        $buttons = $this->flags+$this->spawnBeacons;
+        $buttons = $this->flags + $this->spawnBeacons;
 
         ($this->onSelected)($buttons[$data]);
     }
 
     public function jsonSerialize() {
         $buttons = [];
+
         foreach ($this->flags as $flag) {
             $buttons[] = ["text" => $flag->getName()];
         }
+
         foreach ($this->spawnBeacons as $spawnBeacon) {
-            $buttons[] = ["text" => $spawnBeacon->getOwnerName()];
+            $buttons[] = ["text" => $spawnBeacon->getDescribe()];
         }
 
         return [

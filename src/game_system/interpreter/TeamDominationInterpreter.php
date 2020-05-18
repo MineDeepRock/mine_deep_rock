@@ -167,9 +167,24 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
 
         $spawnBeacons = [];
         foreach ($player->getLevel()->getEntities() as $entity) {
-            if($entity instanceof SpawnBeaconEntity) {
+            if ($entity instanceof SpawnBeaconEntity) {
                 $spawnBeacon = $entity->getSpawnBeaconData();
                 if ($spawnBeacon->getOwnerTeamId()->equal($user->getBelongTeamId())) {
+                    $nearFlagName = "";
+                    $pos = $spawnBeacon->getPosition()->toVector3();
+                    $distance = null;
+
+                    foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
+                        if ($distance === null) {
+                            $nearFlagName = $flag->getName();
+                            $distance = $flag->getCenter()->toVector3()->distance($pos);
+                        } else if ($distance > $flag->getCenter()->toVector3()->distance($pos)) {
+                            $nearFlagName = $flag->getName();
+                            $distance = $flag->getCenter()->toVector3()->distance($pos);
+                        }
+                    }
+
+                    $spawnBeacon->setDescribe($spawnBeacon->getOwnerName() . ":" . $nearFlagName . " " . intval($distance) . "m");
                     $spawnBeacons[] = $spawnBeacon;
                 }
             };
