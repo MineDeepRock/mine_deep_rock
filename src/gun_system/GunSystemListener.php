@@ -43,6 +43,12 @@ class GunSystemListener extends Client
         }
     }
 
+    public function tryCancelReloading(Item $item): void {
+        if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
+            $item->cancelReloading();
+        }
+    }
+
     public function receivedDamage(?Player $attacker, Entity $entity): float {
         if ($attacker !== null) {
 

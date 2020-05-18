@@ -98,6 +98,10 @@ abstract class GunInterpreter
         $this->shootingController->cancelShooting();
     }
 
+    public function cancelReloading(): void {
+        $this->reloadingController->cancelReloading();
+    }
+
     public function tryShootOnce() {
         if ($this->reloadingController->isCancelable())
             $this->reloadingController->cancelReloading();
@@ -196,8 +200,8 @@ abstract class GunInterpreter
 
         $this->cancelShooting();
 
+        $this->owner->sendPopup("リロード");
         $reduceBulletFunc = function ($value): int {
-            $this->owner->sendPopup("リロード");
             $this->gun->setRemainingAmmo($this->gun->getRemainingAmmo()-$value);
             return $this->gun->getRemainingAmmo();
         };
@@ -208,28 +212,6 @@ abstract class GunInterpreter
 
         $this->reloadingController->carryOut($this->scheduler, $this->gun->getRemainingAmmo(), $reduceBulletFunc, $onFinishedReloading);
     }
-
-    //protected function getBullets(): array {
-    //    $inventoryContents = $this->owner->getInventory()->getContents();
-//
-    //    $bullets = array_filter($inventoryContents, function ($item) {
-    //        if (is_subclass_of($item, "gun_system\pmmp\items\bullet\ItemBullet")) {
-    //            return $item->getBullet()->getSupportGunType()->equal($this->gun->getType());
-    //        }
-    //        return false;
-    //    });
-    //    return $bullets;
-    //}
-
-    //protected function getBulletAmount(): int {
-    //    $bullets = $this->getBullets();
-//
-    //    $bulletsAmount = array_sum(array_map(function ($bullet) {
-    //        return $bullet->getCount();
-    //    }, $bullets));
-//
-    //    return $bulletsAmount;
-    //}
 
     /**
      * @return Gun

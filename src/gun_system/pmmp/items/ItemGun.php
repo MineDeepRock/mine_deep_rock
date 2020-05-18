@@ -7,6 +7,10 @@ namespace gun_system\pmmp\items;
 use Closure;
 use gun_system\interpreter\GunInterpreter;
 use gun_system\models\Gun;
+use pocketmine\item\Arrow;
+use pocketmine\item\Bow;
+use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\item\Tool;
 use pocketmine\Player;
@@ -19,6 +23,7 @@ ItemGun extends Tool
     public function __construct(string $name, GunInterpreter $gunInterpreter) {
         $this->gunInterpreter = $gunInterpreter;
         parent::__construct(ItemIds::BOW, 0, $name);
+        $this->setUnbreakable(true);
     }
 
     public function getMaxDurability(): int {
@@ -27,7 +32,8 @@ ItemGun extends Tool
 
     public function onReleaseUsing(Player $player): bool {
         $this->gunInterpreter->cancelShooting();
-        return true;
+        $player->getInventory()->sendContents($player);
+        return false;
     }
 
     public function shoot(): void {
@@ -40,6 +46,10 @@ ItemGun extends Tool
 
     public function reload(): void {
         $this->gunInterpreter->tryReload();
+    }
+
+    public function cancelReloading(): void {
+        $this->gunInterpreter->cancelReloading();
     }
 
     public function scare(Closure $onFinished): void {

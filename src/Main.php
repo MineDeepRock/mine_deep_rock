@@ -229,14 +229,20 @@ class Main extends PluginBase implements Listener
 
 
         if (count($dropItemActions) !== 0 && count($slotChangeActions) !== 0) {
-            $slotChangeAction = $slotChangeActions[0];
-            $inventory = $slotChangeAction->getInventory();
-            if ($inventory instanceof PlayerInventory) {
-                $item = $inventory->getItemInHand();
-                if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
-                    $this->gunSystemClient->tryReloading($item);
-                    $event->setCancelled();
-                }
+            $event->setCancelled();
+        }
+    }
+
+    //アイテム持ち替えでリロードキャンセル
+    public function cancelReloading(\pocketmine\event\player\PlayerItemHeldEvent $event) {
+        $player = $event->getPlayer();
+        $currentItem = $player->getInventory()->getItemInHand();
+        $nextItem = $event->getItem();
+        if ($currentItem instanceof \gun_system\pmmp\items\ItemGun) {
+            if ($currentItem->getId() === $nextItem->getId()) {
+                $this->gunSystemClient->tryReloading($currentItem);
+            } else {
+                $this->gunSystemClient->tryCancelReloading($currentItem);
             }
         }
     }
