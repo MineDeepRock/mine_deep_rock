@@ -134,14 +134,6 @@ class TwoTeamGameClient
             $player->getInventory()->addItem($gadgetSpawnItem);
         }
 
-        Server::getInstance()->dispatchCommand(
-            new ConsoleCommandSender(),
-            "gun ammo \"" . $player->getName() . "\" " . $selectedWeaponType);
-
-        Server::getInstance()->dispatchCommand(
-            new ConsoleCommandSender(),
-            "gun ammo \"" . $player->getName() . "\" " . $selectedSubWeaponType);
-
         $player->getInventory()->addItem(ItemFactory::get(Item::COOKED_BEEF, 0, 64));
 
         $worldController = new WorldController();

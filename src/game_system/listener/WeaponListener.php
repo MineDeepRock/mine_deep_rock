@@ -72,14 +72,9 @@ class WeaponListener
     public function displayTrialWeaponSelectForm(Player $player) {
         $playerName = $player->getName();
         $player->sendForm(new TrialWeaponSelectForm(function ($weaponName, $scopeName) use ($playerName): void {
-            $gunType = GunList::fromString($weaponName)->getType()->getTypeText();
             Server::getInstance()->dispatchCommand(
                 new ConsoleCommandSender(),
                 "gun give \"" . $playerName . "\" " . $weaponName . " " . $scopeName);
-
-            Server::getInstance()->dispatchCommand(
-                new ConsoleCommandSender(),
-                "gun ammo \"" . $playerName . "\" " . $gunType);
         }));
     }
 
