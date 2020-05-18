@@ -120,43 +120,6 @@ class GunCommand extends Command
             }
             $this->setScope($ItemGun, $scope);
             $player->getInventory()->addItem($ItemGun);
-        } else if ($method === "ammo") {
-
-            if (count($args) < 3) {
-                $sender->sendMessage("/gun ammo [playerName] [gunType] [count]");
-                return true;
-            }
-
-            $player = $sender->getServer()->getPlayer($args[1]);
-            $gunType = $args[2];
-            if (count($args) < 4) {
-                $count = null;
-            } else {
-                $count = $args[3];
-            }
-            switch ($gunType) {
-                case GunType::HandGun()->getTypeText():
-                    $this->giveAmmo($player, GunType::HandGun(), $count ?? 32);
-                    break;
-                case GunType::Revolver()->getTypeText():
-                    $this->giveAmmo($player, GunType::Revolver(), $count ?? 32);
-                    break;
-                case GunType::AssaultRifle()->getTypeText():
-                    $this->giveAmmo($player, GunType::AssaultRifle(), $count ?? 64);
-                    break;
-                case GunType::Shotgun()->getTypeText():
-                    $this->giveAmmo($player, GunType::Shotgun(), $count ?? 40);
-                    break;
-                case GunType::SMG()->getTypeText():
-                    $this->giveAmmo($player, GunType::SMG(), $count ?? 64);
-                    break;
-                case GunType::LMG()->getTypeText():
-                    $this->giveAmmo($player, GunType::LMG(), $count ?? 128);
-                    break;
-                case GunType::SniperRifle()->getTypeText():
-                    $this->giveAmmo($player, GunType::SniperRifle(), $count ?? 32);
-                    break;
-            }
         }
         return true;
     }
@@ -396,31 +359,24 @@ class GunCommand extends Command
         return null;
     }
 
-    //TODO:リファクタリング
-    private function giveAmmo(Player $player, GunType $gunType, int $count) {
-        switch ($gunType->getTypeText()) {
-            case GunType::HandGun()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::HAND_GUN, 0, $count));
-                break;
-            case GunType::AssaultRifle()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::ASSAULT_RIFLE, 0, $count));
-                break;
-            case GunType::SniperRifle()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::SNIPER_RIFLE, 0, $count));
-                break;
-            case GunType::Shotgun()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::SHOTGUN, 0, $count));
-                break;
-            case GunType::SMG()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::SMG, 0, $count));
-                break;
-            case GunType::LMG()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::LMG, 0, $count));
-                break;
-            case GunType::Revolver()->getTypeText():
-                $player->getInventory()->addItem(ItemFactory::get(BulletId::REVOLVER, 0, $count));
-                break;
+    static function giveAmmo(Player $player, int $slot): bool {
+        $gunItem = $player->getInventory()->getHotbarSlotItem($slot);
+        if ($gunItem instanceof ItemGun) {
+            $gun = $gunItem->getGunData();
+            $empty = $gun->getReloadingType()->initialAmmo - $gun->getRemainingAmmo();
+            if ($empty === 0) return false;
+            if ($empty > 10) {
+                $gunItem->getGunData()->setRemainingAmmo($gun->getRemainingAmmo() + 10);
+                var_dump("true");
+                return true;
+            } else {
+                $gunItem->getGunData()->setRemainingAmmo($gun->getRemainingAmmo() + $empty);
+                var_dump("true");
+                return true;
+            }
         }
+
+        return false;
     }
 
     private function setItemDescription(ItemGun $item): ItemGun {

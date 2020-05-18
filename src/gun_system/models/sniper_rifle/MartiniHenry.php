@@ -20,7 +20,7 @@ class MartiniHenry extends SniperRifle
             new BulletDamage(112),
             new GunRate(0.4),
             new BulletSpeed(440),
-            3, new OneByOneReloadingType(1, 2.3),
+            3, new OneByOneReloadingType(29,1, 2.3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(99.5, 80));
     }

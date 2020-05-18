@@ -21,7 +21,7 @@ class FrommerStopAuto extends SubMachineGun
             new BulletDamage(23),
             new GunRate(15),
             new BulletSpeed(350),
-            new MagazineReloadingType(15, 1.25),
+            new MagazineReloadingType(112,15, 1.25),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 95),
             new OverheatRate(0));

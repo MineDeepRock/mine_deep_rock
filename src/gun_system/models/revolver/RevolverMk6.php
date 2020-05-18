@@ -21,7 +21,7 @@ class RevolverMk6 extends Revolver
             new GunRate(3.3),
             new BulletSpeed(230),
             0,
-            new MagazineReloadingType(6, 2.85),
+            new MagazineReloadingType(36,6, 2.85),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(97, 90));
     }

@@ -20,7 +20,7 @@ class P08 extends HandGun
             new BulletDamage(30),
             new GunRate(5),
             new BulletSpeed(350),
-            0, new MagazineReloadingType(8, 1.3),
+            0, new MagazineReloadingType(36,8, 1.3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 95));
     }

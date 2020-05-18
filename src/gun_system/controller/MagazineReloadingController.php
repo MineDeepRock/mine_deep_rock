@@ -23,21 +23,15 @@ class MagazineReloadingController extends ReloadingController
         $this->onReloading = true;
         $empty = $this->magazineCapacity - $this->currentBullet;
 
-        if ($empty > $inventoryBullets) {
-            $this->currentBullet += $inventoryBullets;
-            $reduceBulletFunc($inventoryBullets);
-        } else {
-            $this->currentBullet = $this->magazineCapacity;
-            $reduceBulletFunc($empty);
-        }
-
         GunSounds::play($this->owner, GunSounds::MagazineOut());
         $scheduler->scheduleDelayedTask(new ClosureTask(
-            function (int $currentTick) use ($empty, $inventoryBullets, $onFinished): void {
+            function (int $currentTick) use ($empty, $inventoryBullets, $onFinished, $reduceBulletFunc): void {
                 if ($empty > $inventoryBullets) {
                     $this->currentBullet += $inventoryBullets;
+                    $reduceBulletFunc($inventoryBullets);
                 } else {
-                    $this->currentBullet = $this->magazineCapacity;
+                    $this->currentBullet += $empty;
+                    $reduceBulletFunc($empty);
                 }
                 $this->onReloading = false;
                 $onFinished();

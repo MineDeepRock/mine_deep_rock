@@ -20,7 +20,7 @@ class VetterliVitali extends SniperRifle
             new BulletDamage(100),
             new GunRate(0.76),
             new BulletSpeed(440),
-            2.5, new ClipReloadingType(4, 4, 1.6, 0.76),
+            2.5, new ClipReloadingType(24,4, 4, 1.6, 0.76),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(99.5, 80));
     }

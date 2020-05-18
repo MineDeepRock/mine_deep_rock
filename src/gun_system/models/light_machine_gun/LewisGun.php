@@ -21,7 +21,7 @@ class LewisGun extends LightMachineGun
             new BulletDamage(26),
             new GunRate(8),
             new BulletSpeed(740),
-            new MagazineReloadingType(47, 2.85),
+            new MagazineReloadingType(94,47, 2.85),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98.5, 77),
             new OverheatRate(0));

@@ -20,7 +20,7 @@ class FedorovAvtomat extends AssaultRifle
             new BulletDamage(28),
             new GunRate(7.5),
             new BulletSpeed(570),
-            0, new MagazineReloadingType(26, 2.7),
+            0, new MagazineReloadingType(104,26, 2.7),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(95, 90));
     }

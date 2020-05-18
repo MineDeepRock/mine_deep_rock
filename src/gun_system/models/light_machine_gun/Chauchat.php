@@ -21,7 +21,7 @@ class Chauchat extends LightMachineGun
             new BulletDamage(38),
             new GunRate(6),
             new BulletSpeed(720),
-            new MagazineReloadingType(20, 3),
+            new MagazineReloadingType(80,20, 3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(97, 75),
             new OverheatRate(0));

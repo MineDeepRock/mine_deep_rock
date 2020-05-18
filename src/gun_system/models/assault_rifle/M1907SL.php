@@ -21,7 +21,7 @@ class M1907SL extends AssaultRifle
             new GunRate(5),
             new BulletSpeed(570),
             0,
-            new MagazineReloadingType(20, 2.3),
+            new MagazineReloadingType(63,20, 2.3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(95, 90));
     }

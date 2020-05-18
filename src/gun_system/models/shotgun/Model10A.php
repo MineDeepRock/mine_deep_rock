@@ -21,7 +21,7 @@ class Model10A extends Shotgun
             new BulletDamage(12),
             new GunRate(1.3),
             new BulletSpeed(333),
-            1, new OneByOneReloadingType(6, 0.5),
+            1, new OneByOneReloadingType(18,6, 0.5),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(88, 88));
     }

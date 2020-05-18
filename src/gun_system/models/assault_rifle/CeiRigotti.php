@@ -20,7 +20,7 @@ class CeiRigotti extends AssaultRifle
             new BulletDamage(38),
             new GunRate(5),
             new BulletSpeed(700),
-            0, new ClipReloadingType(10, 5, 1.5, 0.5),
+            0, new ClipReloadingType(70,10, 5, 1.5, 0.5),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(95, 90));
     }

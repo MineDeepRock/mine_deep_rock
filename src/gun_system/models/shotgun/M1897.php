@@ -21,7 +21,7 @@ class M1897 extends Shotgun
             new BulletDamage(10),
             new GunRate(2.3),
             new BulletSpeed(333),
-            2, new OneByOneReloadingType(5, 0.5),
+            2, new OneByOneReloadingType(25,5, 0.5),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(88, 88));
     }

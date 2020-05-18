@@ -20,7 +20,7 @@ class SMLEMK3 extends SniperRifle
             new BulletDamage(100),
             new GunRate(0.8),
             new BulletSpeed(740),
-            2.5, new ClipReloadingType(10, 5, 1.8, 0.5),
+            2.5, new ClipReloadingType(20,10, 5, 1.8, 0.5),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(99.5, 80));
     }

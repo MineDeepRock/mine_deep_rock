@@ -16,6 +16,7 @@ abstract class Gun
     private $reaction;
     private $effectiveRange;
     private $precision;
+    private $remainingAmmo;
     private $reloadingType;
     private $overheatRate;
 
@@ -31,6 +32,7 @@ abstract class Gun
         $this->reaction = $reaction;
         $this->effectiveRange = $effectiveRange;
         $this->reloadingType = $reloadingType;
+        $this->remainingAmmo = $this->reloadingType->initialAmmo;
 
         $this->precision = $precision;
         $this->effectiveRange = $effectiveRange;
@@ -122,6 +124,20 @@ abstract class Gun
      */
     public function getKillCountCondition(): ?KillCountCondition {
         return $this->killCountCondition;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRemainingAmmo(): int {
+        return $this->remainingAmmo;
+    }
+
+    /**
+     * @param int $remainingAmmo
+     */
+    public function setRemainingAmmo(int $remainingAmmo): void {
+        $this->remainingAmmo = $remainingAmmo;
     }
 }
 
@@ -220,9 +236,11 @@ class OverheatRate
 
 abstract class ReloadingType
 {
+    public $initialAmmo;
     public $magazineCapacity;
 
-    public function __construct(int $magazineCapacity) {
+    public function __construct(int $initialAmmo, int $magazineCapacity) {
+        $this->initialAmmo = $initialAmmo;
         $this->magazineCapacity = $magazineCapacity;
     }
 
@@ -233,8 +251,8 @@ class MagazineReloadingType extends ReloadingType
 {
     public $second;
 
-    public function __construct(int $magazineCapacity, float $second) {
-        parent::__construct($magazineCapacity);
+    public function __construct(int $initialAmmo, int $magazineCapacity, float $second) {
+        parent::__construct($initialAmmo, $magazineCapacity);
         $this->second = $second;
     }
 
@@ -249,8 +267,8 @@ class ClipReloadingType extends ReloadingType
     public $secondOfClip;
     public $secondOfOne;
 
-    public function __construct(int $magazineCapacity, int $clipCapacity, float $secondOfClip, float $secondOfOne) {
-        parent::__construct($magazineCapacity);
+    public function __construct(int $initialAmmo, int $magazineCapacity, int $clipCapacity, float $secondOfClip, float $secondOfOne) {
+        parent::__construct($initialAmmo, $magazineCapacity);
         $this->clipCapacity = $clipCapacity;
         $this->secondOfClip = $secondOfClip;
         $this->secondOfOne = $secondOfOne;
@@ -266,8 +284,8 @@ class OneByOneReloadingType extends ReloadingType
 {
     public $second;
 
-    public function __construct(int $magazineCapacity, float $second) {
-        parent::__construct($magazineCapacity);
+    public function __construct(int $initialAmmo, int $magazineCapacity, float $second) {
+        parent::__construct($initialAmmo, $magazineCapacity);
         $this->second = $second;
     }
 

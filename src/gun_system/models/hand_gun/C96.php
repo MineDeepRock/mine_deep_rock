@@ -20,7 +20,7 @@ class C96 extends HandGun
             new BulletDamage(28),
             new GunRate(5),
             new BulletSpeed(440),
-            0, new OneByOneReloadingType(10, 0.25),
+            0, new OneByOneReloadingType(40,10, 0.25),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 95));
     }

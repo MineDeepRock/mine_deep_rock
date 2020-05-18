@@ -20,7 +20,7 @@ class Mle1903 extends HandGun
             new BulletDamage(30),
             new GunRate(3.5),
             new BulletSpeed(350),
-            0, new MagazineReloadingType(7, 2),
+            0, new MagazineReloadingType(48,7, 2),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 95));
     }

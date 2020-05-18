@@ -21,7 +21,7 @@ class NagantRevolver extends Revolver
             new GunRate(3.3),
             new BulletSpeed(335),
             0,
-            new OneByOneReloadingType(7, 1.3),
+            new OneByOneReloadingType(21,7, 1.3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(97, 90));
     }

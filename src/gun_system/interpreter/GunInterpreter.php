@@ -23,6 +23,7 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\utils\TextFormat;
 
 abstract class GunInterpreter
 {
@@ -66,7 +67,7 @@ abstract class GunInterpreter
             },
             function () {
                 GunSounds::play($this->owner, GunSounds::LMGReady());
-                $this->owner->sendPopup($this->reloadingController->currentBullet . "\\" . $this->reloadingController->magazineCapacity);
+                $this->owner->sendPopup(TextFormat::BLUE . TextFormat::BOLD . $this->reloadingController->currentBullet . "\\" . TextFormat::RESET . TextFormat::BLUE  . $this->gun->getRemainingAmmo());
             },
             $this->scheduler);
 
@@ -112,7 +113,7 @@ abstract class GunInterpreter
         }
 
         if ($this->reloadingController->isReloading()) {
-            $this->owner->sendPopup($this->reloadingController->currentBullet . "\\" . $this->reloadingController->magazineCapacity);
+            $this->owner->sendPopup(TextFormat::BLUE . TextFormat::BOLD . $this->reloadingController->currentBullet . "\\" . TextFormat::RESET . TextFormat::BLUE  . $this->gun->getRemainingAmmo());
             return;
         }
 
@@ -127,6 +128,7 @@ abstract class GunInterpreter
 
         $this->shootingController->shootOnce(function (): void {
             $this->overheatController->raise();
+            $this->owner->sendPopup(TextFormat::BLUE . TextFormat::BOLD . $this->reloadingController->currentBullet . "\\" . TextFormat::RESET . TextFormat::BLUE  . $this->gun->getRemainingAmmo());
             $this->client->shoot($this->reloadingController->currentBullet, $this->reloadingController->magazineCapacity, $this->scheduler);
         });
     }
@@ -155,7 +157,7 @@ abstract class GunInterpreter
             $this->shootingController->delayShoot(1 / $this->gun->getRate()->getPerSecond(), function (): void {
                 $this->client->shoot($this->reloadingController->currentBullet, $this->reloadingController->magazineCapacity, $this->scheduler);
             });
-            $this->owner->sendPopup($this->reloadingController->currentBullet . "\\" . $this->reloadingController->magazineCapacity);
+            $this->owner->sendPopup(TextFormat::BLUE . TextFormat::BOLD . $this->reloadingController->currentBullet . "\\" . TextFormat::RESET . TextFormat::BLUE  . $this->gun->getRemainingAmmo());
             return;
         }
 
@@ -166,13 +168,12 @@ abstract class GunInterpreter
         }
         $this->shootingController->shoot(function (): void {
             $this->overheatController->raise();
+            $this->owner->sendPopup(TextFormat::BLUE . TextFormat::BOLD . $this->reloadingController->currentBullet . "\\" . TextFormat::RESET . TextFormat::BLUE  . $this->gun->getRemainingAmmo());
             $this->client->shoot($this->reloadingController->currentBullet, $this->reloadingController->magazineCapacity, $this->scheduler);
         });
     }
 
     public function tryReload(): void {
-        $inventoryBullets = $this->getBulletAmount();
-
         if ($this->reloadingController->isReloading()) {
             $this->owner->sendPopup("リロード中");
             return;
@@ -183,7 +184,7 @@ abstract class GunInterpreter
             return;
         }
 
-        if ($inventoryBullets === 0) {
+        if ($this->gun->getRemainingAmmo() === 0) {
             $this->owner->sendPopup("弾薬がありません");
             return;
         }
@@ -197,38 +198,38 @@ abstract class GunInterpreter
 
         $reduceBulletFunc = function ($value): int {
             $this->owner->sendPopup("リロード");
-            $this->owner->getInventory()->removeItem(Item::get(BulletId::fromGunType($this->gun->getType()), 0, $value));
-            return $this->getBulletAmount();
+            $this->gun->setRemainingAmmo($this->gun->getRemainingAmmo()-$value);
+            return $this->gun->getRemainingAmmo();
         };
 
         $onFinishedReloading = function (): void {
-            $this->owner->sendPopup($this->reloadingController->currentBullet . "/" . $this->reloadingController->magazineCapacity);
+            $this->owner->sendPopup(TextFormat::BLUE . TextFormat::BOLD . $this->reloadingController->currentBullet . "\\" . TextFormat::RESET . TextFormat::BLUE  . $this->gun->getRemainingAmmo());
         };
 
-        $this->reloadingController->carryOut($this->scheduler, $inventoryBullets, $reduceBulletFunc, $onFinishedReloading);
+        $this->reloadingController->carryOut($this->scheduler, $this->gun->getRemainingAmmo(), $reduceBulletFunc, $onFinishedReloading);
     }
 
-    protected function getBullets(): array {
-        $inventoryContents = $this->owner->getInventory()->getContents();
+    //protected function getBullets(): array {
+    //    $inventoryContents = $this->owner->getInventory()->getContents();
+//
+    //    $bullets = array_filter($inventoryContents, function ($item) {
+    //        if (is_subclass_of($item, "gun_system\pmmp\items\bullet\ItemBullet")) {
+    //            return $item->getBullet()->getSupportGunType()->equal($this->gun->getType());
+    //        }
+    //        return false;
+    //    });
+    //    return $bullets;
+    //}
 
-        $bullets = array_filter($inventoryContents, function ($item) {
-            if (is_subclass_of($item, "gun_system\pmmp\items\bullet\ItemBullet")) {
-                return $item->getBullet()->getSupportGunType()->equal($this->gun->getType());
-            }
-            return false;
-        });
-        return $bullets;
-    }
-
-    protected function getBulletAmount(): int {
-        $bullets = $this->getBullets();
-
-        $bulletsAmount = array_sum(array_map(function ($bullet) {
-            return $bullet->getCount();
-        }, $bullets));
-
-        return $bulletsAmount;
-    }
+    //protected function getBulletAmount(): int {
+    //    $bullets = $this->getBullets();
+//
+    //    $bulletsAmount = array_sum(array_map(function ($bullet) {
+    //        return $bullet->getCount();
+    //    }, $bullets));
+//
+    //    return $bulletsAmount;
+    //}
 
     /**
      * @return Gun

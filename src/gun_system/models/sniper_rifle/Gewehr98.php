@@ -20,7 +20,7 @@ class Gewehr98 extends SniperRifle
             new BulletDamage(100),
             new GunRate(0.8),
             new BulletSpeed(880),
-            2.5, new ClipReloadingType(5, 5, 1.5, 0.5),
+            2.5, new ClipReloadingType(25,5, 5, 1.5, 0.5),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(99.5, 80));
     }

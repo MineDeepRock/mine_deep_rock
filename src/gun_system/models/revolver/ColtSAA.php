@@ -21,7 +21,7 @@ class ColtSAA extends Revolver
             new GunRate(3.7),
             new BulletSpeed(320),
             0,
-            new OneByOneReloadingType(6, 1.2),
+            new OneByOneReloadingType(24,6, 1.2),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(97, 95));
     }

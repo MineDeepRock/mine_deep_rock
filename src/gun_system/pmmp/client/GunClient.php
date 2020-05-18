@@ -18,6 +18,7 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\utils\TextFormat;
 
 class GunClient
 {
@@ -63,7 +64,6 @@ class GunClient
         } else {
             self::spawnBullet($scheduler);
         }
-        $this->owner->sendPopup($currentBullet . "/" . $magazineCapacity);
         $this->playShootingSound();
         $this->doReaction();
     }

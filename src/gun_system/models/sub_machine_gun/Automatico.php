@@ -21,7 +21,7 @@ class Automatico extends SubMachineGun
             new BulletDamage(23),
             new GunRate(15),
             new BulletSpeed(380),
-            new MagazineReloadingType(25, 2.1),
+            new MagazineReloadingType(125,25, 2.1),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(90, 85),
             new OverheatRate(0));

@@ -21,7 +21,7 @@ class Automatic12G extends Shotgun
             new BulletDamage(7.7),
             new GunRate(4.2),
             new BulletSpeed(333),
-            1, new OneByOneReloadingType(5, 0.7),
+            1, new OneByOneReloadingType(35,5, 0.7),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(88, 88));
     }

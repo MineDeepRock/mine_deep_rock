@@ -21,7 +21,7 @@ class BAR1918 extends LightMachineGun
             new BulletDamage(26),
             new GunRate(10),
             new BulletSpeed(820),
-            new MagazineReloadingType(20, 3),
+            new MagazineReloadingType(100,20, 3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 75),
             new OverheatRate(0));

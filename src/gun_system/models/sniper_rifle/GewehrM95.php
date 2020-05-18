@@ -20,7 +20,7 @@ class GewehrM95 extends SniperRifle
             new BulletDamage(90),
             new GunRate(1.1),
             new BulletSpeed(620),
-            1, new ClipReloadingType(5, 5, 3, 3),
+            1, new ClipReloadingType(25,5, 5, 3, 3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(99.5, 80));
     }

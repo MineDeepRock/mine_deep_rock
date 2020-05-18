@@ -21,7 +21,7 @@ class MP18 extends SubMachineGun
             new BulletDamage(28),
             new GunRate(9),
             new BulletSpeed(420),
-            new MagazineReloadingType(32, 2),
+            new MagazineReloadingType(96,32, 2),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(98, 95),
             new OverheatRate(0));

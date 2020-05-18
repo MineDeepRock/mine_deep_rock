@@ -21,7 +21,7 @@ class Hellriegel1915 extends SubMachineGun
             new BulletDamage(26),
             new GunRate(11),
             new BulletSpeed(380),
-            new MagazineReloadingType(59, 3.8),
+            new MagazineReloadingType(120,59, 3.8),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(90, 85),
             new OverheatRate(2.5));

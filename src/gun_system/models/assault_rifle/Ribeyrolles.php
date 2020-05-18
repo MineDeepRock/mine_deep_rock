@@ -21,7 +21,7 @@ class Ribeyrolles extends AssaultRifle
             new GunRate(9),
             new BulletSpeed(520),
             0,
-            new MagazineReloadingType(25, 2),
+            new MagazineReloadingType(100,25, 2),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(95, 90));
     }

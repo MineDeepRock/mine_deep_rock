@@ -21,7 +21,7 @@ class No3Revolver extends Revolver
             new GunRate(2.7),
             new BulletSpeed(210),
             0,
-            new MagazineReloadingType(6, 2.3),
+            new MagazineReloadingType(30,6, 2.3),
             EffectiveRangeLoader::getInstance()->ranges[self::NAME],
             new GunPrecision(97, 90));
     }
