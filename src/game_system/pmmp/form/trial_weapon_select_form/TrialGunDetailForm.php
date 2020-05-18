@@ -78,13 +78,7 @@ class TrialGunDetailForm implements Form
             'content' => [
                 [
                     'type' => 'label',
-                    'text' => $this->gun::NAME . "\n" .
-                        TextFormat::RESET . "火力" . TextFormat::GRAY . $this->gun->getBulletDamage()->getValue() . "\n" .
-                        TextFormat::RESET . "弾速" . TextFormat::GRAY . $this->gun->getBulletSpeed()->getPerSecond() . "\n" .
-                        TextFormat::RESET . "レート" . TextFormat::GRAY . $this->gun->getRate()->getPerSecond() . "\n" .
-                        TextFormat::RESET . "リロード" . TextFormat::GRAY . $this->gun->getReloadingType()->toString() . "\n" .
-                        TextFormat::RESET . "反動" . TextFormat::GRAY . $this->gun->getReaction() . "\n" .
-                        TextFormat::RESET . "精度" . TextFormat::GRAY . "ADS:" . $this->gun->getPrecision()->getADS() . "腰撃ち:" . $this->gun->getPrecision()->getHipShooting()
+                    'text' => $this->gun->getDescribe()
                 ],
                 [
                     'type' => 'dropdown',

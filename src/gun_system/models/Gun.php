@@ -139,6 +139,22 @@ abstract class Gun
     public function setRemainingAmmo(int $remainingAmmo): void {
         $this->remainingAmmo = $remainingAmmo;
     }
+
+    public function getDescribe():string{
+        $describe = "";
+        $reloadingType = $this->getReloadingType();
+
+        $describe .= "\n" . $this->getType()->getTypeText();
+        $describe .= "\n" . $this::NAME;
+        $describe .= "\n 火力:" . $this->getBulletDamage()->getValue();
+        $describe .= "\n 弾速:" . $this->getBulletSpeed()->getPerSecond();
+        $describe .= "\n 毎秒レート:" . $this->getRate()->getPerSecond();
+        $describe .= "\n 装弾数:" . $reloadingType->magazineCapacity. "/" .$reloadingType->initialAmmo;
+        $describe .= "\n リロード時間:" . $reloadingType->secondToString();
+        $describe .= "\n 反動:" . $this->getReaction();
+        $describe .= "\n 精度:" . "ADS:" . $this->getPrecision()->getADS() . "腰撃ち:" . $this->getPrecision()->getHipShooting();
+        return $describe;
+    }
 }
 
 class BulletDamage
@@ -244,7 +260,7 @@ abstract class ReloadingType
         $this->magazineCapacity = $magazineCapacity;
     }
 
-    abstract function toString(): string;
+    abstract function secondToString(): string;
 }
 
 class MagazineReloadingType extends ReloadingType
@@ -258,6 +274,10 @@ class MagazineReloadingType extends ReloadingType
 
     function toString(): string {
         return "装填数:" . $this->magazineCapacity . ", リロード時間:" . $this->second;
+    }
+
+    function secondToString(): string {
+        return $this->second . "s";
     }
 }
 
@@ -274,10 +294,9 @@ class ClipReloadingType extends ReloadingType
         $this->secondOfOne = $secondOfOne;
     }
 
-    function toString(): string {
-        return "装填数:" . $this->magazineCapacity . ", リロード時間: " . $this->secondOfClip . "(クリップ" . $this->clipCapacity . ") " . $this->secondOfOne . "(一発)";
+    function secondToString(): string {
+        return $this->secondOfOne . "s(" . $this->secondOfClip . "s)";
     }
-
 }
 
 class OneByOneReloadingType extends ReloadingType
@@ -289,8 +308,8 @@ class OneByOneReloadingType extends ReloadingType
         $this->second = $second;
     }
 
-    function toString(): string {
-        return strval($this->second);
+    function secondToString(): string {
+        return $this->second . "s";
     }
 }
 

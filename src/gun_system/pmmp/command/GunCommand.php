@@ -381,15 +381,18 @@ class GunCommand extends Command
 
     private function setItemDescription(ItemGun $item): ItemGun {
         $gun = $item->getGunData();
-        $bulletDamage = $gun->getBulletDamage();
-        $rate = $gun->getRate();
+        $reloadingType = $gun->getReloadingType();
 
         return $item->setLore([
-            TextFormat::RESET . "火力" . TextFormat::GRAY . $bulletDamage->getValue(),
-            TextFormat::RESET . "レート" . TextFormat::GRAY . $rate->getPerSecond(),
-            TextFormat::RESET . "リロード" . $gun->getReloadingType()->toString(),
-            TextFormat::RESET . "反動" . TextFormat::GRAY . $gun->getReaction(),
-            TextFormat::RESET . "精度" . TextFormat::GRAY . "ADS:" . $gun->getPrecision()->getADS() . "腰撃ち:" . $gun->getPrecision()->getHipShooting(),
+            $gun->getType()->getTypeText(),
+            $gun::NAME,
+            "火力:" . $gun->getBulletDamage()->getValue(),
+            "弾速:" . $gun->getBulletSpeed()->getPerSecond(),
+            "毎秒レート:" . $gun->getRate()->getPerSecond(),
+            "装弾数:" . $reloadingType->magazineCapacity . "/" . $reloadingType->initialAmmo,
+            "リロード時間:" . $reloadingType->secondToString(),
+            "反動:" . $gun->getReaction(),
+            "精度:" . "ADS:" . $gun->getPrecision()->getADS() . "腰撃ち:" . $gun->getPrecision()->getHipShooting(),
         ]);
     }
 }
