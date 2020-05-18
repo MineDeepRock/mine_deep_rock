@@ -22,7 +22,7 @@ class FragGrenadeEntity extends GrenadeEntity
                                 UsersService $usersService,
                                 GameScoresService $gameScoresService,
                                 TaskScheduler $scheduler) {
-        parent::__construct($level, $owner);
+        parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new FragGrenadeInterpreter(
             $owner,
             $usersService,

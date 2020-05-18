@@ -24,7 +24,7 @@ class SmokeGrenadeEntity extends GrenadeEntity
                                 UsersService $usersService,
                                 GameScoresService $gameScoresService,
                                 TaskScheduler $scheduler) {
-        parent::__construct($level, $owner);
+        parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new SmokeGrenadeInterpreter(
             $owner,
             $usersService,
@@ -32,7 +32,7 @@ class SmokeGrenadeEntity extends GrenadeEntity
             $scheduler);
 
 
-        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
+        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
         }), 20 * SmokeGrenade::DURATION);
     }

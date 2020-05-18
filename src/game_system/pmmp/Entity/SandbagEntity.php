@@ -13,7 +13,7 @@ use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
-class SandbagEntity extends NPCBase
+class SandbagEntity extends GadgetEntity
 {
     public $skinName = "Sandbag";
     public $geometryId = "geometry.Sandbag";
@@ -21,15 +21,13 @@ class SandbagEntity extends NPCBase
     public $width = 2;
     public $height = 1.5;
     public $scale = 1;
-
     protected $gravity = 2;
-
 
     public $defaultHP = 20;
 
     private $handler;
 
-    public function __construct(Level $level, Player $player,TaskScheduler $scheduler) {
+    public function __construct(Level $level, Player $player, TaskScheduler $scheduler) {
         $nbt = new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
                 new DoubleTag('', $player->getX()),
@@ -46,9 +44,9 @@ class SandbagEntity extends NPCBase
                 new FloatTag("", 0)
             ]),
         ]);
-        parent::__construct($level, $nbt);
+        parent::__construct($level, $player->getName(), $scheduler, $nbt);
 
-        $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
+        $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
         }), 20 * 100);
     }

@@ -11,8 +11,9 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
+use pocketmine\scheduler\TaskScheduler;
 
-class GrenadeEntity extends NPCBase
+class GrenadeEntity extends GadgetEntity
 {
     /**
      * @var GrenadeBaseInterpreter
@@ -20,7 +21,7 @@ class GrenadeEntity extends NPCBase
     protected $interpreter;
     private $isAvailable = true;
 
-    public function __construct(Level $level, Player $owner) {
+    public function __construct(Level $level, Player $owner, TaskScheduler $scheduler) {
         $nbt = new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
                 new DoubleTag('', $owner->getX()),
@@ -37,7 +38,7 @@ class GrenadeEntity extends NPCBase
                 new FloatTag("", $owner->getPitch())
             ]),
         ]);
-        parent::__construct($level, $nbt);
+        parent::__construct($level, $owner->getName(), $scheduler, $nbt);
         $this->setMotion($this->getMotion()->multiply(1.5));
     }
 
@@ -46,7 +47,7 @@ class GrenadeEntity extends NPCBase
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool {
-        if($this->isOnGround() && $this->isAvailable) {
+        if ($this->isOnGround() && $this->isAvailable) {
             $this->isAvailable = false;
             $this->explode();
         }

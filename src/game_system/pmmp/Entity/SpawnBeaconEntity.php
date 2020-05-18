@@ -17,7 +17,7 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 
-class SpawnBeaconEntity extends NPCBase
+class SpawnBeaconEntity extends GadgetEntity
 {
     public $skinName = "SpawnBeacon";
     public $geometryId = "geometry.SpawnBeacon";
@@ -51,7 +51,7 @@ class SpawnBeaconEntity extends NPCBase
                 new FloatTag("", $owner->getPitch())
             ]),
         ]);
-        parent::__construct($level, $nbt);
+        parent::__construct($level, $owner->getName(), $scheduler, $nbt);
 
         $this->interpreter = new SpawnBeaconInterpreter(
             $owner,
