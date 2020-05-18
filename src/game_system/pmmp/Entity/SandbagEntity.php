@@ -18,8 +18,8 @@ class SandbagEntity extends GadgetEntity
     public $skinName = "Sandbag";
     public $geometryId = "geometry.Sandbag";
     public $geometryName = "Sandbag.geo.json";
-    public $width = 2;
-    public $height = 1.5;
+    public $width = 3;
+    public $height = 1.25;
     public $scale = 1;
     protected $gravity = 2;
 
