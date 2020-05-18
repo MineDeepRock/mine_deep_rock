@@ -23,6 +23,7 @@ use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlameBottleEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\FragGrenadeEntity;
+use game_system\pmmp\Entity\GadgetEntity;
 use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\Entity\SandbagEntity;
 use game_system\pmmp\Entity\SmokeGrenadeEntity;
@@ -41,7 +42,10 @@ use game_system\pmmp\items\WeaponSelectItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
+use pocketmine\block\BlockFactory;
+use pocketmine\block\BlockIds;
 use pocketmine\entity\Entity;
+use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
@@ -181,15 +185,21 @@ class TwoTeamGameListener
         $this->setBoxNameTag($flareBox, $player->getName());
     }
 
-    public function onBoxHitBullet(Player $attacker, BoxEntity $boxEntity): void {
-        $ownerUser = $this->usersService->getUserData($boxEntity->getOwner()->getName());
+    public function onGadgetHitBullet(Player $attacker, GadgetEntity $gadget): void {
+
+        if ($gadget instanceof SandbagEntity) {
+            $attacker->getLevel()->addParticle(new DestroyBlockParticle($gadget->getPosition(), BlockFactory::get(BlockIds::SAND)));
+            return;
+        }
+
+        $ownerUser = $this->usersService->getUserData($gadget->getOwnerName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
         if ($ownerUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) {
-            $boxEntity->kill();
+            $gadget->kill();
             return;
         }
         if (!$ownerUser->getBelongTeamId()->equal($attackerUser->getBelongTeamId())) {
-            $boxEntity->kill();
+            $gadget->kill();
             return;
         }
     }
