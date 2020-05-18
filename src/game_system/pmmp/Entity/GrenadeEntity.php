@@ -15,6 +15,10 @@ use pocketmine\scheduler\TaskScheduler;
 
 class GrenadeEntity extends GadgetEntity
 {
+
+    public $width = 0;
+    public $height = 0;
+
     /**
      * @var GrenadeBaseInterpreter
      */
