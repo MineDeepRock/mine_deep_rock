@@ -18,11 +18,11 @@ class SandbagEntity extends NPCBase
     public $skinName = "Sandbag";
     public $geometryId = "geometry.Sandbag";
     public $geometryName = "Sandbag.geo.json";
-    public $width = 1.5;
-    public $height = 2;
+    public $width = 2;
+    public $height = 1.5;
     public $scale = 1;
 
-    protected $gravity = 0;
+    protected $gravity = 2;
 
 
     public $defaultHP = 20;
