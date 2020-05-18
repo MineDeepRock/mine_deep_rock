@@ -11,10 +11,15 @@ use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
 use game_system\pmmp\Entity\FlagEntity;
+use game_system\pmmp\Entity\FlameBottleEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
+use game_system\pmmp\Entity\FragGrenadeEntity;
+use game_system\pmmp\Entity\GadgetEntity;
 use game_system\pmmp\Entity\GameMasterNPC;
 use game_system\pmmp\Entity\GunDealerNPC;
 use game_system\pmmp\Entity\MedicineBoxEntity;
+use game_system\pmmp\Entity\SandbagEntity;
+use game_system\pmmp\Entity\SmokeGrenadeEntity;
 use game_system\pmmp\Entity\SpawnBeaconEntity;
 use game_system\pmmp\Entity\TargetNPC;
 use game_system\pmmp\Entity\TrialGunDealerNPC;
@@ -165,6 +170,13 @@ class Main extends PluginBase implements Listener
 
         Entity::registerEntity(FlagEntity::class, true, ['Flag']);
 
+        Entity::registerEntity(SmokeGrenadeEntity::class, true, ['SmokeGrenade']);
+        Entity::registerEntity(FragGrenadeEntity::class, true, ['FragGrenade']);
+        Entity::registerEntity(FlameBottleEntity::class, true, ['FlameBottle']);
+
+        Entity::registerEntity(SandbagEntity::class, true, ['Sandbag']);
+        Entity::registerEntity(SpawnBeaconEntity::class, true, ['SpawnBeacon']);
+
         $this->gameListener->initGame(\game_system\model\GameType::TeamDomination());
     }
 
@@ -267,8 +279,8 @@ class Main extends PluginBase implements Listener
         $victim = $event->getEntityHit();
         $attacker = $bullet->getOwningEntity();
 
-        if ($attacker instanceof Player && $victim instanceof BoxEntity) {
-            $this->gameListener->onBoxHitBullet($attacker, $victim);
+        if ($attacker instanceof Player && $victim instanceof GadgetEntity) {
+            $this->gameListener->onGadgetHitBullet($attacker, $victim);
             return;
         }
 
