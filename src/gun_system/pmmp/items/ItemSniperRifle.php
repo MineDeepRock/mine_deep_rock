@@ -15,6 +15,7 @@ class ItemSniperRifle extends ItemGun
 
     public function onReleaseUsing(Player $player): bool {
         $this->shootOnce();
+        $player->getInventory()->sendContents($player);
         return true;
     }
 }
