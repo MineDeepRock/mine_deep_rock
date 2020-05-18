@@ -90,7 +90,7 @@ class GunList
         ];
     }
 
-    static function fromString(string $string): Gun {
+    static function fromString(string $string): ?Gun {
         switch ($string) {
             //Handgun
             case Mle1903::NAME:
@@ -192,7 +192,7 @@ class GunList
                 return new NagantRevolver();
                 break;
         }
-        return new Mle1903();
+        return null;
     }
 
     /**
