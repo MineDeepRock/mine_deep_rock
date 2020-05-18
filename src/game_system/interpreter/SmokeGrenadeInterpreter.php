@@ -35,10 +35,10 @@ class SmokeGrenadeInterpreter extends GrenadeBaseInterpreter
         $level = $this->owner->getLevel();
         $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $pos, $onExploded): void {
             if ($this->owner->isOnline()) {
-                for ($i = 0; $i < 5; ++$i) {
+                for ($i = 0; $i < 10; ++$i) {
                     $this->client->explodeParticle($level, new Vector3(
                         $pos->getX() + rand(0, 2),
-                        $pos->getY() + rand(0, 2),
+                        $pos->getY() + rand(-1, 1),
                         $pos->getZ() + rand(0, 2)
                     ));
                 }

@@ -7,7 +7,7 @@ namespace game_system\model;
 class SmokeGrenade extends Grenade
 {
     const NAME = "SmokeGrenade";
-    const RANGE = 6;
+    const RANGE = 4;
     const DELAY = 1;
     const DURATION = 25;
 }
