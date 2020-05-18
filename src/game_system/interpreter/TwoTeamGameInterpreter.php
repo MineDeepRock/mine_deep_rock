@@ -216,7 +216,7 @@ class TwoTeamGameInterpreter
                         if ($health <= 0) $this->onDead($attackerPlayer, $weaponName, $targetEntity, $attacker, $target);
 
                         $this->scare($target, $attacker, $targetEntity->getInventory()->getItemInHand());
-                        $this->client->onReceiveDamage($attackerPlayer, $targetEntity, $damage, $weaponName);
+                        $this->client->onReceiveDamage($attackerPlayer, $targetEntity, $damage, $weaponName,$this->scheduler);
                     }
                 }
             }
@@ -229,13 +229,6 @@ class TwoTeamGameInterpreter
             $this->weaponService->addKillCount($attackerPlayer->getName(), $attackerWeaponName);
             $this->usersService->addMoney($attackerName, 100);
         }
-
-        $targetPlayer->setGamemode(Player::SPECTATOR);
-        $targetPlayer->teleport(new Vector3(
-            $attackerPlayer->getX(),
-            $attackerPlayer->getY() + 4,
-            $attackerPlayer->getZ()
-        ));
     }
 
     private function getAmmo(string $weaponName): Item {

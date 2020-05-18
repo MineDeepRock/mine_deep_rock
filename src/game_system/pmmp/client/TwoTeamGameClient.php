@@ -32,6 +32,8 @@ use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
@@ -79,7 +81,7 @@ class TwoTeamGameClient
             } else {
                 $player->addTitle("負け");
             }
-            $player->sendForm(new GameScoreForm($redTeamScores,$blueTeamScores));
+            $player->sendForm(new GameScoreForm($redTeamScores, $blueTeamScores));
         }
     }
 
@@ -166,13 +168,13 @@ class TwoTeamGameClient
         });
     }
 
-    public function onReceiveDamage(Player $attacker, Player $targetPlayer, float $damage, string $weaponName): void {
+    public function onReceiveDamage(Player $attacker, Player $targetPlayer, float $damage, string $weaponName, TaskScheduler $scheduler): void {
         $health = $targetPlayer->getHealth() - $damage;
 
         GunSounds::play($targetPlayer, GunSounds::bulletHitPlayer(), 10, 1);
 
         if ($health <= 0) {
-            $this->onDead($attacker, $targetPlayer, $weaponName);
+            $this->onDead($attacker, $targetPlayer, $weaponName, $scheduler);
             $attacker->addTitle(TextFormat::RED . "><", "", 0, 1, 0);
         } else {
             $targetPlayer->setHealth($health);
@@ -180,22 +182,31 @@ class TwoTeamGameClient
         }
     }
 
-    private function onDead(Player $attacker, Player $target, string $weaponName) {
+    private function onDead(Player $attacker, Player $target, string $weaponName, TaskScheduler $scheduler) {
         $target->setGamemode(Player::SPECTATOR);
-        $target->setHealth(20);
-        $players = $attacker->getLevel()->getPlayers();
+        $target->getInventory()->setContents([]);
+        $target->teleport(new Vector3(
+            $attacker->getX(),
+            $attacker->getY() + 4,
+            $attacker->getZ()
+        ));
 
         //TODO:Titleにしたい
-        $target->sendPopup(TextFormat::RED . $attacker->getName() . "に倒された");
-        $target->getInventory()->setContents([]);
-        $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
-        $target->getInventory()->addItem(new WeaponSelectItem());
-        $target->getInventory()->addItem(new SubWeaponSelectItem());
-        $target->getInventory()->addItem(new SpawnItem());
+        $target->addTitle(TextFormat::RED . $attacker->getName() . "に倒された");
 
+        $players = $attacker->getLevel()->getPlayers();
         foreach ($players as $player) {
             $player->sendMessage($attacker->getNameTag() . TextFormat::WHITE . " " . $weaponName . " " . $target->getNameTag());
         }
+
+        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($target): void {
+            $target->setGamemode(Player::SPECTATOR);
+            $target->setHealth(20);
+            $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
+            $target->getInventory()->addItem(new WeaponSelectItem());
+            $target->getInventory()->addItem(new SubWeaponSelectItem());
+            $target->getInventory()->addItem(new SpawnItem());
+        }), 20 * 5);
     }
 
     public function setArmorAndNameTag(Player $player, string $tag, TeamID $userTeamId, TeamId $redTeamId) {
