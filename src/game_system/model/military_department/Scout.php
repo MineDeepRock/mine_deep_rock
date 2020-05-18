@@ -25,8 +25,4 @@ class Scout extends MilitaryDepartment
             SMLEMK3::NAME
         );
     }
-
-    function getDescription(): string {
-        return "武器:SR\nガジェット:フレア箱\nエフェクト:";
-    }
 }

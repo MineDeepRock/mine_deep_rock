@@ -48,7 +48,23 @@ abstract class MilitaryDepartment
         return new AssaultSoldier();
     }
 
-    abstract function getDescription(): string;
+    public function getDescription(): string {
+        $text = "";
+        $text .= "武器:";
+        foreach ($this->canEquipGunTypes as $gunType)
+            $text .= $gunType->getTypeText() . ",";
+        $text .= "\n";
+
+        $text .= "ガジェット:";
+        foreach ($this->canEquipGadgetTypes as $gadgetType)
+            $text .= $gadgetType->getTypeText() . ",";
+        $text .= "\n";
+
+        $text .= "エフェクト:";
+        foreach ($this->effectIds as $effectId)
+            $text .= $effectId->getType()->getName() . ",";
+        return $text;
+    }
 
     /**
      * @return string

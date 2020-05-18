@@ -25,8 +25,4 @@ class NursingSoldier extends MilitaryDepartment
             MP18::NAME
         );
     }
-
-    function getDescription(): string {
-        return "武器:SMG\nガジェット:\n医療箱エフェクト:";
-    }
 }
