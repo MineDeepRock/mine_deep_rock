@@ -239,7 +239,7 @@ class Main extends PluginBase implements Listener
         $currentItem = $player->getInventory()->getItemInHand();
         $nextItem = $event->getItem();
         if ($currentItem instanceof \gun_system\pmmp\items\ItemGun) {
-            if ($currentItem->getId() === $nextItem->getId()) {
+            if ($currentItem->getName() === $nextItem->getName()) {
                 $this->gunSystemClient->tryReloading($currentItem);
             } else {
                 $this->gunSystemClient->tryCancelReloading($currentItem);
