@@ -28,22 +28,24 @@ class SmokeGrenadeInterpreter extends GrenadeBaseInterpreter
     }
 
     public function stop() {
-        $this->handler->cancel();
+        if ($this->handler !== null) {
+            $this->handler->cancel();
+        }
     }
 
     public function explode(Vector3 $pos, Closure $onExploded) {
         $level = $this->owner->getLevel();
         $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $pos, $onExploded): void {
             if ($this->owner->isOnline()) {
-                for ($i = 0; $i < 10; ++$i) {
+                for ($i = 0; $i < 15; ++$i) {
                     $this->client->explodeParticle($level, new Vector3(
-                        $pos->getX() + rand(0, 2),
-                        $pos->getY() + rand(-1, 1),
-                        $pos->getZ() + rand(0, 2)
+                        $pos->getX() + rand(-1, 1),
+                        $pos->getY(),
+                        $pos->getZ() + rand(-1, 1)
                     ));
                 }
             }
-        }), 20 * SmokeGrenade::DELAY, 2);
+        }), 20 * SmokeGrenade::DELAY, 20 * 0.5);
     }
 
     public function effectOn(Player $player, int $distance): void { }

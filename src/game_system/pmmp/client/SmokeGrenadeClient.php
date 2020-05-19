@@ -12,7 +12,7 @@ use pocketmine\math\Vector3;
 class SmokeGrenadeClient
 {
     public function explodeParticle(Level $level, Vector3 $pos): void {
-        $level->addParticle(new MobSpawnParticle($pos,SmokeGrenade::RANGE,4));
+        $level->addParticle(new MobSpawnParticle($pos,SmokeGrenade::RANGE,3));
     }
 
     public function playSound(Level $level, Vector3 $pos): void {
