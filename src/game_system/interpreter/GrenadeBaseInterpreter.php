@@ -7,6 +7,7 @@ namespace game_system\interpreter;
 use Closure;
 use game_system\model\Grenade;
 use game_system\model\military_department\AssaultSoldier;
+use game_system\pmmp\Entity\GrenadeEntity;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -39,11 +40,11 @@ abstract class GrenadeBaseInterpreter
         $this->ownerTeamId = $this->usersService->getUserData($owner->getName())->getBelongTeamId();
     }
 
-    public function explode(Vector3 $pos, Closure $onExploded) {
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($pos, $onExploded): void {
-            $players = $this->getAroundEnemyPlayers($pos);
+    public function explode(GrenadeEntity $entity, Closure $onExploded) {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($entity, $onExploded): void {
+            $players = $this->getAroundEnemyPlayers($entity->getPosition());
             foreach ($players as $player) {
-                $this->effectOn($player,$pos->distance($player->getPosition()));
+                $this->effectOn($player,$entity->getPosition()->distance($player->getPosition()));
             }
             $onExploded();
         }), 20 * $this->grenade::DELAY);

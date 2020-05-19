@@ -24,12 +24,13 @@ class FlameBottleEntity extends GrenadeEntity
                                 UsersService $usersService,
                                 GameScoresService $gameScoresService,
                                 TaskScheduler $scheduler) {
-        parent::__construct($level, $owner,$scheduler);
         $this->interpreter = new FlameBottleInterpreter(
             $owner,
             $usersService,
             $gameScoresService,
             $scheduler);
+
+        parent::__construct($level, $owner,$scheduler);
 
         $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) : void {
             if ($this->isAlive()) $this->kill();

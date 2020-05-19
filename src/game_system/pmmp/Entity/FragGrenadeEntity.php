@@ -24,12 +24,12 @@ class FragGrenadeEntity extends GrenadeEntity
                                 UsersService $usersService,
                                 GameScoresService $gameScoresService,
                                 TaskScheduler $scheduler) {
-        parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new FragGrenadeInterpreter(
             $owner,
             $usersService,
             $gameScoresService,
             $scheduler);
+        parent::__construct($level, $owner, $scheduler);
     }
 
     protected function onDeath(): void {

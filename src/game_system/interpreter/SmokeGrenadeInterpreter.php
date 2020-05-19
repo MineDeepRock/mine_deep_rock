@@ -9,6 +9,7 @@ use game_system\model\military_department\NursingSoldier;
 use game_system\model\military_department\Scout;
 use game_system\model\SmokeGrenade;
 use game_system\pmmp\client\SmokeGrenadeClient;
+use game_system\pmmp\Entity\GrenadeEntity;
 use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -33,15 +34,15 @@ class SmokeGrenadeInterpreter extends GrenadeBaseInterpreter
         }
     }
 
-    public function explode(Vector3 $pos, Closure $onExploded) {
+    public function explode(GrenadeEntity $entity, Closure $onExploded) {
         $level = $this->owner->getLevel();
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $pos, $onExploded): void {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $entity, $onExploded): void {
             if ($this->owner->isOnline()) {
                 for ($i = 0; $i < 15; ++$i) {
                     $this->client->explodeParticle($level, new Vector3(
-                        $pos->getX() + rand(-1, 1),
-                        $pos->getY(),
-                        $pos->getZ() + rand(-1, 1)
+                        $entity->getX() + rand(-1, 1),
+                        $entity->getY(),
+                        $entity->getZ() + rand(-1, 1)
                     ));
                 }
             }

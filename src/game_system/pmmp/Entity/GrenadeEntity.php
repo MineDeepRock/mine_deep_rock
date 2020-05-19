@@ -23,7 +23,6 @@ class GrenadeEntity extends GadgetEntity
      * @var GrenadeBaseInterpreter
      */
     protected $interpreter;
-    private $isAvailable = true;
 
     public function __construct(Level $level, Player $owner, TaskScheduler $scheduler) {
         $nbt = new CompoundTag('', [
@@ -44,17 +43,10 @@ class GrenadeEntity extends GadgetEntity
         ]);
         parent::__construct($level, $owner->getName(), $scheduler, $nbt);
         $this->setMotion($this->getMotion()->multiply(1.5));
+        $this->explode();
     }
 
     public function explode(): void {
-        $this->interpreter->explode($this->getPosition(), function () { $this->kill(); });
-    }
-
-    public function entityBaseTick(int $tickDiff = 1): bool {
-        if ($this->isOnGround() && $this->isAvailable) {
-            $this->isAvailable = false;
-            $this->explode();
-        }
-        return parent::entityBaseTick($tickDiff);
+        $this->interpreter->explode($this, function () { $this->kill(); });
     }
 }

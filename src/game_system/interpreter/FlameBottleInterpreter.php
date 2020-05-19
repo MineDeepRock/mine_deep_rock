@@ -9,6 +9,7 @@ use game_system\GameSystemBinder;
 use game_system\model\FlameBottle;
 use game_system\model\military_department\Engineer;
 use game_system\pmmp\client\FlameBottleClient;
+use game_system\pmmp\Entity\GrenadeEntity;
 use game_system\pmmp\items\FlameBottleItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -33,18 +34,18 @@ class FlameBottleInterpreter extends GrenadeBaseInterpreter
         }
     }
 
-    public function explode(Vector3 $pos, Closure $onExploded) {
+    public function explode(GrenadeEntity $entity, Closure $onExploded) {
         $level = $this->owner->getLevel();
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $pos, $onExploded): void {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($level, $entity, $onExploded): void {
             if ($this->owner->isOnline()) {
                 for ($i = 0; $i < 15; ++$i) {
                     $this->client->explodeParticle($level, new Vector3(
-                        $pos->getX() + rand(-FlameBottle::RANGE, FlameBottle::RANGE),
-                        $pos->getY() + rand(0,2),
-                        $pos->getZ() + rand(-FlameBottle::RANGE, FlameBottle::RANGE)
+                        $entity->getX() + rand(-FlameBottle::RANGE, FlameBottle::RANGE),
+                        $entity->getY() + rand(0,2),
+                        $entity->getZ() + rand(-FlameBottle::RANGE, FlameBottle::RANGE)
                     ));
                 }
-                parent::explode($pos, function(){});
+                parent::explode($entity, function(){});
             }
         }), 20 * FlameBottle::DELAY, 20 * 0.5);
     }
