@@ -134,10 +134,16 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         }
 
         if (count($redTeamPlayers) > count($blueTeamPlayers)) {
+            for($i = 0; $i <= count($blueTeamPlayers); ++$i){
+                array_splice($redTeamPlayers, $i, $i);
+            }
             return [$this->getGameData()->getRedTeam()->getId(), $redTeamPlayers];
         } else if (count($redTeamPlayers) === count($blueTeamPlayers)) {
             return [null, []];
         } else {
+            for($i = 0; $i <= count($redTeamPlayers); ++$i){
+                array_splice($blueTeamPlayers, $i, $i);
+            }
             return [$this->getGameData()->getBlueTeam()->getId(), $blueTeamPlayers];
         }
     }
