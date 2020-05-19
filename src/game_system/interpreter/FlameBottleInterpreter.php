@@ -8,11 +8,8 @@ use Closure;
 use game_system\GameSystemBinder;
 use game_system\model\FlameBottle;
 use game_system\model\military_department\Engineer;
-use game_system\model\SmokeGrenade;
 use game_system\pmmp\client\FlameBottleClient;
-use game_system\pmmp\client\SmokeGrenadeClient;
 use game_system\pmmp\items\FlameBottleItem;
-use game_system\pmmp\items\SmokeGrenadeItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use pocketmine\math\Vector3;
@@ -31,7 +28,9 @@ class FlameBottleInterpreter extends GrenadeBaseInterpreter
     }
 
     public function stop() {
-        $this->handler->cancel();
+        if ($this->handler) {
+            $this->handler->cancel();
+        }
     }
 
     public function explode(Vector3 $pos, Closure $onExploded) {
@@ -47,7 +46,7 @@ class FlameBottleInterpreter extends GrenadeBaseInterpreter
                 }
                 parent::explode($pos, function(){});
             }
-        }), 20 * SmokeGrenade::DELAY, 20 * 0.5);
+        }), 20 * FlameBottle::DELAY, 20 * 0.5);
     }
 
     public function effectOn(Player $player, int $distance): void {
