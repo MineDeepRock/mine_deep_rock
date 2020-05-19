@@ -13,6 +13,8 @@ use pocketmine\scheduler\TaskScheduler;
 
 class FragGrenadeEntity extends GrenadeEntity
 {
+    public $scale = 0.5;
+
     public $skinName = "FragGrenade";
     public $geometryId = "geometry.FragGrenade";
     public $geometryName = "FragGrenade.geo.json";
