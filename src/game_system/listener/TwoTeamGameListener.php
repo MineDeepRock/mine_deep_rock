@@ -194,6 +194,10 @@ class TwoTeamGameListener
 
         $ownerUser = $this->usersService->getUserData($gadget->getOwnerName());
         $attackerUser = $this->usersService->getUserData($attacker->getName());
+        if ($ownerUser->getName() === $gadget->getOwnerName()) {
+            $gadget->kill();
+            return;
+        }
         if ($ownerUser->getBelongTeamId() === null || $attackerUser->getBelongTeamId() === null) {
             $gadget->kill();
             return;
