@@ -426,10 +426,31 @@ class Main extends PluginBase implements Listener
         }
     }
 
-    public function onDamage(EntityDamageEvent $event) {
-        $entity = $event->getEntity();
-        if ($entity instanceof Human) {
-            $event->setCancelled();
+    public function cancelDamage(EntityDamageEvent $event) {
+        $event->setCancelled();
+    }
+
+    public function tapGadget(EntityDamageEvent $event) {
+        if ($event instanceof EntityDamageByEntityEvent) {
+            $entity = $event->getEntity();
+            $attacker = $event->getDamager();
+
+            if ($attacker instanceof Player) {
+                if ($entity instanceof SandbagEntity) {
+                    if ($entity->getOwnerName() === $attacker->getName()) {
+                        $entity->kill();
+                        if (!$attacker->getInventory()->contains(new SandbagItem()))
+                            $attacker->getInventory()->addItem(new SandbagItem());
+                    }
+                }
+                if ($entity instanceof SpawnBeaconEntity) {
+                    if ($entity->getOwnerName() === $attacker->getName()) {
+                        $entity->kill();
+                        if (!$attacker->getInventory()->contains(new SpawnBeaconItem()))
+                            $attacker->getInventory()->addItem(new SpawnBeaconItem());
+                    }
+                }
+            }
         }
     }
 
