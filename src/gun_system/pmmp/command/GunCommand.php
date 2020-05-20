@@ -367,11 +367,9 @@ class GunCommand extends Command
             if ($empty === 0) return false;
             if ($empty > 10) {
                 $gunItem->getGunData()->setRemainingAmmo($gun->getRemainingAmmo() + 10);
-                var_dump("true");
                 return true;
             } else {
                 $gunItem->getGunData()->setRemainingAmmo($gun->getRemainingAmmo() + $empty);
-                var_dump("true");
                 return true;
             }
         }
