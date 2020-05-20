@@ -10,11 +10,14 @@ use gun_system\pmmp\items\ItemShotGun;
 use pocketmine\block\Block;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
+use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\Throwable;
 use pocketmine\event\entity\ProjectileHitEvent;
+use pocketmine\level\Level;
 use pocketmine\level\particle\ExplodeParticle;
 use pocketmine\math\RayTraceResult;
 use pocketmine\math\Vector3;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Server;
 
 class Egg extends Throwable
@@ -22,6 +25,11 @@ class Egg extends Throwable
     public const NETWORK_ID = self::EGG;
 
     protected $gravity = 0;
+
+    public function __construct(Level $level, CompoundTag $nbt, ?Entity $shootingEntity = null) {
+        parent::__construct($level, $nbt, $shootingEntity);
+        $this->setScale(0.5);
+    }
 
     protected function onHitBlock(Block $blockHit, RayTraceResult $hitResult): void {
         $blockPos = new Vector3(
