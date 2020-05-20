@@ -30,6 +30,7 @@ use pocketmine\item\IronHelmet;
 use pocketmine\item\IronLeggings;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
+use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -165,13 +166,29 @@ class TwoTeamGameClient
 
         GunSounds::play($targetPlayer, GunSounds::bulletHitPlayer(), 10, 1);
 
+        $level = $attacker->getLevel();
+        $pos = new Vector3(
+            $targetPlayer->getX() + rand(-2, 2),
+            $targetPlayer->getY() + rand(2, 3),
+            $targetPlayer->getZ() + rand(-2, 2)
+        );
+
         if ($health <= 0) {
             $this->onDead($attacker, $targetPlayer, $weaponName, $scheduler);
             $attacker->addTitle(TextFormat::RED . "><", "", 0, 1, 0);
+            $particle = new FloatingTextParticle($pos, "", TextFormat::RED . intval($damage));
         } else {
             $targetPlayer->setHealth($health);
             $attacker->addTitle("><", "", 0, 1, 0);
+            $particle = new FloatingTextParticle($pos, "", TextFormat::WHITE . intval($damage));
         }
+
+        $level->addParticle($particle);
+
+        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($level, $particle): void {
+            $particle->setInvisible(true);
+            $level->addParticle($particle);
+        }), 20 * 1.5);
     }
 
     private function onDead(Player $attacker, Player $target, string $weaponName, TaskScheduler $scheduler) {
@@ -192,6 +209,8 @@ class TwoTeamGameClient
         }
 
         $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($target): void {
+            if (!$target->isOnline()) return;
+
             $target->setGamemode(Player::SPECTATOR);
             $target->setHealth(20);
             $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
