@@ -435,6 +435,8 @@ class Main extends PluginBase implements Listener
             $entity = $event->getEntity();
             $attacker = $event->getDamager();
 
+            if ($event->getCause() === $event::CAUSE_PROJECTILE) return;
+
             if ($attacker instanceof Player) {
                 if ($entity instanceof SandbagEntity) {
                     if ($entity->getOwnerName() === $attacker->getName()) {
