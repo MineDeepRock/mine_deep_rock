@@ -117,6 +117,7 @@ class TwoTeamGameClient
         if ($player === null) return;
 
         $player->setGamemode(Player::ADVENTURE);
+        $player->setHealth(20);
 
         foreach ($player->getLevel()->getEntities() as $entity) {
             if ($entity instanceof CadaverEntity) {
@@ -228,7 +229,6 @@ class TwoTeamGameClient
             $cadaverEntity->getZ()
         ));
 
-        $target->setHealth(20);
         $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
         $target->getInventory()->addItem(new WeaponSelectItem());
         $target->getInventory()->addItem(new SubWeaponSelectItem());
