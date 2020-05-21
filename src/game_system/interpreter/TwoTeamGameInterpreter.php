@@ -7,6 +7,7 @@ namespace game_system\interpreter;
 use Closure;
 use game_system\model\Coordinate;
 use game_system\model\GadgetType;
+use game_system\model\military_department\NursingSoldier;
 use game_system\model\TwoTeamGame;
 use game_system\model\User;
 use game_system\pmmp\Entity\CadaverEntity;
@@ -335,7 +336,8 @@ class TwoTeamGameInterpreter
         if ($user->getBelongTeamId() === null || $cadaverAsUser->getBelongTeamId() === null) return;
 
         if ($user->getBelongTeamId()->equal($cadaverAsUser->getBelongTeamId())) {
-            if ($cadaverAsPlayer->isOnline()) {
+            $nursingSoldier = new NursingSoldier();
+            if ($cadaverAsPlayer->isOnline() && $user->getMilitaryDepartment()->getName() === $nursingSoldier->getName()) {
                 $this->spawn($cadaverAsUser,new Coordinate(
                     $cadaverEntity->getX(),
                     $cadaverEntity->getY(),
