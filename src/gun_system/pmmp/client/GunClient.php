@@ -5,6 +5,7 @@ namespace gun_system\pmmp\client;
 
 
 use Closure;
+use game_system\pmmp\Entity\Egg;
 use gun_system\models\Gun;
 use gun_system\models\shotgun\Shotgun;
 use gun_system\pmmp\GunSounds;
@@ -108,7 +109,7 @@ class GunClient
             ]),
         ]);
 
-        $projectile = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
+        $projectile = new Egg($player->getLevel(), $nbt, $player);
         $projectile->setMotion($projectile->getMotion()->multiply($this->gun->getBulletSpeed()->getPerSecond() / 27.8));
 
         $handle = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(
@@ -121,7 +122,7 @@ class GunClient
                     ), 4));
                 }
             }
-        ), 3,1);
+        ), 3, 1);
 
         //卵の速さが毎秒２７ブロック
         $projectile->spawnToAll();
