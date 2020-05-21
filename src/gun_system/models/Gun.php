@@ -4,6 +4,9 @@
 namespace gun_system\models;
 
 
+use gun_system\models\shotgun\Shotgun;
+use pocketmine\utils\TextFormat;
+
 abstract class Gun
 {
     private $type;
@@ -140,19 +143,57 @@ abstract class Gun
         $this->remainingAmmo = $remainingAmmo;
     }
 
-    public function getDescribe():string{
+    public function getDescribe(): string {
         $describe = "";
         $reloadingType = $this->getReloadingType();
 
         $describe .= "\n" . $this->getType()->getTypeText();
         $describe .= "\n" . $this::NAME;
-        $describe .= "\n 火力:" . $this->getBulletDamage()->getValue();
-        $describe .= "\n 弾速:" . $this->getBulletSpeed()->getPerSecond();
-        $describe .= "\n 毎秒レート:" . $this->getRate()->getPerSecond();
-        $describe .= "\n 装弾数:" . $reloadingType->magazineCapacity. "/" .$reloadingType->initialAmmo;
-        $describe .= "\n リロード時間:" . $reloadingType->secondToString();
-        $describe .= "\n 反動:" . $this->getReaction();
-        $describe .= "\n 精度:" . "ADS:" . $this->getPrecision()->getADS() . "腰撃ち:" . $this->getPrecision()->getHipShooting();
+        $describe .= "\n火";
+        if ($this instanceof Shotgun) {
+            if ($this->getBulletDamage()->getValue() * $this->getPellets() <= 100) {
+                $describe .= str_repeat(TextFormat::GREEN . "■", ceil($this->getBulletDamage()->getValue() * $this->getPellets() / 2.5));
+                $describe .= str_repeat(TextFormat::WHITE . "■", 40 - ceil(($this->getBulletDamage()->getValue() * $this->getPellets() / 2.5)));
+            } else {
+                $describe .= str_repeat(TextFormat::GREEN . "■", 40);
+            }
+        } else if ($this->getBulletDamage()->getValue() <= 100) {
+            $describe .= str_repeat(TextFormat::GREEN . "■", ceil($this->getBulletDamage()->getValue() / 2.5));
+            $describe .= str_repeat(TextFormat::WHITE . "■", 40 - ceil($this->getBulletDamage()->getValue() / 2.5));
+        } else {
+            $describe .= str_repeat(TextFormat::GREEN . "■", 40);
+        }
+
+        $describe .="\n" . TextFormat::WHITE . "速" ;
+        $describe .= str_repeat(TextFormat::GREEN . "■", ceil($this->getBulletSpeed()->getPerSecond() / 25));
+        $describe .= str_repeat(TextFormat::WHITE . "■", 40 - ceil(($this->getBulletSpeed()->getPerSecond() / 25)));
+
+        $describe .="\n" . TextFormat::WHITE . "ﾚｰﾄ" ;
+        $describe .= str_repeat(TextFormat::GREEN . "■", ceil($this->getRate()->getPerSecond())*2);
+        $describe .= str_repeat(TextFormat::WHITE . "■", 40 - ceil($this->getRate()->getPerSecond())*2);
+
+        $describe .= "\n" . TextFormat::WHITE . "装弾数:" . $reloadingType->magazineCapacity . "/" . $reloadingType->initialAmmo;
+        $describe .= "\n" . TextFormat::WHITE . "リロード時間:" . $reloadingType->secondToString();
+        $describe .= "\n" . TextFormat::WHITE . "反動:" . $this->getReaction();
+
+        $describe .= "\n" . TextFormat::WHITE . "精度:\n";
+        if ($this->getPrecision()->getADS() <= 60) {
+            $describe .= TextFormat::WHITE . "覗" . str_repeat(TextFormat::GREEN . "■", 1);
+            $describe .= str_repeat(TextFormat::WHITE . "■", 39);
+        } else {
+            $describe .= TextFormat::WHITE . "覗" . str_repeat(TextFormat::GREEN . "■", 40 - (100 - ceil($this->getPrecision()->getADS())));
+            $describe .= str_repeat(TextFormat::WHITE . "■", 100 - ceil($this->getPrecision()->getADS()));
+        }
+
+        if ($this->getPrecision()->getHipShooting() <= 60) {
+            $describe .= "\n" . TextFormat::WHITE . "腰" . str_repeat(TextFormat::GREEN . "■", 1);
+            $describe .= str_repeat(TextFormat::WHITE . "■", 39);
+
+        } else {
+            $describe .= "\n" . TextFormat::WHITE . "腰" . str_repeat(TextFormat::GREEN . "■", 40 - (100 - ceil($this->getPrecision()->getHipShooting())));
+            $describe .= str_repeat(TextFormat::WHITE . "■", 100 - ceil($this->getPrecision()->getHipShooting()));
+        }
+
         return $describe;
     }
 }
