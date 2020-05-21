@@ -115,10 +115,10 @@ class TwoTeamGameInterpreter
         foreach ($participants as $participant) {
             if ($participant->getBelongTeamId()->equal($winTeam->getId())) {
                 $this->usersService->addWinCount($participant->getName());
-                $point = $this->gameScoresService->getUserScore($participant->getName(),$this->game->getId())->getPoint();
-                $this->usersService->addMoney($participant->getName(), $point);
-                $this->usersService->addMoney($participant->getName(), 1000);
+               $this->usersService->addMoney($participant->getName(), 1000);
             }
+            $point = $this->gameScoresService->getUserScore($participant->getName(),$this->game->getId())->getPoint();
+            $this->usersService->addMoney($participant->getName(), $point);
             $this->usersService->quitGame($participant->getName());
         }
         $redTeamScores = $this->gameScoresService->getTeamScores($this->game->getRedTeam()->getId());
