@@ -20,6 +20,7 @@ use game_system\pmmp\client\TeamDeathMatchClient;
 use game_system\pmmp\client\TeamDominationClient;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
+use game_system\pmmp\Entity\CadaverEntity;
 use game_system\pmmp\Entity\FlameBottleEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\Entity\FragGrenadeEntity;
@@ -294,5 +295,9 @@ class TwoTeamGameListener
 
         $sandbag = new SandbagEntity($player->getLevel(), $player, $this->scheduler);
         $sandbag->spawnToAll();
+    }
+
+    public function resuscitate(Player $player, CadaverEntity $cadaverEntity): void {
+        $this->interpreter->resuscitate($player, $cadaverEntity);
     }
 }

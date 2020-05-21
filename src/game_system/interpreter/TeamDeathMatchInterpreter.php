@@ -12,9 +12,6 @@ class TeamDeathMatchInterpreter extends TwoTeamGameInterpreter
 {
     protected function onDead(Player $attackerPlayer, string $attackerWeaponName, Player $targetPlayer, User $attackerUser, User $targetUser): void {
         if ($attackerPlayer->getName() !== $targetPlayer->getName()) {
-            $this->gameScoresService->addKillCount($attackerUser->getName(),$this->getGameData()->getId());
-            $this->gameScoresService->addPoint($attackerUser->getName(),$this->getGameData()->getId(),10);
-
             $this->addScoreByKilling($attackerUser);
         }
 

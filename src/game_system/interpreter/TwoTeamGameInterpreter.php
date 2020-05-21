@@ -9,6 +9,7 @@ use game_system\model\Coordinate;
 use game_system\model\GadgetType;
 use game_system\model\TwoTeamGame;
 use game_system\model\User;
+use game_system\pmmp\Entity\CadaverEntity;
 use game_system\pmmp\items\FlameBottleItem;
 use game_system\pmmp\items\FragGrenadeItem;
 use game_system\pmmp\items\SandbagItem;
@@ -114,6 +115,8 @@ class TwoTeamGameInterpreter
         foreach ($participants as $participant) {
             if ($participant->getBelongTeamId()->equal($winTeam->getId())) {
                 $this->usersService->addWinCount($participant->getName());
+                $point = $this->gameScoresService->getUserScore($participant->getName(),$this->game->getId())->getPoint();
+                $this->usersService->addMoney($participant->getName(), $point);
                 $this->usersService->addMoney($participant->getName(), 1000);
             }
             $this->usersService->quitGame($participant->getName());
@@ -225,39 +228,10 @@ class TwoTeamGameInterpreter
 
     protected function onDead(Player $attackerPlayer, string $attackerWeaponName, Player $targetPlayer, User $attackerUser, User $targetUser): void {
         if ($attackerPlayer->getName() !== $targetPlayer->getName()) {
-            $attackerName = $attackerPlayer->getName();
+            $this->gameScoresService->addKillCount($attackerUser->getName(),$this->getGameData()->getId());
+            $this->gameScoresService->addPoint($attackerUser->getName(),$this->getGameData()->getId(),10);
             $this->weaponService->addKillCount($attackerPlayer->getName(), $attackerWeaponName);
-            $this->usersService->addMoney($attackerName, 100);
         }
-    }
-
-    private function getAmmo(string $weaponName): Item {
-        $weapon = GunList::fromString($weaponName);
-        $id = BulletId::fromGunType($weapon->getType());
-        switch ($weapon->getType()->getTypeText()) {
-            case GunType::HandGun()->getTypeText():
-                return ItemFactory::get($id, 0, 30);
-                break;
-            case GunType::AssaultRifle()->getTypeText():
-                return ItemFactory::get($id, 0, 30);
-                break;
-            case GunType::Shotgun()->getTypeText():
-                return ItemFactory::get($id, 0, 20);
-                break;
-            case GunType::SMG()->getTypeText():
-                return ItemFactory::get($id, 0, 30);
-                break;
-            case GunType::LMG()->getTypeText():
-                return ItemFactory::get($id, 0, 64);
-                break;
-            case GunType::SniperRifle()->getTypeText():
-                return ItemFactory::get($id, 0, 5);
-                break;
-            case GunType::Revolver()->getTypeText():
-                return ItemFactory::get($id, 0, 30);
-                break;
-        }
-        return ItemFactory::get(Item::COOKED_BEEF, 0, 30);
     }
 
     public function spawn(User $user, ?Coordinate $spawnPoint = null): void {
@@ -265,8 +239,6 @@ class TwoTeamGameInterpreter
 
         if (!$player->isOnline())
             return;
-
-        $player->setGamemode(Player::ADVENTURE);
 
         if ($user->getParticipatedGameId() === null)
             return;
@@ -353,5 +325,23 @@ class TwoTeamGameInterpreter
     public function displayParticipantCount(?int $count = null) {
         $count = $count ?? count($this->usersService->getParticipants($this->game->getId()));
         $this->client->displayParticipantCount($count);
+    }
+
+    public function resuscitate(Player $player, CadaverEntity $cadaverEntity) {
+        $user = $this->usersService->getUserData($player->getName());
+        $cadaverAsUser = $this->usersService->getUserData($cadaverEntity->getOwnerName());
+        $cadaverAsPlayer = Server::getInstance()->getPlayer($cadaverAsUser->getName());
+
+        if ($user->getBelongTeamId() === null || $cadaverAsUser->getBelongTeamId() === null) return;
+
+        if ($user->getBelongTeamId()->equal($cadaverAsUser->getBelongTeamId())) {
+            if ($cadaverAsPlayer->isOnline()) {
+                $this->spawn($cadaverAsUser,new Coordinate(
+                    $cadaverEntity->getX(),
+                    $cadaverEntity->getY(),
+                    $cadaverEntity->getZ()
+                ));
+            }
+        }
     }
 }

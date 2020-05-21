@@ -116,7 +116,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getCommandMap()->register("state", new StateCommand($this, $this->usersListener));
         $this->getServer()->getCommandMap()->register("world", new WorldCommand($this));
         $this->getServer()->getCommandMap()->register("npc", new NPCCommand($this));
-        $this->getServer()->getCommandMap()->register("ranking", new RankingCommand($this,$this->weaponsListener));
+        $this->getServer()->getCommandMap()->register("ranking", new RankingCommand($this, $this->weaponsListener));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);
@@ -430,6 +430,19 @@ class Main extends PluginBase implements Listener
 
     public function cancelDamage(EntityDamageEvent $event) {
         $event->setCancelled();
+    }
+
+    public function resuscitate(EntityDamageEvent $event) {
+        if ($event instanceof EntityDamageByEntityEvent) {
+            $entity = $event->getEntity();
+            $attacker = $event->getDamager();
+
+            if ($event->getCause() === $event::CAUSE_PROJECTILE) return;
+
+            if ($attacker instanceof Player && $entity instanceof \game_system\pmmp\Entity\CadaverEntity) {
+                $this->gameListener->resuscitate($attacker, $entity);
+            }
+        }
     }
 
     public function tapGadget(EntityDamageEvent $event) {

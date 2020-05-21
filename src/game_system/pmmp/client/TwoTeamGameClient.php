@@ -10,6 +10,7 @@ use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
 use game_system\model\Weapon;
+use game_system\pmmp\Entity\CadaverEntity;
 use game_system\pmmp\form\game_score_form\GameScoreForm;
 use game_system\pmmp\items\MilitaryDepartmentSelectItem;
 use game_system\pmmp\items\SpawnItem;
@@ -115,6 +116,16 @@ class TwoTeamGameClient
 
         if ($player === null) return;
 
+        $player->setGamemode(Player::ADVENTURE);
+
+        foreach ($player->getLevel()->getEntities() as $entity) {
+            if ($entity instanceof CadaverEntity) {
+                if ($entity->getOwnerName() === $player->getName()) {
+                    $entity->kill();
+                }
+            }
+        }
+
         $player->removeAllEffects();
         $player->addEffect(new EffectInstance(Effect::getEffect(Effect::HEALING), 20 * 5, 4, false));
 
@@ -192,13 +203,15 @@ class TwoTeamGameClient
     }
 
     private function onDead(Player $attacker, Player $target, string $weaponName, TaskScheduler $scheduler) {
-        $target->setGamemode(Player::SPECTATOR);
-        $target->getInventory()->setContents([]);
-        $target->teleport(new Vector3(
-            $attacker->getX(),
-            $attacker->getY() + 4,
-            $attacker->getZ()
-        ));
+        if (!$target->isOnline()) return;
+
+        $target->setHealth(10);
+        $cadaverEntity = new CadaverEntity($target->getLevel(), $target);
+        $cadaverEntity->spawnToAll();
+        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($cadaverEntity): void {
+            if ($cadaverEntity->isAlive()) $cadaverEntity->kill();
+        }), 20 * 30);
+
 
         //TODO:Titleにしたい
         $target->addTitle(TextFormat::RED . $attacker->getName() . "に倒された");
@@ -208,16 +221,18 @@ class TwoTeamGameClient
             $player->sendMessage($attacker->getNameTag() . TextFormat::WHITE . " " . $weaponName . " " . $target->getNameTag());
         }
 
-        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($target): void {
-            if (!$target->isOnline()) return;
+        $target->setGamemode(Player::SPECTATOR);
+        $target->teleport(new Vector3(
+            $cadaverEntity->getX(),
+            $cadaverEntity->getY() + 1,
+            $cadaverEntity->getZ()
+        ));
 
-            $target->setGamemode(Player::SPECTATOR);
-            $target->setHealth(20);
-            $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
-            $target->getInventory()->addItem(new WeaponSelectItem());
-            $target->getInventory()->addItem(new SubWeaponSelectItem());
-            $target->getInventory()->addItem(new SpawnItem());
-        }), 20 * 5);
+        $target->setHealth(20);
+        $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
+        $target->getInventory()->addItem(new WeaponSelectItem());
+        $target->getInventory()->addItem(new SubWeaponSelectItem());
+        $target->getInventory()->addItem(new SpawnItem());
     }
 
     public function setArmorAndNameTag(Player $player, string $tag, TeamID $userTeamId, TeamId $redTeamId) {

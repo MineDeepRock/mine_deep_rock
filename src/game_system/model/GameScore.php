@@ -55,4 +55,11 @@ class GameScore
     public function getName(): string {
         return $this->name;
     }
+
+    /**
+     * @return int
+     */
+    public function getPoint(): int {
+        return $this->point;
+    }
 }
