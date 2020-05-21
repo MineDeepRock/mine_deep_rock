@@ -19,8 +19,7 @@ class SandbagEntity extends GadgetEntity
     public $geometryId = "geometry.Sandbag";
     public $geometryName = "Sandbag.geo.json";
     public $width = 3;
-    public $height = 1.25;
-    public $scale = 1;
+    public $height = 1.1;
     protected $gravity = 2;
 
     public $defaultHP = 20;
