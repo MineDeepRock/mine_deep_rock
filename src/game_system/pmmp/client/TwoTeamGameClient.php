@@ -6,6 +6,8 @@ namespace game_system\pmmp\client;
 
 use easy_scoreboard_api\EasyScoreboardAPI;
 use game_system\model\Coordinate;
+use game_system\model\FlameBottle;
+use game_system\model\FragGrenade;
 use game_system\model\Team;
 use game_system\model\TeamId;
 use game_system\model\User;
@@ -207,11 +209,19 @@ class TwoTeamGameClient
         if (!$target->isOnline()) return;
 
         $target->setHealth(10);
-        $cadaverEntity = new CadaverEntity($target->getLevel(), $target);
-        $cadaverEntity->spawnToAll();
-        $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($cadaverEntity): void {
-            if ($cadaverEntity->isAlive()) $cadaverEntity->kill();
-        }), 20 * 30);
+        if ($weaponName === FlameBottle::NAME) {
+            $cadaverEntity = new CadaverEntity($target->getLevel(), $target);
+            $cadaverEntity->spawnToAll();
+            $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($cadaverEntity): void {
+                if ($cadaverEntity->isAlive()) $cadaverEntity->kill();
+            }), 20 * 10);
+        } else if($weaponName !== FragGrenade::NAME) {
+            $cadaverEntity = new CadaverEntity($target->getLevel(), $target);
+            $cadaverEntity->spawnToAll();
+            $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($cadaverEntity): void {
+                if ($cadaverEntity->isAlive()) $cadaverEntity->kill();
+            }), 20 * 20);
+        }
 
 
         //TODO:Titleにしたい
