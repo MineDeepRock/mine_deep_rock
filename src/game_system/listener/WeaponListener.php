@@ -4,6 +4,7 @@
 namespace game_system\listener;
 
 
+use game_system\model\Weapon;
 use game_system\pmmp\form\sub_weapon_select_form\SubWeaponSelectForm;
 use game_system\pmmp\form\trial_weapon_select_form\TrialWeaponSelectForm;
 use game_system\pmmp\form\weapon_purchase_form\WeaponPurchaseForm;
@@ -96,5 +97,14 @@ class WeaponListener
             $this->usersService->selectSubWeapon($playerName, $weaponName);
             $this->weaponService->setScope($playerName, $weaponName, $scopeName);
         }, $this->weaponService->getOwnWeapons($playerName)));
+    }
+
+    public function displayRanking(Player $player, string $weaponName, int $limit): void {
+        $weapons = $this->weaponService->getRanking($weaponName, $limit);
+        $message = "";
+        foreach ($weapons as $weapon) {
+            $message .= $weapon->getOwnerName() . ":" . $weapon->getKillCount() . "\n";
+        }
+        $player->sendMessage($message);
     }
 }

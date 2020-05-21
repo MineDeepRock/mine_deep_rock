@@ -23,3 +23,6 @@ permissions:
       NPC.Command:
         default: true
         description: "ワールドコマンド"
+      Ranking.Command:
+        default: true
+        description: "ランキングコマンド"

@@ -6,6 +6,7 @@ use game_system\listener\UsersListener;
 use game_system\listener\WeaponListener;
 use game_system\pmmp\command\GameCommand;
 use game_system\pmmp\command\NPCCommand;
+use game_system\pmmp\command\RankingCommand;
 use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
@@ -115,6 +116,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getCommandMap()->register("state", new StateCommand($this, $this->usersListener));
         $this->getServer()->getCommandMap()->register("world", new WorldCommand($this));
         $this->getServer()->getCommandMap()->register("npc", new NPCCommand($this));
+        $this->getServer()->getCommandMap()->register("ranking", new RankingCommand($this,$this->weaponsListener));
 
 
         ItemFactory::registerItem(new ItemAssaultRifleBullet(), true);

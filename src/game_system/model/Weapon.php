@@ -50,4 +50,11 @@ class Weapon extends ValueObject
     public function getScope(): string {
         return $this->scope;
     }
+
+    /**
+     * @return string
+     */
+    public function getOwnerName(): string {
+        return $this->ownerName;
+    }
 }

@@ -62,4 +62,22 @@ class WeaponsRepository extends Repository
             die($sql_error);
         }
     }
+
+    public function getRanking(string $weaponName, int $limit): array {
+        $result = $this->db->query("SELECT * FROM weapons WHERE name='{$weaponName}' ORDER BY kill_count DESC LIMIT {$limit}");
+
+        $weapons = [];
+
+        if ($result->num_rows === 0) {
+            return $weapons;
+        }
+        if ($result->num_rows === 1) {
+            return [Weapon::fromJson($result->fetch_assoc())];
+        }
+
+        while ($row = $result->fetch_assoc())
+            array_push($weapons, Weapon::fromJson($row));
+
+        return $weapons;
+    }
 }

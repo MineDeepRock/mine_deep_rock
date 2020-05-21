@@ -8,7 +8,7 @@ use game_system\model\Weapon;
 use game_system\repository\WeaponsRepository;
 use Service;
 
-class WeaponsService extends Service
+class  WeaponsService extends Service
 {
     private $repository;
 
@@ -21,8 +21,8 @@ class WeaponsService extends Service
         return in_array($weaponName, $ownWeapons);
     }
 
-    public function getWeapon(string $ownerName,string $weaponName): Weapon {
-        return $this->repository->getWeapon($ownerName,$weaponName);
+    public function getWeapon(string $ownerName, string $weaponName): Weapon {
+        return $this->repository->getWeapon($ownerName, $weaponName);
     }
 
     public function getOwnWeapons(string $ownerName): array {
@@ -38,6 +38,10 @@ class WeaponsService extends Service
     }
 
     public function setScope(string $ownerName, string $weaponName, string $scopeName): void {
-        $this->repository->setScope($ownerName, $weaponName,$scopeName);
+        $this->repository->setScope($ownerName, $weaponName, $scopeName);
+    }
+
+    public function getRanking(string $weaponName, int $limit): array {
+        return $this->repository->getRanking($weaponName, $limit);
     }
 }
