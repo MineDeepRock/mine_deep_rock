@@ -105,10 +105,6 @@ class TwoTeamGameInterpreter
     }
 
     protected function onFinished(): void {
-        $level = Server::getInstance()->getLevelByName($this->game->getMap()->getName());
-        foreach ($level->getEntities() as $entity) {
-            if (!($entity instanceof Player)) $entity->kill();
-        }
 
         $this->taskHandler->cancel();
         $participants = $this->usersService->getParticipants($this->game->getId());
@@ -299,7 +295,7 @@ class TwoTeamGameInterpreter
             $selectedSubWeapon,
             $selectedSubWeaponType,
             $mapName,
-            $spawnPoint ?? $this->game->getSpawnPoint($user->getBelongTeamId()));
+            $spawnPoint ?? $this->getGameData()->getSpawnPoint($user->getBelongTeamId()));
     }
 
     public function closeGame(): bool {

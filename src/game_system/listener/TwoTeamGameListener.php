@@ -12,6 +12,7 @@ use game_system\model\GameId;
 use game_system\model\GameType;
 use game_system\model\map\ApocalypticCity;
 use game_system\model\map\ApocalypticCityForDomination;
+use game_system\model\map\VoForDomination;
 use game_system\model\map\WaterfrontHome;
 use game_system\model\SpawnBeacon;
 use game_system\model\TeamDeathMatch;
@@ -75,7 +76,7 @@ class TwoTeamGameListener
         return $this->interpreter->getGameData()->getId();
     }
 
-    public function initGame(GameType $gameType): bool {
+    public function initGame(GameType $gameType): void {
         if ($gameType->equal(GameType::TeamDeathMatch())) {
             $this->interpreter = new TeamDeathMatchInterpreter(
                 new TeamDeathMatchClient(),
@@ -88,9 +89,14 @@ class TwoTeamGameListener
             $match = new TeamDeathMatch([
                 new ApocalypticCity(),
                 new WaterfrontHome()][rand(0, 1)]);
-            return $this->interpreter->init($match, 600, function () use ($gameType) {
+            $this->interpreter->init($match, 600, function () use ($gameType) {
                 $this->onFinished($gameType);
             });
+
+            $level = Server::getInstance()->getLevelByName($this->interpreter->getGameData()->getMap()->getName());
+            foreach ($level->getEntities() as $entity) {
+                if (!($entity instanceof Player)) $entity->kill();
+            }
         } else if ($gameType->equal(GameType::TeamDomination())) {
             $this->interpreter = new TeamDominationInterpreter(
                 new TeamDominationClient(),
@@ -99,13 +105,16 @@ class TwoTeamGameListener
                 $this->gameScoresService,
                 $this->scheduler
             );
-            $match = new TeamDomination(new ApocalypticCityForDomination());
-            return $this->interpreter->init($match, 600, function () use ($gameType) {
+            $match = new TeamDomination(new VoForDomination());
+            $this->interpreter->init($match, 600, function () use ($gameType) {
                 $this->onFinished($gameType);
             });
-        }
 
-        return false;
+            $level = Server::getInstance()->getLevelByName($this->interpreter->getGameData()->getMap()->getName());
+            foreach ($level->getEntities() as $entity) {
+                if (!($entity instanceof Player)) $entity->kill();
+            }
+        }
     }
 
     protected function onFinished(?GameType $gameType) {
