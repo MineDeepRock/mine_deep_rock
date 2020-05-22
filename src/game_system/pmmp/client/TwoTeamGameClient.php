@@ -72,11 +72,11 @@ class TwoTeamGameClient
             $api = EasyScoreboardAPI::getInstance();
             $api->deleteScoreboard($player, "sidebar");
 
+            $player->getInventory()->setContents([]);
             $player->getInventory()->addItem(new MilitaryDepartmentSelectItem());
             $player->getInventory()->addItem(new WeaponSelectItem());
             $player->getInventory()->addItem(new SubWeaponSelectItem());
 
-            $player->getInventory()->setContents([]);
             $player->setGamemode(Player::ADVENTURE);
             $worldController->teleport($player, "lobby");
 
@@ -209,6 +209,7 @@ class TwoTeamGameClient
         if (!$target->isOnline()) return;
 
         $target->setHealth(10);
+        $cadaverEntity = null;
         if ($weaponName === FlameBottle::NAME) {
             $cadaverEntity = new CadaverEntity($target->getLevel(), $target);
             $cadaverEntity->spawnToAll();
@@ -232,11 +233,20 @@ class TwoTeamGameClient
         }
 
         $target->setGamemode(Player::SPECTATOR);
-        $target->teleport(new Vector3(
-            $cadaverEntity->getX(),
-            $cadaverEntity->getY() + 1,
-            $cadaverEntity->getZ()
-        ));
+        if ($cadaverEntity !== null) {
+            $target->teleport(new Vector3(
+                $cadaverEntity->getX(),
+                $cadaverEntity->getY() + 1,
+                $cadaverEntity->getZ()
+            ));
+        } else {
+            $target->teleport(new Vector3(
+                $target->getX(),
+                $target->getY() + 1,
+                $target->getZ()
+            ));
+        }
+
 
         $target->getInventory()->setContents([]);
         $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
