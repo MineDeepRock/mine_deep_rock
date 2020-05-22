@@ -15,8 +15,8 @@ class VoForDomination extends TeamDominationMap
             [
                 new Coordinate(-296, 36, -168),
                 new Coordinate(-292, 36, -165),
-                new Coordinate(-312, 34, -58),
-                new Coordinate(-316, 34, -51),
+                new Coordinate(-312, 34, -158),
+                new Coordinate(-316, 34, -151),
                 new Coordinate(-321, 35, -156),
                 new Coordinate(-332, 35, -155),
                 new Coordinate(-339, 35, -155),
