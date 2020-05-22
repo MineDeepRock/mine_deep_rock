@@ -4,17 +4,13 @@
 namespace game_system\interpreter;
 
 
-use game_system\model\AmmoBox;
-use game_system\model\Coordinate;
-use game_system\model\military_department\AssaultSoldier;
 use game_system\model\military_department\Engineer;
-use game_system\model\military_department\Scout;
 use game_system\pmmp\client\AmmoBoxClient;
+use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
-use gun_system\models\GunList;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -31,11 +27,10 @@ class AmmoBoxInterpreter
 
     private $owner;
     private $ownerTeamId;
-    private $ammoBox;
+    private $gameId;
 
     function __construct(
         Player $player,
-        Coordinate $coordinate,
         UsersService $usersService,
         WeaponsService $weaponService,
         GameScoresService $gameScoresService,
@@ -46,28 +41,26 @@ class AmmoBoxInterpreter
         $this->client = new AmmoBoxClient();
         $this->scheduler = $scheduler;
 
-        $this->ammoBox = new AmmoBox($coordinate);
         $this->owner = $player;
         $user = $this->usersService->getUserData($player->getName());
-        $gameId = $user->getParticipatedGameId();
+        $this->gameId = $user->getParticipatedGameId();
         $this->ownerTeamId = $user->getBelongTeamId();
+    }
 
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($gameId): void {
+    public function carryOut(AmmoBoxEntity $ammoBoxEntity) {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($ammoBoxEntity): void {
             if (!$this->owner->isOnline()) {
                 $this->stop();
             } else {
                 $this->client->summonParticle(
                     $this->owner->getLevel(),
-                    new Vector3(
-                        $this->ammoBox->getCoordinate()->getX(),
-                        $this->ammoBox->getCoordinate()->getY(),
-                        $this->ammoBox->getCoordinate()->getZ()));
-                foreach ($this->getAroundTeamPlayers() as $player) {
+                    $ammoBoxEntity->getPosition());
+                foreach ($this->getAroundTeamPlayers($ammoBoxEntity->getPosition()) as $player) {
                     $this->client->useAmmoBox(
                         $this->owner,
                         $player,
-                        function () use ($gameId) {
-                            $this->gameScoresService->addPoint($this->owner->getName(), $gameId, 2);
+                        function () {
+                            $this->gameScoresService->addPoint($this->owner->getName(), $this->gameId, 2);
                         });
                 }
             }
@@ -79,27 +72,19 @@ class AmmoBoxInterpreter
         $this->giveAgain();
     }
 
-    public function getAmmoBox(): AmmoBox {
-        return $this->ammoBox;
-    }
 
-    private function getAroundTeamPlayers(): array {
+    private function getAroundTeamPlayers(Vector3 $pos): array {
         if ($this->owner->getLevel() === null) {
             return [];
         }
         $players = $this->owner->getLevel()->getPlayers();
-        return array_filter($players, function ($player) {
+        return array_filter($players, function ($player) use ($pos) {
             $belongTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
             if ($this->ownerTeamId === null) return false;
             if ($belongTeamId === null) return false;
             if (!$this->ownerTeamId->equal($belongTeamId)) return false;
-            $ammoPosition = new Vector3(
-                $this->ammoBox->getCoordinate()->getX(),
-                $this->ammoBox->getCoordinate()->getY(),
-                $this->ammoBox->getCoordinate()->getZ()
-            );
 
-            return $ammoPosition->distance($player->getPosition()) < 6;
+            return $pos->distance($player->getPosition()) < 6;
         });
     }
 

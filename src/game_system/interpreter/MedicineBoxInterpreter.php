@@ -8,6 +8,7 @@ use game_system\model\Coordinate;
 use game_system\model\MedicineBox;
 use game_system\model\military_department\NursingSoldier;
 use game_system\pmmp\client\MedicineBoxClient;
+use game_system\pmmp\Entity\MedicineBoxEntity;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -26,12 +27,11 @@ class MedicineBoxInterpreter
 
     private $owner;
     private $ownerTeamId;
-    private $medicineBox;
+    private $gameId;
 
 
     function __construct(
         Player $player,
-        Coordinate $coordinate,
         UsersService $usersService,
         GameScoresService $gameScoresService,
         TaskScheduler $scheduler) {
@@ -40,24 +40,22 @@ class MedicineBoxInterpreter
         $this->client = new MedicineBoxClient();
         $this->scheduler = $scheduler;
 
-        $this->medicineBox = new MedicineBox($coordinate);
         $this->owner = $player;
         $user = $this->usersService->getUserData($player->getName());
-        $gameId = $user->getParticipatedGameId();
+        $this->gameId = $user->getParticipatedGameId();
         $this->ownerTeamId = $user->getBelongTeamId();
+    }
 
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($gameId): void {
+    public function carryOut(MedicineBoxEntity $medicineBoxEntity): void {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($medicineBoxEntity): void {
             if (!$this->owner->isOnline()) {
                 $this->stop();
             } else {
                 $this->client->summonParticle(
                     $this->owner->getLevel(),
-                    new Vector3(
-                        $this->medicineBox->getCoordinate()->getX(),
-                        $this->medicineBox->getCoordinate()->getY(),
-                        $this->medicineBox->getCoordinate()->getZ()));
-                foreach ($this->getAroundTeamPlayers() as $player) {
-                    $this->gameScoresService->addPoint($this->owner->getName(),$gameId,2);
+                    $medicineBoxEntity->getPosition());
+                foreach ($this->getAroundTeamPlayers($medicineBoxEntity->getPosition()) as $player) {
+                    $this->gameScoresService->addPoint($this->owner->getName(), $this->gameId, 2);
                     $this->client->useMedicineBox($this->owner, $player);
                 }
             }
@@ -69,31 +67,22 @@ class MedicineBoxInterpreter
         $this->giveAgain();
     }
 
-    public function getMedicineBox(): MedicineBox {
-        return $this->medicineBox;
-    }
-
-    private function getAroundTeamPlayers(): array {
+    private function getAroundTeamPlayers(Vector3 $pos): array {
         if ($this->owner->getLevel() === null) {
             return [];
         }
         $players = $this->owner->getLevel()->getPlayers();
-        return array_filter($players, function ($player) {
+        return array_filter($players, function ($player) use($pos) {
             $belongTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
             if ($this->ownerTeamId === null) return false;
             if ($belongTeamId === null) return false;
             if (!$this->ownerTeamId->equal($belongTeamId)) return false;
-            $ammoPosition = new Vector3(
-                $this->medicineBox->getCoordinate()->getX(),
-                $this->medicineBox->getCoordinate()->getY(),
-                $this->medicineBox->getCoordinate()->getZ()
-            );
 
-            return $ammoPosition->distance($player->getPosition()) < 6;
+            return $pos->distance($player->getPosition()) < 6;
         });
     }
 
-    public function giveAgain(): void {
+    private function giveAgain(): void {
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if (!$this->owner->isOnline()) return;
             if ($this->owner->getGamemode() !== Player::ADVENTURE) return;

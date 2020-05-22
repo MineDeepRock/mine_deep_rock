@@ -34,14 +34,12 @@ class AmmoBoxEntity extends BoxEntity
         parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new AmmoBoxInterpreter(
             $owner,
-            new Coordinate(
-                $this->getX(),
-                $this->getY(),
-                $this->getZ()),
             $usersService,
             $weaponService,
             $gameScoresService,
             $scheduler);
+
+        $this->interpreter->carryOut($this);
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();

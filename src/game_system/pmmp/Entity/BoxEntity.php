@@ -22,9 +22,9 @@ abstract class BoxEntity extends GadgetEntity
                     new DoubleTag('', $owner->getZ())
                 ]),
                 'Motion' => new ListTag('Motion', [
-                    new DoubleTag('', 0),
-                    new DoubleTag('', 0),
-                    new DoubleTag('', 0)
+                    new DoubleTag('', $owner->getDirectionVector()->getX()),
+                    new DoubleTag('', $owner->getDirectionVector()->getY()),
+                    new DoubleTag('', $owner->getDirectionVector()->getZ())
                 ]),
                 'Rotation' => new ListTag('Rotation', [
                     new FloatTag("", $owner->getYaw()),

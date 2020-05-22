@@ -8,6 +8,7 @@ use game_system\model\Coordinate;
 use game_system\model\FlareBox;
 use game_system\model\military_department\Scout;
 use game_system\pmmp\client\FlareBoxClient;
+use game_system\pmmp\Entity\FlareBoxEntity;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -26,10 +27,9 @@ class FlareBoxInterpreter
 
     private $owner;
     private $ownerTeamId;
-    private $flareBox;
+    private $gameId;
 
     function __construct(
-        Coordinate $coordinate,
         Player $player,
         UsersService $usersService,
         GameScoresService $gameScoresService,
@@ -39,31 +39,29 @@ class FlareBoxInterpreter
         $this->client = new FlareBoxClient();
         $this->scheduler = $scheduler;
 
-        $this->flareBox = new FlareBox($coordinate);
         $this->owner = $player;
         $user = $this->usersService->getUserData($player->getName());
-        $gameId = $user->getParticipatedGameId();
+        $this->gameId = $user->getParticipatedGameId();
         $this->ownerTeamId = $user->getBelongTeamId();
+    }
 
-        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($gameId): void {
+    public function carryOut(FlareBoxEntity $flareBoxEntity) {
+        $this->handler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $tick) use ($flareBoxEntity): void {
             if (!$this->owner->isOnline()) {
                 $this->stop();
             } else {
                 $this->client->summonParticle(
                     $this->owner->getLevel(),
-                    new Vector3(
-                        $this->flareBox->getCoordinate()->getX(),
-                        $this->flareBox->getCoordinate()->getY(),
-                        $this->flareBox->getCoordinate()->getZ()));
-                foreach ($this->getAroundEnemyPlayers() as $player) {
-                    $this->gameScoresService->addPoint($this->owner->getName(), $gameId, 2);
+                    $flareBoxEntity->getPosition());
+                foreach ($this->getAroundEnemyPlayers($flareBoxEntity->getPosition()) as $player) {
+                    $this->gameScoresService->addPoint($this->owner->getName(), $this->gameId, 2);
                     $this->effectOn($player);
                 }
             }
         }), 20 * 2, 20 * 5);
     }
 
-    public function effectOn(Player $player): void {
+    private function effectOn(Player $player): void {
         $this->client->effectOn($this->owner, $player);
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player): void {
             if ($player->isOnline()) {
@@ -72,7 +70,7 @@ class FlareBoxInterpreter
         }), 20 * 4);
     }
 
-    public function release(Player $player): void {
+    private function release(Player $player): void {
         $this->client->release($player);
     }
 
@@ -81,23 +79,18 @@ class FlareBoxInterpreter
         $this->giveAgain();
     }
 
-    private function getAroundEnemyPlayers(): array {
+    private function getAroundEnemyPlayers(Vector3 $pos): array {
         if ($this->owner->getLevel() === null) {
             return [];
         }
         $players = $this->owner->getLevel()->getPlayers();
-        return array_filter($players, function ($player) {
+        return array_filter($players, function ($player) use($pos) {
             $belongTeamId = $this->usersService->getUserData($player->getName())->getBelongTeamId();
             if ($this->ownerTeamId === null) return false;
             if ($belongTeamId === null) return false;
             if ($this->ownerTeamId->equal($belongTeamId)) return false;
-            $flarePosition = new Vector3(
-                $this->flareBox->getCoordinate()->getX(),
-                $this->flareBox->getCoordinate()->getY(),
-                $this->flareBox->getCoordinate()->getZ()
-            );
 
-            return $flarePosition->distance($player->getPosition()) <= 25;
+            return $pos->distance($player->getPosition()) <= 25;
         });
     }
 
@@ -115,9 +108,5 @@ class FlareBoxInterpreter
 
             $this->owner->getInventory()->addItem(new SpawnFlareBoxItem());
         }), 20 * 10);
-    }
-
-    public function getFlareBox(): FlareBox {
-        return $this->flareBox;
     }
 }

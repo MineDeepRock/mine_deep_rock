@@ -26,7 +26,6 @@ class FlareBoxEntity extends BoxEntity
 
     private $interpreter;
     private $handler;
-    private $isOnGroundHandler;
 
     public function __construct(
         Level $level,
@@ -34,41 +33,16 @@ class FlareBoxEntity extends BoxEntity
         UsersService $usersService,
         GameScoresService $gameScoresService,
         TaskScheduler $scheduler) {
-        $nbt = new CompoundTag('', [
-            'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $owner->getX()),
-                new DoubleTag('', $owner->getY() + $owner->getEyeHeight()),
-                new DoubleTag('', $owner->getZ())
-            ]),
-            'Motion' => new ListTag('Motion', [
-                new DoubleTag('', $owner->getDirectionVector()->getX()),
-                new DoubleTag('', $owner->getDirectionVector()->getY()),
-                new DoubleTag('', $owner->getDirectionVector()->getZ())
-            ]),
-            'Rotation' => new ListTag('Rotation', [
-                new FloatTag("", $owner->getYaw()),
-                new FloatTag("", $owner->getPitch())
-            ]),
-        ]);
-
-        parent::__construct($level, $owner, $scheduler, $nbt);
+        parent::__construct($level, $owner, $scheduler);
         $this->setMotion($this->getMotion()->multiply(1.5));
 
+        $this->interpreter = new FlareBoxInterpreter(
+            $owner,
+            $usersService,
+            $gameScoresService,
+            $scheduler);
 
-        $this->isOnGroundHandler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick) use ($owner, $usersService, $gameScoresService, $scheduler): void {
-            if ($this->isOnGround()) {
-                $this->interpreter = new FlareBoxInterpreter(
-                    new Coordinate(
-                        $this->getX(),
-                        $this->getY(),
-                        $this->getZ()),
-                    $owner,
-                    $usersService,
-                    $gameScoresService,
-                    $scheduler);
-                $this->isOnGroundHandler->cancel();
-            }
-        }), 20 * 0.5);
+        $this->interpreter->carryOut($this);
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();

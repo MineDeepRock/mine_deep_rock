@@ -5,7 +5,6 @@ namespace game_system\pmmp\Entity;
 
 
 use game_system\interpreter\MedicineBoxInterpreter;
-use game_system\model\Coordinate;
 use game_system\model\MedicineBox;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
@@ -32,13 +31,11 @@ class MedicineBoxEntity extends BoxEntity
         parent::__construct($level, $owner, $scheduler);
         $this->interpreter = new MedicineBoxInterpreter(
             $owner,
-            new Coordinate(
-                $this->getX(),
-                $this->getY(),
-                $this->getZ()),
             $usersService,
             $gameScoresService,
             $scheduler);
+
+        $this->interpreter->carryOut($this);
 
         $this->handler = $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick): void {
             if ($this->isAlive()) $this->kill();
