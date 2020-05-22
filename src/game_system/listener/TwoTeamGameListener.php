@@ -279,6 +279,14 @@ class TwoTeamGameListener
     public function spawnSpawnBeacon(Player $player) {
         $player->getInventory()->remove(new SpawnBeaconItem());
 
+        foreach ($player->getLevel()->getEntities() as $entity) {
+            if ($entity instanceof SpawnBeaconEntity) {
+                if ($entity->getOwnerName() === $player->getName()) {
+                    $entity->kill();
+                }
+            }
+        }
+
         $fragGrenade = new SpawnBeaconEntity(
             $player->getLevel(),
             $player,
