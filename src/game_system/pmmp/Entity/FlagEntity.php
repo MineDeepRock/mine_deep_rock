@@ -12,6 +12,7 @@ class FlagEntity extends NPCBase
 {
     public $width = 0.05;
     public $height = 3;
+    public $scale = 2;
 
     public $skinName = "WhiteFlag";
     public $geometryId = "geometry.Flag";
