@@ -223,7 +223,6 @@ class TwoTeamGameClient
             }), 20 * 20);
         }
 
-
         //TODO:Titleにしたい
         $target->addTitle(TextFormat::RED . $attacker->getName() . "に倒された");
 
@@ -239,6 +238,7 @@ class TwoTeamGameClient
             $cadaverEntity->getZ()
         ));
 
+        $target->getInventory()->setContents([]);
         $target->getInventory()->addItem(new MilitaryDepartmentSelectItem());
         $target->getInventory()->addItem(new WeaponSelectItem());
         $target->getInventory()->addItem(new SubWeaponSelectItem());

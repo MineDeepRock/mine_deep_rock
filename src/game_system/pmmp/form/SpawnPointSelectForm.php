@@ -27,9 +27,16 @@ class SpawnPointSelectForm implements Form
             return;
         }
 
-        $buttons = $this->flags + $this->spawnBeacons;
+        $spawnPoints = [];
+        foreach ($this->flags as $flag) {
+            $spawnPoints[] = $flag;
+        }
 
-        ($this->onSelected)($buttons[$data]);
+        foreach ($this->spawnBeacons as $spawnBeacon) {
+            $spawnPoints[] = $spawnBeacon;
+        }
+
+        ($this->onSelected)($spawnPoints[$data]);
     }
 
     public function jsonSerialize() {
