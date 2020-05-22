@@ -99,7 +99,7 @@ class Main extends PluginBase implements Listener
     function onEnable() {
         //TODO
         $world = new WorldController();
-        $world->loadWorld("Apocalyptic City");
+        $world->loadWorld("vo");
 
         $effectiveRangeLoader = new EffectiveRangeLoader();
         $effectiveRangeLoader->loadAll();
@@ -512,5 +512,9 @@ class Main extends PluginBase implements Listener
             if ($from->distance($to) < 0.0011) return;
             $event->setCancelled();
         }
+    }
+
+    public function cancelExhausting(\pocketmine\event\player\PlayerExhaustEvent $event) {
+        $event->setCancelled();
     }
 }
