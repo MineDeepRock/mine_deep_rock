@@ -78,14 +78,6 @@ abstract class GunInterpreter
         $this->shootingController->whenBecomeReady = $whenBecomeReady;
     }
 
-    public function aim(): void {
-        $this->isADS = true;
-    }
-
-    public function cancelAim(): void {
-        $this->isADS = false;
-    }
-
     public function scare(Closure $onFinished): void {
         $this->gun->setPrecision(new GunPrecision($this->gun->getPrecision()->getADS() - 3, $this->gun->getPrecision()->getHipShooting() - 3));
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $currentTick): void {
@@ -165,7 +157,7 @@ abstract class GunInterpreter
             return;
         }
 
-        if ($this->gun->getType()->equal(GunType::LMG()) && !$this->isADS) {
+        if ($this->gun->getType()->equal(GunType::LMG()) && !$this->owner->isSneaking()) {
             $this->shootingController->delayShoot(1 / $this->gun->getRate()->getPerSecond(), function (): void {
                 $this->client->shoot($this->reloadingController->currentBullet, $this->reloadingController->magazineCapacity, $this->scheduler);
             });
