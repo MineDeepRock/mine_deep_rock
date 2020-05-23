@@ -31,7 +31,9 @@ class GunSystemListener extends Client
         if (is_subclass_of($item, "gun_system\pmmp\items\ItemGun")) {
             if (!$player->getInventory()->contains(ItemFactory::get(Item::ARROW, 0, 1))) {
                 $player->sendMessage("矢がないと銃を撃つことはできません");
-            } else if (!($item instanceof ItemSniperRifle)) {
+            } else if ($item instanceof ItemSniperRifle) {
+                $item->aim();
+            } else {
                 $item->shoot();
             }
         }

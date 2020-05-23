@@ -18,4 +18,8 @@ class ItemSniperRifle extends ItemGun
         $player->getInventory()->sendContents($player);
         return true;
     }
+
+    public function aim(): void {
+        $this->gunInterpreter->aim();
+    }
 }

@@ -8,6 +8,7 @@ use gun_system\models\sniper_rifle\attachment\scope\IronSightForSR;
 use gun_system\models\sniper_rifle\attachment\scope\SniperRifleScope;
 use gun_system\models\sniper_rifle\SniperRifle;
 use gun_system\pmmp\GunSounds;
+use pocketmine\network\mcpe\protocol\PlayerActionPacket;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -22,6 +23,10 @@ class SniperRifleInterpreter extends GunInterpreter
         $this->setWhenBecomeReady(function () {
             GunSounds::play($this->owner, GunSounds::SniperRifleCocking());
         });
+    }
+
+    public function aim(): void {
+        //TODO:スニークさせたい
     }
 
     /**
