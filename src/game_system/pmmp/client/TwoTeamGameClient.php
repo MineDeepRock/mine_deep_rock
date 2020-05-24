@@ -4,7 +4,9 @@
 namespace game_system\pmmp\client;
 
 
+use bossbarapi\bossbar\BossBar;
 use easy_scoreboard_api\EasyScoreboardAPI;
+use bossbarapi\BossBarAPI;
 use game_system\model\Coordinate;
 use game_system\model\FlameBottle;
 use game_system\model\FragGrenade;
@@ -23,6 +25,7 @@ use gun_system\pmmp\GunSounds;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
+use pocketmine\entity\Entity;
 use pocketmine\item\GoldBoots;
 use pocketmine\item\GoldChestplate;
 use pocketmine\item\GoldHelmet;
@@ -35,6 +38,7 @@ use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\BossEventPacket;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
@@ -216,7 +220,7 @@ class TwoTeamGameClient
             $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($cadaverEntity): void {
                 if ($cadaverEntity->isAlive()) $cadaverEntity->kill();
             }), 20 * 10);
-        } else if($weaponName !== FragGrenade::NAME) {
+        } else if ($weaponName !== FragGrenade::NAME) {
             $cadaverEntity = new CadaverEntity($target->getLevel(), $target);
             $cadaverEntity->spawnToAll();
             $scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($cadaverEntity): void {
@@ -275,9 +279,8 @@ class TwoTeamGameClient
     public function displayBaseGameScoreboard(Player $player, $redTeamScore, $blueTeamScore): void {
         $api = EasyScoreboardAPI::getInstance();
         $api->sendScoreboard($player, "sidebar", $this->gameName, false);
-        $api->setScore($player, "sidebar", "============", 0, 0);
-        $this->updateRedTeamScoreboard($player, $redTeamScore);
-        $this->updateBlueTeamScoreboard($player, $blueTeamScore);
+        BossBar::create($player);
+        $this->updateBossBarScore($player, $redTeamScore, $blueTeamScore);
     }
 
     public function displayParticipantCount(int $count) {
@@ -285,8 +288,8 @@ class TwoTeamGameClient
         $api = EasyScoreboardAPI::getInstance();
         foreach ($lobbyPlayers as $player) {
             if (!$api->hasScoreboard($player, "sidebar")) {
+                BossBar::create($player);
                 $api->sendScoreboard($player, "sidebar", "MineDeepRock", false);
-                $api->setScore($player, "sidebar", "============", 0, 0);
             }
             $api->removeScore($player, "sidebar", 1);
             $api->setScore($player, "sidebar", "参加人数:" . $count, 1, 1);
@@ -298,21 +301,14 @@ class TwoTeamGameClient
 
         $api = EasyScoreboardAPI::getInstance();
         foreach ($players as $player) {
-            $api->removeScore($player, "sidebar", 1);
-            $api->setScore($player, "sidebar", "残り時間:" . $time, 1, 1);
+            $bossBar = BossBarAPI::getInstance()->getBossBar($player);
+            $bossBar->setPercentage($time / 600);
         }
     }
 
-    public function updateRedTeamScoreboard(Player $player, int $score): void {
-        $api = EasyScoreboardAPI::getInstance();
-        $api->removeScore($player, "sidebar", 2);
-        $api->setScore($player, "sidebar", TextFormat::RED . "Red:" . TextFormat::WHITE . $score, 2, 2);
-    }
-
-    public function updateBlueTeamScoreboard(Player $player, int $score): void {
-        $api = EasyScoreboardAPI::getInstance();
-        $api->removeScore($player, "sidebar", 3);
-        $api->setScore($player, "sidebar", TextFormat::BLUE . "Blue:" . TextFormat::WHITE . $score, 3, 3);
+    public function updateBossBarScore(Player $player, int $redScore, int $blueScore): void {
+        $bossBar = BossBarAPI::getInstance()->getBossBar($player);
+        $bossBar->setTitle(TextFormat::BLUE . "Red:" . TextFormat::WHITE . $redScore . "---" . TextFormat::RED . "Blue:" . TextFormat::WHITE . $blueScore);
     }
 
     public function quitGame(string $userName): void {

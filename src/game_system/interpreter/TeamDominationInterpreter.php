@@ -99,12 +99,12 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         if ($flag->isRedTeams()) {
             foreach ($players as $player) {
                 $this->game->redTeamScore += intval($flag->getGauge() / 10);
-                $this->client->updateRedTeamScoreboard($player, $this->game->redTeamScore);
+                $this->client->updateBossBarScore($player, $this->game->redTeamScore, $this->game->blueTeamScore);
             }
         } else if ($flag->isBlueTeams()) {
             foreach ($players as $player) {
                 $this->game->blueTeamScore += intval(-$flag->getGauge() / 10);
-                $this->client->updateBlueTeamScoreboard($player, $this->game->blueTeamScore);
+                $this->client->updateBossBarScore($player, $this->game->redTeamScore, $this->game->blueTeamScore);
             }
         }
     }
