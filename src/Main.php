@@ -98,10 +98,6 @@ class Main extends PluginBase implements Listener
     private $weaponsListener;
 
     function onEnable() {
-        //TODO
-        $world = new WorldController();
-        $world->loadWorld("vo");
-
         $effectiveRangeLoader = new EffectiveRangeLoader();
         $effectiveRangeLoader->loadAll();
 
@@ -432,7 +428,11 @@ class Main extends PluginBase implements Listener
     }
 
     public function cancelDamage(EntityDamageEvent $event) {
-        $event->setCancelled();
+        if ($event instanceof EntityDamageByEntityEvent) {
+            if ($event->getEntity() instanceof Human) {
+                $event->setCancelled();
+            }
+        }
     }
 
     public function resuscitate(EntityDamageEvent $event) {

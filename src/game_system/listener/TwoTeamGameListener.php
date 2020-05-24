@@ -41,6 +41,7 @@ use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
 use game_system\pmmp\items\SubWeaponSelectItem;
 use game_system\pmmp\items\WeaponSelectItem;
+use game_system\pmmp\WorldController;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
@@ -109,10 +110,13 @@ class TwoTeamGameListener
             $this->interpreter->init($match, 600, function () use ($gameType) {
                 $this->onFinished($gameType);
             });
-
-            $level = Server::getInstance()->getLevelByName($this->interpreter->getGameData()->getMap()->getName());
-            foreach ($level->getEntities() as $entity) {
-                if (!($entity instanceof Player)) $entity->kill();
+        }
+        $world = new WorldController();
+        $world->loadWorld($this->interpreter->getGameData()->getMap()->getName());
+        $level = Server::getInstance()->getLevelByName($this->interpreter->getGameData()->getMap()->getName());
+        foreach ($level->getEntities() as $entity) {
+            if (!($entity instanceof Player)) {
+                $entity->kill();
             }
         }
     }

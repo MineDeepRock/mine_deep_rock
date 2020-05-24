@@ -292,6 +292,7 @@ class TwoTeamGameClient
                 $api->sendScoreboard($player, "sidebar", "MineDeepRock", false);
             }
             $api->removeScore($player, "sidebar", 1);
+            $api->setScore($player, "sidebar", "===========" . $count, 0, 0);
             $api->setScore($player, "sidebar", "参加人数:" . $count, 1, 1);
         }
     }
