@@ -428,10 +428,8 @@ class Main extends PluginBase implements Listener
     }
 
     public function cancelDamage(EntityDamageEvent $event) {
-        if ($event instanceof EntityDamageByEntityEvent) {
-            if ($event->getEntity() instanceof Human) {
-                $event->setCancelled();
-            }
+        if ($event->getEntity() instanceof Human) {
+            $event->setCancelled();
         }
     }
 
