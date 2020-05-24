@@ -38,11 +38,13 @@ class TeamDominationInterpreter extends TwoTeamGameInterpreter
         }
 
         $this->flagSchedulerHandler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $tick): void {
-            foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
-                if ($flag->isOccupied()) $this->addScoreByFlag($flag);
-                $this->makeFlagProgress($flag);
+            if ($this->getGameData() !== null) {
+                foreach ($this->getGameData()->getMap()->getFlags() as $flag) {
+                    if ($flag->isOccupied()) $this->addScoreByFlag($flag);
+                    $this->makeFlagProgress($flag);
+                }
+                $this->updateFlagStatus($this->getGameData()->getMap()->getFlags());
             }
-            $this->updateFlagStatus($this->getGameData()->getMap()->getFlags());
         }), 20 * 1);
 
         return parent::start();

@@ -19,6 +19,7 @@ use game_system\pmmp\items\SpawnAmmoBoxItem;
 use game_system\pmmp\items\SpawnBeaconItem;
 use game_system\pmmp\items\SpawnFlareBoxItem;
 use game_system\pmmp\items\SpawnMedicineBoxItem;
+use game_system\pmmp\WorldController;
 use game_system\service\GameScoresService;
 use game_system\service\UsersService;
 use game_system\service\WeaponsService;
@@ -58,7 +59,7 @@ class TwoTeamGameInterpreter
         $this->scheduler = $scheduler;
     }
 
-    public function getGameData(): TwoTeamGame {
+    public function getGameData(): ?TwoTeamGame {
         return $this->game;
     }
 
@@ -123,8 +124,15 @@ class TwoTeamGameInterpreter
 
         $this->client->onFinish($winTeam, $participants, $redTeamScores, $blueTeamScores);
         $this->displayParticipantCount(0);
-        $this->game = null;
+        $worldName = $this->getGameData()->getMap()->getName();
+        $entities = Server::getInstance()->getLevelByName($worldName)->getEntities();
+        foreach ($entities as $entity) {
+            if (!($entity instanceof Player)) {
+                $entity->kill();
+            }
+        }
         ($this->onFinished)();
+        $this->game = null;
     }
 
     public function join(string $userName): bool {

@@ -107,18 +107,13 @@ class TwoTeamGameListener
                 $this->scheduler
             );
             $match = new TeamDomination(new VoForDomination());
-            $this->interpreter->init($match, 600, function () use ($gameType) {
+            $this->interpreter->init($match, 30, function () use ($gameType) {
                 $this->onFinished($gameType);
             });
         }
-        $world = new WorldController();
-        $world->loadWorld($this->interpreter->getGameData()->getMap()->getName());
-        $level = Server::getInstance()->getLevelByName($this->interpreter->getGameData()->getMap()->getName());
-        foreach ($level->getEntities() as $entity) {
-            if (!($entity instanceof Player)) {
-                $entity->kill();
-            }
-        }
+        $worldController = new WorldController();
+        $worldName = $this->interpreter->getGameData()->getMap()->getName();
+        $worldController->loadWorld($worldName);
     }
 
     protected function onFinished(?GameType $gameType) {
