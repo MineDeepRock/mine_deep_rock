@@ -11,6 +11,7 @@ use game_system\pmmp\command\StateCommand;
 use game_system\pmmp\command\WorldCommand;
 use game_system\pmmp\Entity\AmmoBoxEntity;
 use game_system\pmmp\Entity\BoxEntity;
+use game_system\pmmp\Entity\CadaverEntity;
 use game_system\pmmp\Entity\FlagEntity;
 use game_system\pmmp\Entity\FlameBottleEntity;
 use game_system\pmmp\Entity\FlareBoxEntity;
@@ -178,6 +179,8 @@ class Main extends PluginBase implements Listener
 
         Entity::registerEntity(SandbagEntity::class, true, ['Sandbag']);
         Entity::registerEntity(SpawnBeaconEntity::class, true, ['SpawnBeacon']);
+
+        Entity::registerEntity(CadaverEntity::class, true, ['CadaverEntity']);
 
         $this->gameListener->initGame(\game_system\model\GameType::TeamDomination());
     }

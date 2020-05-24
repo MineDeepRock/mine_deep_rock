@@ -29,7 +29,7 @@ class OverheatController
 
         if ($this->rate->getPerShoot() !== 0) {
             $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick): void {
-                $this->down(34);
+                $this->down(10);
             }), 20 * 1);
         }
     }
