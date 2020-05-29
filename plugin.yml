@@ -1,28 +1,4 @@
 name: MineDeepRock
-main: Main
+main: mine_deep_rock\Main
 version: 1.0.0
 api: 3.0.0
-
-permissions:
-  MineDeepRock:
-    default: false
-    description: "ベース"
-    children:
-      Team.Command:
-        default: true
-        description: "チームシステム"
-      Gun.Command:
-        default: true
-        description: "ガンシステム"
-      State.Command:
-        default: true
-        description: "ステートコマンド"
-      World.Command:
-        default: true
-        description: "ワールドコマンド"
-      NPC.Command:
-        default: true
-        description: "ワールドコマンド"
-      Ranking.Command:
-        default: true
-        description: "ランキングコマンド"
