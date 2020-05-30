@@ -9,7 +9,7 @@ use pocketmine\nbt\tag\CompoundTag;
 
 class TeamDeathMatchNPC extends NPCBase
 {
-    const NAME = "TeamDeathMatchNPC";
+    const NAME = "TeamDeathMatch";
     public $width = 0.6;
     public $height = 1.8;
 

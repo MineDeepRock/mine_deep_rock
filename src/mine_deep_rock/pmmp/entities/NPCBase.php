@@ -11,6 +11,7 @@ use pocketmine\utils\UUID;
 
 class NPCBase extends Human
 {
+    const NAME ="";
 
     protected $skinId = "Standard_CustomSlim";
     protected $skinName = "";
@@ -52,10 +53,10 @@ class NPCBase extends Human
     private function initSkin(): void {
         $this->setSkin(new Skin(
             $this->skinId,
-            file_get_contents("./plugin_data/MineGameSystem/" . $this->skinName . ".skin"),
+            file_get_contents("./plugin_data/MineDeepRock/skin/" . $this->skinName . ".skin"),
             $this->capeData,
             $this->geometryId,
-            file_get_contents("./plugin_data/MineGameSystem/" . $this->geometryName)
+            file_get_contents("./plugin_data/MineDeepRock/models/" . $this->geometryName)
         ));
     }
 }
