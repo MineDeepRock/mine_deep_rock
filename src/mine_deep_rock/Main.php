@@ -120,7 +120,7 @@ class Main extends PluginBase implements Listener
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             $item = $player->getInventory()->getItemInHand();
-            $this->useItem($player,$item);
+            $this->useItem($player, $item);
         }
     }
 
@@ -130,16 +130,15 @@ class Main extends PluginBase implements Listener
             if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
                 $player = $event->getPlayer();
                 $item = $event->getPlayer()->getInventory()->getItemInHand();
-                $this->useItem($player,$item);
+                $this->useItem($player, $item);
             }
         }
     }
 
-    public function useItem(Player $player, Item $item) {
-        switch ($item->getId()) {
-            case RespawnItem::ITEM_ID:
-                $this->spawn($player);
-                break;
+    public function useItem(Player $player, Item $item): void {
+        if ($item instanceof RespawnItem) {
+            $this->spawn($player);
+            return;
         }
     }
 
