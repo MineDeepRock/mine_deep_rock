@@ -5,6 +5,7 @@ namespace mine_deep_rock\slot_menus;
 
 
 use gun_system\models\GunType;
+use military_department_system\MilitaryDepartmentSystem;
 use military_department_system\models\AssaultSoldier;
 use military_department_system\models\Engineer;
 use military_department_system\models\MilitaryDepartment;
@@ -18,7 +19,8 @@ use slot_menu_system\SlotMenuSystem;
 
 class MainGunTypeSelectMenu extends SlotMenu
 {
-    public function __construct(MilitaryDepartment $militaryDepartment) {
+    public function __construct(Player $player) {
+        $militaryDepartment = MilitaryDepartmentSystem::getPlayerData($player->getName())->getMilitaryDepartment();
         $sendGunSelectMenu = function (Player $player, GunType $gunType) {
             SlotMenuSystem::send($player,new GunSelectMenu($player->getName(),$gunType));
         };
