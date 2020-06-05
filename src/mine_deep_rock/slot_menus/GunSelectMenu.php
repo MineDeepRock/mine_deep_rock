@@ -11,8 +11,8 @@ use pocketmine\item\ItemIds;
 use pocketmine\Player;
 use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
-use team_system\WeaponDataSystem;
 use weapon_data_system\models\WeaponData;
+use weapon_data_system\WeaponDataSystem;
 
 class GunSelectMenu extends SlotMenu
 {

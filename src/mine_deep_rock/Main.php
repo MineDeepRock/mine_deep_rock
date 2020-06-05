@@ -32,9 +32,9 @@ use pocketmine\utils\TextFormat;
 use slot_menu_system\SlotMenuSystem;
 use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
-use team_system\WeaponDataSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
+use weapon_data_system\WeaponDataSystem;
 
 class Main extends PluginBase implements Listener
 {
@@ -91,6 +91,7 @@ class Main extends PluginBase implements Listener
         $player->sendDataPacket($pk);
 
         if (!WeaponDataSystem::isExist($player->getName())) {
+            WeaponDataSystem::init($player->getName());
             WeaponDataSystem::add($player->getName(), M1907SL::NAME);
             WeaponDataSystem::add($player->getName(), MP18::NAME);
             WeaponDataSystem::add($player->getName(), Chauchat::NAME);

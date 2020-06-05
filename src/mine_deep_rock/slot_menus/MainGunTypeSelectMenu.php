@@ -8,7 +8,6 @@ use gun_system\models\GunType;
 use military_department_system\MilitaryDepartmentSystem;
 use military_department_system\models\AssaultSoldier;
 use military_department_system\models\Engineer;
-use military_department_system\models\MilitaryDepartment;
 use military_department_system\models\NursingSoldier;
 use military_department_system\models\Scout;
 use pocketmine\item\ItemIds;
