@@ -85,6 +85,11 @@
       "type": "git",
       "name": "suinua/grenade_system",
       "url": "https://github.com/MineDeepRock/grenade_system"
+    },
+    {
+      "type": "git",
+      "name": "suinua/weapon_data_system",
+      "url": "https://github.com/MineDeepRock/weapon_data_system"
     }
   ],
   "require": {
@@ -104,6 +109,7 @@
     "suinua/military_department_system": "dev-master",
     "suinua/gun_system": "dev-master",
     "suinua/box_system": "dev-master",
-    "suinua/grenade_system": "dev-master"
+    "suinua/grenade_system": "dev-master",
+    "suinua/weapon_data_system": "dev-master"
   }
 }
