@@ -13,6 +13,7 @@ use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\NPCBase;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\items\RespawnItem;
+use mine_deep_rock\slot_menus\EquipmentSelectMenu;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
@@ -28,6 +29,7 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\TextFormat;
+use slot_menu_system\SlotMenuSystem;
 use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
 use team_system\WeaponDataSystem;
@@ -95,6 +97,8 @@ class Main extends PluginBase implements Listener
             WeaponDataSystem::add($player->getName(), SMLEMK3::NAME);
             WeaponDataSystem::add($player->getName(), Mle1903::NAME);
         }
+
+        SlotMenuSystem::send($player, new EquipmentSelectMenu());
     }
 
     //TeamDeathMatch
