@@ -3,6 +3,11 @@
 namespace mine_deep_rock;
 
 use bossbarapi\BossBarAPI;
+use gun_system\models\assault_rifle\M1907SL;
+use gun_system\models\hand_gun\Mle1903;
+use gun_system\models\light_machine_gun\Chauchat;
+use gun_system\models\sniper_rifle\SMLEMK3;
+use gun_system\models\sub_machine_gun\MP18;
 use mine_deep_rock\pmmp\commands\NPCCommand;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\NPCBase;
@@ -25,6 +30,7 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\TextFormat;
 use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
+use team_system\WeaponDataSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
 
@@ -81,6 +87,14 @@ class Main extends PluginBase implements Listener
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
+
+        if (!WeaponDataSystem::isExist($player->getName())) {
+            WeaponDataSystem::add($player->getName(), M1907SL::NAME);
+            WeaponDataSystem::add($player->getName(), MP18::NAME);
+            WeaponDataSystem::add($player->getName(), Chauchat::NAME);
+            WeaponDataSystem::add($player->getName(), SMLEMK3::NAME);
+            WeaponDataSystem::add($player->getName(), Mle1903::NAME);
+        }
     }
 
     //TeamDeathMatch
