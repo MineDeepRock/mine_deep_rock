@@ -16,8 +16,8 @@ use slot_menu_system\models\SlotMenuElement;
 
 class MilitaryDepartmentSelectMenu extends SlotMenu
 {
-    public function __construct(array $menus) {
-        $this->menus = [
+    public function __construct() {
+        $menus = [
             //Assault
             new SlotMenuElement(ItemIds::FIREBALL, "突撃兵", function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new AssaultSoldier());
