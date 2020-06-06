@@ -14,6 +14,7 @@ use mine_deep_rock\pmmp\entities\NPCBase;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\items\RespawnItem;
 use mine_deep_rock\slot_menus\EquipmentSelectMenu;
+use money_system\MoneySystem;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
@@ -97,6 +98,7 @@ class Main extends PluginBase implements Listener
             WeaponDataSystem::add($player->getName(), Chauchat::NAME);
             WeaponDataSystem::add($player->getName(), SMLEMK3::NAME);
             WeaponDataSystem::add($player->getName(), Mle1903::NAME);
+            MoneySystem::increase($player->getName(), 5000);
         }
 
         SlotMenuSystem::send($player, new EquipmentSelectMenu());
