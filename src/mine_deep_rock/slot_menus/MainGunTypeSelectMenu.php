@@ -23,38 +23,39 @@ class MainGunTypeSelectMenu extends SlotMenu
         $sendGunSelectMenu = function (Player $player, GunType $gunType) {
             SlotMenuSystem::send($player,new GunSelectMenu($player->getName(),$gunType));
         };
-        $menus = [];
+        $menus = [
+            //Back
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) {
+                SlotMenuSystem::send($player, new EquipmentSelectMenu());
+            }),
+        ];
         switch ($militaryDepartment::NAME) {
             case AssaultSoldier::NAME:
-                $menus = [
-                    new SlotMenuElement(ItemIds::BOW, GunType::AssaultRifle()->getTypeText(), function (Player $player) use ($sendGunSelectMenu) {
+                array_push($menus,
+                    new SlotMenuElement(ItemIds::BOW, GunType::AssaultRifle()->getTypeText(),0, function (Player $player) use ($sendGunSelectMenu) {
                         $sendGunSelectMenu($player, GunType::AssaultRifle());
                     }),
-                    new SlotMenuElement(ItemIds::BOW, GunType::Shotgun()->getTypeText(), function (Player $player) use ($sendGunSelectMenu) {
+                    new SlotMenuElement(ItemIds::BOW, GunType::Shotgun()->getTypeText(),1, function (Player $player) use ($sendGunSelectMenu) {
                         $sendGunSelectMenu($player, GunType::Shotgun());
-                    }),
-                ];
+                    }));
                 break;
             case NursingSoldier::NAME:
-                $menus = [
-                    new SlotMenuElement(ItemIds::BOW,  GunType::SMG()->getTypeText(), function (Player $player) use ($sendGunSelectMenu) {
+                array_push($menus,
+                    new SlotMenuElement(ItemIds::BOW,  GunType::SMG()->getTypeText(),0, function (Player $player) use ($sendGunSelectMenu) {
                         $sendGunSelectMenu($player, GunType::SMG());
-                    }),
-                ];
+                    }));
                 break;
             case Engineer::NAME:
-                $menus = [
-                    new SlotMenuElement(ItemIds::BOW, GunType::LMG()->getTypeText(), function (Player $player) use ($sendGunSelectMenu) {
+                array_push($menus,
+                    new SlotMenuElement(ItemIds::BOW, GunType::LMG()->getTypeText(),0, function (Player $player) use ($sendGunSelectMenu) {
                         $sendGunSelectMenu($player, GunType::LMG());
-                    }),
-                ];
+                    }));
                 break;
             case Scout::NAME:
-                $menus = [
-                    new SlotMenuElement(ItemIds::BOW, GunType::SniperRifle()->getTypeText(), function (Player $player) use ($sendGunSelectMenu) {
+                array_push($menus,
+                    new SlotMenuElement(ItemIds::BOW, GunType::SniperRifle()->getTypeText(),0, function (Player $player) use ($sendGunSelectMenu) {
                         $sendGunSelectMenu($player, GunType::SniperRifle());
-                    }),
-                ];
+                    }));
                 break;
         }
 

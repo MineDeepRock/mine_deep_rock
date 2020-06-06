@@ -19,12 +19,16 @@ class SubGunTypeSelectMenu extends SlotMenu
         };
 
         $menus = [
-            new SlotMenuElement(ItemIds::BOW, GunType::HandGun()->getTypeText(), function (Player $player) use ($sendGunSelectMenu) {
+            new SlotMenuElement(ItemIds::BOW, GunType::HandGun()->getTypeText(), 0, function (Player $player) use ($sendGunSelectMenu) {
                 $sendGunSelectMenu($player, GunType::HandGun());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::Revolver()->getTypeText(), function (Player $player) use ($sendGunSelectMenu) {
+            new SlotMenuElement(ItemIds::BOW, GunType::Revolver()->getTypeText(), 1, function (Player $player) use ($sendGunSelectMenu) {
                 $sendGunSelectMenu($player, GunType::Revolver());
-            })
+            }),
+            //BACK
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) {
+                SlotMenuSystem::send($player, new EquipmentSelectMenu());
+            }),
         ];
         parent::__construct($menus);
     }

@@ -14,13 +14,13 @@ class EquipmentSelectMenu extends SlotMenu
 {
     public function __construct() {
         $menus = [
-            new SlotMenuElement(ItemIds::COMPASS, "兵科", function (Player $player) {
+            new SlotMenuElement(ItemIds::COMPASS, "兵科", 0, function (Player $player) {
                 SlotMenuSystem::send($player, new MilitaryDepartmentSelectMenu());
             }),
-            new SlotMenuElement(ItemIds::COMPASS, "メインウェポン", function (Player $player) {
+            new SlotMenuElement(ItemIds::DIAMOND_SWORD, "メインウェポン", 1, function (Player $player) {
                 SlotMenuSystem::send($player, new MainGunTypeSelectMenu($player));
             }),
-            new SlotMenuElement(ItemIds::COMPASS, "サブウェポン", function (Player $player) {
+            new SlotMenuElement(ItemIds::IRON_SWORD, "サブウェポン", 2, function (Player $player) {
                 SlotMenuSystem::send($player, new SubGunTypeSelectMenu());
             })
         ];

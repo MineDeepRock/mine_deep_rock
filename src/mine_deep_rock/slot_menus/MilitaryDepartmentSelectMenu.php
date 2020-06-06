@@ -13,26 +13,31 @@ use pocketmine\item\ItemIds;
 use pocketmine\Player;
 use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
+use slot_menu_system\SlotMenuSystem;
 
 class MilitaryDepartmentSelectMenu extends SlotMenu
 {
     public function __construct() {
         $menus = [
             //Assault
-            new SlotMenuElement(ItemIds::FIREBALL, "突撃兵", function (Player $player) {
+            new SlotMenuElement(ItemIds::FIREBALL, "突撃兵", 0, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new AssaultSoldier());
             }),
             //Nursing
-            new SlotMenuElement(ItemIds::SUGAR, "看護兵", function (Player $player) {
+            new SlotMenuElement(ItemIds::SUGAR, "看護兵", 1, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new NursingSoldier());
             }),
             //Engineer
-            new SlotMenuElement(ItemIds::SAND, "工兵", function (Player $player) {
+            new SlotMenuElement(ItemIds::SAND, "工兵", 2, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new Engineer());
             }),
             //Scout
-            new SlotMenuElement(ItemIds::FIREBALL, "斥候兵", function (Player $player) {
+            new SlotMenuElement(ItemIds::FIREBALL, "斥候兵", 3, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new Scout());
+            }),
+            //Back
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) {
+                SlotMenuSystem::send($player, new EquipmentSelectMenu());
             }),
         ];
         parent::__construct($menus);
