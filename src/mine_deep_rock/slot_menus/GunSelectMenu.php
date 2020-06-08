@@ -6,13 +6,13 @@ namespace mine_deep_rock\slot_menus;
 
 use gun_system\models\GunList;
 use gun_system\models\GunType;
-use military_department_system\MilitaryDepartmentSystem;
+use mine_deep_rock\pmmp\forms\GunDetailForm;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
 use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
 use slot_menu_system\SlotMenuSystem;
-use weapon_data_system\models\WeaponData;
+use weapon_data_system\models\GunData;
 use weapon_data_system\WeaponDataSystem;
 
 class GunSelectMenu extends SlotMenu
@@ -31,15 +31,13 @@ class GunSelectMenu extends SlotMenu
 
         $index = 0;
         foreach (WeaponDataSystem::getOwn($playerName) as $weaponData) {
-            if ($weaponData instanceof WeaponData) {
+            if ($weaponData instanceof GunData) {
                 $gun = GunList::fromString($weaponData->getName());
-                if ($gun !== null) {
-                    if ($gun->getType()->equal($gunType)) {
-                        $menus[] = new SlotMenuElement(ItemIds::BOW, $weaponData->getName(), $index, function (Player $player) use ($weaponData) {
-                            MilitaryDepartmentSystem::updateEquipMainGun($player->getName(), $weaponData->getName());
-                        });
-                        $index++;
-                    }
+                if ($gun->getType()->equal($gunType)) {
+                    $menus[] = new SlotMenuElement(ItemIds::BOW, $weaponData->getName(), $index, function (Player $player) use ($gun) {
+                        $player->sendForm(new GunDetailForm($gun, $player));
+                    });
+                    $index++;
                 }
             }
         }

@@ -35,6 +35,7 @@ use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
+use weapon_data_system\models\GunData;
 use weapon_data_system\WeaponDataSystem;
 
 class Main extends PluginBase implements Listener
@@ -87,18 +88,22 @@ class Main extends PluginBase implements Listener
 
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
+        $playerName = $player->getName();
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
 
-        if (!WeaponDataSystem::isExist($player->getName())) {
-            WeaponDataSystem::init($player->getName());
-            WeaponDataSystem::add($player->getName(), M1907SL::NAME);
-            WeaponDataSystem::add($player->getName(), MP18::NAME);
-            WeaponDataSystem::add($player->getName(), Chauchat::NAME);
-            WeaponDataSystem::add($player->getName(), SMLEMK3::NAME);
-            WeaponDataSystem::add($player->getName(), Mle1903::NAME);
-            MoneySystem::increase($player->getName(), 5000);
+        if (!WeaponDataSystem::isExist($playerName)) {
+            WeaponDataSystem::init($playerName);
+            WeaponDataSystem::add($playerName, new GunData(M1907SL::NAME, 0));
+            WeaponDataSystem::add($playerName, new GunData(MP18::NAME, 0));
+            WeaponDataSystem::add($playerName, new GunData(Chauchat::NAME, 0));
+            WeaponDataSystem::add($playerName, new GunData(SMLEMK3::NAME, 0));
+            WeaponDataSystem::add($playerName, new GunData(Mle1903::NAME, 0));
+        }
+        if (!MoneySystem::isExist($playerName)) {
+            MoneySystem::register($playerName);
+            MoneySystem::increase($playerName, 5000);
         }
 
         SlotMenuSystem::send($player, new EquipmentSelectMenu());
