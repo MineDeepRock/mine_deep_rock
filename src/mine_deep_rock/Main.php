@@ -3,11 +3,13 @@
 namespace mine_deep_rock;
 
 use bossbarapi\BossBarAPI;
+use gun_system\GunSystem;
 use gun_system\models\assault_rifle\M1907SL;
 use gun_system\models\hand_gun\Mle1903;
 use gun_system\models\light_machine_gun\Chauchat;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\MP18;
+use military_department_system\MilitaryDepartmentSystem;
 use mine_deep_rock\pmmp\commands\NPCCommand;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\NPCBase;
@@ -23,7 +25,10 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\item\Arrow;
 use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\Player;
@@ -188,7 +193,16 @@ class Main extends PluginBase implements Listener
     }
 
     public function setInitInventory(Player $player): void {
-        $player->getInventory()->setContents([]);
+        $playerData = MilitaryDepartmentSystem::getPlayerData($player->getName());
+        /** @var GunData $mainGunData */
+        $mainGunData = WeaponDataSystem::get($player->getName(), $playerData->getEquipMainGunName());
+        /** @var GunData $subGunData */
+        $subGunData = WeaponDataSystem::get($player->getName(), $playerData->getEquipSubGunName());
+        $player->getInventory()->setContents([
+            GunSystem::getGun($player, $mainGunData->getName(), $mainGunData->getScopeName()),
+            GunSystem::getGun($player, $subGunData->getName(), $subGunData->getScopeName()),
+        ]);
+        $player->getInventory()->setItem(8, ItemFactory::get(ItemIds::ARROW, 0, 1));
     }
 
     public function displayDeathScreen(Player $player): void {
