@@ -22,6 +22,9 @@ class EquipmentSelectMenu extends SlotMenu
             }),
             new SlotMenuElement(ItemIds::IRON_SWORD, "サブウェポン", 2, function (Player $player) {
                 SlotMenuSystem::send($player, new SubGunTypeSelectMenu());
+            }),
+            new SlotMenuElement(ItemIds::IRON_SWORD, "試し打ち", 3, function (Player $player) {
+                SlotMenuSystem::send($player, new TrialGunTypeSelectMenu());
             })
         ];
         parent::__construct($menus);
