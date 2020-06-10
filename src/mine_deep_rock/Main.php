@@ -19,6 +19,7 @@ use mine_deep_rock\slot_menus\EquipmentSelectMenu;
 use money_system\MoneySystem;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -37,6 +38,9 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\TextFormat;
 use slot_menu_system\SlotMenuSystem;
 use team_death_match_system\TeamDeathMatchSystem;
+use team_name_tag_system\pmmp\entities\NameTagEntity;
+use team_name_tag_system\TeamNameTagSystem;
+use team_system\models\PlayerData;
 use team_system\TeamSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
@@ -73,11 +77,37 @@ class Main extends PluginBase implements Listener
             switch ($victim::NAME) {
                 case TeamDeathMatchNPC::NAME;
                     $this->teamDeathMatchSystem->join($attacker);
+                    $players = [];
+
+                    $attackerTeamId = TeamSystem::getPlayerData($attacker->getName())->getBelongTeamId();
+                    foreach (TeamSystem::getParticipantData($this->teamDeathMatchSystem->getGame()->getId()) as $participant) {
+                        if ($participant instanceof PlayerData) {
+                            if ($participant->getBelongTeamId()->equal($attackerTeamId)) {
+                                $players[] = $this->getServer()->getPlayer($participant->getName());
+                            }
+                        }
+                    }
+
+                    $hpGauge = str_repeat(TextFormat::RED . "■", intval($attacker->getHealth()));
+                    $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($attacker->getHealth()));
+                    TeamNameTagSystem::set($attacker, $attacker->getName() . "\n" . $hpGauge, $players);
                     $event->setCancelled();
                     break;
                 case CadaverEntity::NAME;
                     $event->setCancelled();
                     break;
+            }
+        }
+    }
+
+    public function onRegainHealth(EntityRegainHealthEvent $event) {
+        $player = $event->getEntity();
+        if ($player instanceof  Player) {
+            $playerData = TeamSystem::getPlayerData($player->getName());
+            if ($playerData->getBelongTeamId() !== null) {
+                $hpGauge = str_repeat(TextFormat::RED . "■", intval($player->getHealth()));
+                $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($player->getHealth()));
+                TeamNameTagSystem::updateNameTag($player, $player->getName() . "\n" . $hpGauge);
             }
         }
     }
@@ -119,10 +149,11 @@ class Main extends PluginBase implements Listener
         $victim = $event->getEntity();
         $attacker = $event->getDamager();
         if ($attacker instanceof Player && $victim instanceof Player) {
-            switch ($attacker->getLevel()->getName()) {
-                case $this->teamDeathMatchSystem->getMap()->getName():
-                    if (!$this->teamDeathMatchSystem->canReceiveDamage($attacker, $victim)) $event->setCancelled();
-                    break;
+            if ($attacker->getLevel()->getName() === $this->teamDeathMatchSystem->getMap()->getName()) {
+                if (!$this->teamDeathMatchSystem->canReceiveDamage($attacker, $victim)) $event->setCancelled();
+                $hpGauge = str_repeat(TextFormat::RED . "■", intval($victim->getHealth()));
+                $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($victim->getHealth()));
+                TeamNameTagSystem::updateNameTag($victim, $victim->getName() . "\n" . $hpGauge);
             }
         }
     }
