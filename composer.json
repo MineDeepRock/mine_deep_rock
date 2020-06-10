@@ -95,6 +95,11 @@
       "type": "git",
       "name": "suinua/money_system",
       "url": "https://github.com/MineDeepRock/money_system"
+    },
+    {
+      "type": "git",
+      "name": "suinua/team_name_tag_system",
+      "url": "https://github.com/MineDeepRock/team_name_tag_system"
     }
   ],
   "require": {
@@ -116,6 +121,7 @@
     "suinua/box_system": "dev-master",
     "suinua/grenade_system": "dev-master",
     "suinua/weapon_data_system": "dev-master",
-    "suinua/money_system": "dev-master"
+    "suinua/money_system": "dev-master",
+    "suinua/team_name_tag_system": "dev-master"
   }
 }
