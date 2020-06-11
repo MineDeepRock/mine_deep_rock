@@ -10,6 +10,7 @@ use gun_system\models\light_machine_gun\Chauchat;
 use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\MP18;
 use military_department_system\MilitaryDepartmentSystem;
+use mine_deep_rock\controllers\NameTagController;
 use mine_deep_rock\pmmp\commands\NPCCommand;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\NPCBase;
@@ -26,7 +27,6 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\item\Arrow;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
@@ -38,9 +38,6 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\TextFormat;
 use slot_menu_system\SlotMenuSystem;
 use team_death_match_system\TeamDeathMatchSystem;
-use team_name_tag_system\pmmp\entities\NameTagEntity;
-use team_name_tag_system\TeamNameTagSystem;
-use team_system\models\PlayerData;
 use team_system\TeamSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
@@ -77,20 +74,8 @@ class Main extends PluginBase implements Listener
             switch ($victim::NAME) {
                 case TeamDeathMatchNPC::NAME;
                     $this->teamDeathMatchSystem->join($attacker);
-                    $players = [];
-
-                    $attackerTeamId = TeamSystem::getPlayerData($attacker->getName())->getBelongTeamId();
-                    foreach (TeamSystem::getParticipantData($this->teamDeathMatchSystem->getGame()->getId()) as $participant) {
-                        if ($participant instanceof PlayerData) {
-                            if ($participant->getBelongTeamId()->equal($attackerTeamId)) {
-                                $players[] = $this->getServer()->getPlayer($participant->getName());
-                            }
-                        }
-                    }
-
-                    $hpGauge = str_repeat(TextFormat::RED . "■", intval($attacker->getHealth()));
-                    $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($attacker->getHealth()));
-                    TeamNameTagSystem::set($attacker, $attacker->getName() . "\n" . $hpGauge, $players);
+                    //start時にやる
+                    NameTagController::set($attacker, $this->teamDeathMatchSystem->getGame()->getId(), $this->getServer());
                     $event->setCancelled();
                     break;
                 case CadaverEntity::NAME;
@@ -102,12 +87,10 @@ class Main extends PluginBase implements Listener
 
     public function onRegainHealth(EntityRegainHealthEvent $event) {
         $player = $event->getEntity();
-        if ($player instanceof  Player) {
+        if ($player instanceof Player) {
             $playerData = TeamSystem::getPlayerData($player->getName());
             if ($playerData->getBelongTeamId() !== null) {
-                $hpGauge = str_repeat(TextFormat::RED . "■", intval($player->getHealth()));
-                $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($player->getHealth()));
-                TeamNameTagSystem::updateNameTag($player, $player->getName() . "\n" . $hpGauge);
+                NameTagController::update($player);
             }
         }
     }
@@ -151,9 +134,7 @@ class Main extends PluginBase implements Listener
         if ($attacker instanceof Player && $victim instanceof Player) {
             if ($attacker->getLevel()->getName() === $this->teamDeathMatchSystem->getMap()->getName()) {
                 if (!$this->teamDeathMatchSystem->canReceiveDamage($attacker, $victim)) $event->setCancelled();
-                $hpGauge = str_repeat(TextFormat::RED . "■", intval($victim->getHealth()));
-                $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($victim->getHealth()));
-                TeamNameTagSystem::updateNameTag($victim, $victim->getName() . "\n" . $hpGauge);
+                NameTagController::update($victim);
             }
         }
     }
