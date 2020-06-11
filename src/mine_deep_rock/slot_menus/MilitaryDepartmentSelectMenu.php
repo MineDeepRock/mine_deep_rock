@@ -22,18 +22,22 @@ class MilitaryDepartmentSelectMenu extends SlotMenu
             //Assault
             new SlotMenuElement(ItemIds::FIREBALL, "突撃兵", 0, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new AssaultSoldier());
+                SlotMenuSystem::send($player, new EquipmentSelectMenu());
             }),
             //Nursing
             new SlotMenuElement(ItemIds::SUGAR, "看護兵", 1, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new NursingSoldier());
+                SlotMenuSystem::send($player, new EquipmentSelectMenu());
             }),
             //Engineer
             new SlotMenuElement(ItemIds::SAND, "工兵", 2, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new Engineer());
+                SlotMenuSystem::send($player, new EquipmentSelectMenu());
             }),
             //Scout
             new SlotMenuElement(ItemIds::FIREBALL, "斥候兵", 3, function (Player $player) {
                 MilitaryDepartmentSystem::updateMilitaryDepartment($player->getName(), new Scout());
+                SlotMenuSystem::send($player, new EquipmentSelectMenu());
             }),
             //Back
             new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) {
