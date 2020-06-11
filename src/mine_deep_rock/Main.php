@@ -80,7 +80,7 @@ class Main extends PluginBase implements Listener
                     $this->teamDeathMatchSystem->join($attacker);
                     //start時にやる
                     $game = $this->teamDeathMatchSystem->getGame();
-                    NameTagController::set($attacker, $game->getId(), $game->getRedTeamId(), $this->getServer());
+                    NameTagController::showTo($attacker, $game->getId(), $game->getRedTeamId(), $this->getServer());
                     $event->setCancelled();
                     break;
                 case CadaverEntity::NAME;
