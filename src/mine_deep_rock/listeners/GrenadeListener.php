@@ -3,6 +3,7 @@
 namespace mine_deep_rock\listeners;
 
 
+use grenade_system\pmmp\events\FlameBottleExplodeEvent;
 use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -23,6 +24,16 @@ class GrenadeListener implements Listener
                 $damage = 15 - $event->getDistance();
             }
             $pk = new EntityDamageByEntityEvent($event->getOwner(), $event->getVictim(), EntityDamageEvent::CAUSE_CONTACT, $damage);
+            $pk->call();
+        }
+    }
+
+    public function onExplodeFlameBottle(FlameBottleExplodeEvent $event) {
+        $ownerTeamId = TeamSystem::getPlayerData($event->getOwner()->getName())->getBelongTeamId();
+        $victimTeamId = TeamSystem::getPlayerData($event->getVictim()->getName())->getBelongTeamId();
+        if ($ownerTeamId === null || $victimTeamId === null) return;
+        if ($ownerTeamId->equal($victimTeamId)) {
+            $pk = new EntityDamageByEntityEvent($event->getOwner(), $event->getVictim(), EntityDamageEvent::CAUSE_CONTACT, 4);
             $pk->call();
         }
     }
