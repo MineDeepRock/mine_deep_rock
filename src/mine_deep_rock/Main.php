@@ -79,7 +79,8 @@ class Main extends PluginBase implements Listener
                 case TeamDeathMatchNPC::NAME;
                     $this->teamDeathMatchSystem->join($attacker);
                     //start時にやる
-                    NameTagController::set($attacker, $this->teamDeathMatchSystem->getGame()->getId(), $this->getServer());
+                    $game = $this->teamDeathMatchSystem->getGame();
+                    NameTagController::set($attacker, $game->getId(), $game->getRedTeamId(), $this->getServer());
                     $event->setCancelled();
                     break;
                 case CadaverEntity::NAME;
@@ -94,7 +95,8 @@ class Main extends PluginBase implements Listener
         if ($player instanceof Player) {
             $playerData = TeamSystem::getPlayerData($player->getName());
             if ($playerData->getBelongTeamId() !== null) {
-                NameTagController::update($player);
+                $game = $this->teamDeathMatchSystem->getGame();
+                NameTagController::update($player, $game->getRedTeamId());
             }
         }
     }
@@ -138,7 +140,8 @@ class Main extends PluginBase implements Listener
         if ($attacker instanceof Player && $victim instanceof Player) {
             if ($attacker->getLevel()->getName() === $this->teamDeathMatchSystem->getMap()->getName()) {
                 if (!$this->teamDeathMatchSystem->canReceiveDamage($attacker, $victim)) $event->setCancelled();
-                NameTagController::update($victim);
+                $game = $this->teamDeathMatchSystem->getGame();
+                NameTagController::update($victim, $game->getRedTeamId());
             }
         }
     }

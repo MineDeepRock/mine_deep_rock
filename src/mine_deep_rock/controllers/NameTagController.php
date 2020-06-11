@@ -9,31 +9,44 @@ use pocketmine\utils\TextFormat;
 use team_name_tag_system\TeamNameTagSystem;
 use team_system\models\GameId;
 use team_system\models\PlayerData;
+use team_system\models\TeamId;
 use team_system\TeamSystem;
 
 class NameTagController
 {
-
-    static function set(Player $player, GameId $gameId, Server $server): void {
+    static function set(Player $player, GameId $gameId, TeamId $redTeamId, Server $server): void {
         $players = [];
 
-        $attackerTeamId = TeamSystem::getPlayerData($player->getName())->getBelongTeamId();
+        $playerTeamId = TeamSystem::getPlayerData($player->getName())->getBelongTeamId();
         foreach (TeamSystem::getParticipantData($gameId) as $participant) {
             if ($participant instanceof PlayerData) {
-                if ($participant->getBelongTeamId()->equal($attackerTeamId)) {
+                if ($participant->getBelongTeamId()->equal($playerTeamId)) {
                     $players[] = $server->getPlayer($participant->getName());
                 }
             }
         }
 
-        $hpGauge = str_repeat(TextFormat::RED . "■", intval($player->getHealth()));
+        if ($playerTeamId->equal($redTeamId)) {
+            $name = TextFormat::RED . $player->getName();
+        } else {
+            $name = TextFormat::BLUE . $player->getName();
+        }
+        $hpGauge = str_repeat(TextFormat::GREEN . "■", intval($player->getHealth()));
         $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($player->getHealth()));
-        TeamNameTagSystem::set($player, $player->getName() . "\n" . $hpGauge, $players);
+        TeamNameTagSystem::set($player, $name . "\n" . $hpGauge, $players);
     }
 
-    static function update(Player $player): void {
-        $hpGauge = str_repeat(TextFormat::RED . "■", intval($player->getHealth()));
+    static function update(Player $player, TeamId $redTeamId): void {
+        $hpGauge = str_repeat(TextFormat::GREEN . "■", intval($player->getHealth()));
         $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($player->getHealth()));
-        TeamNameTagSystem::updateNameTag($player, $player->getName() . "\n" . $hpGauge);
+
+        $playerTeamId = TeamSystem::getPlayerData($player->getName())->getBelongTeamId();
+        if ($playerTeamId->equal($redTeamId)) {
+            $name = TextFormat::RED . $player->getName();
+        } else {
+            $name = TextFormat::BLUE . $player->getName();
+        }
+        
+        TeamNameTagSystem::updateNameTag($player, $name . "\n" . $hpGauge);
     }
 }
