@@ -11,6 +11,7 @@ use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\MP18;
 use military_department_system\MilitaryDepartmentSystem;
 use mine_deep_rock\controllers\NameTagController;
+use mine_deep_rock\listeners\GrenadeListener;
 use mine_deep_rock\pmmp\commands\NPCCommand;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\NPCBase;
@@ -57,6 +58,8 @@ class Main extends PluginBase implements Listener
         $this->teamDeathMatchSystem = new TeamDeathMatchSystem($this->getServer(), $this->getScheduler(), 30, 480, 1);
         $this->getServer()->getCommandMap()->register("npc", new NPCCommand($this));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener(), $this);
+
     }
 
     public function onScoreAdded(AddScoreEvent $event): void {
