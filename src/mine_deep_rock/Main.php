@@ -60,7 +60,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getCommandMap()->register("npc", new NPCCommand($this));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener(), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new BoxListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new BoxListener($this->getServer(),$this->getScheduler()), $this);
     }
 
     public function onScoreAdded(AddScoreEvent $event): void {
@@ -78,9 +78,6 @@ class Main extends PluginBase implements Listener
             switch ($victim::NAME) {
                 case TeamDeathMatchNPC::NAME;
                     $this->teamDeathMatchSystem->join($attacker);
-                    //start時にやる
-                    $game = $this->teamDeathMatchSystem->getGame();
-                    NameTagController::showTo($attacker, $game->getId(), $game->getRedTeamId(), $this->getServer());
                     $event->setCancelled();
                     break;
                 case CadaverEntity::NAME;
@@ -197,6 +194,8 @@ class Main extends PluginBase implements Listener
         $player->setImmobile(false);
         $player->teleport($player->getSpawn());
         $this->setInitInventory($player);
+        $game = $this->teamDeathMatchSystem->getGame();
+        NameTagController::showToAlly($player, $game->getId(), $game->getRedTeamId(), $this->getServer());
         foreach ($player->getLevel()->getEntities() as $entity) {
             if ($entity instanceof CadaverEntity) {
                 if ($entity->getOwner()->getName() === $player->getName()) {

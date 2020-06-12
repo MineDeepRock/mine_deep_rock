@@ -15,7 +15,8 @@ use team_system\TeamSystem;
 
 class NameTagController
 {
-    static function showToAlly(Player $player, GameId $gameId, TeamId $redTeamId, Server $server): void {
+    public static function showToAlly(Player $player, GameId $gameId, TeamId $redTeamId, Server $server): void {
+        self::delete($player);
         $players = [];
 
         $playerTeamId = TeamSystem::getPlayerData($player->getName())->getBelongTeamId();
@@ -37,7 +38,7 @@ class NameTagController
         TeamNameTagSystem::set($player, $name . "\n" . $hpGauge, $players);
     }
 
-    static function update(Player $player, TeamId $redTeamId): void {
+    public static function update(Player $player, TeamId $redTeamId): void {
         $hpGauge = str_repeat(TextFormat::GREEN . "■", intval($player->getHealth()));
         $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($player->getHealth()));
 
@@ -51,16 +52,8 @@ class NameTagController
         TeamNameTagSystem::updateNameTag($player, $name . "\n" . $hpGauge);
     }
 
-    static function showToParticipant(Player $player, GameId $gameId, TeamId $redTeamId, Server $server): void {
-
-        foreach ($player->getLevel()->getEntities() as $entity) {
-            if ($entity instanceof NameTagEntity) {
-                if ($entity->getOwnerName() === $player->getName()) {
-                    $entity->kill();
-                }
-            }
-        }
-
+    public static function showToParticipant(Player $player, GameId $gameId, TeamId $redTeamId, Server $server): void {
+        self::delete($player);
         $players = [];
 
         $playerTeamId = TeamSystem::getPlayerData($player->getName())->getBelongTeamId();
@@ -78,5 +71,15 @@ class NameTagController
         $hpGauge = str_repeat(TextFormat::GREEN . "■", intval($player->getHealth()));
         $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($player->getHealth()));
         TeamNameTagSystem::set($player, $name . "\n" . $hpGauge, $players);
+    }
+
+    public static function delete(Player $player) {
+        foreach ($player->getLevel()->getEntities() as $entity) {
+            if ($entity instanceof NameTagEntity) {
+                if ($entity->getOwnerName() === $player->getName()) {
+                    $entity->kill();
+                }
+            }
+        }
     }
 }
