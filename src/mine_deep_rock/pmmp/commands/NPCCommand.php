@@ -13,9 +13,7 @@ use pocketmine\plugin\Plugin;
 
 class NPCCommand extends Command
 {
-    private $listener;
-
-    public function __construct(Plugin $owner) {
+    public function __construct() {
         parent::__construct("npc", "", "");
         $this->setPermission("NPC.Command");
     }

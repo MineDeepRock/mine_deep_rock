@@ -28,7 +28,7 @@ class Main extends PluginBase implements Listener
     public function onEnable() {
         Entity::registerEntity(TeamDeathMatchNPC::class, true, ['TeamDeathMatch']);
 
-        $this->getServer()->getCommandMap()->register("npc", new NPCCommand($this));
+        $this->getServer()->getCommandMap()->register("npc", new NPCCommand());
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getPluginManager()->registerEvents(new TwoTeamGameListener($this->getServer(),$this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener(), $this);
