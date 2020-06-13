@@ -9,6 +9,7 @@ use gun_system\models\sniper_rifle\SMLEMK3;
 use gun_system\models\sub_machine_gun\MP18;
 use mine_deep_rock\listeners\BoxListener;
 use mine_deep_rock\listeners\GrenadeListener;
+use mine_deep_rock\listeners\GunListener;
 use mine_deep_rock\listeners\TwoTeamGameListener;
 use mine_deep_rock\pmmp\commands\NPCCommand;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
@@ -33,6 +34,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents(new TwoTeamGameListener($this->getServer(),$this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new BoxListener($this->getServer(),$this->getScheduler()), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new GunListener(), $this);
     }
 
     public function onJoin(PlayerJoinEvent $event) {

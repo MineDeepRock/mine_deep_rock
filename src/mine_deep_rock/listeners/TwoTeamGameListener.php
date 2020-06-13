@@ -81,6 +81,8 @@ class TwoTeamGameListener implements Listener
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
         if ($attacker instanceof Player && $victim instanceof Player) {
+            $event->setAttackCooldown(0);
+            $event->setKnockBack(0);
             if ($this->controller->isJurisdiction($victim)) {
                 if (!$this->controller->canReceiveDamage($attacker, $victim)) $event->setCancelled();
                 $this->controller->updateNameTag($attacker);
