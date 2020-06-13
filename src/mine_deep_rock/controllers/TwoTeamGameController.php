@@ -11,10 +11,15 @@ use mine_deep_rock\pmmp\items\RespawnItem;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
+use pocketmine\level\Level;
+use pocketmine\level\particle\FloatingTextParticle;
+use pocketmine\level\Position;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
 use two_team_game_system\TwoTeamGameSystem;
@@ -137,6 +142,36 @@ class TwoTeamGameController
         foreach ($attacker->getLevel()->getPlayers() as $player) {
             $player->sendMessage($message);
         }
+    }
+
+    public function sendHitMessage(Player $attacker, bool $isFinisher) {
+        if ($isFinisher) {
+            $attacker->addTitle(TextFormat::RED . "><", "", 0, 1, 0);
+        } else {
+            $attacker->addTitle("><", "", 0, 1, 0);
+        }
+    }
+
+    public function sendHitParticle(Level $level, Position $position, float $value, bool $isFinisher) {
+        if ($isFinisher) {
+            $text = str_repeat(TextFormat::RED . "■", intval($value));
+        } else if ($value <= 5) {
+            $text = str_repeat(TextFormat::WHITE . "■", intval($value));
+        } else if ($value <= 15) {
+            $text = str_repeat(TextFormat::GREEN . "■", intval($value));
+        } else {
+            $text = str_repeat(TextFormat::YELLOW . "■", intval($value));
+        }
+
+        $position = $position->add(rand(-2, 2), rand(0, 3), rand(-2, 2));
+        $particle = new FloatingTextParticle($position, $text, "");
+        $level->addParticle($particle);
+
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($level, $particle): void {
+            $particle->setInvisible(true);
+            $level->addParticle($particle);
+        }), 20 * 1.5);
+
     }
 
     public function isJurisdiction(Player $player): bool {

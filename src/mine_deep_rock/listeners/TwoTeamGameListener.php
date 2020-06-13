@@ -84,10 +84,17 @@ class TwoTeamGameListener implements Listener
             $event->setAttackCooldown(0);
             $event->setKnockBack(0);
             if ($this->controller->isJurisdiction($victim)) {
-                if (!$this->controller->canReceiveDamage($attacker, $victim)) $event->setCancelled();
+                if (!$this->controller->canReceiveDamage($attacker, $victim)) {
+                    $event->setCancelled();
+                    return;
+                }
+
                 $this->controller->updateNameTag($attacker);
             }
         }
+        $isFinisher = $victim->getHealth() - $event->getFinalDamage() <= 0;
+        $this->controller->sendHitMessage($attacker, $victim->getHealth() - $event->getFinalDamage() <= 0);
+        $this->controller->sendHitParticle($victim->getLevel(), $victim->getPosition(), $event->getFinalDamage(), $isFinisher);
     }
 
     public function onDead(PlayerDeathEvent $event): void {
