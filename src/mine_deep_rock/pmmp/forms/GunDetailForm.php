@@ -45,7 +45,7 @@ class GunDetailForm implements Form
     public function jsonSerialize() {
         return [
             'type' => 'custom_form',
-            'title' => '銃選択',
+            'title' => $this->gun::NAME,
             'content' => [
                 [
                     'type' => 'label',
