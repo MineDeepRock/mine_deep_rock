@@ -100,6 +100,11 @@
       "type": "git",
       "name": "suinua/team_name_tag_system",
       "url": "https://github.com/MineDeepRock/team_name_tag_system"
+    },
+    {
+      "type": "git",
+      "name": "suinua/sandbag_system",
+      "url": "https://github.com/MineDeepRock/sandbag_system"
     }
   ],
   "require": {
@@ -122,6 +127,7 @@
     "suinua/grenade_system": "dev-master",
     "suinua/weapon_data_system": "dev-master",
     "suinua/money_system": "dev-master",
-    "suinua/team_name_tag_system": "dev-master"
+    "suinua/team_name_tag_system": "dev-master",
+    "suinua/sandbag_system": "dev-master"
   }
 }

@@ -23,6 +23,7 @@ use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use sandbag_system\pmmp\entities\SandbagEntity;
 use scoreboard_system\ScoreboardSystem;
 use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
@@ -98,12 +99,18 @@ class TwoTeamGameListener implements Listener
                 }
 
                 $this->controller->updateNameTag($attacker);
+                return;
             }
         }
-        $isFinisher = $victim->getHealth() - $event->getFinalDamage() <= 0;
-        $this->controller->sendHitMessage($attacker, $victim->getHealth() - $event->getFinalDamage() <= 0);
-        $this->controller->sendHitParticle($victim->getLevel(), $victim->getPosition(), $event->getFinalDamage(), $isFinisher);
-    }
+        if ($attacker instanceof Player) {
+            if ($victim instanceof SandbagEntity) {
+                $isFinisher = $victim->getHealth() - $event->getFinalDamage() <= 0;
+                $this->controller->sendHitMessage($attacker, $victim->getHealth() - $event->getFinalDamage() <= 0);
+                $this->controller->sendHitParticle($victim->getLevel(), $victim->getPosition(), $event->getFinalDamage(), $isFinisher);
+                return;
+            }
+        }
+   }
 
     public function onDead(PlayerDeathEvent $event): void {
         $victim = $event->getPlayer();
