@@ -8,19 +8,21 @@ use gun_system\GunSystem;
 use military_department_system\MilitaryDepartmentSystem;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\items\RespawnItem;
+use mine_deep_rock\scoreboards\LobbyScoreboard;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\level\Position;
-use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use scoreboard_system\ScoreboardSystem;
 use team_death_match_system\TeamDeathMatchSystem;
+use team_system\models\Game;
 use team_system\TeamSystem;
 use two_team_game_system\TwoTeamGameSystem;
 use weapon_data_system\models\GunData;
@@ -39,12 +41,24 @@ class TwoTeamGameController
         $this->scheduler = $scheduler;
     }
 
+    public function getGameData(): Game {
+        return $this->twoTeamGameSystem->getGame();
+    }
+
     public function init(TwoTeamGameSystem $twoTeamGameSystem): void {
         $this->twoTeamGameSystem = $twoTeamGameSystem;
     }
 
     public function join(Player $player) {
         $this->twoTeamGameSystem->join($player);
+        //TODO:リファクタリング
+        $players = $this->server->getLevelByName($this->twoTeamGameSystem->getMap()->getName())->getPlayers();
+        $participants = TeamSystem::getParticipantData($this->twoTeamGameSystem->getGame()->getId());
+        $scoreboard = new LobbyScoreboard(count($participants));
+        foreach ($players as $player) {
+            ScoreboardSystem::removeScore($player,$scoreboard->getScores()[1]);
+            ScoreboardSystem::setScore($player,$scoreboard->getScores()[1]);
+        }
     }
 
     public function updateNameTag(Player $player) {

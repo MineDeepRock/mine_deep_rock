@@ -9,11 +9,13 @@ use mine_deep_rock\controllers\TwoTeamGameController;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\NPCBase;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
+use mine_deep_rock\scoreboards\LobbyScoreboard;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
@@ -21,6 +23,7 @@ use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use scoreboard_system\ScoreboardSystem;
 use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
@@ -51,6 +54,11 @@ class TwoTeamGameListener implements Listener
             $bossBar = BossBarAPI::getInstance()->getBossBar($this->server->getPlayer($playerData->getName()));
             $bossBar->setTitle(TextFormat::BLUE . "Red:" . TextFormat::WHITE . $event->getRedTeamScore() . "---" . TextFormat::RED . "Blue:" . TextFormat::WHITE . $event->getBlueTeamScore());
         }
+    }
+
+    public function onJoin(PlayerJoinEvent $event) {
+        $participants = TeamSystem::getParticipantData($this->controller->getGameData()->getId());
+        ScoreboardSystem::setScoreboard($event->getPlayer(), new LobbyScoreboard(count($participants)));
     }
 
     public function onTapNPC(EntityDamageByEntityEvent $event) {
