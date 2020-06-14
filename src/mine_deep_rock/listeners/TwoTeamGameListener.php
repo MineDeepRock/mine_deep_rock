@@ -7,7 +7,6 @@ namespace mine_deep_rock\listeners;
 use bossbarapi\BossBarAPI;
 use mine_deep_rock\controllers\TwoTeamGameController;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
-use mine_deep_rock\pmmp\entities\NPCBase;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
 use mine_deep_rock\scoreboards\LobbyScoreboard;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -65,16 +64,13 @@ class TwoTeamGameListener implements Listener
     public function onTapNPC(EntityDamageByEntityEvent $event) {
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
-        if ($attacker instanceof Player && $victim instanceof NPCBase) {
-            switch ($victim::NAME) {
-                //TODO:リネーム
-                case TeamDeathMatchNPC::NAME;
-                    $this->controller->join($attacker);
-                    $event->setCancelled();
-                    break;
-                case CadaverEntity::NAME;
-                    $event->setCancelled();
-                    break;
+        if ($attacker instanceof Player) {
+            if ($victim instanceof TeamDeathMatchNPC) {
+                $this->controller->join($attacker);
+                $event->setCancelled();
+            } else if ($victim instanceof CadaverEntity) {
+                $this->controller->resuscitate($attacker, $victim);
+                $event->setCancelled();
             }
         }
     }
@@ -110,7 +106,7 @@ class TwoTeamGameListener implements Listener
                 return;
             }
         }
-   }
+    }
 
     public function onDead(PlayerDeathEvent $event): void {
         $victim = $event->getPlayer();

@@ -6,6 +6,7 @@ namespace mine_deep_rock\controllers;
 
 use gun_system\GunSystem;
 use military_department_system\MilitaryDepartmentSystem;
+use military_department_system\models\NursingSoldier;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\items\RespawnItem;
 use mine_deep_rock\scoreboards\LobbyScoreboard;
@@ -15,6 +16,7 @@ use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\level\Position;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
@@ -56,8 +58,8 @@ class TwoTeamGameController
         $participants = TeamSystem::getParticipantData($this->twoTeamGameSystem->getGame()->getId());
         $scoreboard = new LobbyScoreboard(count($participants));
         foreach ($players as $player) {
-            ScoreboardSystem::removeScore($player,$scoreboard->getScores()[1]);
-            ScoreboardSystem::setScore($player,$scoreboard->getScores()[1]);
+            ScoreboardSystem::removeScore($player, $scoreboard->getScores()[1]);
+            ScoreboardSystem::setScore($player, $scoreboard->getScores()[1]);
         }
     }
 
@@ -100,10 +102,10 @@ class TwoTeamGameController
         }
     }
 
-    public function spawn(Player $player): void {
+    public function spawn(Player $player, Vector3 $position = null): void {
         $player->setGamemode(Player::ADVENTURE);
         $player->setImmobile(false);
-        $player->teleport($player->getSpawn());
+        $player->teleport($position ?? $player->getSpawn());
         $this->setInitInventory($player);
         $game = $this->twoTeamGameSystem->getGame();
         NameTagController::showToAlly($player, $game->getId(), $game->getRedTeamId(), $this->server);
@@ -185,6 +187,23 @@ class TwoTeamGameController
             $particle->setInvisible(true);
             $level->addParticle($particle);
         }), 20 * 1.5);
+
+    }
+
+    public function resuscitate(Player $player, CadaverEntity $cadaver): void {
+        if (!$cadaver->getOwner()->isOnline()) return;
+        
+        $playerData = TeamSystem::getPlayerData($player->getName());
+        $cadaverData = TeamSystem::getPlayerData($cadaver->getOwner()->getName());
+
+        if ($playerData->getBelongTeamId() === null || $cadaverData->getBelongTeamId() == null) return;
+
+        if ($playerData->getBelongTeamId()->equal($cadaverData->getBelongTeamId())) {
+            $department = MilitaryDepartmentSystem::getPlayerData($player->getName())->getMilitaryDepartment();
+            if ($department->equal(new NursingSoldier())) {
+                $this->spawn($cadaver->getOwner(), $cadaver->getPosition());
+            }
+        }
 
     }
 
