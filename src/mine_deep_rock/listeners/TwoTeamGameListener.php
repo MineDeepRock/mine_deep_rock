@@ -63,6 +63,7 @@ class TwoTeamGameListener implements Listener
         foreach ($event->getPlayers() as $player) {
             if ($player->isOnline()) {
                 $this->controller->spawn($player);
+                $player->setNameTagVisible(false);
             }
         }
     }

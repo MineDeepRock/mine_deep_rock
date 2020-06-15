@@ -115,7 +115,6 @@ class TwoTeamGameController
         $this->setEffects($player);
         $this->setEquipments($player);
         $game = $this->twoTeamGameSystem->getGame();
-        NameTagController::showToAlly($player, $game->getId(), $game->getRedTeamId(), $this->server);
         foreach ($player->getLevel()->getEntities() as $entity) {
             if ($entity instanceof CadaverEntity) {
                 if ($entity->getOwner()->getName() === $player->getName()) {
@@ -123,6 +122,7 @@ class TwoTeamGameController
                 }
             }
         }
+        NameTagController::showToAlly($player, $game->getId(), $game->getRedTeamId(), $this->server);
     }
 
     public function setEffects(Player $player): void {
