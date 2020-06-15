@@ -5,10 +5,10 @@ namespace mine_deep_rock\listeners;
 
 
 use bossbarapi\BossBarAPI;
-use mine_deep_rock\controllers\TwoTeamGameController;
+use mine_deep_rock\interpreters\TwoTeamGameInterpreter;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
-use mine_deep_rock\scoreboards\LobbyScoreboard;
+use mine_deep_rock\pmmp\items\RespawnItem;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\Listener;
@@ -22,22 +22,19 @@ use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
-use sandbag_system\pmmp\entities\SandbagEntity;
-use scoreboard_system\ScoreboardSystem;
 use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
 use two_team_game_system\pmmp\events\GameStartEvent;
-use two_team_game_system\pmmp\events\PlayerJoinTwoTeamGameEvent;
 use two_team_game_system\TwoTeamGameSystem;
 
 class TwoTeamGameListener implements Listener
 {
     /**
-     * @var TwoTeamGameController
+     * @var TwoTeamGameInterpreter
      */
-    private $controller;
+    private $interpreter;
     private $server;
     private $scheduler;
 
@@ -48,7 +45,7 @@ class TwoTeamGameListener implements Listener
     }
 
     public function init(TwoTeamGameSystem $TwoTeamGameSystem): void {
-        $this->controller = new TwoTeamGameController($TwoTeamGameSystem, $this->server, $this->scheduler);
+        $this->interpreter = new TwoTeamGameInterpreter($TwoTeamGameSystem, $this->server, $this->scheduler);
     }
 
     public function onScoreAdded(AddScoreEvent $event): void {
@@ -59,25 +56,16 @@ class TwoTeamGameListener implements Listener
     }
 
     public function onGameStart(GameStartEvent $event) {
-        var_dump("start");
         foreach ($event->getPlayers() as $player) {
             if ($player->isOnline()) {
-                $this->controller->spawn($player);
+                $this->interpreter->spawn($player);
                 $player->setNameTagVisible(false);
             }
         }
     }
 
     public function onJoinServer(PlayerJoinEvent $event) {
-        $participants = TeamSystem::getParticipantData($this->controller->getGameData()->getId());
-        ScoreboardSystem::setScoreboard($event->getPlayer(), new LobbyScoreboard(count($participants)));
-    }
-
-    public function onJoinGame(PlayerJoinTwoTeamGameEvent $event) {
-        $this->controller->setSpawnPoint($event->getPlayer());
-        if ($this->controller->getGameData()->isStarted()) {
-            $this->controller->spawn($event->getPlayer());
-        }
+        $this->interpreter->onJoinServer($event->getPlayer());
     }
 
     public function onTapNPC(EntityDamageByEntityEvent $event) {
@@ -85,10 +73,10 @@ class TwoTeamGameListener implements Listener
         $victim = $event->getEntity();
         if ($attacker instanceof Player) {
             if ($victim instanceof TeamDeathMatchNPC) {
-                $this->controller->join($attacker);
+                $this->interpreter->joinGame($attacker);
                 $event->setCancelled();
             } else if ($victim instanceof CadaverEntity) {
-                $this->controller->resuscitate($attacker, $victim);
+                $this->interpreter->resuscitate($attacker, $victim);
                 $event->setCancelled();
             }
         }
@@ -97,7 +85,7 @@ class TwoTeamGameListener implements Listener
     public function onRegainHealth(EntityRegainHealthEvent $event) {
         $player = $event->getEntity();
         if ($player instanceof Player) {
-            $this->controller->updateNameTag($player);
+            $this->interpreter->onRegainHealth($player);
         }
     }
 
@@ -105,24 +93,11 @@ class TwoTeamGameListener implements Listener
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
         if ($attacker instanceof Player && $victim instanceof Player) {
-            $event->setAttackCooldown(0);
-            $event->setKnockBack(0);
-            if ($this->controller->isJurisdiction($victim)) {
-                if (!$this->controller->canReceiveDamage($attacker, $victim)) {
-                    $event->setCancelled();
-                    return;
-                }
-
-                $this->controller->updateNameTag($attacker);
-                return;
-            }
-        }
-        if ($attacker instanceof Player) {
-            if ($victim instanceof SandbagEntity) {
-                $isFinisher = $victim->getHealth() - $event->getFinalDamage() <= 0;
-                $this->controller->sendHitMessage($attacker, $victim->getHealth() - $event->getFinalDamage() <= 0);
-                $this->controller->sendHitParticle($victim->getLevel(), $victim->getPosition(), $event->getFinalDamage(), $isFinisher);
-                return;
+            if ($this->interpreter->onReceiveDamage($attacker, $victim, $event->getFinalDamage())) {
+                $event->setAttackCooldown(0);
+                $event->setKnockBack(0);
+            } else {
+                $event->setCancelled();
             }
         }
     }
@@ -133,22 +108,25 @@ class TwoTeamGameListener implements Listener
         if ($lastDamageCause instanceof EntityDamageByEntityEvent) {
             $attacker = $lastDamageCause->getDamager();
             if ($attacker instanceof Player) {
-                if ($this->controller->isJurisdiction($victim)) {
-                    $this->controller->onDead($attacker, $victim);
+                if ($this->interpreter->isJurisdiction($victim)) {
+                    $this->interpreter->onDead($attacker, $victim);
                 }
             }
         }
     }
 
     public function onGameFinish(GameFinishEvent $event) {
-        $this->controller->returnToLobby($event->getPlayers());
+        $this->interpreter->onGameFinish($event->getPlayers());
     }
 
     public function onTapWithItem(PlayerInteractEvent $event) {
         if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
             $player = $event->getPlayer();
             $item = $player->getInventory()->getItemInHand();
-            $this->controller->useItem($player, $item);
+            if ($item instanceof RespawnItem) {
+                $this->interpreter->useRespawnItem($player);
+                return;
+            }
         }
     }
 
@@ -158,17 +136,16 @@ class TwoTeamGameListener implements Listener
             if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
                 $player = $event->getPlayer();
                 $item = $event->getPlayer()->getInventory()->getItemInHand();
-                $this->controller->useItem($player, $item);
+                if ($item instanceof RespawnItem) {
+                    $this->interpreter->useRespawnItem($player);
+                    return;
+                }
             }
         }
     }
 
     public function onPlayerRespawn(PlayerRespawnEvent $event): void {
         $player = $event->getPlayer();
-        $this->controller->displayDeathScreen($player);
-    }
-
-    public function existController(): bool {
-        return $this->controller !== null;
+        $this->interpreter->onPlayerRespawn($player);
     }
 }
