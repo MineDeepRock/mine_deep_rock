@@ -5,13 +5,16 @@ namespace mine_deep_rock\listeners;
 
 
 use box_system\pmmp\events\AmmoBoxEffectOnEvent;
+use box_system\pmmp\events\BoxStopEvent;
 use box_system\pmmp\events\FlareBoxEffectOnEvent;
 use box_system\pmmp\events\MedicineBoxEffectOnEvent;
 use gun_system\GunSystem;
+use military_department_system\models\GadgetType;
 use mine_deep_rock\controllers\NameTagController;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\Listener;
+use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
@@ -55,5 +58,17 @@ class BoxListener implements Listener
             NameTagController::showToAlly($receiver, $receiverData->getJoinedGameId(), $receiverData->getBelongTeamId(), $this->server);
         }), 20 * 3);
         //TODO:メッセージ
+    }
+
+    public function onStopBox(BoxStopEvent $event): void {
+        $player = $event->getOwner();
+        if (!$player->isOnline()) return;
+        if ($player->getLevel()->getName() === "lobby") return;
+        if ($player->getGamemode() !== Player::ADVENTURE) return;
+        
+        $type = new GadgetType($event->getBox()::NAME);
+        if (!$player->getInventory()->contains($type->toItem())) {
+            $player->getInventory()->addItem($type->toItem());
+        }
     }
 }
