@@ -65,7 +65,7 @@ class BoxListener implements Listener
         if (!$player->isOnline()) return;
         if ($player->getLevel()->getName() === "lobby") return;
         if ($player->getGamemode() !== Player::ADVENTURE) return;
-        
+
         $type = new GadgetType($event->getBox()::NAME);
         if (!$player->getInventory()->contains($type->toItem())) {
             $player->getInventory()->addItem($type->toItem());

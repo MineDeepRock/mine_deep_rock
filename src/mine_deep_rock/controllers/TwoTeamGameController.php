@@ -4,8 +4,6 @@
 namespace mine_deep_rock\controllers;
 
 
-use grenade_system\models\FragGrenade;
-use grenade_system\pmmp\items\FragGrenadeItem;
 use gun_system\GunSystem;
 use military_department_system\MilitaryDepartmentSystem;
 use military_department_system\models\NursingSoldier;
