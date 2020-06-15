@@ -28,6 +28,8 @@ use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
 use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
+use two_team_game_system\pmmp\events\GameStartEvent;
+use two_team_game_system\pmmp\events\PlayerJoinTwoTeamGameEvent;
 use two_team_game_system\TwoTeamGameSystem;
 
 class TwoTeamGameListener implements Listener
@@ -56,9 +58,25 @@ class TwoTeamGameListener implements Listener
         }
     }
 
-    public function onJoin(PlayerJoinEvent $event) {
+    public function onGameStart(GameStartEvent $event) {
+        var_dump("start");
+        foreach ($event->getPlayers() as $player) {
+            if ($player->isOnline()) {
+                $this->controller->spawn($player);
+            }
+        }
+    }
+
+    public function onJoinServer(PlayerJoinEvent $event) {
         $participants = TeamSystem::getParticipantData($this->controller->getGameData()->getId());
         ScoreboardSystem::setScoreboard($event->getPlayer(), new LobbyScoreboard(count($participants)));
+    }
+
+    public function onJoinGame(PlayerJoinTwoTeamGameEvent $event) {
+        $this->controller->setSpawnPoint($event->getPlayer());
+        if ($this->controller->getGameData()->isStarted()) {
+            $this->controller->spawn($event->getPlayer());
+        }
     }
 
     public function onTapNPC(EntityDamageByEntityEvent $event) {

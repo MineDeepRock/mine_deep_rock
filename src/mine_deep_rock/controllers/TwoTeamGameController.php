@@ -51,6 +51,10 @@ class TwoTeamGameController
         $this->twoTeamGameSystem = $twoTeamGameSystem;
     }
 
+    public function setSpawnPoint(Player $player): void {
+        $this->twoTeamGameSystem->setSpawnPoint($player);
+    }
+
     public function join(Player $player) {
         $this->twoTeamGameSystem->join($player);
         //TODO:リファクタリング
@@ -106,10 +110,10 @@ class TwoTeamGameController
         $player->setGamemode(Player::ADVENTURE);
         $player->setImmobile(false);
         $player->teleport($position ?? $player->getSpawn());
+        $this->twoTeamGameSystem->setSpawnPoint($player);
 
-        $playerData = MilitaryDepartmentSystem::getPlayerData($player->getName());
-        foreach ($playerData->getMilitaryDepartment()->getEffects() as $effect) $player->addEffect($effect);
-        $this->setInitInventory($player);
+        $this->setEffects($player);
+        $this->setEquipments($player);
         $game = $this->twoTeamGameSystem->getGame();
         NameTagController::showToAlly($player, $game->getId(), $game->getRedTeamId(), $this->server);
         foreach ($player->getLevel()->getEntities() as $entity) {
@@ -121,7 +125,12 @@ class TwoTeamGameController
         }
     }
 
-    public function setInitInventory(Player $player): void {
+    public function setEffects(Player $player): void {
+        $playerData = MilitaryDepartmentSystem::getPlayerData($player->getName());
+        foreach ($playerData->getMilitaryDepartment()->getEffects() as $effect) $player->addEffect($effect);
+    }
+
+    public function setEquipments(Player $player): void {
         $playerData = MilitaryDepartmentSystem::getPlayerData($player->getName());
         /** @var GunData $mainGunData */
         $mainGunData = WeaponDataSystem::get($player->getName(), $playerData->getEquipMainGunName());
@@ -134,10 +143,7 @@ class TwoTeamGameController
         foreach ($playerData->getMilitaryDepartment()->getCanEquipGadgetsType() as $gadgetType) {
             $items[] = $gadgetType->toItem();
         }
-        $player->getInventory()->setContents([
-            GunSystem::getGun($player, $mainGunData->getName(), $mainGunData->getScopeName()),
-            GunSystem::getGun($player, $subGunData->getName(), $subGunData->getScopeName()),
-        ]);
+        $player->getInventory()->setContents($items);
         $player->getInventory()->setItem(8, ItemFactory::get(ItemIds::ARROW, 0, 1));
     }
 

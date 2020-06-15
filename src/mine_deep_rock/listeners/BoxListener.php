@@ -54,7 +54,7 @@ class BoxListener implements Listener
         $receiverData = TeamSystem::getPlayerData($receiver->getName());
         if ($receiverData->getJoinedGameId() === null) return;
         NameTagController::showToParticipant($receiver, $receiverData->getJoinedGameId(), $receiverData->getBelongTeamId(), $this->server);
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData) {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData): void {
             NameTagController::showToAlly($receiver, $receiverData->getJoinedGameId(), $receiverData->getBelongTeamId(), $this->server);
         }), 20 * 3);
         //TODO:メッセージ

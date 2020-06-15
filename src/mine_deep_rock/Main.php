@@ -12,6 +12,7 @@ use mine_deep_rock\listeners\GrenadeListener;
 use mine_deep_rock\listeners\GunListener;
 use mine_deep_rock\listeners\TwoTeamGameListener;
 use mine_deep_rock\pmmp\commands\NPCCommand;
+use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
 use mine_deep_rock\slot_menus\EquipmentSelectMenu;
 use money_system\MoneySystem;
@@ -29,6 +30,7 @@ class Main extends PluginBase implements Listener
     public function onEnable() {
         Entity::registerEntity(TeamDeathMatchNPC::class, true, ['TeamDeathMatch']);
 
+        Entity::registerEntity(CadaverEntity::class, true, ['Cadaver']);
         $this->getServer()->getCommandMap()->register("npc", new NPCCommand());
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getPluginManager()->registerEvents(new TwoTeamGameListener($this->getServer(),$this->getScheduler()), $this);
