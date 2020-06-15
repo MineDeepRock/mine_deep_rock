@@ -4,6 +4,8 @@
 namespace mine_deep_rock\controllers;
 
 
+use grenade_system\models\FragGrenade;
+use grenade_system\pmmp\items\FragGrenadeItem;
 use gun_system\GunSystem;
 use military_department_system\MilitaryDepartmentSystem;
 use military_department_system\models\NursingSoldier;
@@ -106,6 +108,9 @@ class TwoTeamGameController
         $player->setGamemode(Player::ADVENTURE);
         $player->setImmobile(false);
         $player->teleport($position ?? $player->getSpawn());
+
+        $playerData = MilitaryDepartmentSystem::getPlayerData($player->getName());
+        foreach ($playerData->getMilitaryDepartment()->getEffects() as $effect) $player->addEffect($effect);
         $this->setInitInventory($player);
         $game = $this->twoTeamGameSystem->getGame();
         NameTagController::showToAlly($player, $game->getId(), $game->getRedTeamId(), $this->server);
@@ -124,6 +129,13 @@ class TwoTeamGameController
         $mainGunData = WeaponDataSystem::get($player->getName(), $playerData->getEquipMainGunName());
         /** @var GunData $subGunData */
         $subGunData = WeaponDataSystem::get($player->getName(), $playerData->getEquipSubGunName());
+        $items = [
+            GunSystem::getGun($player, $mainGunData->getName(), $mainGunData->getScopeName()),
+            GunSystem::getGun($player, $subGunData->getName(), $subGunData->getScopeName()),
+        ];
+        foreach ($playerData->getMilitaryDepartment()->getCanEquipGadgetsType() as $gadgetType) {
+            $items[] = $gadgetType->toItem();
+        }
         $player->getInventory()->setContents([
             GunSystem::getGun($player, $mainGunData->getName(), $mainGunData->getScopeName()),
             GunSystem::getGun($player, $subGunData->getName(), $subGunData->getScopeName()),
@@ -192,7 +204,7 @@ class TwoTeamGameController
 
     public function resuscitate(Player $player, CadaverEntity $cadaver): void {
         if (!$cadaver->getOwner()->isOnline()) return;
-        
+
         $playerData = TeamSystem::getPlayerData($player->getName());
         $cadaverData = TeamSystem::getPlayerData($cadaver->getOwner()->getName());
 
