@@ -62,8 +62,7 @@ class TwoTeamGameController
         $participants = TeamSystem::getParticipantData($this->twoTeamGameSystem->getGame()->getId());
         $scoreboard = new LobbyScoreboard(count($participants));
         foreach ($players as $player) {
-            ScoreboardSystem::removeScore($player, $scoreboard->getScores()[1]);
-            ScoreboardSystem::setScore($player, $scoreboard->getScores()[1]);
+            ScoreboardSystem::updateScoreboard($player, $scoreboard);
         }
     }
 
