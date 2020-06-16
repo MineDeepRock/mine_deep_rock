@@ -64,7 +64,6 @@ abstract class TwoTeamNameTagController
 
         $players = [];
 
-        $playerTeamId = TeamSystem::getPlayerData($target->getName())->getBelongTeamId();
         foreach ($target->getLevel()->getPlayers() as $player) {
             $playerData = TeamSystem::getPlayerData($player->getName());
             if ($playerData->getBelongTeamId() !== null) {

@@ -64,7 +64,9 @@ class BoxListener implements Listener
 
         $receiver = $event->getReceiver();
         $receiverData = TeamSystem::getPlayerData($receiver->getName());
-        if ($receiverData->getJoinedGameId() === null) return;
+        $ownerData = TeamSystem::getPlayerData($event->getOwner()->getName());
+        if ($receiverData->getBelongTeamId() === null || $ownerData->getBelongTeamId() === null) return;
+        if ($receiverData->getBelongTeamId()->equal($ownerData->getBelongTeamId())) return;
 
         TwoTeamNameTagController::showToParticipants($receiver, self::$game);
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData): void {
