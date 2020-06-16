@@ -10,7 +10,7 @@ use box_system\pmmp\events\FlareBoxEffectOnEvent;
 use box_system\pmmp\events\MedicineBoxEffectOnEvent;
 use gun_system\GunSystem;
 use military_department_system\models\GadgetType;
-use mine_deep_rock\controllers\NameTagController;
+use mine_deep_rock\controllers\TwoTeamNameTagController;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\Listener;
@@ -31,9 +31,19 @@ class BoxListener implements Listener
      */
     private $scheduler;
 
+    //TODO:Game終了時、開始のイベントを受け取り更新する。いずれは複数形
+    static private $game;
+
     public function __construct(Server $server, TaskScheduler $scheduler) {
         $this->server = $server;
         $this->scheduler = $scheduler;
+    }
+
+    /**
+     * @param mixed $game
+     */
+    public static function setGame($game): void {
+        self::$game = $game;
     }
 
     public function onAmmoBoxEffect(AmmoBoxEffectOnEvent $event): void {
@@ -50,12 +60,17 @@ class BoxListener implements Listener
     }
 
     public function onFlareBoxEffect(FlareBoxEffectOnEvent $event): void {
+        if (self::$game === null) return;
+
         $receiver = $event->getReceiver();
         $receiverData = TeamSystem::getPlayerData($receiver->getName());
         if ($receiverData->getJoinedGameId() === null) return;
-        NameTagController::showToParticipant($receiver, $receiverData->getJoinedGameId(), $receiverData->getBelongTeamId(), $this->server);
+
+        TwoTeamNameTagController::showToParticipants($receiver, self::$game);
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData): void {
-            NameTagController::showToAlly($receiver, $receiverData->getJoinedGameId(), $receiverData->getBelongTeamId(), $this->server);
+            if ($receiver->isOnline()) {
+                TwoTeamNameTagController::showToAlly($receiver, self::$game);
+            }
         }), 20 * 3);
         //TODO:メッセージ
     }

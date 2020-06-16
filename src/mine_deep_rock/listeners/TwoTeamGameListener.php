@@ -5,16 +5,20 @@ namespace mine_deep_rock\listeners;
 
 
 use bossbarapi\BossBarAPI;
+use gun_system\GunSystem;
+use gun_system\pmmp\items\ItemGun;
 use mine_deep_rock\interpreters\TwoTeamGameInterpreter;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\entities\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\items\RespawnItem;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
@@ -56,16 +60,19 @@ class TwoTeamGameListener implements Listener
     }
 
     public function onGameStart(GameStartEvent $event) {
-        foreach ($event->getPlayers() as $player) {
-            if ($player->isOnline()) {
-                $this->interpreter->spawn($player);
-                $player->setNameTagVisible(false);
-            }
-        }
+        $this->interpreter->onGameStart($event->getPlayers());
+    }
+
+    public function onGameFinish(GameFinishEvent $event) {
+        $this->interpreter->returnToLobby($event->getPlayers());
     }
 
     public function onJoinServer(PlayerJoinEvent $event) {
         $this->interpreter->onJoinServer($event->getPlayer());
+    }
+
+    public function onQuitServer(PlayerQuitEvent $event) {
+        $this->interpreter->quitGame($event->getPlayer());
     }
 
     public function onTapNPC(EntityDamageByEntityEvent $event) {
@@ -85,20 +92,40 @@ class TwoTeamGameListener implements Listener
     public function onRegainHealth(EntityRegainHealthEvent $event) {
         $player = $event->getEntity();
         if ($player instanceof Player) {
-            $this->interpreter->onRegainHealth($player);
+            if ($this->interpreter->isJurisdiction($player)) {
+                $this->interpreter->onRegainHealth($player);
+            }
         }
     }
 
-    public function onReceiveDamaged(EntityDamageByEntityEvent $event) {
+    public function onReceiveDamage(EntityDamageEvent $event): void {
+        $victim = $event->getEntity();
+        if ($event instanceof EntityDamageByEntityEvent) return;
+        if ($victim instanceof Player) {
+            if ($this->interpreter->isJurisdiction($victim)) {
+                $this->interpreter->onReceiveDamage($victim);
+            }
+        }
+    }
+
+    public function onReceiveDamageByEntity(EntityDamageByEntityEvent $event): void {
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
+        $damage = $event->getFinalDamage();
         if ($attacker instanceof Player && $victim instanceof Player) {
-            if ($this->interpreter->onReceiveDamage($attacker, $victim, $event->getFinalDamage())) {
-                $event->setAttackCooldown(0);
-                $event->setKnockBack(0);
-            } else {
-                $event->setCancelled();
+            if ($this->interpreter->isJurisdiction($attacker)) {
+                if ($this->interpreter->canReceiveDamage($attacker, $victim)) {
+                    $this->interpreter->onReceiveDamageByPlayer($attacker, $victim, $damage);
+
+                    if ($attacker->getInventory()->getItemInHand() instanceof ItemGun) {
+                        $event->setAttackCooldown(0);
+                        $event->setKnockBack(0);
+                    }
+                } else {
+                    $event->setCancelled();
+                }
             }
+            return;
         }
     }
 
@@ -109,14 +136,10 @@ class TwoTeamGameListener implements Listener
             $attacker = $lastDamageCause->getDamager();
             if ($attacker instanceof Player) {
                 if ($this->interpreter->isJurisdiction($victim)) {
-                    $this->interpreter->onDead($attacker, $victim);
+                    $this->interpreter->onKilledPlayer($attacker, $victim);
                 }
             }
         }
-    }
-
-    public function onGameFinish(GameFinishEvent $event) {
-        $this->interpreter->onGameFinish($event->getPlayers());
     }
 
     public function onTapWithItem(PlayerInteractEvent $event) {

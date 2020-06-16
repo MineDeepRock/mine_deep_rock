@@ -8,8 +8,9 @@ use gun_system\GunSystem;
 use gun_system\pmmp\items\ItemGun;
 use military_department_system\MilitaryDepartmentSystem;
 use military_department_system\models\NursingSoldier;
-use mine_deep_rock\controllers\NameTagController;
-use mine_deep_rock\controllers\TwoTeamGameController;
+use mine_deep_rock\controllers\TwoTeamGamePlayerController;
+use mine_deep_rock\controllers\TwoTeamNameTagController;
+use mine_deep_rock\listeners\BoxListener;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
 use mine_deep_rock\pmmp\items\RespawnItem;
 use mine_deep_rock\scoreboards\LobbyScoreboard;
@@ -18,71 +19,104 @@ use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
-use scoreboard_system\ScoreboardSystem;
+use team_death_match_system\TeamDeathMatchSystem;
 use team_system\TeamSystem;
 use two_team_game_system\TwoTeamGameSystem;
 
 class TwoTeamGameInterpreter
 {
-    private $controller;
+    private $twoTeamGameSystem;
+
+    private $playerController;
     private $server;
     private $scheduler;
 
     public function __construct(TwoTeamGameSystem $twoTeamGameSystem, Server $server, TaskScheduler $scheduler) {
         $this->server = $server;
         $this->scheduler = $scheduler;
-        $this->controller = new TwoTeamGameController($twoTeamGameSystem, $this->server, $this->scheduler);
+        $this->playerController = new TwoTeamGamePlayerController();
+        $this->twoTeamGameSystem = $twoTeamGameSystem;
+        BoxListener::setGame($this->twoTeamGameSystem->getGame());
     }
 
     public function joinGame(Player $player) {
-        $this->controller->joinGame($player);
-        $this->controller->updateScoreboard();
-        $this->controller->setSpawnPoint($player);
-        if ($this->controller->getGameData()->isStarted()) {
+        $this->twoTeamGameSystem->join($player);
+        $this->twoTeamGameSystem->setSpawnPoint($player);
+        $this->updateScoreboard();
+        if ($this->twoTeamGameSystem->getGame()->isStarted()) {
             $this->spawn($player);
         }
     }
 
-    public function onRegainHealth(Player $player) {
-        $this->controller->updateNameTag($player);
+    public function quitGame(Player $player) {
+        $this->twoTeamGameSystem->quit($player);
+        $this->updateScoreboard();
+    }
+
+    public function onGameStart(array $players) {
+        foreach ($players as $player) {
+            if (!$player->isOnline()) continue;
+            $this->spawn($player);
+            $player->setNameTagVisible(false);
+        }
     }
 
     public function onJoinServer(Player $player) {
-        $participants = TeamSystem::getParticipantData($this->controller->getGameData()->getId());
-        ScoreboardSystem::setScoreboard($player->getPlayer(), new LobbyScoreboard(count($participants)));
+        $participants = TeamSystem::getParticipantData($this->twoTeamGameSystem->getGame()->getId());
+        LobbyScoreboard::send($player, count($participants));
     }
 
-    public function onReceiveDamage(Player $attacker, Player $victim, float $damage): bool {
-        if ($this->isJurisdiction($victim)) {
-            if (!$this->controller->canReceiveDamage($attacker, $victim)) {
-                return false;
-            }
-
-            if ($attacker->getInventory()->getItemInHand() instanceof ItemGun) {
-                $isFinisher = $victim->getHealth() - $damage <= 0;
-                GunSystem::sendHitMessage($attacker, $isFinisher);
-                GunSystem::sendHitParticle($victim->getLevel(), $victim->getPosition(), $damage, $isFinisher);
-            }
-            $this->controller->updateNameTag($attacker);
-        }
-
-        return true;
+    public function onRegainHealth(Player $player) {
+        TwoTeamNameTagController::update($player, $this->twoTeamGameSystem->getGame());
     }
 
-    public function onDead(Player $attacker, Player $victim) {
-        if ($this->controller->isTeamDeathMatch()) {
-            $this->controller->addScore($attacker);
+    public function canReceiveDamage(Player $attacker, Player $victim) {
+        return $this->twoTeamGameSystem->canReceiveDamage($attacker, $victim);
+    }
+
+    public function onReceiveDamage(Player $player): void {
+        TwoTeamNameTagController::update($player, $this->twoTeamGameSystem->getGame());
+    }
+
+    public function onReceiveDamageByPlayer(Player $attacker, Player $victim, float $damage): void {
+        if ($attacker->getInventory()->getItemInHand() instanceof ItemGun) {
+            $isFinisher = $victim->getHealth() - $damage <= 0;
+            GunSystem::sendHitMessage($attacker, $isFinisher);
+            GunSystem::sendHitParticle($victim->getLevel(), $victim->getPosition(), $damage, $isFinisher);
+        }
+        TwoTeamNameTagController::update($victim, $this->twoTeamGameSystem->getGame());
+    }
+
+    public function onKilledPlayer(Player $attacker, Player $victim) {
+        if ($this->twoTeamGameSystem instanceof TeamDeathMatchSystem) {
+            $this->twoTeamGameSystem->addScore($attacker);
         }
 
-        $this->controller->sendKillMessage($attacker, $victim);
         $victim->setSpawn($victim->getPosition());
 
+        $this->sendPlayersKillMessage($attacker, $victim);
+        $this->spawnCadaverEntity($victim);
+    }
+
+    public function sendPlayersKillMessage(Player $attacker, Player $victim): void {
+        $attackerWeapon = $attacker->getInventory()->getItemInHand();
+        $message = $attacker->getNameTag() . " " . $attackerWeapon->getCustomName() . " " . $victim->getNameTag();
+        foreach ($attacker->getLevel()->getPlayers() as $player) {
+            $player->sendMessage($message);
+        }
+    }
+
+    public function spawnCadaverEntity(Player $victim) {
         $cadaverEntity = new CadaverEntity($victim->getLevel(), $victim);
         $cadaverEntity->spawnToAll();
     }
 
-    public function onGameFinish(array $players): void {
-        $this->controller->returnToLobby($players);
+    public function returnToLobby(array $players): void {
+        foreach ($players as $player) {
+            $level = $this->server->getLevelByName("lobby");
+            $pos = $level->getSpawnLocation();
+            $player->teleport($pos);
+        }
     }
 
     public function onPlayerRespawn(Player $player): void {
@@ -95,23 +129,22 @@ class TwoTeamGameInterpreter
         $player->setGamemode(Player::ADVENTURE);
         $player->setImmobile(false);
         $player->teleport($position ?? $player->getSpawn());
-        $this->controller->setSpawnPoint($player);
+        $this->twoTeamGameSystem->setSpawnPoint($player);
 
-        $this->controller->setEffects($player);
-        $this->controller->setEquipments($player);
-        $this->controller->killCadaverEntity($player);
+        $this->playerController->setEffects($player);
+        $this->playerController->setEquipments($player);
+        $this->playerController->removeCadaverEntity($player);
 
-        $game = $this->controller->getGameData();
-        NameTagController::showToAlly($player, $game->getId(), $game->getRedTeamId(), $this->server);
+        TwoTeamNameTagController::showToAlly($player, $this->twoTeamGameSystem->getGame());
     }
 
     public function displayDeathScreen(Player $player): void {
-        $cadaverEntity = $this->controller->getCadaverEntity($player);
+        $cadaverEntity = $this->playerController->getCadaverEntity($player);
 
         $player->getInventory()->setContents([]);
         $player->setGamemode(Player::SPECTATOR);
         $player->setImmobile(true);
-        $this->controller->setSpawnPoint($player);
+        $this->twoTeamGameSystem->setSpawnPoint($player);
 
         if ($cadaverEntity !== null) $player->teleport($cadaverEntity->getPosition()->add(0, 1, 0));
 
@@ -141,7 +174,17 @@ class TwoTeamGameInterpreter
 
     }
 
+    private function updateScoreboard(): void {
+        $participants = TeamSystem::getParticipantData($this->twoTeamGameSystem->getGame()->getId());
+        foreach ($participants as $participant) {
+            $player = $this->server->getPlayer($participant->getName());
+            if ($player->isOnline()) {
+                LobbyScoreboard::update($player, count($participants));
+            }
+        }
+    }
+
     public function isJurisdiction(Player $player) {
-        return $player->getLevel()->getName() === $this->controller->getMap()->getName();
+        return $player->getLevel()->getName() === $this->twoTeamGameSystem->getMap()->getName();
     }
 }
