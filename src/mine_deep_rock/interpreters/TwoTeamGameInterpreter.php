@@ -56,8 +56,10 @@ class TwoTeamGameInterpreter
     public function onGameStart(array $players) {
         foreach ($players as $player) {
             if (!$player->isOnline()) continue;
+            TwoTeamNameTagController::set($player, $this->twoTeamGameSystem->getGame());
             $this->spawn($player);
-            $player->setNameTagVisible(false);
+            $player->setNameTag("");
+            //$player->setNameTagVisible(false);うまく行かない
         }
     }
 

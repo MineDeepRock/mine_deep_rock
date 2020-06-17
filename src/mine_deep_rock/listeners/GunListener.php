@@ -22,8 +22,8 @@ class GunListener implements Listener
         $attacker = $event->getAttacker();
         $victim = $event->getVictim();
 
-        $attackerData = TeamSystem::getPlayerData($attacker);
-        $victimData = TeamSystem::getPlayerData($victim);
+        $attackerData = TeamSystem::getPlayerData($attacker->getName());
+        $victimData = TeamSystem::getPlayerData($victim->getName());
         if ($attackerData->getBelongTeamId() === null || $victimData->getBelongTeamId() === null) return;
         if ($attackerData->getBelongTeamId()->equal($victimData->getBelongTeamId())) {
             GunSystem::threaten($victim);
