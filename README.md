@@ -27,3 +27,7 @@ ItemやEntityに書くと肥大化する場合に使う
 ## Model
 ここではDDDのモデルを指す  
 PHPではEntityとValueObjectの区別が難しいため、そこまで意識していない
+
+## Store
+一時的な(永久化する必要のない)データを保存する  
+全てstatic  
