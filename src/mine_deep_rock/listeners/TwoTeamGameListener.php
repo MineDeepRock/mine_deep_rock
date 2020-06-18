@@ -4,7 +4,6 @@
 namespace mine_deep_rock\listeners;
 
 
-use bossbar_system\models\BossBar;
 use gun_system\pmmp\items\ItemGun;
 use mine_deep_rock\interpreters\TwoTeamGameInterpreter;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
@@ -24,10 +23,7 @@ use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
-use pocketmine\utils\TextFormat;
 use team_death_match_system\TeamDeathMatchSystem;
-use team_system\TeamSystem;
-use two_team_game_system\pmmp\events\AddScoreEvent;
 use two_team_game_system\pmmp\events\GameFinishEvent;
 use two_team_game_system\pmmp\events\GameStartEvent;
 use two_team_game_system\TwoTeamGameSystem;
@@ -49,14 +45,6 @@ class TwoTeamGameListener implements Listener
 
     public function init(TwoTeamGameSystem $TwoTeamGameSystem): void {
         $this->interpreter = new TwoTeamGameInterpreter($TwoTeamGameSystem, $this->server, $this->scheduler);
-    }
-
-    public function onScoreAdded(AddScoreEvent $event): void {
-        foreach (TeamSystem::getParticipantData($event->getGame()->getId()) as $playerData) {
-            $player = $this->server->getPlayer($playerData->getName());
-            $bossBar = BossBar::get($player);
-            $bossBar->updateTitle($player, TextFormat::BLUE . "Red:" . TextFormat::WHITE . $event->getRedTeamScore() . "---" . TextFormat::RED . "Blue:" . TextFormat::WHITE . $event->getBlueTeamScore());
-        }
     }
 
     public function onGameStart(GameStartEvent $event) {
