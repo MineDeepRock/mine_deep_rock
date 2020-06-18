@@ -4,8 +4,7 @@
 namespace mine_deep_rock\listeners;
 
 
-use bossbarapi\BossBarAPI;
-use gun_system\GunSystem;
+use bossbar_system\models\BossBar;
 use gun_system\pmmp\items\ItemGun;
 use mine_deep_rock\interpreters\TwoTeamGameInterpreter;
 use mine_deep_rock\pmmp\entities\CadaverEntity;
@@ -54,8 +53,9 @@ class TwoTeamGameListener implements Listener
 
     public function onScoreAdded(AddScoreEvent $event): void {
         foreach (TeamSystem::getParticipantData($event->getGame()->getId()) as $playerData) {
-            $bossBar = BossBarAPI::getInstance()->getBossBar($this->server->getPlayer($playerData->getName()));
-            $bossBar->setTitle(TextFormat::BLUE . "Red:" . TextFormat::WHITE . $event->getRedTeamScore() . "---" . TextFormat::RED . "Blue:" . TextFormat::WHITE . $event->getBlueTeamScore());
+            $player = $this->server->getPlayer($playerData->getName());
+            $bossBar = BossBar::get($player);
+            $bossBar->updateTitle($player, TextFormat::BLUE . "Red:" . TextFormat::WHITE . $event->getRedTeamScore() . "---" . TextFormat::RED . "Blue:" . TextFormat::WHITE . $event->getBlueTeamScore());
         }
     }
 
