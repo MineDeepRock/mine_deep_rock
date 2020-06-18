@@ -15,12 +15,12 @@ use weapon_data_system\WeaponDataSystem;
 
 class TwoTeamGamePlayerController
 {
-    public function setEffects(Player $player): void {
+    static public function setEffects(Player $player): void {
         $playerData = MilitaryDepartmentSystem::getPlayerData($player->getName());
         foreach ($playerData->getMilitaryDepartment()->getEffects() as $effect) $player->addEffect($effect);
     }
 
-    public function setEquipments(Player $player): void {
+    static public function setEquipments(Player $player): void {
         $playerData = MilitaryDepartmentSystem::getPlayerData($player->getName());
         /** @var GunData $mainGunData */
         $mainGunData = WeaponDataSystem::get($player->getName(), $playerData->getEquipMainGunName());
@@ -37,7 +37,7 @@ class TwoTeamGamePlayerController
         $player->getInventory()->setItem(8, ItemFactory::get(ItemIds::ARROW, 0, 1));
     }
 
-    public function removeCadaverEntity(Player $player): void {
+    static public function removeCadaverEntity(Player $player): void {
         foreach ($player->getLevel()->getEntities() as $entity) {
             if ($entity instanceof CadaverEntity) {
                 if ($entity->getOwner()->getName() === $player->getName()) {
@@ -47,7 +47,7 @@ class TwoTeamGamePlayerController
         }
     }
 
-    public function getCadaverEntity(Player $player): ?CadaverEntity {
+    static public function getCadaverEntity(Player $player): ?CadaverEntity {
         foreach ($player->getLevel()->getEntities() as $entity) {
             if ($entity instanceof CadaverEntity) {
                 if ($entity->getOwner()->getName() === $player->getName()) {

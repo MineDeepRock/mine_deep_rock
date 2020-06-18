@@ -27,14 +27,12 @@ class TwoTeamGameInterpreter
 {
     private $twoTeamGameSystem;
 
-    private $playerController;
     private $server;
     private $scheduler;
 
     public function __construct(TwoTeamGameSystem $twoTeamGameSystem, Server $server, TaskScheduler $scheduler) {
         $this->server = $server;
         $this->scheduler = $scheduler;
-        $this->playerController = new TwoTeamGamePlayerController();
         $this->twoTeamGameSystem = $twoTeamGameSystem;
         BoxListener::setGame($this->twoTeamGameSystem->getGame());
     }
@@ -133,15 +131,15 @@ class TwoTeamGameInterpreter
         $player->teleport($position ?? $player->getSpawn());
         $this->twoTeamGameSystem->setSpawnPoint($player);
 
-        $this->playerController->setEffects($player);
-        $this->playerController->setEquipments($player);
-        $this->playerController->removeCadaverEntity($player);
+        TwoTeamGamePlayerController::setEffects($player);
+        TwoTeamGamePlayerController::setEquipments($player);
+        TwoTeamGamePlayerController::removeCadaverEntity($player);
 
         TwoTeamNameTagController::showToAlly($player, $this->twoTeamGameSystem->getGame());
     }
 
     public function displayDeathScreen(Player $player): void {
-        $cadaverEntity = $this->playerController->getCadaverEntity($player);
+        $cadaverEntity = TwoTeamGamePlayerController::getCadaverEntity($player);
 
         $player->getInventory()->setContents([]);
         $player->setGamemode(Player::SPECTATOR);
