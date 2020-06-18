@@ -6,7 +6,7 @@ namespace mine_deep_rock\slot_menus;
 
 use gun_system\models\GunList;
 use gun_system\models\GunType;
-use mine_deep_rock\pmmp\forms\GunDetailForm;
+use mine_deep_rock\forms\GunDetailForm;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
 use slot_menu_system\models\SlotMenu;

@@ -1,67 +1,57 @@
 <?php
 
-namespace mine_deep_rock\pmmp\forms;
+namespace mine_deep_rock\forms;
 
 
+use form_builder\models\custom_form_elements\Dropdown;
+use form_builder\models\custom_form_elements\Label;
+use form_builder\models\CustomForm;
 use gun_system\models\Gun;
 use gun_system\models\GunType;
 use military_department_system\MilitaryDepartmentSystem;
-use pocketmine\form\Form;
 use pocketmine\Player;
 use weapon_data_system\models\GunData;
 use weapon_data_system\WeaponDataSystem;
 
-class GunDetailForm implements Form
+
+class GunDetailForm extends CustomForm
 {
     /**
      * @var Gun
      */
     private $gun;
-    private $owner;
     private $scopes;
 
-    public function __construct(Gun $gun, Player $owner) {
+    private $scopeNameElement;
+
+    public function __construct(Gun $gun, Player $player) {
+        $this->initScopes();
+        $this->scopeNameElement = new Dropdown("スコープ", $this->scopes, 0);
         $this->gun = $gun;
-        $this->owner = $owner;
-        $this->setCanEquipScopes();
+        parent::__construct($gun::NAME, [
+            new Label(WeaponDataSystem::get($player->getName(), $this->gun::NAME)->getKillCount() . $this->gun->getDescribe()),
+            $this->scopeNameElement
+        ]);
     }
 
-    public function handleResponse(Player $player, $data): void {
-        if ($data === null) return;
-
-
+    function onSubmit(Player $player): void {
         $gunData = WeaponDataSystem::get($player->getName(), $this->gun::NAME);
         if ($gunData instanceof GunData) {
-            $gunData = new GunData($gunData->getName(), $gunData->getKillCount(), $this->scopes[$data[1]]);
+            $gunData = new GunData($gunData->getName(), $gunData->getKillCount(), $this->scopeNameElement->getResult());
             WeaponDataSystem::update($player->getName(), $gunData);
         }
         if ($this->gun->getType()->equal(GunType::HandGun()) || $this->gun->getType()->equal(GunType::Revolver())) {
-            MilitaryDepartmentSystem::updateEquipSubGun($this->owner->getName(), $this->gun::NAME);
+            MilitaryDepartmentSystem::updateEquipSubGun($player->getName(), $this->gun::NAME);
         } else {
-            MilitaryDepartmentSystem::updateEquipMainGun($this->owner->getName(), $this->gun::NAME);
+            MilitaryDepartmentSystem::updateEquipMainGun($player->getName(), $this->gun::NAME);
         }
     }
 
-    public function jsonSerialize() {
-        return [
-            'type' => 'custom_form',
-            'title' => $this->gun::NAME,
-            'content' => [
-                [
-                    'type' => 'label',
-                    'text' => "kill数" . WeaponDataSystem::get($this->owner->getName(), $this->gun::NAME)->getKillCount() . $this->gun->getDescribe(),
-                ],
-                [
-                    'type' => 'dropdown',
-                    'text' => 'スコープ',
-                    'options' => $this->scopes,
-                    'default' => 0
-                ],
-            ]
-        ];
+    function onClickCloseButton(Player $player): void {
+        return;
     }
 
-    private function setCanEquipScopes(): void {
+    private function initScopes(): void {
         switch ($this->gun->getType()->getTypeText()) {
             case GunType::HandGun()->getTypeText():
                 $this->scopes = [
