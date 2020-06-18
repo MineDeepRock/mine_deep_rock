@@ -105,6 +105,16 @@
       "type": "git",
       "name": "suinua/sandbag_system",
       "url": "https://github.com/MineDeepRock/sandbag_system"
+    },
+    {
+      "type": "git",
+      "name": "suinua/scoreboard_system",
+      "url": "https://github.com/MineDeepRock/scoreboard_system"
+    },
+    {
+      "type": "git",
+      "name": "suinua/form_builder",
+      "url": "https://github.com/MineDeepRock/form_builder"
     }
   ],
   "require": {
@@ -128,6 +138,8 @@
     "suinua/weapon_data_system": "dev-master",
     "suinua/money_system": "dev-master",
     "suinua/private_name_tag": "dev-master",
-    "suinua/sandbag_system": "dev-master"
+    "suinua/sandbag_system": "dev-master",
+    "suinua/scoreboard_system": "dev-master",
+    "suinua/form_builder": "dev-master"
   }
 }
