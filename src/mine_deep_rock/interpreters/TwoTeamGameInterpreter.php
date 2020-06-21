@@ -185,6 +185,6 @@ class TwoTeamGameInterpreter
     }
 
     public function isJurisdiction(Player $player) {
-        return $player->getLevel()->getName() === $this->twoTeamGameSystem->getMap()->getName();
+        return $player->getLevel()->getName() === $this->twoTeamGameSystem->getGame()->getMapName();
     }
 }

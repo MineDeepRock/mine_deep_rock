@@ -25,9 +25,9 @@ class GunDetailForm extends CustomForm
     private $scopeNameElement;
 
     public function __construct(Gun $gun, Player $player) {
+        $this->gun = $gun;
         $this->initScopes();
         $this->scopeNameElement = new Dropdown("スコープ", $this->scopes, 0);
-        $this->gun = $gun;
         parent::__construct($gun::NAME, [
             new Label(WeaponDataSystem::get($player->getName(), $this->gun::NAME)->getKillCount() . $this->gun->getDescribe()),
             $this->scopeNameElement
