@@ -8,7 +8,7 @@ use mine_deep_rock\pmmp\service\InitTDMEquipmentsPMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMBossBarPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
-use mine_deep_rock\store\TDMGameIds;
+use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
@@ -35,7 +35,7 @@ class TDMListener implements Listener
 
     public function onJoinGame(PlayerJoinedGameEvent $event) {
         $gameId = $event->getGameId();
-        if (in_array($gameId, TDMGameIds::getAll())) {
+        if (in_array($gameId, TDMGameIdsStore::getAll())) {
             //10人でスタート
             $playersCount = TeamGameSystem::getGamePlayersData($gameId);
             if ($playersCount === 10) {
@@ -48,7 +48,7 @@ class TDMListener implements Listener
         $attacker = $event->getAttacker();
         $attackerData = TeamGameSystem::getPlayerData($attacker);
 
-        if (in_array($attackerData->getGameId(), TDMGameIds::getAll())) {
+        if (in_array($attackerData->getGameId(), TDMGameIdsStore::getAll())) {
             //アタッカーのチームにスコアを追加
             TeamGameSystem::addScore($attackerData->getGameId(), $attackerData->getTeamId(), new Score(1));
         }
@@ -62,7 +62,7 @@ class TDMListener implements Listener
         $gameId = $event->getGameId();
 
 
-        if (in_array($gameId, TDMGameIds::getAll())) {
+        if (in_array($gameId, TDMGameIdsStore::getAll())) {
             $playersData = TeamGameSystem::getGamePlayersData($gameId);
             $timeLimit = $event->getTimeLimit();
             $elapsedTime = $event->getElapsedTime();
@@ -72,14 +72,14 @@ class TDMListener implements Listener
 
     public function onAddedScore(AddedScoreEvent $event): void {
         $gameId = $event->getGameId();
-        if (in_array($gameId, TDMGameIds::getAll())) {
+        if (in_array($gameId, TDMGameIdsStore::getAll())) {
             UpdateTDMScoreboardPMMPService::execute($gameId);
         }
     }
 
     public function onStartedGame(StartedGameEvent $event) {
         $gameId = $event->getGameId();
-        if (in_array($gameId, TDMGameIds::getAll())) {
+        if (in_array($gameId, TDMGameIdsStore::getAll())) {
             GetPlayersReadyToTDM::execute($gameId);
         }
     }
@@ -91,7 +91,7 @@ class TDMListener implements Listener
     public function onRespawn(PlayerRespawnEvent $event) {
         $player = $event->getPlayer();
         $playerData = TeamGameSystem::getPlayerData($player);
-        if (in_array($playerData->getGameId(), TDMGameIds::getAll())) {
+        if (in_array($playerData->getGameId(), TDMGameIdsStore::getAll())) {
             InitTDMEquipmentsPMMPService::execute($player);
         }
     }

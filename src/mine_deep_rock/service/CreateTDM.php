@@ -4,7 +4,7 @@
 namespace mine_deep_rock\service;
 
 
-use mine_deep_rock\store\TDMGameIds;
+use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\utils\Color;
 use team_game_system\model\Game;
 use team_game_system\model\Score;
@@ -25,6 +25,6 @@ class CreateTDM
         $game = Game::asNew($map, $teams, $maxScore, null, 300);
 
         TeamGameSystem::registerGame($game);
-        TDMGameIds::add($game->getId());
+        TDMGameIdsStore::add($game->getId());
     }
 }
