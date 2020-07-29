@@ -44,4 +44,46 @@ class MilitaryDepartment
         $this->effectInstances = $effectInstances;
         $this->grenades = $grenades;
     }
+
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return $this->name;
+    }
+
+    /**
+     * @return GunType[]
+     */
+    public function getGunTypes(): array {
+        return $this->gunTypes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultGunName(): string {
+        return $this->defaultGunName;
+    }
+
+    /**
+     * @return Box[]
+     */
+    public function getBoxes(): array {
+        return $this->boxes;
+    }
+
+    /**
+     * @return Grenade[]
+     */
+    public function getGrenades(): array {
+        return $this->grenades;
+    }
+
+    /**
+     * @return EffectInstance[]
+     */
+    public function getEffectInstances(): array {
+        return $this->effectInstances;
+    }
 }
