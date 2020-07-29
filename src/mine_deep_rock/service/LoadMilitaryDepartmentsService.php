@@ -13,6 +13,10 @@ class LoadMilitaryDepartmentsService
      * @return array
      */
     static function execute(): array {
+        if (!file_exists(DataFolderPath::MilitaryDepartment)) {
+            mkdir(DataFolderPath::MilitaryDepartment);
+        }
+
         $militaryDepartment = [];
         $dh = opendir(DataFolderPath::MilitaryDepartment);
         while (($fileName = readdir($dh)) !== false) {
