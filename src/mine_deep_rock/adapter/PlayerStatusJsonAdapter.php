@@ -12,11 +12,13 @@ class PlayerStatusJsonAdapter
     static function encode(PlayerStatus $playerStatus): array {
         return [
             "name" => $playerStatus->getName(),
-            "military_department" => $playerStatus->getMilitaryDepartment()->getName()
+            "military_department" => $playerStatus->getMilitaryDepartment()->getName(),
+            "main_gun" => $playerStatus->getMainGunName(),
+            "sub_gun" => $playerStatus->getSubGunName(),
         ];
     }
 
     static function decode(array $json): PlayerStatus {
-        return new PlayerStatus($json["name"], MilitaryDepartmentsStore::get($json["military_department"]));
+        return new PlayerStatus($json["name"], MilitaryDepartmentsStore::get($json["military_department"]), $json["main_gun"], $json["sub_gun"]);
     }
 }
