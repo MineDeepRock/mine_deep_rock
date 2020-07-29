@@ -8,4 +8,5 @@ class DataFolderPath
 {
     const PATH = "./plugin_data/MineDeepRock/";
     const MilitaryDepartment = self::PATH . "military_departments/";
+    const PlayerStatus = self::PATH . "player_status/";
 }
