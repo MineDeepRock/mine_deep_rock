@@ -25,7 +25,8 @@ class Main extends PluginBase implements Listener
         $playerName = $player->getName();
 
         if (!PlayerStatusDAO::isExist($playerName)) {
-            PlayerStatusDAO::save(new PlayerStatus($playerName, MilitaryDepartmentsStore::get("AssaultSoldier")));
+            $militaryDepartment = MilitaryDepartmentsStore::get("AssaultSoldier");
+            PlayerStatusDAO::save(new PlayerStatus($playerName, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903"));
         }
 
         $pk = new GameRulesChangedPacket();
