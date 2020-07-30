@@ -3,11 +3,9 @@
 namespace mine_deep_rock\pmmp\slot_menu;
 
 
-use gun_system\GunsStore;
 use gun_system\GunSystem;
 use gun_system\model\Gun;
 use gun_system\model\GunType;
-use gun_system\pmmp\item\ItemGun;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
@@ -58,8 +56,8 @@ class SelectTrialGunTypesMenu extends SlotMenu
             new SlotMenuElement(ItemIds::BOW, GunType::Revolver()->getTypeText(), 6, function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::Revolver());
             }),
-            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) {
-                SlotMenuSystem::send($player, new SettingEquipmentsMenu());
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($taskScheduler) {
+                SlotMenuSystem::send($player, new SettingEquipmentsMenu($taskScheduler));
             }),
         ];
         parent::__construct($menus);

@@ -78,11 +78,6 @@
     },
     {
       "type": "git",
-      "name": "suinua/weapon_data_system",
-      "url": "https://github.com/MineDeepRock/weapon_data_system"
-    },
-    {
-      "type": "git",
       "name": "suinua/private_name_tag",
       "url": "https://github.com/MineDeepRock/private_name_tag"
     },
@@ -117,7 +112,6 @@
     "suinua/gun_system": "dev-master",
     "suinua/box_system": "dev-master",
     "suinua/grenade_system": "dev-master",
-    "suinua/weapon_data_system": "dev-master",
     "suinua/private_name_tag": "dev-master",
     "suinua/sandbag_system": "dev-master",
     "suinua/scoreboard_system": "dev-master",
