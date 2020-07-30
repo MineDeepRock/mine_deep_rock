@@ -14,15 +14,18 @@ use team_game_system\TeamGameSystem;
 class ShowPrivateNameTagToAllyPMMPService
 {
     static function execute(Player $target, TeamId $teamId): void {
+        $tag = PrivateNameTag::get($target);
+        if ($tag === null) {
+            //TODO : エラーを吐くように
+            return;
+        }
+
         $server = Server::getInstance();
 
         $allyPlayers = array_map(function ($allyPlayerData) use ($server) {
             return $server->getPlayer($allyPlayerData->getName());
         }, TeamGameSystem::getTeamPlayersData($teamId));
 
-        $hpGauge = str_repeat(TextFormat::GREEN . "■", intval($target->getHealth()));
-        $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($target->getHealth()));
-        $tag = new PrivateNameTag($target, "{$target->getName()} \n {$hpGauge}", $allyPlayers);
-        $tag->set();
+        $tag->updateViewers($allyPlayers);
     }
 }
