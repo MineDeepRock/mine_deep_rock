@@ -34,6 +34,9 @@ class GetPlayersReadyToTDM
             TDMScoreboard::send($player, $game->getMap()->getName(), 0, 0);
             //BossBarのセット
             $bossBar->send($player);
+
+            //アイテムのセット
+
         }
     }
 }

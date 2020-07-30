@@ -6,6 +6,8 @@ use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\GunRecord;
 use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\pmmp\listener\BoxListener;
+use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
 use mine_deep_rock\pmmp\listener\TDMListener;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
@@ -23,6 +25,8 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getPluginManager()->registerEvents(new TDMListener($this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GunListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new BoxListener($this->getServer(), $this->getScheduler()), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener(), $this);
     }
 
     public function onJoin(PlayerJoinEvent $event) {
