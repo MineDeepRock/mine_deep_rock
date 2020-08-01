@@ -22,9 +22,6 @@ class GetPlayersReadyToTDM
         foreach ($playersData as $playerData) {
             $player = Server::getInstance()->getPlayer($playerData->getName());
 
-            //スポーン地点をセット
-            TeamGameSystem::setSpawnPoint($player);
-
             //テレポート
             $player->teleport($player->getSpawn());
 
