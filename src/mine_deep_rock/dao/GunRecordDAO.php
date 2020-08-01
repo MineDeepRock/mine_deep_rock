@@ -31,9 +31,9 @@ class GunRecordDAO
         }
     }
 
-    static function get(string $ownerName, string $weaponName): GunRecord {
+    static function get(string $ownerName, string $gunName): GunRecord {
         $data = json_decode(file_get_contents(DataFolderPath::GunRecord . $ownerName . ".json"), true);
-        return GunRecordJsonAdapter::decode($data[$weaponName]);
+        return GunRecordJsonAdapter::decode($data[$gunName]);
     }
 
     /**
