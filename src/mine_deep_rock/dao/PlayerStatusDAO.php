@@ -7,6 +7,7 @@ namespace mine_deep_rock\dao;
 use mine_deep_rock\adapter\PlayerStatusJsonAdapter;
 use mine_deep_rock\DataFolderPath;
 use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 
 class PlayerStatusDAO
 {
@@ -34,5 +35,9 @@ class PlayerStatusDAO
 
     static function update(PlayerStatus $playerStatus): void {
         file_put_contents(DataFolderPath::PlayerStatus . $playerStatus->getName() . ".json", json_encode(PlayerStatusJsonAdapter::encode($playerStatus)));
+
+        //TODO:場所を考える
+        $event = new UpdatedPlayerStatusEvent($playerStatus);
+        $event->call();
     }
 }

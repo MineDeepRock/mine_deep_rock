@@ -4,6 +4,7 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use team_game_system\data_model\PlayerData;
@@ -12,6 +13,7 @@ class SendParticipantsToLobbyPMMPService
 {
     /**
      * @param PlayerData[] $participants
+     * @param TaskScheduler $taskScheduler
      */
     static function execute(array $participants, TaskScheduler $taskScheduler): void {
         $server = Server::getInstance();
@@ -23,6 +25,7 @@ class SendParticipantsToLobbyPMMPService
 
             //ロビーに入るときはロビー用アイテムを渡す
             SendLobbyItemsPMMPService::execute($player, $taskScheduler);
+            PlayerStatusScoreboard::send($player);
         }
     }
 }

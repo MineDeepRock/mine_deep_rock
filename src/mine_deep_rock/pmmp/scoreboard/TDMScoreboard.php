@@ -21,7 +21,7 @@ class TDMScoreboard extends Scoreboard
             new Score($slot, TextFormat::RED . "RedTeam:" . $redTeamScore, 2, 2),
             new Score($slot, TextFormat::BLUE . "BlueTeam:" . $blueTeamScore, 3, 3),
         ];
-        return parent::__create($slot, "Server Name", $scores, ScoreSortType::smallToLarge());
+        return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
     }
 
     static function send(Player $player, string $mapName, int $redTeamScore, int $blueTeamScore) {

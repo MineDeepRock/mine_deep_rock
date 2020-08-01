@@ -6,10 +6,12 @@ use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\GunRecord;
 use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
 use mine_deep_rock\pmmp\listener\TDMListener;
+use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use pocketmine\event\Listener;
@@ -35,7 +37,8 @@ class Main extends PluginBase implements Listener
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
         $player->setGamemode(Player::ADVENTURE);
-        SlotMenuSystem::send($player,new SettingEquipmentsMenu($this->getScheduler()));
+        SlotMenuSystem::send($player, new SettingEquipmentsMenu($this->getScheduler()));
+        PlayerStatusScoreboard::send($player);
 
         $playerName = $player->getName();
 
@@ -55,5 +58,15 @@ class Main extends PluginBase implements Listener
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
+    }
+
+    public function onUpdatedPlayerStatus(UpdatedPlayerStatusEvent $event): void {
+        $status = $event->getPlayerStatus();
+        $player = $this->getServer()->getPlayer($status->getName());
+        if ($player->getLevel() !== null) {
+            if ($player->getLevel()->getName() === "lobby") {
+                PlayerStatusScoreboard::update($player);
+            }
+        }
     }
 }
