@@ -2,3 +2,9 @@ name: MineDeepRock
 main: mine_deep_rock\Main
 version: 1.0.0
 api: 3.0.0
+
+commands:
+  SpawnNPC:
+    usage: "/SpawnNPC"
+    description: "SpawnNPC"
+    permission: op

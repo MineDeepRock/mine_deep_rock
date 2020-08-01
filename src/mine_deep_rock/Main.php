@@ -12,8 +12,11 @@ use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
 use mine_deep_rock\pmmp\listener\TDMListener;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
+use mine_deep_rock\pmmp\service\SpawnTeamDeathMatchNPCPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
@@ -38,7 +41,6 @@ class Main extends PluginBase implements Listener
         $player = $event->getPlayer();
         $player->setGamemode(Player::ADVENTURE);
         SlotMenuSystem::send($player, new SettingEquipmentsMenu($this->getScheduler()));
-        PlayerStatusScoreboard::send($player);
 
         $playerName = $player->getName();
 
@@ -58,6 +60,7 @@ class Main extends PluginBase implements Listener
         $pk = new GameRulesChangedPacket();
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
+        PlayerStatusScoreboard::send($player);
     }
 
     public function onUpdatedPlayerStatus(UpdatedPlayerStatusEvent $event): void {
@@ -68,5 +71,24 @@ class Main extends PluginBase implements Listener
                 PlayerStatusScoreboard::update($player);
             }
         }
+    }
+
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+        if ($sender instanceof Player) {
+            if ($label === "SpawnNPC") {
+                var_dump($args);
+                if (count($args) !== 1) {
+                    $sender->sendMessage("/SpawnNPC [npc]");
+                }
+
+                switch ($args[0]) {
+                    case "TDM":
+                        SpawnTeamDeathMatchNPCPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
+                        return true;
+                        break;
+                }
+            }
+        }
+        return false;
     }
 }
