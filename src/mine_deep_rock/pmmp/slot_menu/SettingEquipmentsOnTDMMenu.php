@@ -4,7 +4,7 @@
 namespace mine_deep_rock\pmmp\slot_menu;
 
 
-use mine_deep_rock\pmmp\service\SpawnOnTDMPMMPService;
+use mine_deep_rock\pmmp\service\ResortToTDMPMMPService;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
@@ -25,8 +25,8 @@ class SettingEquipmentsOnTDMMenu extends SlotMenu
             new SlotMenuElement(ItemIds::IRON_SWORD, "サブウェポン", 2, function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SelectSubGunMenu($taskScheduler));
             }),
-            new SlotMenuElement(ItemIds::EMERALD, "リスポーン", 8, function (Player $player) {
-                SpawnOnTDMPMMPService::execute($player);
+            new SlotMenuElement(ItemIds::EMERALD, "再出撃", 8, function (Player $player) {
+                ResortToTDMPMMPService::execute($player);
             }),
         ];
         parent::__construct($menus);
