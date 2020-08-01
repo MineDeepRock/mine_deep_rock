@@ -122,11 +122,11 @@ class TDMListener implements Listener
 
     //TODO :Not Only TDM
     public function onTapCadaverEntity(EntityDamageByEntityEvent $event) {
-        $attacker = $event->getDamager();
-        $victim = $event->getEntity();
-        if ($attacker instanceof Player) {
-            if ($victim instanceof CadaverEntity) {
-                RescuePlayerPMMPService::execute($attacker, $victim->getOwner());
+        $player  = $event->getDamager();
+        $cadaverEntity = $event->getEntity();
+        if ($player instanceof Player) {
+            if ($cadaverEntity instanceof CadaverEntity) {
+                RescuePlayerPMMPService::execute($player, $cadaverEntity->getOwner());
                 $event->setCancelled();
             }
         }
