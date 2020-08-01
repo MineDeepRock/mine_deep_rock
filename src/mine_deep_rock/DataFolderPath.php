@@ -10,5 +10,6 @@ class DataFolderPath
     const MilitaryDepartment = self::PATH . "military_departments/";
     const PlayerStatus = self::PATH . "player_status/";
     const GunRecord = self::PATH . "gun_record/";
+    const Geometry = self::PATH . "geometry/";
 
 }
