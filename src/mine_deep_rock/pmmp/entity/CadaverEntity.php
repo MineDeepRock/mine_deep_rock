@@ -3,6 +3,7 @@
 namespace mine_deep_rock\pmmp\entity;
 
 
+use mine_deep_rock\DataFolderPath;
 use pocketmine\entity\Human;
 use pocketmine\entity\Skin;
 use pocketmine\level\Level;
@@ -57,7 +58,7 @@ class CadaverEntity extends Human
             $player->getSkin()->getSkinData(),
             "",
             $this->geometryId,
-            file_get_contents("./plugin_data/MineDeepRock/models/" . $this->geometryName)
+            file_get_contents(DataFolderPath::Geometry . $this->geometryName)
         ));
     }
 
