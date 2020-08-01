@@ -22,7 +22,7 @@ class GunDetailForm extends CustomForm
     private $gun;
 
     public function __construct(Gun $gun) {
-        $this->scopeMagnificationElement = new Dropdown("スコープ", [1, 2, 3]);
+        $this->scopeMagnificationElement = new Dropdown("スコープ", ["1", "2", "3"]);
         $this->gun = $gun;
         parent::__construct($gun->getName(), [
             new Label(GunSystem::getGunDescription($gun)),
@@ -31,10 +31,11 @@ class GunDetailForm extends CustomForm
     }
 
     function onSubmit(Player $player): void {
+        $scope = intval($this->scopeMagnificationElement->getResult());
         if ($this->gun->getType()->equals(GunType::HandGun()) || $this->gun->getType()->equals(GunType::Revolver())) {
-            SelectSubGunService::execute($player->getName(), $this->gun->getName(), $this->scopeMagnificationElement->getResult());
+            SelectSubGunService::execute($player->getName(), $this->gun->getName(), $scope);
         } else {
-            SelectMainGunService::execute($player->getName(), $this->gun->getName(), $this->scopeMagnificationElement->getResult());
+            SelectMainGunService::execute($player->getName(), $this->gun->getName(), $scope);
         }
     }
 

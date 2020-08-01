@@ -10,11 +10,14 @@ use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
 use mine_deep_rock\pmmp\listener\TDMListener;
+use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
+use slot_menu_system\SlotMenuSystem;
 
 class Main extends PluginBase implements Listener
 {
@@ -31,6 +34,9 @@ class Main extends PluginBase implements Listener
 
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
+        $player->setGamemode(Player::ADVENTURE);
+        SlotMenuSystem::send($player,new SettingEquipmentsMenu($this->getScheduler()));
+
         $playerName = $player->getName();
 
         if (!PlayerStatusDAO::isExist($playerName)) {

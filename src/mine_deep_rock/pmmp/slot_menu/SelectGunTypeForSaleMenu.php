@@ -21,7 +21,7 @@ use slot_menu_system\SlotMenuSystem;
 class SelectGunTypeForSaleMenu extends SlotMenu
 {
     public function __construct(TaskScheduler $taskScheduler) {
-        $onSelected = function (Player $player, GunType $gunType) {
+        $onSelected = function (Player $player, GunType $gunType) use ($taskScheduler) {
             $ownGunsName = [];
             foreach (GunRecordDAO::getOwn($player->getName()) as $gunRecord) {
                 $ownGunsName[] = $gunRecord->getName();
@@ -31,9 +31,13 @@ class SelectGunTypeForSaleMenu extends SlotMenu
             /** @var Gun $gun */
             foreach (GunSystem::loadAllGuns() as $gun) {
                 if ($gun->getType()->equals($gunType) && !in_array($gun->getName(), $ownGunsName)) {
-                    $items[] = new SlotMenuElementItem(new SlotMenuElement(ItemIds::BOW, $gun->getName(), 0, function (Player $player) use ($taskScheduler) {
-                        $player->sendForm(new ConfirmBuyGunForm($taskScheduler));
+                    $gunName = $gun->getName();
+                    $item = new SlotMenuElementItem(new SlotMenuElement(ItemIds::BOW, $gun->getName(), 0, function (Player $player) use ($gunName, $taskScheduler) {
+                        $player->sendForm(new ConfirmBuyGunForm($gunName, $taskScheduler));
                     }), ItemIds::BOW);
+
+                    $item->setCustomName($gunName);
+                    $items[] = $item;
                 }
             }
 

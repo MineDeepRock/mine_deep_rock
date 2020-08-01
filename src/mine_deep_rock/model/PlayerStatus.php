@@ -25,7 +25,7 @@ class PlayerStatus
 
     static function asNew(string $name): PlayerStatus {
         $militaryDepartment = MilitaryDepartmentsStore::get(MilitaryDepartment::AssaultSoldier);
-        return new PlayerStatus($name, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903", 0);
+        return new PlayerStatus($name, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903", 3000);
     }
 
     /**
