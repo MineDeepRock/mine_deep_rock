@@ -24,7 +24,7 @@ class MilitaryDepartmentsStore
 
     static function get(string $name): ?MilitaryDepartment {
         foreach (self::$militaryDepartments as $militaryDepartment) {
-            if ($militaryDepartment->getName() === $militaryDepartment) return $militaryDepartment;
+            if ($militaryDepartment->getName() === $name) return $militaryDepartment;
         }
 
         return null;

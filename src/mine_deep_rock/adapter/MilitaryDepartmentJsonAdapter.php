@@ -22,7 +22,7 @@ class MilitaryDepartmentJsonAdapter
             return Box::fromString($name);
         }, $json["boxes"]);
 
-        $effectInstances = array_map(function (string $effectInstance) {
+        $effectInstances = array_map(function (array $effectInstance) {
             return new EffectInstance(Effect::getEffect($effectInstance["id"]), $effectInstance["duration"], $effectInstance["amplifier"], $effectInstance["visible"]);
         }, $json["effect_instances"]);
 
