@@ -15,10 +15,17 @@ class PlayerStatusJsonAdapter
             "military_department" => $playerStatus->getMilitaryDepartment()->getName(),
             "main_gun" => $playerStatus->getMainGunName(),
             "sub_gun" => $playerStatus->getSubGunName(),
+            "money" => $playerStatus->getMoney(),
         ];
     }
 
     static function decode(array $json): PlayerStatus {
-        return new PlayerStatus($json["name"], MilitaryDepartmentsStore::get($json["military_department"]), $json["main_gun"], $json["sub_gun"]);
+        return new PlayerStatus(
+            $json["name"],
+            MilitaryDepartmentsStore::get($json["military_department"]),
+            $json["main_gun"],
+            $json["sub_gun"],
+            $json["money"]
+        );
     }
 }

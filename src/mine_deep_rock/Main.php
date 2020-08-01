@@ -34,9 +34,9 @@ class Main extends PluginBase implements Listener
         $playerName = $player->getName();
 
         if (!PlayerStatusDAO::isExist($playerName)) {
-            $militaryDepartment = MilitaryDepartmentsStore::get("AssaultSoldier");
-            PlayerStatusDAO::save(new PlayerStatus($playerName, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903"));
+            PlayerStatusDAO::save(PlayerStatus::asNew($playerName));
         }
+
         if (!GunRecordDAO::isExist($playerName)) {
             GunRecordDAO::registerOwner($playerName);
             GunRecordDAO::add($playerName, GunRecord::asNew("M1907SL"));

@@ -12,6 +12,6 @@ class SelectSubGunService
     static function execute(string $name, string $gunName): void {
         $status = PlayerStatusDAO::get($name);
         $militaryDepartment = $status->getMilitaryDepartment();
-        PlayerStatusDAO::update(new PlayerStatus($name, $militaryDepartment, $status->getMainGunName(), $gunName));
+        PlayerStatusDAO::update(new PlayerStatus($name, $militaryDepartment, $status->getMainGunName(), $gunName, $status->getMoney()));
     }
 }

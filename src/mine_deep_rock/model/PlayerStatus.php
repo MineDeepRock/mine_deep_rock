@@ -4,6 +4,8 @@
 namespace mine_deep_rock\model;
 
 
+use mine_deep_rock\store\MilitaryDepartmentsStore;
+
 class PlayerStatus
 {
     private $name;
@@ -11,11 +13,19 @@ class PlayerStatus
     private $mainGunName;
     private $subGunName;
 
-    public function __construct(string $name, MilitaryDepartment $militaryDepartment, string $mainGunName, string $subGunName) {
+    private $money;
+
+    public function __construct(string $name, MilitaryDepartment $militaryDepartment, string $mainGunName, string $subGunName, int $money) {
         $this->name = $name;
         $this->militaryDepartment = $militaryDepartment;
         $this->mainGunName = $mainGunName;
         $this->subGunName = $subGunName;
+        $this->money = $money;
+    }
+
+    static function asNew(string $name): PlayerStatus {
+        $militaryDepartment = MilitaryDepartmentsStore::get("AssaultSoldier");
+        return new PlayerStatus($name, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903", 0);
     }
 
     /**
@@ -44,5 +54,12 @@ class PlayerStatus
      */
     public function getSubGunName(): string {
         return $this->subGunName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMoney(): int {
+        return $this->money;
     }
 }
