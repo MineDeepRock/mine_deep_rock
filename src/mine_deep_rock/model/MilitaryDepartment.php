@@ -86,4 +86,9 @@ class MilitaryDepartment
     public function getEffectInstances(): array {
         return $this->effectInstances;
     }
+
+    const AssaultSoldier = "AssaultSoldier";
+    const NursingSoldier = "NursingSoldier";
+    const Engineer = "Engineer";
+    const Scout = "Scout";
 }
