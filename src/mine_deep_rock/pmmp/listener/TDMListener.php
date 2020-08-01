@@ -3,8 +3,10 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
+use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\service\GetPlayersReadyToTDM;
 use mine_deep_rock\pmmp\service\InitTDMEquipmentsPMMPService;
+use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMBossBarPMMPService;
@@ -13,6 +15,7 @@ use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnTDMMenu;
 use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\store\TDMGameIdsStore;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
@@ -99,6 +102,7 @@ class TDMListener implements Listener
         }
     }
 
+    //TODO :Not Only TDM
     public function onFinishedGame(FinishedGameEvent $event): void {
         SendParticipantsToLobbyPMMPService::execute($event->getPlayersData());
     }
@@ -113,6 +117,18 @@ class TDMListener implements Listener
             $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player): void {
                 if ($player->isOnline()) SlotMenuSystem::send($player, new SettingEquipmentsOnTDMMenu($this->scheduler));
             }), 20 * 5);
+        }
+    }
+
+    //TODO :Not Only TDM
+    public function onTapCadaverEntity(EntityDamageByEntityEvent $event) {
+        $attacker = $event->getDamager();
+        $victim = $event->getEntity();
+        if ($attacker instanceof Player) {
+            if ($victim instanceof CadaverEntity) {
+                RescuePlayerPMMPService::execute($attacker, $victim->getOwner());
+                $event->setCancelled();
+            }
         }
     }
 }
