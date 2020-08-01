@@ -6,6 +6,8 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\modal_form_elements\ModalFormButton;
 use form_builder\models\ModalForm;
+use gun_system\GunSystem;
+use gun_system\model\Gun;
 use mine_deep_rock\pmmp\slot_menu\SelectGunTypeForSaleMenu;
 use mine_deep_rock\service\BuyGunService;
 use pocketmine\Player;
@@ -16,13 +18,13 @@ class ConfirmBuyGunForm extends ModalForm
 {
 
     private $scheduler;
-    private $gunName;
+    private $gun;
 
-    public function __construct(string $gunName, TaskScheduler $taskScheduler) {
+    public function __construct(Gun $gun, TaskScheduler $taskScheduler) {
         $this->scheduler = $taskScheduler;
-        $this->gunName = $gunName;
-        parent::__construct($gunName,
-            "{$gunName}を2000円で購入しますか",
+        $this->gun = $gun;
+        parent::__construct($gun->getName(),
+            "{$gun->getName()}を2000円で購入しますか\n" . GunSystem::getGunDescription($gun),
             new ModalFormButton("はい"),
             new ModalFormButton("キャンセル")
         );
@@ -33,9 +35,9 @@ class ConfirmBuyGunForm extends ModalForm
     }
 
     public function onClickButton1(Player $player): void {
-        $result = BuyGunService::execute($player->getName(), $this->gunName);
+        $result = BuyGunService::execute($player->getName(), $this->gun->getName());
         if ($result) {
-            $player->sendMessage("{$this->gunName}を購入しました！");
+            $player->sendMessage("{$this->gun->getName()}を購入しました！");
         } else {
             $player->sendMessage("所持金が不足しているか、すでに所有しています");
         }
