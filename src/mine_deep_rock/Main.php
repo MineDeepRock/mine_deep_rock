@@ -6,6 +6,8 @@ use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\GunRecord;
 use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\pmmp\entity\CadaverEntity;
+use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
@@ -17,6 +19,7 @@ use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\entity\Entity;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
@@ -27,6 +30,9 @@ use slot_menu_system\SlotMenuSystem;
 class Main extends PluginBase implements Listener
 {
     public function onEnable() {
+        Entity::registerEntity(TeamDeathMatchNPC::class, true, ['TeamDeathMatchNPC']);
+        Entity::registerEntity(CadaverEntity::class, true, ['Cadaver']);
+
         GunRecordDAO::init();
         PlayerStatusDAO::init();
         MilitaryDepartmentsStore::init();
