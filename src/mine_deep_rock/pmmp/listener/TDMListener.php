@@ -104,7 +104,7 @@ class TDMListener implements Listener
 
     //TODO :Not Only TDM
     public function onFinishedGame(FinishedGameEvent $event): void {
-        SendParticipantsToLobbyPMMPService::execute($event->getPlayersData());
+        SendParticipantsToLobbyPMMPService::execute($event->getPlayersData(), $this->scheduler);
     }
 
     public function onRespawn(PlayerRespawnEvent $event) {
@@ -122,7 +122,7 @@ class TDMListener implements Listener
 
     //TODO :Not Only TDM
     public function onTapCadaverEntity(EntityDamageByEntityEvent $event) {
-        $player  = $event->getDamager();
+        $player = $event->getDamager();
         $cadaverEntity = $event->getEntity();
         if ($player instanceof Player) {
             if ($cadaverEntity instanceof CadaverEntity) {
