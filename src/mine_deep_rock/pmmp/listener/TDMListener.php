@@ -8,6 +8,7 @@ use mine_deep_rock\pmmp\service\InitTDMEquipmentsPMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMBossBarPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
+use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -51,6 +52,7 @@ class TDMListener implements Listener
         if (in_array($attackerData->getGameId(), TDMGameIdsStore::getAll())) {
             //アタッカーのチームにスコアを追加
             TeamGameSystem::addScore($attackerData->getGameId(), $attackerData->getTeamId(), new Score(1));
+            GivePlayerMoneyService::execute($attacker->getName(), 100);
         }
     }
 
