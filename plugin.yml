@@ -5,6 +5,10 @@ api: 3.0.0
 
 commands:
   SpawnNPC:
-    usage: "/SpawnNPC"
+    usage: "/SpawnNPC [NPC]"
     description: "SpawnNPC"
+    permission: op
+  CreateGame:
+    usage: "/CreateGame"
+    description: "CreateGame"
     permission: op

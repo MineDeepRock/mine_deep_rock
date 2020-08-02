@@ -9,6 +9,7 @@ use mine_deep_rock\model\PlayerStatus;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
+use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\TeamDeathMatchListForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
@@ -85,9 +86,9 @@ class Main extends PluginBase implements Listener
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
         if ($sender instanceof Player) {
             if ($label === "SpawnNPC") {
-                var_dump($args);
                 if (count($args) !== 1) {
                     $sender->sendMessage("/SpawnNPC [npc]");
+                    return false;
                 }
 
                 switch ($args[0]) {
@@ -96,6 +97,9 @@ class Main extends PluginBase implements Listener
                         return true;
                         break;
                 }
+            } else if ($label === "CreateGame") {
+                $sender->sendForm(new CreateGameForm());
+                return true;
             }
         }
         return false;
