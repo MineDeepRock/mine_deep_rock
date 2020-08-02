@@ -5,6 +5,7 @@ namespace mine_deep_rock\pmmp\service;
 
 
 use bossbar_system\models\BossBar;
+use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -29,6 +30,7 @@ class GetPlayerReadyToTDMPMMPService
         $player->sendMessage("あなたは{$playerTeam->getName()}チームです");
 
         //Scoreboardのセット
+        PlayerStatusScoreboard::delete($player);
         TDMScoreboard::send($player, $game->getMap()->getName(), 0, 0);
 
         //BossBarのセット
