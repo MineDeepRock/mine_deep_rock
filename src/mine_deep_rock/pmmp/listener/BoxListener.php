@@ -35,19 +35,23 @@ class BoxListener implements Listener
     }
 
     public function onAmmoBoxEffect(AmmoBoxEffectOnEvent $event): void {
+        $owner = $event->getOwner();
         $receiver = $event->getReceiver();
         GunSystem::giveAmmo($receiver, 0, 10);
         GunSystem::giveAmmo($receiver, 1, 10);
-        //TODO:メッセージ
+
+        $receiver->sendTip("{$owner->getName()}から弾薬を供給");
+        $owner->sendTip("{$receiver->getName()}に弾薬を供給");
+        //TODO:オーナーに経験値の処理
     }
 
     public function onMedicineBoxEffect(MedicineBoxEffectOnEvent $event): void {
         $receiver = $event->getReceiver();
         $receiver->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 2, 1));
-        //TODO:メッセージ
     }
 
     public function onFlareBoxEffect(FlareBoxEffectOnEvent $event): void {
+        $owner = $event->getOwner();
         $receiver = $event->getReceiver();
         $receiverData = TeamGameSystem::getPlayerData($receiver);
         if ($receiverData->getGameId() === null) return;
@@ -55,6 +59,8 @@ class BoxListener implements Listener
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData) {
             ShowPrivateNameTagToAllyPMMPService::execute($receiver, $receiverData->getTeamId());
         }), 20 * 3);
-        //TODO:メッセージ
+
+        $receiver->sendTip("スポットされました！３秒間相手に居場所がばれます！");
+        //TODO:オーナーに経験値の処理
     }
 }
