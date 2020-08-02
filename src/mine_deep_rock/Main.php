@@ -9,6 +9,7 @@ use mine_deep_rock\model\PlayerStatus;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
+use mine_deep_rock\pmmp\form\TeamDeathMatchListForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
@@ -20,12 +21,14 @@ use mine_deep_rock\store\MilitaryDepartmentsStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use slot_menu_system\SlotMenuSystem;
+use team_game_system\TeamGameSystem;
 
 class Main extends PluginBase implements Listener
 {
@@ -96,5 +99,13 @@ class Main extends PluginBase implements Listener
             }
         }
         return false;
+    }
+
+    public function onTapNPC(EntityDamageByEntityEvent $event): void {
+        $attacker = $event->getDamager();
+        $victim = $event->getEntity();
+        if ($attacker instanceof Player && $victim instanceof TeamDeathMatchNPC) {
+            $attacker->sendForm(new TeamDeathMatchListForm());
+        }
     }
 }
