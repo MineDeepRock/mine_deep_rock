@@ -12,7 +12,7 @@ class TDMGameIdsStore
     /**
      * @var GameId[]
      */
-    private static $ids;
+    private static $ids = [];
     static function add(GameId $gameId) :void {
         self::$ids[] = $gameId;
     }
