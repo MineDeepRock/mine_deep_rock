@@ -41,5 +41,8 @@ class GetPlayerReadyToTDMPMMPService
 
 
         //アイテムのセット
+        InitTDMEquipmentsPMMPService::execute($player);
+
+        ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
     }
 }
