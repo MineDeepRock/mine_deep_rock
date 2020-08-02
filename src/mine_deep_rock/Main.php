@@ -26,10 +26,12 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use slot_menu_system\SlotMenuSystem;
+use team_game_system\TeamGameSystem;
 
 class Main extends PluginBase implements Listener
 {
@@ -50,6 +52,10 @@ class Main extends PluginBase implements Listener
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
         $player->setGamemode(Player::ADVENTURE);
+        
+        $lobby = $this->getServer()->getLevelByName("lobby");
+        $player->teleport($lobby->getSpawnLocation());
+
         SlotMenuSystem::send($player, new SettingEquipmentsMenu($this->getScheduler()));
 
         $playerName = $player->getName();
@@ -76,8 +82,9 @@ class Main extends PluginBase implements Listener
     public function onUpdatedPlayerStatus(UpdatedPlayerStatusEvent $event): void {
         $status = $event->getPlayerStatus();
         $player = $this->getServer()->getPlayer($status->getName());
+        $playerData = TeamGameSystem::getPlayerData($player);
         if ($player->getLevel() !== null) {
-            if ($player->getLevel()->getName() === "lobby") {
+            if ($playerData->getGameId() === null) {
                 PlayerStatusScoreboard::update($player);
             }
         }
