@@ -30,7 +30,6 @@ use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use slot_menu_system\SlotMenuSystem;
-use team_game_system\TeamGameSystem;
 
 class Main extends PluginBase implements Listener
 {
@@ -114,6 +113,7 @@ class Main extends PluginBase implements Listener
         $victim = $event->getEntity();
         if ($attacker instanceof Player && $victim instanceof TeamDeathMatchNPC) {
             $attacker->sendForm(new TeamDeathMatchListForm());
+            $event->setCancelled();
         }
     }
 }
