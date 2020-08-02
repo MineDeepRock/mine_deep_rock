@@ -12,3 +12,7 @@ commands:
     usage: "/CreateGame"
     description: "CreateGame"
     permission: op
+  StartGame:
+    usage: "/StartGame"
+    description: "StartGame"
+    permission: op

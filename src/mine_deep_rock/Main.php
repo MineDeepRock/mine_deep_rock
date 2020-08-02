@@ -10,6 +10,7 @@ use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
+use mine_deep_rock\pmmp\form\StartGameForm;
 use mine_deep_rock\pmmp\form\TeamDeathMatchListForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
@@ -99,6 +100,9 @@ class Main extends PluginBase implements Listener
                 }
             } else if ($label === "CreateGame") {
                 $sender->sendForm(new CreateGameForm());
+                return true;
+            } else if ($label === "StartGame") {
+                $sender->sendForm(new StartGameForm($this->getScheduler()));
                 return true;
             }
         }
