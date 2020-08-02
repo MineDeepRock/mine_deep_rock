@@ -23,7 +23,13 @@ class TeamDeathMatchListForm extends SimpleForm
                 "TDM,Players:{$participantsCount},map:{$map->getName()}",
                 null,
                 function (Player $player) use ($gameId) {
-                    TeamGameSystem::joinGame($player, $gameId);
+                    $result = TeamGameSystem::joinGame($player, $gameId);
+
+                    if ($result) {
+                        $player->sendMessage("ゲームに参加しました");
+                    } else {
+                        $player->sendMessage("ゲームに参加出来ませんでした");
+                    }
                 }
             );
         }, TDMGameIdsStore::getAll());
