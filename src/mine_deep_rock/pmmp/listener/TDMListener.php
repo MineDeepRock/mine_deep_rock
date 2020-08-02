@@ -4,14 +4,13 @@ namespace mine_deep_rock\pmmp\listener;
 
 
 use mine_deep_rock\pmmp\entity\CadaverEntity;
-use mine_deep_rock\pmmp\service\GetPlayersReadyToTDM;
-use mine_deep_rock\pmmp\service\InitTDMEquipmentsPMMPService;
+use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
+use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMBossBarPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
-use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnTDMMenu;
 use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\store\TDMGameIdsStore;
@@ -46,10 +45,16 @@ class TDMListener implements Listener
     public function onJoinGame(PlayerJoinedGameEvent $event) {
         $gameId = $event->getGameId();
         if (in_array($gameId, TDMGameIdsStore::getAll())) {
-            //10人でスタート
-            $playersCount = TeamGameSystem::getGamePlayersData($gameId);
-            if ($playersCount === 10) {
-                TeamGameSystem::startGame($this->scheduler, $gameId);
+            $game = TeamGameSystem::getGame($gameId);
+            $player = $event->getPlayer();
+            if ($game->isStarted()) {
+                GetPlayerReadyToTDMPMMPService::execute(TeamGameSystem::getPlayerData($player), $gameId);
+            } else {
+                //10人でスタート
+                $playersCount = TeamGameSystem::getGamePlayersData($gameId);
+                if ($playersCount === 10) {
+                    TeamGameSystem::startGame($this->scheduler, $gameId);
+                }
             }
         }
     }
@@ -98,7 +103,7 @@ class TDMListener implements Listener
     public function onStartedGame(StartedGameEvent $event) {
         $gameId = $event->getGameId();
         if (in_array($gameId, TDMGameIdsStore::getAll())) {
-            GetPlayersReadyToTDM::execute($gameId);
+            GetPlayersReadyToTDMPMMPService::execute($gameId);
         }
     }
 
