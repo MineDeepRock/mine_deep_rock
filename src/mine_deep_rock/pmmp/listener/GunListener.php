@@ -15,8 +15,7 @@ use team_game_system\TeamGameSystem;
 class GunListener implements Listener
 {
     public function onBulletHit(BulletHitEvent $event) {
-        $pk = new EntityDamageByEntityEvent($event->getAttacker(), $event->getVictim(), EntityDamageEvent::CAUSE_CONTACT, $event->getDamage());
-        $pk->call();
+        $event->getVictim()->attack(new EntityDamageByEntityEvent($event->getAttacker(), $event->getVictim(), EntityDamageEvent::CAUSE_CONTACT, $event->getDamage()));
     }
 
     public function onBulletHitNear(BulletHitNearEvent $event) {
