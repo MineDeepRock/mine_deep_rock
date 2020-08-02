@@ -15,12 +15,16 @@ class UpdateTDMBossBarPMMPService
      * @param int $timeLimit
      * @param int $elapsedTime
      */
-    static function execute(array $participants, int $timeLimit, int $elapsedTime):void {
+    static function execute(array $participants, ?int $timeLimit, int $elapsedTime):void {
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
             $bossBar = BossBar::get($player);
-            $bossBar->updateTitle($player, "残り時間:" . ($timeLimit - $elapsedTime));
-            $bossBar->updatePercentage($player, $elapsedTime / $timeLimit);
+            if ($timeLimit === null) {
+                $bossBar->updateTitle($player, "経過時間:" . $elapsedTime);
+
+            } else {
+                $bossBar->updateTitle($player, "残り時間:" . ($timeLimit - $elapsedTime));
+            }
         }
     }
 }

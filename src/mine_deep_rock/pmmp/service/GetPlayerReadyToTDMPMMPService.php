@@ -32,8 +32,13 @@ class GetPlayerReadyToTDMPMMPService
         TDMScoreboard::send($player, $game->getMap()->getName(), 0, 0);
 
         //BossBarのセット
-        $bossBar = new BossBar("残り時間:" . ($game->getTimeLimit() - $game->getElapsedTime()), $game->getElapsedTime() / $game->getTimeLimit());
+        if ($game->getTimeLimit() === null) {
+            $bossBar = new BossBar("経過時間:" . $game->getElapsedTime(), 1);
+        } else {
+            $bossBar = new BossBar("残り時間:" . ($game->getTimeLimit() - $game->getElapsedTime()), $game->getElapsedTime() / $game->getTimeLimit());
+        }
         $bossBar->send($player);
+
 
         //アイテムのセット
     }

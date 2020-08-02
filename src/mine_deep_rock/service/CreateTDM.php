@@ -14,7 +14,7 @@ use team_game_system\TeamGameSystem;
 class CreateTDM
 {
 
-    static function execute(?Score $maxScore = null, ?int $maxPlayersCount = null, ?int $timeLimit = 300): void {
+    static function execute(?Score $maxScore = null, ?int $maxPlayersCount = null, ?int $timeLimit = null): void {
         $teams = [
             Team::asNew("Red", new Color(255, 0, 0)),
             Team::asNew("Blue", new Color(0, 0, 255)),
