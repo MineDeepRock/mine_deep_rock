@@ -14,15 +14,15 @@ use team_game_system\TeamGameSystem;
 class CreateTDM
 {
 
-    static function execute(): void {
+    static function execute(?Score $maxScore = null, ?int $maxPlayersCount = null, ?int $timeLimit = 300): void {
         $teams = [
             Team::asNew("Red", new Color(255, 0, 0)),
             Team::asNew("Blue", new Color(0, 0, 255)),
         ];
-        $maxScore = new Score(25);
+        $maxScore = $maxScore ?? new Score(25);
         //TODO:マップ選択
-        $map = TeamGameSystem::selectMap("", $teams);
-        $game = Game::asNew($map, $teams, $maxScore, null, 300);
+        $map = TeamGameSystem::selectMap("Example", $teams);
+        $game = Game::asNew($map, $teams, $maxScore, $maxPlayersCount, $timeLimit);
 
         TeamGameSystem::registerGame($game);
         TDMGameIdsStore::add($game->getId());
