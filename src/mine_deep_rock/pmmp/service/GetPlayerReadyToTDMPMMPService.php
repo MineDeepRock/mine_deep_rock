@@ -24,6 +24,7 @@ class GetPlayerReadyToTDMPMMPService
         }
 
         //テレポート
+        TeamGameSystem::setSpawnPoint($player);
         $player->teleport($player->getSpawn());
 
         $player->addTitle("チームデスマッチ スタート");
