@@ -3,6 +3,8 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
+use box_system\pmmp\entities\BoxEntity;
+use grenade_system\pmmp\entities\GrenadeEntity;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
@@ -21,6 +23,7 @@ use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Server;
 use slot_menu_system\SlotMenuSystem;
 use team_game_system\model\Score;
 use team_game_system\pmmp\event\AddedScoreEvent;
@@ -109,7 +112,19 @@ class TDMListener implements Listener
 
     //TODO :Not Only TDM
     public function onFinishedGame(FinishedGameEvent $event): void {
+        $game  = $event->getGame();
         SendParticipantsToLobbyPMMPService::execute($event->getPlayersData(), $this->scheduler);
+        TDMGameIdsStore::delete($game->getId());
+
+        //TODO:終わった試合の参加者のエンティティだったらKillにする
+        $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
+        foreach ($level->getEntities() as $entity) {
+            if ($entity instanceof BoxEntity) {
+                $entity->kill();
+            } else if ($entity instanceof GrenadeEntity) {
+                $entity->kill();
+            }
+        }
     }
 
     public function onRespawn(PlayerRespawnEvent $event) {
