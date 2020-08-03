@@ -31,12 +31,11 @@ class SelectGunTypeForSaleMenu extends SlotMenu
             /** @var Gun $gun */
             foreach (GunSystem::loadAllGuns() as $gun) {
                 if ($gun->getType()->equals($gunType) && !in_array($gun->getName(), $ownGunsName)) {
-                    $gunName = $gun->getName();
-                    $item = new SlotMenuElementItem(new SlotMenuElement(ItemIds::BOW, $gun->getName(), 0, function (Player $player) use ($gunName, $taskScheduler) {
-                        $player->sendForm(new ConfirmBuyGunForm($gunName, $taskScheduler));
+                    $item = new SlotMenuElementItem(new SlotMenuElement(ItemIds::BOW, $gun->getName(), 0, function (Player $player) use ($gun, $taskScheduler) {
+                        $player->sendForm(new ConfirmBuyGunForm($gun, $taskScheduler));
                     }), ItemIds::BOW);
 
-                    $item->setCustomName($gunName);
+                    $item->setCustomName($gun->getName());
                     $items[] = $item;
                 }
             }
