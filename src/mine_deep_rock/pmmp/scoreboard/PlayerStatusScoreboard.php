@@ -6,6 +6,7 @@ namespace mine_deep_rock\pmmp\scoreboard;
 
 use mine_deep_rock\dao\PlayerStatusDAO;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 use scoreboard_system\models\Score;
 use scoreboard_system\models\Scoreboard;
 use scoreboard_system\models\ScoreboardSlot;
@@ -18,10 +19,10 @@ class PlayerStatusScoreboard extends Scoreboard
         $slot = ScoreboardSlot::sideBar();
         $scores = [
             new Score($slot, "======================", 0, 0),
-            new Score($slot, "兵科:{$status->getMilitaryDepartment()->getName()}", 1, 1),
-            new Score($slot, "メインウェポン:{$status->getMainGunName()}", 2, 2),
-            new Score($slot, "サブウェポン:{$status->getSubGunName()}", 3, 3),
-            new Score($slot, "Money:{$status->getMoney()}", 4, 4),
+            new Score($slot, "兵科:" . TextFormat::BOLD . $status->getMilitaryDepartment()->getName(), 1, 1),
+            new Score($slot, "メインウェポン:" . TextFormat::BOLD . $status->getMainGunName(), 2, 2),
+            new Score($slot, "サブウェポン:" . TextFormat::BOLD . $status->getSubGunName(), 3, 3),
+            new Score($slot, "Money:" . TextFormat::BOLD . $status->getMoney(), 4, 4),
         ];
         return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
     }
