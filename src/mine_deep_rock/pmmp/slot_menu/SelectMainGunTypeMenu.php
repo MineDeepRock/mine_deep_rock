@@ -13,7 +13,7 @@ use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
 use slot_menu_system\SlotMenuSystem;
 
-class SelectMainGunMenu extends SlotMenu
+class SelectMainGunTypeMenu extends SlotMenu
 {
     public function __construct(Player $player, TaskScheduler $taskScheduler) {
         $status = PlayerStatusDAO::get($player->getName());

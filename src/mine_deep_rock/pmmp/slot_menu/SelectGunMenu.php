@@ -22,9 +22,9 @@ class SelectGunMenu extends SlotMenu
             //Back
             new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($gunType, $taskScheduler) {
                 if ($gunType->equals(GunType::HandGun()) || $gunType->equals(GunType::Revolver())) {
-                    SlotMenuSystem::send($player, new SelectSubGunMenu($taskScheduler));
+                    SlotMenuSystem::send($player, new SelectSubGunTypeMenu($taskScheduler));
                 } else {
-                    SlotMenuSystem::send($player, new SelectMainGunMenu($player, $taskScheduler));
+                    SlotMenuSystem::send($player, new SelectMainGunTypeMenu($player, $taskScheduler));
                 }
             }),
         ];

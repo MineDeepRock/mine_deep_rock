@@ -12,7 +12,7 @@ use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
 use slot_menu_system\SlotMenuSystem;
 
-class SelectSubGunMenu extends SlotMenu
+class SelectSubGunTypeMenu extends SlotMenu
 {
     public function __construct(TaskScheduler $taskScheduler) {
         $sendGunSelectMenu = function (Player $player, GunType $gunType) use ($taskScheduler) {
