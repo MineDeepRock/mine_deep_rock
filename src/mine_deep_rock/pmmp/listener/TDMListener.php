@@ -112,8 +112,7 @@ class TDMListener implements Listener
 
     //TODO :Not Only TDM
     public function onFinishedGame(FinishedGameEvent $event): void {
-        $game  = $event->getGame();
-        SendParticipantsToLobbyPMMPService::execute($event->getPlayersData(), $this->scheduler);
+        $game = $event->getGame();
         TDMGameIdsStore::delete($game->getId());
 
         //TODO:終わった試合の参加者のエンティティだったらKillにする
@@ -125,6 +124,32 @@ class TDMListener implements Listener
                 $entity->kill();
             }
         }
+
+        //勝敗のメッセージ
+        //プレイヤーのアイテム削除、ゲームモード修正
+        $playersData = $event->getPlayersData();
+        $wonTeam = $event->getWonTeam();
+        foreach ($playersData as $playerData) {
+            $player = Server::getInstance()->getPlayer($playerData->getName());
+            if ($wonTeam === null) {
+                $player->sendMessage("引き分け");
+                $player->addTitle("引き分け");
+            } else if ($wonTeam->getId()->equals($playerData->getTeamId())) {
+                $player->sendMessage("勝ち！");
+                $player->addTitle("勝ち！");
+            } else {
+                $player->sendMessage("負け...");
+                $player->addTitle("負け...");
+            }
+
+            $player->getInventory()->setContents([]);
+            $player->setGamemode(Player::ADVENTURE);
+        }
+
+        //15秒後にロビーに送る
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($playersData, $game): void {
+            SendParticipantsToLobbyPMMPService::execute($playersData, $this->scheduler);
+        }), 20 * 15);
     }
 
     public function onRespawn(PlayerRespawnEvent $event) {
