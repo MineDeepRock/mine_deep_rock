@@ -4,14 +4,13 @@
 namespace mine_deep_rock\pmmp\service;
 
 
-use box_system\models\Box;
 use box_system\pmmp\items\BoxItem;
-use box_system\pmmp\items\SpawnAmmoBoxItem;
 use grenade_system\pmmp\items\GrenadeItem;
 use gun_system\GunSystem;
 use gun_system\model\attachment\Scope;
 use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
+use pocketmine\item\Arrow;
 use pocketmine\Player;
 
 class InitTDMEquipmentsPMMPService
@@ -40,5 +39,7 @@ class InitTDMEquipmentsPMMPService
 
         $grenades = $status->getMilitaryDepartment()->getGrenades();
         foreach ($grenades as $grenade) $inventory->addItem(GrenadeItem::fromGrenade($grenade));
+
+        $inventory->setItem(8, new Arrow());
     }
 }
