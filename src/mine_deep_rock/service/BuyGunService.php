@@ -23,6 +23,7 @@ class BuyGunService
             return false;
         }
 
+        SpendMoneyService::execute($name, 2000);
         GunRecordDAO::add($name, GunRecord::asNew($gunName));
         return true;
     }
