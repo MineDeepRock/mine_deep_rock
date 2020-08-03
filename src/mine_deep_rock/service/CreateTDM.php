@@ -20,8 +20,7 @@ class CreateTDM
             Team::asNew("Blue", new Color(0, 0, 255)),
         ];
         $maxScore = $maxScore ?? new Score(25);
-        //TODO:マップ選択
-        $map = TeamGameSystem::selectMap("Example", $teams);
+        $map = TeamGameSystem::selectMap("BrokenCity", $teams);
         $game = Game::asNew($map, $teams, $maxScore, $maxPlayersCount, $timeLimit);
 
         TeamGameSystem::registerGame($game);
