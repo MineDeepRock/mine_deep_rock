@@ -5,9 +5,12 @@ namespace mine_deep_rock\pmmp\listener;
 
 
 use box_system\pmmp\events\AmmoBoxEffectOnEvent;
+use box_system\pmmp\events\BoxStopEvent;
 use box_system\pmmp\events\FlareBoxEffectOnEvent;
 use box_system\pmmp\events\MedicineBoxEffectOnEvent;
+use box_system\pmmp\items\BoxItem;
 use gun_system\GunSystem;
+use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToParticipantsPMMPService;
 use pocketmine\entity\Effect;
@@ -62,5 +65,18 @@ class BoxListener implements Listener
 
         $receiver->sendTip("スポットされました！３秒間相手に居場所がばれます！");
         //TODO:オーナーに経験値の処理
+    }
+
+    public function onStopBox(BoxStopEvent $event) {
+        $box = $event->getBox();
+        $owner = $event->getOwner();
+
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($owner, $box) {
+            $status = PlayerStatusDAO::get($owner->getName());
+            $boxes = $status->getMilitaryDepartment()->getBoxes();
+            if (in_array($box, $boxes)) {
+                $owner->getInventory()->addItem(BoxItem::fromBox($box));
+            }
+        }), 20 * 15);
     }
 }
