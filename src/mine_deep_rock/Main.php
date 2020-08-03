@@ -24,6 +24,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\level\Position;
@@ -52,7 +53,7 @@ class Main extends PluginBase implements Listener
     public function onJoin(PlayerJoinEvent $event) {
         $player = $event->getPlayer();
         $player->setGamemode(Player::ADVENTURE);
-        
+
         $lobby = $this->getServer()->getLevelByName("lobby");
         $player->teleport($lobby->getSpawnLocation());
 
@@ -121,6 +122,15 @@ class Main extends PluginBase implements Listener
         if ($attacker instanceof Player && $victim instanceof TeamDeathMatchNPC) {
             $attacker->sendForm(new TeamDeathMatchListForm());
             $event->setCancelled();
+        }
+    }
+
+    public function onDamaged(EntityDamageEvent $event): void {
+        $victim = $event->getEntity();
+        if ($victim instanceof Player) {
+            if ($victim->getLevel()->getName() === "lobby") {
+                $event->setCancelled();
+            }
         }
     }
 }
