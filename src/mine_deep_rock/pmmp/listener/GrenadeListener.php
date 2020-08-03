@@ -15,8 +15,11 @@ class GrenadeListener implements Listener
 {
 
     public function onExplodeGrenade(FragGrenadeExplodeEvent $event) {
-        $ownerTeamId = TeamGameSystem::getPlayerData($event->getOwner())->getTeamId();
-        $victimTeamId = TeamGameSystem::getPlayerData($event->getVictim())->getTeamId();
+        $owner = $event->getOwner();
+        $victim = $event->getVictim();
+
+        $ownerTeamId = TeamGameSystem::getPlayerData($owner)->getTeamId();
+        $victimTeamId = TeamGameSystem::getPlayerData($victim)->getTeamId();
         if ($ownerTeamId === null || $victimTeamId === null) return;
         if ($ownerTeamId->equals($victimTeamId)) {
             if ($event->getDistance() <= 4) {
@@ -24,18 +27,20 @@ class GrenadeListener implements Listener
             } else {
                 $damage = 15 - $event->getDistance();
             }
-            $pk = new EntityDamageByEntityEvent($event->getOwner(), $event->getVictim(), EntityDamageEvent::CAUSE_CONTACT, $damage);
-            $pk->call();
+
+            $victim->attack(new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 1));
         }
     }
 
     public function onExplodeFlameBottle(FlameBottleExplodeEvent $event) {
-        $ownerTeamId = TeamGameSystem::getPlayerData($event->getOwner())->getTeamId();
-        $victimTeamId = TeamGameSystem::getPlayerData($event->getVictim())->getTeamId();
+        $owner = $event->getOwner();
+        $victim = $event->getVictim();
+
+        $ownerTeamId = TeamGameSystem::getPlayerData($owner)->getTeamId();
+        $victimTeamId = TeamGameSystem::getPlayerData($victim)->getTeamId();
         if ($ownerTeamId === null || $victimTeamId === null) return;
         if ($ownerTeamId->equals($victimTeamId)) {
-            $pk = new EntityDamageByEntityEvent($event->getOwner(), $event->getVictim(), EntityDamageEvent::CAUSE_CONTACT, 4);
-            $pk->call();
+            $victim->attack(new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, 4, [], 0));
         }
     }
 }
