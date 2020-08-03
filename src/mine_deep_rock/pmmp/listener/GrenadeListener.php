@@ -4,15 +4,26 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
+use box_system\pmmp\items\BoxItem;
+use grenade_system\pmmp\events\ConsumedGrenadeItemEvent;
 use grenade_system\pmmp\events\FlameBottleExplodeEvent;
 use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
+use grenade_system\pmmp\items\GrenadeItem;
+use mine_deep_rock\dao\PlayerStatusDAO;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\scheduler\TaskScheduler;
 use team_game_system\TeamGameSystem;
 
 class GrenadeListener implements Listener
 {
+    private $scheduler;
+
+    public function __construct(TaskScheduler $scheduler) {
+        $this->scheduler = $scheduler;
+    }
 
     public function onExplodeGrenade(FragGrenadeExplodeEvent $event) {
         $owner = $event->getOwner();
@@ -42,5 +53,23 @@ class GrenadeListener implements Listener
         if ($ownerTeamId->equals($victimTeamId)) {
             $victim->attack(new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, 4, [], 0));
         }
+    }
+
+    public function onConsumedGrenade(ConsumedGrenadeItemEvent $event) {
+        $grenade = $event->getGrenade();
+        $owner = $event->getOwner();
+
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($owner, $grenade): void {
+
+            $playerData = TeamGameSystem::getPlayerData($owner);
+            if ($playerData->getGameId() === null) return;
+
+            $status = PlayerStatusDAO::get($owner->getName());
+            $grenades = $status->getMilitaryDepartment()->getGrenades();
+            if (in_array($grenade, $grenades)) {
+
+                $owner->getInventory()->addItem(GrenadeItem::fromGrenade($grenade));
+            }
+        }), 20 * 10);
     }
 }

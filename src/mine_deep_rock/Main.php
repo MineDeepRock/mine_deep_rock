@@ -47,7 +47,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents(new TDMListener($this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GunListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new BoxListener($this->getServer(), $this->getScheduler()), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener($this->getScheduler()), $this);
     }
 
     public function onJoin(PlayerJoinEvent $event) {
