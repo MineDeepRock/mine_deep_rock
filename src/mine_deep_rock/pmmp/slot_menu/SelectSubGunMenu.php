@@ -17,11 +17,11 @@ use slot_menu_system\SlotMenuSystem;
 
 class SelectSubGunMenu extends SlotMenu
 {
-    public function __construct(string $playerName, GunType $gunType, TaskScheduler $taskScheduler) {
+    public function __construct(string $playerName, GunType $gunType, SlotMenu $previousMenu, TaskScheduler $taskScheduler) {
         $menus = [
             //Back
-            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($gunType, $taskScheduler) {
-                SlotMenuSystem::send($player, new SelectSubGunTypeMenu($taskScheduler));
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($gunType, $previousMenu) {
+                SlotMenuSystem::send($player, $previousMenu);
             }),
         ];
 

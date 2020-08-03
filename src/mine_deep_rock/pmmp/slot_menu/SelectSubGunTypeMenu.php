@@ -14,9 +14,9 @@ use slot_menu_system\SlotMenuSystem;
 
 class SelectSubGunTypeMenu extends SlotMenu
 {
-    public function __construct(TaskScheduler $taskScheduler) {
+    public function __construct(SlotMenu $previousMenu, TaskScheduler $taskScheduler) {
         $sendGunSelectMenu = function (Player $player, GunType $gunType) use ($taskScheduler) {
-            SlotMenuSystem::send($player, new SelectSubGunMenu($player->getName(), $gunType, $taskScheduler));
+            SlotMenuSystem::send($player, new SelectSubGunMenu($player->getName(), $gunType, $this, $taskScheduler));
         };
 
         $menus = [
@@ -27,8 +27,8 @@ class SelectSubGunTypeMenu extends SlotMenu
                 $sendGunSelectMenu($player, GunType::Revolver());
             }),
             //BACK
-            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($taskScheduler) {
-                SlotMenuSystem::send($player, new SettingEquipmentsMenu($taskScheduler));
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($previousMenu) {
+                SlotMenuSystem::send($player, $previousMenu);
             }),
         ];
         parent::__construct($menus);

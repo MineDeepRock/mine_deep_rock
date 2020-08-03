@@ -10,18 +10,17 @@ use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\pmmp\form\GunDetailForm;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
-use pocketmine\scheduler\TaskScheduler;
 use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
 use slot_menu_system\SlotMenuSystem;
 
 class SelectMainGunMenu extends SlotMenu
 {
-    public function __construct(string $playerName, GunType $gunType, TaskScheduler $taskScheduler) {
+    public function __construct(string $playerName, GunType $gunType, SlotMenu $previousMenu) {
         $menus = [
             //Back
-            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($gunType, $taskScheduler) {
-                SlotMenuSystem::send($player, new SelectMainGunTypeMenu($player, $taskScheduler));
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($gunType, $previousMenu) {
+                SlotMenuSystem::send($player, $previousMenu);
             }),
         ];
 

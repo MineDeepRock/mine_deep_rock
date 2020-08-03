@@ -16,13 +16,13 @@ class SettingEquipmentsMenu extends SlotMenu
     public function __construct(TaskScheduler $taskScheduler) {
         $menus = [
             new SlotMenuElement(ItemIds::COMPASS, "兵科", 0, function (Player $player) use ($taskScheduler) {
-                SlotMenuSystem::send($player, new SelectMilitaryDepartmentMenu($taskScheduler));
+                SlotMenuSystem::send($player, new SelectMilitaryDepartmentMenu($this));
             }),
             new SlotMenuElement(ItemIds::DIAMOND_SWORD, "メインウェポン", 1, function (Player $player) use ($taskScheduler) {
-                SlotMenuSystem::send($player, new SelectMainGunTypeMenu($player, $taskScheduler));
+                SlotMenuSystem::send($player, new SelectMainGunTypeMenu($player, $this, $taskScheduler));
             }),
             new SlotMenuElement(ItemIds::IRON_SWORD, "サブウェポン", 2, function (Player $player) use ($taskScheduler) {
-                SlotMenuSystem::send($player, new SelectSubGunTypeMenu($taskScheduler));
+                SlotMenuSystem::send($player, new SelectSubGunTypeMenu($this, $taskScheduler));
             }),
             new SlotMenuElement(ItemIds::IRON_SWORD, "試し打ち", 3, function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SelectTrialGunTypesMenu($taskScheduler));

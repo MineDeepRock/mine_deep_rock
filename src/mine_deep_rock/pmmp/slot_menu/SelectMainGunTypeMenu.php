@@ -15,20 +15,21 @@ use slot_menu_system\SlotMenuSystem;
 
 class SelectMainGunTypeMenu extends SlotMenu
 {
-    public function __construct(Player $player, TaskScheduler $taskScheduler) {
+    public function __construct(Player $player, SlotMenu $previousMenu, TaskScheduler $taskScheduler) {
         $status = PlayerStatusDAO::get($player->getName());
         $sendGunSelectMenu = function (Player $player, GunType $gunType) use ($taskScheduler) {
-            SlotMenuSystem::send($player, new SelectMainGunMenu($player->getName(), $gunType, $taskScheduler));
+            SlotMenuSystem::send($player, new SelectMainGunMenu($player->getName(), $gunType, $this));
         };
         $menus = [
             //Back
-            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($taskScheduler) {
-                SlotMenuSystem::send($player, new SettingEquipmentsMenu($taskScheduler));
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($previousMenu) {
+                SlotMenuSystem::send($player, $previousMenu);
             }),
         ];
 
-        foreach ($status->getMilitaryDepartment()->getGunTypes() as $gunType) {
-            $menus[] = new SlotMenuElement(ItemIds::BOW, $gunType->getTypeText(), 0, function (Player $player) use ($sendGunSelectMenu, $gunType) {
+        var_dump($status->getMilitaryDepartment()->getGunTypes());
+        foreach ($status->getMilitaryDepartment()->getGunTypes() as $index => $gunType) {
+            $menus[] = new SlotMenuElement(ItemIds::BOW, $gunType->getTypeText(), $index, function (Player $player) use ($sendGunSelectMenu, $gunType) {
                 $sendGunSelectMenu($player, $gunType);
             });
         }
