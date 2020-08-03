@@ -15,17 +15,13 @@ use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
 use slot_menu_system\SlotMenuSystem;
 
-class SelectGunMenu extends SlotMenu
+class SelectSubGunMenu extends SlotMenu
 {
     public function __construct(string $playerName, GunType $gunType, TaskScheduler $taskScheduler) {
         $menus = [
             //Back
             new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($gunType, $taskScheduler) {
-                if ($gunType->equals(GunType::HandGun()) || $gunType->equals(GunType::Revolver())) {
-                    SlotMenuSystem::send($player, new SelectSubGunTypeMenu($taskScheduler));
-                } else {
-                    SlotMenuSystem::send($player, new SelectMainGunTypeMenu($player, $taskScheduler));
-                }
+                SlotMenuSystem::send($player, new SelectSubGunTypeMenu($taskScheduler));
             }),
         ];
 
@@ -43,5 +39,4 @@ class SelectGunMenu extends SlotMenu
 
         parent::__construct($menus);
     }
-
 }

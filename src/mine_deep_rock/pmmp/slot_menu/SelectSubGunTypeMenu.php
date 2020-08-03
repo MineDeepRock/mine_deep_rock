@@ -16,7 +16,7 @@ class SelectSubGunTypeMenu extends SlotMenu
 {
     public function __construct(TaskScheduler $taskScheduler) {
         $sendGunSelectMenu = function (Player $player, GunType $gunType) use ($taskScheduler) {
-            SlotMenuSystem::send($player, new SelectGunMenu($player->getName(), $gunType, $taskScheduler));
+            SlotMenuSystem::send($player, new SelectSubGunMenu($player->getName(), $gunType, $taskScheduler));
         };
 
         $menus = [

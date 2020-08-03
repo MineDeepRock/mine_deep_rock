@@ -18,7 +18,7 @@ class SelectMainGunTypeMenu extends SlotMenu
     public function __construct(Player $player, TaskScheduler $taskScheduler) {
         $status = PlayerStatusDAO::get($player->getName());
         $sendGunSelectMenu = function (Player $player, GunType $gunType) use ($taskScheduler) {
-            SlotMenuSystem::send($player, new SelectGunMenu($player->getName(), $gunType, $taskScheduler));
+            SlotMenuSystem::send($player, new SelectMainGunMenu($player->getName(), $gunType, $taskScheduler));
         };
         $menus = [
             //Back
