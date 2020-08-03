@@ -71,7 +71,10 @@ class BoxListener implements Listener
         $box = $event->getBox();
         $owner = $event->getOwner();
 
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($owner, $box) {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($owner, $box): void {
+            $playerData = TeamGameSystem::getPlayerData($owner);
+            if ($playerData->getGameId() === null) return;
+
             $status = PlayerStatusDAO::get($owner->getName());
             $boxes = $status->getMilitaryDepartment()->getBoxes();
             if (in_array($box, $boxes)) {
