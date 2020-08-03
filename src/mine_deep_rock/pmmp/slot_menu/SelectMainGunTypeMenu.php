@@ -27,7 +27,6 @@ class SelectMainGunTypeMenu extends SlotMenu
             }),
         ];
 
-        var_dump($status->getMilitaryDepartment()->getGunTypes());
         foreach ($status->getMilitaryDepartment()->getGunTypes() as $index => $gunType) {
             $menus[] = new SlotMenuElement(ItemIds::BOW, $gunType->getTypeText(), $index, function (Player $player) use ($sendGunSelectMenu, $gunType) {
                 $sendGunSelectMenu($player, $gunType);
