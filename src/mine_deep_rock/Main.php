@@ -26,6 +26,7 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
@@ -132,5 +133,9 @@ class Main extends PluginBase implements Listener
                 $event->setCancelled();
             }
         }
+    }
+
+    public function onExhaust(PlayerExhaustEvent $event) {
+        $event->setCancelled();
     }
 }
