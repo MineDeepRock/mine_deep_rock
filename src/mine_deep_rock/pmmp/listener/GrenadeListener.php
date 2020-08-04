@@ -4,9 +4,7 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
-use box_system\pmmp\items\BoxItem;
 use grenade_system\pmmp\events\ConsumedGrenadeItemEvent;
-use grenade_system\pmmp\events\FlameBottleExplodeEvent;
 use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
 use grenade_system\pmmp\items\GrenadeItem;
 use mine_deep_rock\dao\PlayerStatusDAO;
@@ -40,18 +38,6 @@ class GrenadeListener implements Listener
             }
 
             $victim->attack(new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 1));
-        }
-    }
-
-    public function onExplodeFlameBottle(FlameBottleExplodeEvent $event) {
-        $owner = $event->getOwner();
-        $victim = $event->getVictim();
-
-        $ownerTeamId = TeamGameSystem::getPlayerData($owner)->getTeamId();
-        $victimTeamId = TeamGameSystem::getPlayerData($victim)->getTeamId();
-        if ($ownerTeamId === null || $victimTeamId === null) return;
-        if ($ownerTeamId->equals($victimTeamId)) {
-            $victim->attack(new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, 4, [], 0));
         }
     }
 
