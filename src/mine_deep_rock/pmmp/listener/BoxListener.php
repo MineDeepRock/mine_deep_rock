@@ -59,7 +59,7 @@ class BoxListener implements Listener
         $receiverData = TeamGameSystem::getPlayerData($receiver);
         if ($receiverData->getGameId() === null) return;
         ShowPrivateNameTagToParticipantsPMMPService::execute($receiver, $receiverData->getGameId());
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData) {
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData) : void {
             ShowPrivateNameTagToAllyPMMPService::execute($receiver, $receiverData->getTeamId());
         }), 20 * 3);
 
