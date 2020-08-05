@@ -16,7 +16,7 @@ class ShowPrivateNameTagToAllyPMMPService
     static function execute(Player $target, TeamId $teamId): void {
         $tag = PrivateNameTag::get($target);
         if ($tag === null) {
-            //TODO : エラーを吐くように
+            SetPrivateNameTagPMMPService::execute($target);
             return;
         }
 

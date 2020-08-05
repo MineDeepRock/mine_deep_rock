@@ -19,9 +19,14 @@ class UpdateTDMBossBarPMMPService
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
             $bossBar = BossBar::get($player);
+
+            if ($bossBar === null) {
+                $bossBar = new BossBar("", 1);
+                $bossBar->send($player);
+            }
+
             if ($timeLimit === null) {
                 $bossBar->updateTitle($player, "経過時間:" . $elapsedTime);
-
             } else {
                 $bossBar->updateTitle($player, "残り時間:" . ($timeLimit - $elapsedTime));
                 $bossBar->updatePercentage($player, $elapsedTime / $timeLimit);

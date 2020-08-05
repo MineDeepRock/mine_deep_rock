@@ -11,6 +11,11 @@ use team_game_system\TeamGameSystem;
 class ResortToTDMPMMPService
 {
     static function execute(Player $player, Position $pos = null): void {
+        $playerData = TeamGameSystem::getPlayerData($player);
+        if ($playerData->getTeamId() === null) {
+            return;
+        }
+
         $player->setGamemode(Player::ADVENTURE);
         $player->setImmobile(false);
 
@@ -25,7 +30,6 @@ class ResortToTDMPMMPService
 
         InitTDMEquipmentsPMMPService::execute($player);
 
-        $playerData = TeamGameSystem::getPlayerData($player);
         ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
     }
 }
