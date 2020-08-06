@@ -60,7 +60,7 @@ class InitTDMEquipmentsPMMPService
         //TODO:リファクタリング
         $playerData = TeamGameSystem::getPlayerData($player);
         $game = TeamGameSystem::getGame($playerData->getGameId());
-        $teams = $game->getTeams();;
+        $teams = $game->getTeams();
         foreach ($teams as $team) {
             if ($team->getId()->equals($playerData->getTeamId())) {
                 $armorInventory = $player->getArmorInventory();

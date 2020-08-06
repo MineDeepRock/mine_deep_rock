@@ -95,18 +95,30 @@
       "type": "git",
       "name": "suinua/form_builder",
       "url": "https://github.com/MineDeepRock/form_builder"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/pmmp/LogPthreads"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/pmmp/Log"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/pmmp/classloader"
     }
   ],
   "require": {
-    "pocketmine/pocketmine-mp": "*",
-    "pocketmine/raklib": "^0.12.0",
-    "pocketmine/spl": "^0.3.0",
-    "pocketmine/binaryutils": "^0.1.0",
-    "pocketmine/nbt": "^0.2.1",
-    "pocketmine/math": "^0.2.0",
-    "pocketmine/snooze": "^0.1.0",
-    "suinua/team_game_system": "dev-master",
+    "pocketmine/pocketmine-mp": "3.14.2",
+    "pocketmine/raklib": "*",
+    "pocketmine/spl": "*",
+    "pocketmine/binaryutils": "*",
+    "pocketmine/nbt": "*",
+    "pocketmine/math": "*",
+    "pocketmine/snooze": "*",
     "ext-json": "*",
+    "suinua/team_game_system": "dev-master",
     "suinua/bossbar_system": "dev-master",
     "suinua/slot_menu_system": "dev-master",
     "suinua/gun_system": "dev-master",
@@ -115,6 +127,9 @@
     "suinua/private_name_tag": "dev-master",
     "suinua/sandbag_system": "dev-master",
     "suinua/scoreboard_system": "dev-master",
-    "suinua/form_builder": "dev-master"
+    "suinua/form_builder": "dev-master",
+    "pocketmine/log-pthreads": "^0.1.0",
+    "pocketmine/log": "^0.2.0",
+    "pocketmine/classloader": "^0.1.0"
   }
 }
