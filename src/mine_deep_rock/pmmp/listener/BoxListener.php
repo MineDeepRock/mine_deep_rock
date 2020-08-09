@@ -57,7 +57,11 @@ class BoxListener implements Listener
         $owner = $event->getOwner();
         $receiver = $event->getReceiver();
         $receiverData = TeamGameSystem::getPlayerData($receiver);
-        if ($receiverData->getGameId() === null) return;
+        $ownerData = TeamGameSystem::getPlayerData($owner);
+
+        if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
+        if ($receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
+
         ShowPrivateNameTagToParticipantsPMMPService::execute($receiver, $receiverData->getGameId());
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData) : void {
             ShowPrivateNameTagToAllyPMMPService::execute($receiver, $receiverData->getTeamId());
@@ -78,7 +82,10 @@ class BoxListener implements Listener
             $status = PlayerStatusDAO::get($owner->getName());
             $boxes = $status->getMilitaryDepartment()->getBoxes();
             if (in_array($box, $boxes)) {
-                $owner->getInventory()->addItem(BoxItem::fromBox($box));
+                $boxItem = BoxItem::fromBox($box);
+                if (!$owner->getInventory()->contains($boxItem)) {
+                    $owner->getInventory()->addItem($boxItem);
+                }
             }
         }), 20 * 15);
     }
