@@ -11,12 +11,15 @@ use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
+use mine_deep_rock\pmmp\service\UpdatePrivateNameTagPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMBossBarPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnTDMMenu;
 use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
@@ -174,6 +177,22 @@ class TDMListener implements Listener
                 RescuePlayerPMMPService::execute($player, $cadaverEntity->getOwner());
                 $event->setCancelled();
             }
+        }
+    }
+
+    //TODO :Not Only TDM
+    public function onRegainHealth(EntityRegainHealthEvent $event) {
+        $player = $event->getEntity();
+        if ($player instanceof Player) {
+            UpdatePrivateNameTagPMMPService::execute($player);
+        }
+    }
+
+    //TODO :Not Only TDM
+    public function onDamaged(EntityDamageEvent $event) {
+        $player = $event->getEntity();
+        if ($player instanceof Player) {
+            UpdatePrivateNameTagPMMPService::execute($player);
         }
     }
 }
