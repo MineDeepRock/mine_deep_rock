@@ -5,10 +5,11 @@ namespace mine_deep_rock\pmmp\service;
 
 
 use bossbar_system\models\BossBar;
+use LogicException;
 use pocketmine\Server;
 use team_game_system\data_model\PlayerData;
 
-class UpdateTDMBossBarPMMPService
+class SendTDMBossBarPMMPService
 {
     /**
      * @param PlayerData[] $participants
