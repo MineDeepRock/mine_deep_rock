@@ -4,7 +4,7 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
-use grenade_system\pmmp\events\ConsumedGrenadeItemEvent;
+use grenade_system\pmmp\events\ConsumedGrenadeEvent;
 use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
 use grenade_system\pmmp\items\GrenadeItem;
 use mine_deep_rock\dao\PlayerStatusDAO;
@@ -41,7 +41,7 @@ class GrenadeListener implements Listener
         }
     }
 
-    public function onConsumedGrenade(ConsumedGrenadeItemEvent $event) {
+    public function onConsumedGrenade(ConsumedGrenadeEvent $event) {
         $grenade = $event->getGrenade();
         $owner = $event->getOwner();
 
@@ -53,8 +53,10 @@ class GrenadeListener implements Listener
             $status = PlayerStatusDAO::get($owner->getName());
             $grenades = $status->getMilitaryDepartment()->getGrenades();
             if (in_array($grenade, $grenades)) {
-
-                $owner->getInventory()->addItem(GrenadeItem::fromGrenade($grenade));
+                $grenadeItem = GrenadeItem::fromGrenade($grenade);
+                if (!$owner->getInventory()->contains($grenadeItem)) {
+                    $owner->getInventory()->addItem($grenadeItem);
+                }
             }
         }), 20 * 10);
     }
