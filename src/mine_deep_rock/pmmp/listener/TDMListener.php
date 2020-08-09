@@ -12,7 +12,7 @@ use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
 use mine_deep_rock\pmmp\service\UpdatePrivateNameTagPMMPService;
-use mine_deep_rock\pmmp\service\UpdateTDMBossBarPMMPService;
+use mine_deep_rock\pmmp\service\SendTDMBossBarPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnTDMMenu;
 use mine_deep_rock\service\GivePlayerMoneyService;
@@ -95,7 +95,7 @@ class TDMListener implements Listener
             $playersData = TeamGameSystem::getGamePlayersData($gameId);
             $timeLimit = $event->getTimeLimit();
             $elapsedTime = $event->getElapsedTime();
-            UpdateTDMBossBarPMMPService::execute($playersData, $timeLimit, $elapsedTime);
+            SendTDMBossBarPMMPService::execute($playersData, $timeLimit, $elapsedTime);
         }
     }
 
