@@ -4,8 +4,10 @@ namespace mine_deep_rock\pmmp\listener;
 
 
 use bossbar_system\BossBar;
+use bossbar_system\model\BossBarType;
 use box_system\pmmp\entities\BoxEntity;
 use grenade_system\pmmp\entities\GrenadeEntity;
+use mine_deep_rock\pmmp\BossBarTypes;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
@@ -152,8 +154,8 @@ class TDMListener implements Listener
             $tag = PrivateNameTag::get($player);
             if ($tag !== null) $tag->remove();
 
-            $bossBar = BossBar::get($player);
-            if ($bossBar !== null) $bossBar->remove($player);
+            $bossBar = BossBar::findByType($player, BossBarTypes::TDM());
+            if ($bossBar !== null) $bossBar->remove();
 
             $player->getInventory()->setContents([]);
             $player->setGamemode(Player::ADVENTURE);
