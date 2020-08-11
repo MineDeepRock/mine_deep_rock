@@ -3,6 +3,7 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
+use bossbar_system\BossBar;
 use box_system\pmmp\entities\BoxEntity;
 use grenade_system\pmmp\entities\GrenadeEntity;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
@@ -27,6 +28,7 @@ use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
+use private_name_tag\models\PrivateNameTag;
 use slot_menu_system\SlotMenuSystem;
 use team_game_system\model\Score;
 use team_game_system\pmmp\event\AddedScoreEvent;
@@ -136,14 +138,21 @@ class TDMListener implements Listener
             $player = Server::getInstance()->getPlayer($playerData->getName());
             if ($wonTeam === null) {
                 $player->sendMessage("引き分け");
-                $player->addTitle("引き分け");
+                $player->sendTitle("引き分け");
             } else if ($wonTeam->getId()->equals($playerData->getTeamId())) {
                 $player->sendMessage("勝ち！");
-                $player->addTitle("勝ち！");
+                $player->sendTitle("勝ち！");
             } else {
                 $player->sendMessage("負け...");
-                $player->addTitle("負け...");
+                $player->sendTitle("負け...");
             }
+
+            //levelにいるエンティティ全取得する実装なのでココで消さないとまずい
+            $tag = PrivateNameTag::get($player);
+            if ($tag !== null) $tag->remove();
+
+            $bossBar = BossBar::get($player);
+            if ($bossBar !== null) $bossBar->remove($player);
 
             $player->getInventory()->setContents([]);
             $player->setGamemode(Player::ADVENTURE);

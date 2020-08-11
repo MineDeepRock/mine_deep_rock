@@ -4,10 +4,8 @@
 namespace mine_deep_rock\pmmp\service;
 
 
-use bossbar_system\models\BossBar;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
-use pocketmine\Player;
 use pocketmine\Server;
 use team_game_system\data_model\PlayerData;
 use team_game_system\model\GameId;
