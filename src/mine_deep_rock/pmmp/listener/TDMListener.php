@@ -184,7 +184,13 @@ class TDMListener implements Listener
     public function onRegainHealth(EntityRegainHealthEvent $event) {
         $player = $event->getEntity();
         if ($player instanceof Player) {
-            UpdatePrivateNameTagPMMPService::execute($player);
+            $playerData = TeamGameSystem::getPlayerData($player);
+            if ($playerData->getGameId() !== null) {
+                $game = TeamGameSystem::getGame($playerData->getGameId());
+                if ($game->isStarted()) {
+                    UpdatePrivateNameTagPMMPService::execute($player);
+                }
+            }
         }
     }
 
@@ -192,7 +198,13 @@ class TDMListener implements Listener
     public function onDamaged(EntityDamageEvent $event) {
         $player = $event->getEntity();
         if ($player instanceof Player) {
-            UpdatePrivateNameTagPMMPService::execute($player);
+            $playerData = TeamGameSystem::getPlayerData($player);
+            if ($playerData->getGameId() !== null) {
+                $game = TeamGameSystem::getGame($playerData->getGameId());
+                if ($game->isStarted()) {
+                    UpdatePrivateNameTagPMMPService::execute($player);
+                }
+            }
         }
     }
 }
