@@ -28,7 +28,7 @@ class SetPrivateNameTagPMMPService
             $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - $health);
         }
 
-        $tag = new PrivateNameTag($player, "{$player->getName()} \n {$hpGauge}", [$player]);
+        $tag = new PrivateNameTag($player, "{$player->getName()} \n {$hpGauge}", []);
         $tag->set();
     }
 }
