@@ -229,6 +229,7 @@ class TDMListener implements Listener
         if ($cause instanceof EntityDamageByEntityEvent) {
             $attacker = $cause->getDamager();
             if ($attacker instanceof Player) {
+                $event->setDeathMessage("");
                 SendKillLogPMMPService::execute($attacker, $victim);
             }
         }
