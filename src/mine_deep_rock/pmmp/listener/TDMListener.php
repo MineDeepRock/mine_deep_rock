@@ -10,6 +10,7 @@ use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
+use mine_deep_rock\pmmp\service\SendKillLogPMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
 use mine_deep_rock\pmmp\service\UpdatePrivateNameTagPMMPService;
@@ -213,6 +214,22 @@ class TDMListener implements Listener
                 if ($game->isStarted()) {
                     UpdatePrivateNameTagPMMPService::execute($player);
                 }
+            }
+        }
+    }
+
+    //TODO :Not Only TDM
+    public function onDead(PlayerDeathEvent $event) {
+        $victim = $event->getPlayer();
+        $victimData = TeamGameSystem::getPlayerData($victim);
+        if ($victimData->getGameId() === null) return;
+
+        $cause = $victim->getLastDamageCause();
+
+        if ($cause instanceof EntityDamageByEntityEvent) {
+            $attacker = $cause->getDamager();
+            if ($attacker instanceof Player) {
+                SendKillLogPMMPService::execute($attacker, $victim);
             }
         }
     }
