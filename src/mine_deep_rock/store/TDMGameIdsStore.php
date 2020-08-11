@@ -28,5 +28,7 @@ class TDMGameIdsStore
                 unset(self::$ids[$key]);
             }
         }
+
+        self::$ids = array_values(self::$ids);
     }
 }
