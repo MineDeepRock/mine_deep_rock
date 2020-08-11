@@ -15,11 +15,9 @@ class ShowPrivateNameTagToParticipantsPMMPService
 {
     static function execute(Player $target, GameId $gameId): void {
         $tag = PrivateNameTag::get($target);
-        if ($tag === null) {
-            SetPrivateNameTagPMMPService::execute($target);
-            return;
-        }
+        if ($tag === null) SetPrivateNameTagPMMPService::execute($target);
 
+        $tag = PrivateNameTag::get($target);
         $server = Server::getInstance();
         $participants = array_map(function ($participant) use ($server) {
             return $server->getPlayer($participant->getName());
