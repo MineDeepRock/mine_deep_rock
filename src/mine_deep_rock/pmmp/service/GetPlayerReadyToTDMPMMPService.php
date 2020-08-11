@@ -25,7 +25,7 @@ class GetPlayerReadyToTDMPMMPService
         TeamGameSystem::setSpawnPoint($player);
         $player->teleport($player->getSpawn());
 
-        $player->addTitle("チームデスマッチ スタート");
+        $player->sendTitle("チームデスマッチ スタート");
         $player->sendMessage("あなたは{$playerTeam->getName()}チームです");
 
         //Scoreboardのセット
@@ -36,7 +36,7 @@ class GetPlayerReadyToTDMPMMPService
         InitTDMEquipmentsPMMPService::execute($player);
 
         //ネームタグをセット
-        $player->setNameTagVisible(false);
+        $player->setNameTagAlwaysVisible(false);
         ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
     }
 }

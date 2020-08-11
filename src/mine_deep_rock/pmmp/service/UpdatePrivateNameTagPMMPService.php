@@ -11,14 +11,23 @@ use private_name_tag\models\PrivateNameTag;
 
 class UpdatePrivateNameTagPMMPService
 {
-    static function execute(Player $target): void {
+    static function execute(Player $target, ?int $health = null): void {
         $tag = PrivateNameTag::get($target);
         if ($tag === null) {
             throw new LogicException("プライベートネームタグがセットされていません");
         }
 
-        $hpGauge = str_repeat(TextFormat::GREEN . "■", intval($target->getHealth()));
-        $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - intval($target->getHealth()));
+        $health = $health ?? $target->getHealth();
+
+        if ($health <= 0) {
+            $hpGauge = str_repeat(TextFormat::WHITE . "■", 20);
+        } else if ($health >= 20) {
+            $hpGauge = str_repeat(TextFormat::GREEN . "■", 20);
+        } else {
+            $hpGauge = str_repeat(TextFormat::GREEN . "■", $health);
+            $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - $health);
+        }
+
         $tag->updateNameTag("{$target->getName()} \n {$hpGauge}");
     }
 }

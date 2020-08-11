@@ -212,7 +212,7 @@ class TDMListener implements Listener
             if ($playerData->getGameId() !== null) {
                 $game = TeamGameSystem::getGame($playerData->getGameId());
                 if ($game->isStarted()) {
-                    UpdatePrivateNameTagPMMPService::execute($player);
+                    UpdatePrivateNameTagPMMPService::execute($player, $player->getHealth() - $event->getFinalDamage());
                 }
             }
         }
