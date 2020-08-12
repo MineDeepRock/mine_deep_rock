@@ -4,6 +4,7 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
+use box_system\pmmp\entities\BoxEntity;
 use box_system\pmmp\events\AmmoBoxEffectOnEvent;
 use box_system\pmmp\events\BoxStopEvent;
 use box_system\pmmp\events\FlareBoxEffectOnEvent;
@@ -15,7 +16,10 @@ use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToParticipantsPMMPService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
@@ -88,5 +92,18 @@ class BoxListener implements Listener
                 }
             }
         }), 20 * 15);
+    }
+
+    public function onDamaged(EntityDamageByEntityEvent $event) {
+        $victim = $event->getEntity();
+        $attacker = $event->getDamager();
+        if ($attacker instanceof Player && $victim instanceof BoxEntity) {
+            $owner = $victim->getOwner();
+
+            $attackerData = TeamGameSystem::getPlayerData($attacker);
+            $ownerData = TeamGameSystem::getPlayerData($owner);
+            if ($attackerData->getGameId() === null || $ownerData->getGameId() === null) return;
+            if ($attackerData->getTeamId()->equals($ownerData->getTeamId())) $event->setCancelled();
+        }
     }
 }
