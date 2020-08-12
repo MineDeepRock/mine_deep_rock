@@ -44,6 +44,13 @@ class BoxListener implements Listener
     public function onAmmoBoxEffect(AmmoBoxEffectOnEvent $event): void {
         $owner = $event->getOwner();
         $receiver = $event->getReceiver();
+
+        $receiverData = TeamGameSystem::getPlayerData($receiver);
+        $ownerData = TeamGameSystem::getPlayerData($owner);
+
+        if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
+        if (!$receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
+
         GunSystem::giveAmmo($receiver, 0, 10);
         GunSystem::giveAmmo($receiver, 1, 10);
 
@@ -54,6 +61,14 @@ class BoxListener implements Listener
 
     public function onMedicineBoxEffect(MedicineBoxEffectOnEvent $event): void {
         $receiver = $event->getReceiver();
+        $owner = $event->getOwner();
+
+        $receiverData = TeamGameSystem::getPlayerData($receiver);
+        $ownerData = TeamGameSystem::getPlayerData($owner);
+
+        if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
+        if (!$receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
+
         $receiver->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 2, 1));
     }
 
