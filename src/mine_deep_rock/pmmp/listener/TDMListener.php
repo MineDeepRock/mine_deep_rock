@@ -23,6 +23,7 @@ use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnTDMMenu;
 use mine_deep_rock\service\AddKillCountInGameService;
 use mine_deep_rock\service\GivePlayerMoneyService;
+use mine_deep_rock\service\ResetPlayerGameStatusService;
 use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -159,6 +160,9 @@ class TDMListener implements Listener
 
             $bossBar = BossBar::findByType($player, BossBarTypes::TDM());
             if ($bossBar !== null) $bossBar->remove();
+
+            //PlayerGameStatusをリセット
+            ResetPlayerGameStatusService::execute($player->getName());
 
             $player->getInventory()->setContents([]);
             $player->setGamemode(Player::ADVENTURE);
