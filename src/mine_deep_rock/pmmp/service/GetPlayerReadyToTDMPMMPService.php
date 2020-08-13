@@ -7,6 +7,7 @@ namespace mine_deep_rock\pmmp\service;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 use team_game_system\data_model\PlayerData;
 use team_game_system\model\GameId;
 use team_game_system\TeamGameSystem;
@@ -26,7 +27,7 @@ class GetPlayerReadyToTDMPMMPService
         $player->teleport($player->getSpawn());
 
         $player->sendTitle("チームデスマッチ スタート");
-        $player->sendMessage("あなたは{$playerTeam->getName()}チームです");
+        $player->sendMessage("あなたは" . $playerTeam->getTeamColorFormat() . $playerTeam->getName() . TextFormat::RESET . "チームです");
 
         //Scoreboardのセット
         PlayerStatusScoreboard::delete($player);
