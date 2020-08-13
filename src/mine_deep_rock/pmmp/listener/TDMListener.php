@@ -208,6 +208,8 @@ class TDMListener implements Listener
 
     //TODO :Not Only TDM
     public function onDamaged(EntityDamageEvent $event) {
+        if ($event->isCancelled()) return;
+
         $player = $event->getEntity();
         if ($player instanceof Player) {
             $playerData = TeamGameSystem::getPlayerData($player);
