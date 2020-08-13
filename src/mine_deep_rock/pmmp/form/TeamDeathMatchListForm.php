@@ -8,6 +8,7 @@ use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
 use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\Player;
+use pocketmine\Server;
 use team_game_system\model\GameId;
 use team_game_system\TeamGameSystem;
 
@@ -26,7 +27,12 @@ class TeamDeathMatchListForm extends SimpleForm
                     $result = TeamGameSystem::joinGame($player, $gameId);
 
                     if ($result) {
+                        $level = Server::getInstance()->getLevelByName("lobby");
                         $player->sendMessage("ゲームに参加しました");
+                        foreach ($level->getPlayers() as $lobbyPlayer) {
+                            $lobbyPlayer->sendMessage($player->getName() . "がTDMに参加しました");
+                        }
+
                     } else {
                         $player->sendMessage("ゲームに参加出来ませんでした");
                     }
