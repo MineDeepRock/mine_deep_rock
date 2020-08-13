@@ -12,7 +12,7 @@ use pocketmine\Server;
 use team_game_system\model\GameId;
 use team_game_system\TeamGameSystem;
 
-class TeamDeathMatchListForm extends SimpleForm
+class TeamDeathMatchListToJoinForm extends SimpleForm
 {
 
     public function __construct() {
