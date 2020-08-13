@@ -171,6 +171,9 @@ class TDMListener implements Listener
         $player = $event->getPlayer();
         $playerData = TeamGameSystem::getPlayerData($player);
         if (in_array($playerData->getGameId(), TDMGameIdsStore::getAll())) {
+            $game = TeamGameSystem::getGame($playerData->getGameId());
+            if ($game->isClosed()) return;
+            
             $player->setGamemode(Player::SPECTATOR);
             $player->setImmobile(true);
 
@@ -215,6 +218,7 @@ class TDMListener implements Listener
             $playerData = TeamGameSystem::getPlayerData($player);
             if ($playerData->getGameId() !== null) {
                 $game = TeamGameSystem::getGame($playerData->getGameId());
+                if ($game->isClosed()) return;
                 if ($game->isStarted()) {
                     UpdatePrivateNameTagPMMPService::execute($player, $player->getHealth() - $event->getFinalDamage());
                 }
