@@ -11,7 +11,7 @@ use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
-use mine_deep_rock\pmmp\form\TeamDeathMatchListToJoinForm;
+use mine_deep_rock\pmmp\form\TDMListToJoinForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
@@ -121,7 +121,7 @@ class Main extends PluginBase implements Listener
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
         if ($attacker instanceof Player && $victim instanceof TeamDeathMatchNPC) {
-            $attacker->sendForm(new TeamDeathMatchListToJoinForm());
+            $attacker->sendForm(new TDMListToJoinForm());
             $event->setCancelled();
         }
     }

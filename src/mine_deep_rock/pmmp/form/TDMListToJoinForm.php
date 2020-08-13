@@ -13,7 +13,7 @@ use pocketmine\utils\TextFormat;
 use team_game_system\model\GameId;
 use team_game_system\TeamGameSystem;
 
-class TeamDeathMatchListToJoinForm extends SimpleForm
+class TDMListToJoinForm extends SimpleForm
 {
 
     public function __construct() {
