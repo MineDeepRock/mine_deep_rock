@@ -27,6 +27,7 @@ class InitTDMEquipmentsPMMPService
 {
     static function execute(Player $player): void {
         $player->getInventory()->setContents([]);
+        $player->getArmorInventory()->setContents([]);
 
         $status = PlayerStatusDAO::get($player->getName());
 

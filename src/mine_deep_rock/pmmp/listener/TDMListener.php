@@ -164,6 +164,7 @@ class TDMListener implements Listener
             ResetPlayerGameStatusService::execute($player->getName());
 
             $player->getInventory()->setContents([]);
+            $player->getArmorInventory()->setContents([]);
             $player->setGamemode(Player::ADVENTURE);
             $player->setImmobile(false);
         }
