@@ -4,16 +4,28 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\service\GivePlayerMoneyService;
 use pocketmine\level\Position;
 use pocketmine\Player;
+use team_game_system\model\Score;
 use team_game_system\TeamGameSystem;
 
 class ResortToTDMPMMPService
 {
-    static function execute(Player $player, Position $pos = null): void {
+    static function execute(Player $player, Position $pos = null, bool $addScore = false): void {
         $playerData = TeamGameSystem::getPlayerData($player);
         if ($playerData->getTeamId() === null) {
             return;
+        }
+
+        //TODO:２チームしか想定していない
+        if ($addScore) {
+            $game = TeamGameSystem::getGame($playerData->getGameId());
+            foreach ($game->getTeams() as $team) {
+                if (!$team->getId()->equals($playerData->getTeamId())) {
+                    TeamGameSystem::addScore($game->getId(), $team->getId(), new Score(1));
+                }
+            }
         }
 
         $player->setGamemode(Player::ADVENTURE);

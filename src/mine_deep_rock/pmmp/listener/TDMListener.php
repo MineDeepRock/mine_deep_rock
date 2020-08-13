@@ -76,8 +76,7 @@ class TDMListener implements Listener
         $attackerData = TeamGameSystem::getPlayerData($attacker);
 
         if (in_array($attackerData->getGameId(), TDMGameIdsStore::getAll())) {
-            //アタッカーのチームにスコアを追加
-            TeamGameSystem::addScore($attackerData->getGameId(), $attackerData->getTeamId(), new Score(1));
+            //アタッカーにお金を付与
             GivePlayerMoneyService::execute($attacker->getName(), 100);
 
             //その場をスポーン地点に
