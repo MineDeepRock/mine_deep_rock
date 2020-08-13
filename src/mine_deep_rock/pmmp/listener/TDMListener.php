@@ -93,10 +93,6 @@ class TDMListener implements Listener
         }
     }
 
-    public function onPlayerDeath(PlayerDeathEvent $event) {
-        $event->setDrops([]);
-    }
-
     public function onUpdatedTime(UpdatedGameTimerEvent $event): void {
         $gameId = $event->getGameId();
 
@@ -258,6 +254,8 @@ class TDMListener implements Listener
 
     //TODO :Not Only TDM
     public function onDead(PlayerDeathEvent $event) {
+        $event->setDrops([]);
+
         $victim = $event->getPlayer();
         $victimData = TeamGameSystem::getPlayerData($victim);
         if ($victimData->getGameId() === null) return;
