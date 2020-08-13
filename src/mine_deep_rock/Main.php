@@ -94,22 +94,22 @@ class Main extends PluginBase implements Listener
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
         if ($sender instanceof Player) {
-            if ($label === "SpawnNPC") {
+            if ($label === "spawnnpc") {
                 if (count($args) !== 1) {
-                    $sender->sendMessage("/SpawnNPC [npc]");
+                    $sender->sendMessage("/spawnnpc [npc]");
                     return false;
                 }
 
                 switch ($args[0]) {
-                    case "TDM":
+                    case "tdm":
                         SpawnTeamDeathMatchNPCPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
                         return true;
                         break;
                 }
-            } else if ($label === "CreateGame") {
+            } else if ($label === "creategame") {
                 $sender->sendForm(new CreateGameForm());
                 return true;
-            } else if ($label === "StartGame") {
+            } else if ($label === "startgame") {
                 $sender->sendForm(new StartGameForm($this->getScheduler()));
                 return true;
             }

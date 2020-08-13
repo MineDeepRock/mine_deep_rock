@@ -4,15 +4,15 @@ version: 1.0.0
 api: 3.0.0
 
 commands:
-  SpawnNPC:
-    usage: "/SpawnNPC [NPC]"
-    description: "SpawnNPC"
+  spawnnpc:
+    usage: "/spawnnpc [NPC]"
+    description: "spawnnpc"
     permission: op
-  CreateGame:
-    usage: "/CreateGame"
-    description: "CreateGame"
+  creategame:
+    usage: "/creategame"
+    description: "creategame"
     permission: op
-  StartGame:
-    usage: "/StartGame"
-    description: "StartGame"
+  startgame:
+    usage: "/startgame"
+    description: "startgame"
     permission: op
