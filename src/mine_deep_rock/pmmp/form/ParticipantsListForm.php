@@ -13,10 +13,6 @@ use team_game_system\TeamGameSystem;
 
 class ParticipantsListForm extends SimpleForm
 {
-    static function execute(): void {
-
-    }
-
     public function __construct(Game $game) {
 
         $teams = $game->getTeams();
