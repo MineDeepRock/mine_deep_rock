@@ -12,6 +12,7 @@ use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
+use mine_deep_rock\pmmp\service\ResortToTDMPMMPService;
 use mine_deep_rock\pmmp\service\SendKillLogPMMPService;
 use mine_deep_rock\pmmp\service\SendKillMessagePMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
@@ -181,6 +182,10 @@ class TDMListener implements Listener
             $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player): void {
                 if ($player->isOnline()) SlotMenuSystem::send($player, new SettingEquipmentsOnTDMMenu($this->scheduler));
             }), 20 * 5);
+
+            $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player): void {
+                if ($player->isOnline()) ResortToTDMPMMPService::execute();
+            }), 20 * 30);
         }
     }
 
