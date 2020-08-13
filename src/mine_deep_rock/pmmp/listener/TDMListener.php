@@ -13,6 +13,7 @@ use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
 use mine_deep_rock\pmmp\service\ResortToTDMPMMPService;
+use mine_deep_rock\pmmp\service\SendGameScoreToParticipantsPMMPService;
 use mine_deep_rock\pmmp\service\SendKillLogPMMPService;
 use mine_deep_rock\pmmp\service\SendKillMessagePMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
@@ -125,6 +126,7 @@ class TDMListener implements Listener
     //TODO :Not Only TDM
     public function onFinishedGame(FinishedGameEvent $event): void {
         $game = $event->getGame();
+        $playersData = $event->getPlayersData();
         TDMGameIdsStore::delete($game->getId());
 
         //TODO:終わった試合の参加者のエンティティだったらKillにする
@@ -137,9 +139,10 @@ class TDMListener implements Listener
             }
         }
 
+        SendGameScoreToParticipantsPMMPService::execute($playersData);
+
         //勝敗のメッセージ
         //プレイヤーのアイテム削除、ゲームモード修正
-        $playersData = $event->getPlayersData();
         $wonTeam = $event->getWonTeam();
         foreach ($playersData as $playerData) {
             $player = Server::getInstance()->getPlayer($playerData->getName());
