@@ -13,6 +13,7 @@ use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\GetPlayersReadyToTDMPMMPService;
 use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
 use mine_deep_rock\pmmp\service\SendKillLogPMMPService;
+use mine_deep_rock\pmmp\service\SendKillMessagePMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
 use mine_deep_rock\pmmp\service\UpdatePrivateNameTagPMMPService;
@@ -240,6 +241,7 @@ class TDMListener implements Listener
             if ($attacker instanceof Player) {
                 $event->setDeathMessage("");
                 SendKillLogPMMPService::execute($attacker, $victim);
+                SendKillMessagePMMPService::execute($attacker, $victim);
             }
         }
     }
