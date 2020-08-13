@@ -48,6 +48,8 @@ class ResortToTDMPMMPService
 
         InitTDMEquipmentsPMMPService::execute($player);
 
+        InitEffectsPMMPService::execute($player);
+
         ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
     }
 }
