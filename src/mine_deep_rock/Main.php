@@ -5,6 +5,7 @@ namespace mine_deep_rock;
 use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\GunRecord;
+use mine_deep_rock\model\PlayerGameStatus;
 use mine_deep_rock\model\PlayerStatus;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
@@ -22,6 +23,7 @@ use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\service\SpawnTeamDeathMatchNPCPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
+use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
@@ -75,6 +77,10 @@ class Main extends PluginBase implements Listener
             GunRecordDAO::add($playerName, GunRecord::asNew("Chauchat"));
             GunRecordDAO::add($playerName, GunRecord::asNew("SMLEMK3"));
             GunRecordDAO::add($playerName, GunRecord::asNew("Mle1903"));
+        }
+
+        if (!PlayerGameStatusStore::isExist($playerName)) {
+            PlayerGameStatusStore::add(PlayerGameStatus::asNew($playerName));
         }
 
         $pk = new GameRulesChangedPacket();
