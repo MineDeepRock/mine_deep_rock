@@ -8,6 +8,7 @@ use LogicException;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use private_name_tag\models\PrivateNameTag;
+use team_game_system\TeamGameSystem;
 
 class UpdatePrivateNameTagPMMPService
 {
@@ -27,6 +28,17 @@ class UpdatePrivateNameTagPMMPService
             $hpGauge .= str_repeat(TextFormat::WHITE . "■", 20 - $health);
         }
 
-        $tag->updateNameTag("{$target->getName()} \n {$hpGauge}");
+        $playerData = TeamGameSystem::getPlayerData($target);
+        $teamId = $playerData->getTeamId();
+        $playerTeam = null;
+        if ($playerData->getGameId() === null) return;
+        $game = TeamGameSystem::getGame($playerData->getGameId());
+        foreach ($game->getTeams() as $team) {
+            if ($team->getId()->equals($teamId)) {
+                $playerTeam = $team;
+            }
+        }
+
+        $tag->updateNameTag($playerTeam->getTeamColorFormat() . "{$target->getName()} \n {$hpGauge}");
     }
 }
