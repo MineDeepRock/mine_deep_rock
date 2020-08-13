@@ -14,7 +14,8 @@ class UpdatePrivateNameTagPMMPService
     static function execute(Player $target, ?int $health = null): void {
         $tag = PrivateNameTag::get($target);
         if ($tag === null) {
-            throw new LogicException("プライベートネームタグがセットされていません");
+            SetPrivateNameTagPMMPService::execute($target);
+            //TODO: throw new LogicException("プライベートネームタグがセットされていません");
         }
 
         $health = $health ?? $target->getHealth();
