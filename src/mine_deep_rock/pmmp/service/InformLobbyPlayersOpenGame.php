@@ -12,6 +12,7 @@ class InformLobbyPlayersOpenGame
         $level = Server::getInstance()->getLevelByName("lobby");
         foreach ($level->getPlayers() as $player) {
             $player->sendMessage("{$gameType}が開かれました");
+            $player->sendTitle("{$gameType}が開かれました");
         }
     }
 }
