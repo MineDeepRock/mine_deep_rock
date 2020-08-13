@@ -9,6 +9,7 @@ use form_builder\models\SimpleForm;
 use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\Player;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 use team_game_system\model\GameId;
 use team_game_system\TeamGameSystem;
 
@@ -21,7 +22,7 @@ class TeamDeathMatchListToJoinForm extends SimpleForm
             $map = $game->getMap();
             $participantsCount = count(TeamGameSystem::getGamePlayersData($gameId));
             return new SimpleFormButton(
-                "TDM,Players:{$participantsCount},map:{$map->getName()}",
+                "Players:" . TextFormat::BOLD . $participantsCount . TextFormat::RESET . ",map:" . TextFormat::BOLD . $map->getName(),
                 null,
                 function (Player $player) use ($gameId) {
                     $result = TeamGameSystem::joinGame($player, $gameId);
