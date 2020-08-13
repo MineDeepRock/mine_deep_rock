@@ -21,6 +21,7 @@ use mine_deep_rock\pmmp\service\UpdatePrivateNameTagPMMPService;
 use mine_deep_rock\pmmp\service\SendTDMBossBarPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnTDMMenu;
+use mine_deep_rock\service\AddKillCountInGameService;
 use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -79,6 +80,7 @@ class TDMListener implements Listener
         if (in_array($attackerData->getGameId(), TDMGameIdsStore::getAll())) {
             //アタッカーにお金を付与
             GivePlayerMoneyService::execute($attacker->getName(), 100);
+            AddKillCountInGameService::execute($attacker->getName());
 
             //その場をスポーン地点に
             $victim = $event->getTarget();
