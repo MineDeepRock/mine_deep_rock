@@ -185,16 +185,23 @@ class TDMListener implements Listener
             $player->setGamemode(Player::SPECTATOR);
             $player->setImmobile(true);
 
-            $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player): void {
-                if ($player->isOnline()){
+            $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player, $game): void {
+                if ($game->isClosed()) {
+                    $player->setGamemode(Player::ADVENTURE);
+                    $player->setImmobile(false);
+                }
+
+                if ($player->isOnline()) {
                     if ($player->getGamemode() === Player::SPECTATOR) {
                         SlotMenuSystem::send($player, new SettingEquipmentsOnTDMMenu($this->scheduler));
                     }
                 }
             }), 20 * 5);
 
-            $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player): void {
-                if ($player->isOnline()){
+            $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player, $game): void {
+                if ($game->isClosed()) return;
+
+                if ($player->isOnline()) {
                     if ($player->getGamemode() === Player::SPECTATOR) {
                         ResortToTDMPMMPService::execute($player);
                     }
