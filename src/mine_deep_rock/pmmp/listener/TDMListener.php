@@ -159,6 +159,7 @@ class TDMListener implements Listener
 
             $player->getInventory()->setContents([]);
             $player->setGamemode(Player::ADVENTURE);
+            $player->setImmobile(false);
         }
 
         //15秒後にロビーに送る
@@ -173,7 +174,7 @@ class TDMListener implements Listener
         if (in_array($playerData->getGameId(), TDMGameIdsStore::getAll())) {
             $game = TeamGameSystem::getGame($playerData->getGameId());
             if ($game->isClosed()) return;
-            
+
             $player->setGamemode(Player::SPECTATOR);
             $player->setImmobile(true);
 
