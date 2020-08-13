@@ -102,6 +102,8 @@ class BoxListener implements Listener
             $boxes = $status->getMilitaryDepartment()->getBoxes();
             if (in_array($box, $boxes)) {
                 $boxItem = BoxItem::fromBox($box);
+
+                if ($owner->getGamemode() === Player::SPECTATOR) return;
                 if (!$owner->getInventory()->contains($boxItem)) {
                     $owner->getInventory()->addItem($boxItem);
                 }
