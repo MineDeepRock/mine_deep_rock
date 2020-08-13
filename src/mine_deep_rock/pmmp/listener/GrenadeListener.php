@@ -35,7 +35,7 @@ class GrenadeListener implements Listener
             if ($event->getDistance() <= 4) {
                 $damage = 20;
             } else {
-                $damage = 15 - $event->getDistance();
+                $damage = 20 - $event->getDistance();
             }
 
             $victim->attack(new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 1));
