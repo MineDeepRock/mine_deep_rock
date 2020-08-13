@@ -18,6 +18,8 @@ class GunListener implements Listener
         $attacker = $event->getAttacker();
         $victim = $event->getVictim();
 
+        if ($victim->getLevel()->getName() === "lobby") return;
+
         $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $event->getDamage(), [], 0);
         $source->call();
         $victim->setLastDamageCause($source);

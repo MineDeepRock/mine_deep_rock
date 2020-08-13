@@ -32,6 +32,9 @@ class SendKillLogPMMPService
             }
         }
 
+        if ($attackerTeam === null || $victimTeam === null) return;
+
+
         $message = $attackerTeam->getTeamColorFormat() . "[{$attacker->getName()}] " . TextFormat::WHITE . "{$weapon->getCustomName()} " . $victimTeam->getTeamColorFormat() . " [{$victim->getName()}]";
 
         foreach ($participants as $participant) {
