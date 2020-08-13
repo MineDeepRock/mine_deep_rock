@@ -87,6 +87,12 @@ class Main extends PluginBase implements Listener
         $pk->gameRules["doImmediateRespawn"] = [1, true];
         $player->sendDataPacket($pk);
         PlayerStatusScoreboard::send($player);
+
+        $player->sendMessage("
+        ようこそMineDeepRockへ\n
+        BF1をリスペクトしたPVPサーバーです！\n
+        兵科と銃を選択して、ゲームに参加しましょう！
+        ");
     }
 
     public function onUpdatedPlayerStatus(UpdatedPlayerStatusEvent $event): void {
