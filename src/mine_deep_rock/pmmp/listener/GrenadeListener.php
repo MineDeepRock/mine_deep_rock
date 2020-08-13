@@ -30,7 +30,7 @@ class GrenadeListener implements Listener
         $ownerTeamId = TeamGameSystem::getPlayerData($owner)->getTeamId();
         $victimTeamId = TeamGameSystem::getPlayerData($victim)->getTeamId();
         if ($ownerTeamId === null || $victimTeamId === null) return;
-        if ($ownerTeamId->equals($victimTeamId)) {
+        if (!$ownerTeamId->equals($victimTeamId)) {
             if ($event->getDistance() <= 4) {
                 $damage = 20;
             } else {
