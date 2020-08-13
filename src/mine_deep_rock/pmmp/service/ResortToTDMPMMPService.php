@@ -4,7 +4,10 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\model\PlayerGameStatus;
 use mine_deep_rock\service\GivePlayerMoneyService;
+use mine_deep_rock\service\UpdatePlayerGameStatusIsResuscitated;
+use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\level\Position;
 use pocketmine\Player;
 use team_game_system\model\Score;
@@ -32,10 +35,13 @@ class ResortToTDMPMMPService
         $player->setImmobile(false);
 
         if ($pos !== null) {
+            //蘇生判定
             $player->teleport($pos);
         } else {
             TeamGameSystem::setSpawnPoint($player);
             $player->teleport($player->getSpawn());
+
+            UpdatePlayerGameStatusIsResuscitated::execute($player->getName());
         }
 
         RemoveCadaverEntityPMMPService::execute($player);
