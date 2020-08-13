@@ -24,10 +24,10 @@ class SettingEquipmentsMenu extends SlotMenu
             new SlotMenuElement(ItemIds::IRON_SWORD, "サブウェポン", 2, function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SelectSubGunTypeMenu($this, $taskScheduler));
             }),
-            new SlotMenuElement(ItemIds::IRON_SWORD, "試し打ち", 3, function (Player $player) use ($taskScheduler) {
+            new SlotMenuElement(ItemIds::WOODEN_SWORD, "試し打ち", 3, function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SelectTrialGunTypesMenu($taskScheduler));
             }),
-            new SlotMenuElement(ItemIds::IRON_SWORD, "銃購入", 4, function (Player $player) use ($taskScheduler) {
+            new SlotMenuElement(ItemIds::GOLDEN_SWORD, "銃購入", 4, function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SelectGunTypeForSaleMenu($taskScheduler));
             })
         ];
