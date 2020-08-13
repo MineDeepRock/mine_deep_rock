@@ -42,7 +42,7 @@ class SelectGunTypeForSaleMenu extends SlotMenu
 
             $player->getInventory()->setContents($items);
             $player->getInventory()->setItem(8, new SlotMenuElementItem(new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($taskScheduler) {
-                SlotMenuSystem::send($player, new SelectTrialGunTypesMenu($taskScheduler));
+                SlotMenuSystem::send($player, new SelectGunTypeForSaleMenu($taskScheduler));
             }), ItemIds::HOPPER, 0));
             $player->getInventory()->setItem(7, ItemFactory::get(ItemIds::ARROW, 0, 1));
         };
