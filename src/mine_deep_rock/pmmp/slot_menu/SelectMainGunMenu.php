@@ -30,7 +30,7 @@ class SelectMainGunMenu extends SlotMenu
 
             if ($gun->getType()->equals($gunType)) {
                 $menus[] = new SlotMenuElement(ItemIds::BOW, $gunRecord->getName(), $index, function (Player $player) use ($gun) {
-                    $player->sendForm(new GunDetailForm($gun));
+                    $player->sendForm(new GunDetailForm($player, $gun));
                 });
                 $index++;
             }

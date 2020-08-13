@@ -9,9 +9,11 @@ use form_builder\models\CustomForm;
 use gun_system\GunSystem;
 use gun_system\model\Gun;
 use gun_system\model\GunType;
+use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\service\SelectMainGunService;
 use mine_deep_rock\service\SelectSubGunService;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 
 class GunDetailForm extends CustomForm
 {
@@ -21,10 +23,11 @@ class GunDetailForm extends CustomForm
     private $scopeMagnificationElement;
     private $gun;
 
-    public function __construct(Gun $gun) {
-        $this->scopeMagnificationElement = new Dropdown("スコープ", ["1", "2", "3"]);
+    public function __construct(Player $player, Gun $gun) {
+        $gunRecord = GunRecordDAO::get($player->getName(), $gun->getName());
+        $this->scopeMagnificationElement = new Dropdown("スコープ", ["1", "2", "3"], $gunRecord->getScopeMagnification() - 1);
         $this->gun = $gun;
-        parent::__construct($gun->getName(), [
+        parent::__construct($gun->getName() . ",kill数" . TextFormat::BOLD . $gunRecord->getKillCount(), [
             new Label(GunSystem::getGunDescription($gun)),
             $this->scopeMagnificationElement
         ]);
