@@ -11,6 +11,7 @@ use mine_deep_rock\dao\PlayerStatusDAO;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use team_game_system\TeamGameSystem;
@@ -54,6 +55,8 @@ class GrenadeListener implements Listener
             $grenades = $status->getMilitaryDepartment()->getGrenades();
             if (in_array($grenade, $grenades)) {
                 $grenadeItem = GrenadeItem::fromGrenade($grenade);
+                if ($owner->getGamemode() === Player::SPECTATOR) return;
+
                 if (!$owner->getInventory()->contains($grenadeItem)) {
                     $owner->getInventory()->addItem($grenadeItem);
                 }
