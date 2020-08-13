@@ -41,7 +41,7 @@ class TDMListToJoinForm extends SimpleForm
             );
         }, TDMGameIdsStore::getAll());
 
-        parent::__construct("チームデスマッチ一覧", "", $buttons);
+        parent::__construct("チームデスマッチ一覧", "チームデスマッチに参加", $buttons);
     }
 
     function onClickCloseButton(Player $player): void {
