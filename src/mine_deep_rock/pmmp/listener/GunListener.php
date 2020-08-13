@@ -10,6 +10,7 @@ use gun_system\pmmp\event\BulletHitNearEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\Player;
 use team_game_system\TeamGameSystem;
 
 class GunListener implements Listener
@@ -18,7 +19,7 @@ class GunListener implements Listener
         $attacker = $event->getAttacker();
         $victim = $event->getVictim();
 
-        if ($victim->getLevel()->getName() === "lobby") return;
+        if ($victim instanceof Player || $victim->getLevel()->getName() === "lobby") return;
 
         $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $event->getDamage(), [], 0);
         $source->call();
