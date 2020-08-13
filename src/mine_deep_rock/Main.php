@@ -10,7 +10,9 @@ use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
+use mine_deep_rock\pmmp\form\ParticipantsListForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
+use mine_deep_rock\pmmp\form\TDMListForm;
 use mine_deep_rock\pmmp\form\TDMListToJoinForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
@@ -106,12 +108,36 @@ class Main extends PluginBase implements Listener
                         return true;
                         break;
                 }
+
+                return false;
+
             } else if ($label === "creategame") {
                 $sender->sendForm(new CreateGameForm());
                 return true;
+
             } else if ($label === "startgame") {
                 $sender->sendForm(new StartGameForm($this->getScheduler()));
                 return true;
+
+            } else if ($label === "view") {
+                if (count($args) !== 1) {
+                    $senderData = TeamGameSystem::getPlayerData($sender);
+                    if ($senderData->getGameId() !== null) {
+                        $game = TeamGameSystem::getGame($senderData->getGameId());
+                        $sender->sendForm(new ParticipantsListForm($game));
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                switch ($args[0]) {
+                    case "tdm":
+                        $sender->sendForm(new TDMListForm());
+                        return true;
+                        break;
+                }
+                return false;
             }
         }
         return false;

@@ -16,3 +16,6 @@ commands:
     usage: "/startgame"
     description: "startgame"
     permission: op
+  view:
+    usage: "/view [,tdm]"
+    description: "参加しているゲームの参加人数を知りたい/view,TDMの参加人数リストがみたい/view tdm"
