@@ -23,14 +23,18 @@ class SendParticipantsToLobbyPMMPService
 
         foreach ($participants as $participant) {
             $player = $server->getPlayer($participant->getName());
-            $player->teleport($lobby->getSpawnLocation());
+            if ($player !== null) {
+                if ($player->isOnline()) {
+                    $player->teleport($lobby->getSpawnLocation());
 
-            //ロビーに入るときはロビー用アイテムを渡す
-            SendLobbyItemsPMMPService::execute($player, $taskScheduler);
+                    //ロビーに入るときはロビー用アイテムを渡す
+                    SendLobbyItemsPMMPService::execute($player, $taskScheduler);
 
-            //TODO:TDMとは限らない
-            TDMScoreboard::delete($player);
-            PlayerStatusScoreboard::send($player);
+                    //TODO:TDMとは限らない
+                    TDMScoreboard::delete($player);
+                    PlayerStatusScoreboard::send($player);
+                }
+            }
         }
     }
 }
