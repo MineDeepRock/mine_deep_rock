@@ -15,7 +15,8 @@ class SetPrivateNameTagPMMPService
     static function execute(Player $player): void {
         $tag = PrivateNameTag::get($player);
         if ($tag !== null) {
-            throw new LogicException("すでにプライベートネームタグがセットされています");
+            var_dump("すでにプライベートネームタグがセットされています");
+            //throw new LogicException("すでにプライベートネームタグがセットされています");
         }
 
         $health = $player->getHealth();

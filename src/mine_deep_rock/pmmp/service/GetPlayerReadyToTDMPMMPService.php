@@ -38,9 +38,5 @@ class GetPlayerReadyToTDMPMMPService
 
         //エフェクトをセット
         InitEffectsPMMPService::execute($player);
-
-        //ネームタグをセット
-        $player->setNameTagAlwaysVisible(false);
-        ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
     }
 }

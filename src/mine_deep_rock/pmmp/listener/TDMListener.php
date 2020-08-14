@@ -18,6 +18,7 @@ use mine_deep_rock\pmmp\service\SendGameScoreToParticipantsPMMPService;
 use mine_deep_rock\pmmp\service\SendKillLogPMMPService;
 use mine_deep_rock\pmmp\service\SendKillMessagePMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
+use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
 use mine_deep_rock\pmmp\service\UpdatePrivateNameTagPMMPService;
 use mine_deep_rock\pmmp\service\SendTDMBossBarPMMPService;
@@ -66,7 +67,11 @@ class TDMListener implements Listener
             $game = TeamGameSystem::getGame($gameId);
             $player = $event->getPlayer();
             if ($game->isStarted()) {
-                GetPlayerReadyToTDMPMMPService::execute(TeamGameSystem::getPlayerData($player), $gameId);
+                //ネームタグをセット
+                $player->setNameTagAlwaysVisible(false);
+                $playerData = TeamGameSystem::getPlayerData($player);
+                ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
+                GetPlayerReadyToTDMPMMPService::execute($playerData, $gameId);
             } else {
                 //10人でスタート
                 $playersCount = TeamGameSystem::getGamePlayersData($gameId);

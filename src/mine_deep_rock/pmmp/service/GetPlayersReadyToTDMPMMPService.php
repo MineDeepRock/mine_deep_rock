@@ -4,6 +4,7 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use pocketmine\Server;
 use team_game_system\model\GameId;
 use team_game_system\TeamGameSystem;
 
@@ -13,6 +14,12 @@ class GetPlayersReadyToTDMPMMPService
         $playersData = TeamGameSystem::getGamePlayersData($gameId);
         foreach ($playersData as $playerData) {
             GetPlayerReadyToTDMPMMPService::execute($playerData, $gameId);
+        }
+        foreach ($playersData as $playerData) {
+            $player = Server::getInstance()->getPlayer($playerData->getName());
+            //ネームタグをセット
+            $player->setNameTagAlwaysVisible(false);
+            ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
         }
     }
 }
