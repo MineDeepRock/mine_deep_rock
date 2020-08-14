@@ -12,7 +12,7 @@ use slot_menu_system\models\SlotMenu;
 use slot_menu_system\models\SlotMenuElement;
 use slot_menu_system\SlotMenuSystem;
 
-class SettingEquipmentsOnTDMMenu extends SlotMenu
+class SettingEquipmentsOnGameMenu extends SlotMenu
 {
     public function __construct(TaskScheduler $taskScheduler) {
         $menus = [
