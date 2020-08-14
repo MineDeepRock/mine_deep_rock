@@ -50,13 +50,13 @@ class SelectTrialGunTypesMenu extends SlotMenu
             new SlotMenuElement(ItemIds::BOW, GunType::SniperRifle()->getTypeText(), 4, function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::SniperRifle());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::DMR()->getTypeText(), 6, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::DMR()->getTypeText(), 5, function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::DMR());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::HandGun()->getTypeText(), 5, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::HandGun()->getTypeText(), 6, function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::HandGun());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::Revolver()->getTypeText(), 6, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::Revolver()->getTypeText(), 7, function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::Revolver());
             }),
             new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($taskScheduler) {
