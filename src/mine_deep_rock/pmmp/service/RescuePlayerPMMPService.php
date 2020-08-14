@@ -6,7 +6,6 @@ namespace mine_deep_rock\pmmp\service;
 
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\MilitaryDepartment;
-use mine_deep_rock\model\PlayerGameStatus;
 use mine_deep_rock\service\UpdatePlayerGameStatusIsResuscitated;
 use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\Player;
