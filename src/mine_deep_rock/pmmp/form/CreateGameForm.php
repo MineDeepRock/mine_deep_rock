@@ -9,7 +9,7 @@ use form_builder\models\custom_form_elements\Input;
 use form_builder\models\custom_form_elements\Label;
 use form_builder\models\CustomForm;
 use mine_deep_rock\pmmp\service\InformLobbyPlayersOpenGame;
-use mine_deep_rock\service\CreateTDM;
+use mine_deep_rock\service\CreateTDMService;
 use pocketmine\Player;
 use team_game_system\model\Score;
 
@@ -50,7 +50,7 @@ class CreateGameForm extends CustomForm
 
 
         if ($gameType === "TeamDeathMatch") {
-            CreateTDM::execute($maxScore, $maxPlayersCount, $timeLimit);
+            CreateTDMService::execute($maxScore, $maxPlayersCount, $timeLimit);
         }
 
         InformLobbyPlayersOpenGame::execute($gameType);

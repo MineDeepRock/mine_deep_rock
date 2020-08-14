@@ -12,7 +12,7 @@ use team_game_system\model\Score;
 use team_game_system\model\Team;
 use team_game_system\TeamGameSystem;
 
-class CreateTDM
+class CreateTDMService
 {
 
     static function execute(?Score $maxScore = null, ?int $maxPlayersCount = null, ?int $timeLimit = null): void {
