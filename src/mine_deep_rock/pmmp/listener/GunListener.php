@@ -23,11 +23,24 @@ class GunListener implements Listener
         if ($victim instanceof Player && $victim->getLevel()->getName() === "lobby") return;
         if ($victim instanceof TeamDeathMatchNPC) return;
 
-        $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $event->getDamage(), [], 0);
-        $source->call();
-        $victim->setLastDamageCause($source);
+        if ($attacker instanceof Player && $victim instanceof Player) {
+            $attackerData = TeamGameSystem::getPlayerData($attacker);
+            $victimData = TeamGameSystem::getPlayerData($victim);
+            if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
+            if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
+                $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $event->getDamage(), [], 0);
+                $source->call();
+                $victim->setLastDamageCause($source);
 
-        $victim->setHealth($victim->getHealth() - $event->getDamage());
+                $victim->setHealth($victim->getHealth() - $event->getDamage());
+            }
+        } else {
+            $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $event->getDamage(), [], 0);
+            $source->call();
+            $victim->setLastDamageCause($source);
+
+            $victim->setHealth($victim->getHealth() - $event->getDamage());
+        }
     }
 
     public function onBulletHitNear(BulletHitNearEvent $event) {
@@ -37,7 +50,7 @@ class GunListener implements Listener
         $attackerData = TeamGameSystem::getPlayerData($attacker);
         $victimData = TeamGameSystem::getPlayerData($victim);
         if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
-        if ($attackerData->getTeamId()->equals($victimData->getTeamId())) {
+        if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
             GunSystem::giveScare($victim);
         }
     }
