@@ -8,9 +8,11 @@ use mine_deep_rock\model\GunRecord;
 use mine_deep_rock\model\PlayerGameStatus;
 use mine_deep_rock\model\PlayerStatus;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
+use mine_deep_rock\pmmp\entity\GunDealerNPC;
 use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
+use mine_deep_rock\pmmp\form\GunTypeListForSaleForm;
 use mine_deep_rock\pmmp\form\ParticipantsListForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
 use mine_deep_rock\pmmp\form\TDMListForm;
@@ -20,6 +22,7 @@ use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
 use mine_deep_rock\pmmp\listener\TDMListener;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
+use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
 use mine_deep_rock\pmmp\service\SpawnTeamDeathMatchNPCPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
@@ -32,6 +35,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\Player;
@@ -43,6 +47,7 @@ class Main extends PluginBase implements Listener
 {
     public function onEnable() {
         Entity::registerEntity(TeamDeathMatchNPC::class, true, ['TeamDeathMatchNPC']);
+        Entity::registerEntity(GunDealerNPC::class, true, ['GunDealerNPC']);
         Entity::registerEntity(CadaverEntity::class, true, ['Cadaver']);
 
         GunRecordDAO::init();
@@ -110,13 +115,17 @@ class Main extends PluginBase implements Listener
         if ($sender instanceof Player) {
             if ($label === "spawnnpc") {
                 if (count($args) !== 1) {
-                    $sender->sendMessage("/spawnnpc [npc]");
+                    $sender->sendMessage("/spawnnpc [tdm,gun]");
                     return false;
                 }
 
                 switch ($args[0]) {
                     case "tdm":
                         SpawnTeamDeathMatchNPCPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
+                        return true;
+                        break;
+                    case "gun":
+                        SpawnGunDealerNPCPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
                         return true;
                         break;
                 }
@@ -158,9 +167,22 @@ class Main extends PluginBase implements Listener
     public function onTapNPC(EntityDamageByEntityEvent $event): void {
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
-        if ($attacker instanceof Player && $victim instanceof TeamDeathMatchNPC) {
-            $attacker->sendForm(new TDMListToJoinForm());
-            $event->setCancelled();
+        if ($attacker instanceof Player) {
+            if ($victim instanceof TeamDeathMatchNPC) {
+                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD) {
+                    $victim->kill();
+                } else {
+                    $attacker->sendForm(new TDMListToJoinForm());
+                    $event->setCancelled();
+                }
+            } else if ($victim instanceof GunDealerNPC) {
+                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD) {
+                    $victim->kill();
+                } else {
+                    $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
+                    $event->setCancelled();
+                }
+            }
         }
     }
 
