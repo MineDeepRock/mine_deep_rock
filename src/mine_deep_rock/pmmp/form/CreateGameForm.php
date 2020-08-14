@@ -9,6 +9,7 @@ use form_builder\models\custom_form_elements\Input;
 use form_builder\models\custom_form_elements\Label;
 use form_builder\models\CustomForm;
 use mine_deep_rock\pmmp\service\InformLobbyPlayersOpenGame;
+use mine_deep_rock\service\CreateDominationService;
 use mine_deep_rock\service\CreateTDMService;
 use pocketmine\Player;
 use team_game_system\model\Score;
@@ -22,7 +23,7 @@ class CreateGameForm extends CustomForm
     private $maxScore;
 
     public function __construct() {
-        $this->gameType = new Dropdown("GameType", ["TeamDeathMatch"]);
+        $this->gameType = new Dropdown("GameType", ["TeamDeathMatch","Domination"]);
         $this->maxScore = new Input("勝利判定スコア", "", "");
         $this->maxPlayersCount = new Input("人数制限", "", "");
         $this->timeLimit = new Input("制限時間(秒)", "", "");
@@ -51,6 +52,8 @@ class CreateGameForm extends CustomForm
 
         if ($gameType === "TeamDeathMatch") {
             CreateTDMService::execute($maxScore, $maxPlayersCount, $timeLimit);
+        } else if ($gameType === "Domination") {
+            CreateDominationService::execute($maxScore, $maxPlayersCount, $timeLimit);
         }
 
         InformLobbyPlayersOpenGame::execute($gameType);
