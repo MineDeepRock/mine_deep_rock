@@ -25,17 +25,18 @@ class TDMListToJoinForm extends SimpleForm
                 "Players:" . TextFormat::BOLD . $participantsCount . TextFormat::RESET . ",map:" . TextFormat::BOLD . $map->getName(),
                 null,
                 function (Player $player) use ($gameId) {
+
                     $result = TeamGameSystem::joinGame($player, $gameId);
 
                     if ($result) {
                         $level = Server::getInstance()->getLevelByName("lobby");
-                        $player->sendMessage("ゲームに参加しました");
+                        $player->sendMessage("TDMに参加しました");
                         foreach ($level->getPlayers() as $lobbyPlayer) {
                             $lobbyPlayer->sendMessage($player->getName() . "がTDMに参加しました");
                         }
 
                     } else {
-                        $player->sendMessage("ゲームに参加出来ませんでした");
+                        $player->sendMessage("試合に参加出来ませんでした。\nすでに試合に参加しているか、試合が満員です");
                     }
                 }
             );
