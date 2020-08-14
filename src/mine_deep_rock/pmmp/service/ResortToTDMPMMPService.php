@@ -18,13 +18,6 @@ class ResortToTDMPMMPService
             return;
         }
 
-        $game = TeamGameSystem::getGame($playerData->getGameId());
-        if ($game === null) {
-            $player->getInventory()->setContents([]);
-            $player->setGamemode(Player::ADVENTURE);
-            $player->setImmobile(false);
-        }
-
         //TODO:２チームしか想定していない
         if ($addScore) {
             $game = TeamGameSystem::getGame($playerData->getGameId());
@@ -37,6 +30,9 @@ class ResortToTDMPMMPService
 
         $player->setGamemode(Player::ADVENTURE);
         $player->setImmobile(false);
+
+        $game = TeamGameSystem::getGame($playerData->getGameId());
+        if ($game === null) return;
 
         if ($pos !== null) {
             //蘇生判定
