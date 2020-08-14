@@ -63,6 +63,9 @@ class SelectGunTypeForSaleMenu extends SlotMenu
             new SlotMenuElement(ItemIds::BOW, GunType::SniperRifle()->getTypeText(), 4, function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::SniperRifle());
             }),
+            new SlotMenuElement(ItemIds::BOW, GunType::DMR()->getTypeText(), 6, function (Player $player) use ($onSelected) {
+                $onSelected($player, GunType::DMR());
+            }),
             new SlotMenuElement(ItemIds::BOW, GunType::HandGun()->getTypeText(), 5, function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::HandGun());
             }),
