@@ -42,6 +42,7 @@ use pocketmine\Server;
 use private_name_tag\models\PrivateNameTag;
 use slot_menu_system\SlotMenuSystem;
 use team_game_system\model\Score;
+use team_game_system\model\Team;
 use team_game_system\pmmp\event\AddedScoreEvent;
 use team_game_system\pmmp\event\FinishedGameEvent;
 use team_game_system\pmmp\event\PlayerJoinedGameEvent;
@@ -227,6 +228,14 @@ class TDMListener implements Listener
         $cadaverEntity = $event->getEntity();
         if ($player instanceof Player) {
             if ($cadaverEntity instanceof CadaverEntity) {
+                if ($cadaverEntity->getOwner() === null) return;
+                $owner = $cadaverEntity->getOwner();
+                if (!$owner->isOnline()) return;
+                if ($owner->getName() === $player->getName()) return;
+                $playerData = TeamGameSystem::getPlayerData($player);
+                $ownerData = TeamGameSystem::getPlayerData($owner);
+                if ($playerData->getGameId() === null || $ownerData->getGameId() === null) return;
+
                 RescuePlayerPMMPService::execute($player, $cadaverEntity->getOwner());
                 $event->setCancelled();
             }

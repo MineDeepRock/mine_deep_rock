@@ -71,7 +71,7 @@ class BoxListener implements Listener
         if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
         if (!$receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
 
-        $receiver->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 2, 1));
+        $receiver->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 2, 2));
     }
 
     public function onFlareBoxEffect(FlareBoxEffectOnEvent $event): void {
