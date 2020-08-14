@@ -10,6 +10,8 @@ use pocketmine\Player;
 class InitEffectsPMMPService
 {
     static function execute(Player $player): void {
+        $player->removeAllEffects();
+
         $militaryDepartment = PlayerStatusDAO::get($player->getName());
         foreach ($militaryDepartment->getMilitaryDepartment()->getEffectInstances() as $effectInstance) {
             $player->addEffect($effectInstance);
