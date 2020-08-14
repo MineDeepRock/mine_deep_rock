@@ -38,7 +38,11 @@ class GrenadeListener implements Listener
                 $damage = 20 - $event->getDistance();
             }
 
-            $victim->attack(new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 1));
+            $source = new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 0.4);
+            $source->call();
+            $victim->setLastDamageCause($source);
+
+            $victim->setHealth($victim->getHealth() - $damage);
         }
     }
 
