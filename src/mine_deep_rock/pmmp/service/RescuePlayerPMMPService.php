@@ -27,6 +27,9 @@ class RescuePlayerPMMPService
             if ($playerStatus->getMilitaryDepartment()->getName() === MilitaryDepartment::NursingSoldier) {
                 UpdatePlayerGameStatusIsResuscitated::execute($target->getName());
                 ResortToTDMPMMPService::execute($target, $target->getPosition());
+
+                $player->sendMessage($target->getName() . "を蘇生した");
+                $target->sendMessage($player->getName() . "に蘇生されました");
             }
         }
     }
