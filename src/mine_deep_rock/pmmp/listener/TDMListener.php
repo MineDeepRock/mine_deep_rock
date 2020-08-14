@@ -7,6 +7,7 @@ use bossbar_system\BossBar;
 use bossbar_system\model\BossBarType;
 use box_system\pmmp\entities\BoxEntity;
 use grenade_system\pmmp\entities\GrenadeEntity;
+use gun_system\pmmp\item\ItemGun;
 use mine_deep_rock\pmmp\BossBarTypes;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\service\GetPlayerReadyToTDMPMMPService;
@@ -23,6 +24,7 @@ use mine_deep_rock\pmmp\service\SendTDMBossBarPMMPService;
 use mine_deep_rock\pmmp\service\UpdateTDMScoreboardPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnTDMMenu;
 use mine_deep_rock\service\AddKillCountInGameService;
+use mine_deep_rock\service\AddKillCountToGunRecordService;
 use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\service\ResetPlayerGameStatusService;
 use mine_deep_rock\store\TDMGameIdsStore;
@@ -83,6 +85,10 @@ class TDMListener implements Listener
             //アタッカーにお金を付与
             GivePlayerMoneyService::execute($attacker->getName(), 100);
             AddKillCountInGameService::execute($attacker->getName());
+            $item = $attacker->getInventory()->getItemInHand();
+            if ($item instanceof ItemGun) {
+                AddKillCountToGunRecordService::execute($attacker->getName(), $item->getCustomName());
+            }
 
             //その場をスポーン地点に
             $victim = $event->getTarget();
