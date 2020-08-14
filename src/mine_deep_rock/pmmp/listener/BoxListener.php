@@ -44,7 +44,7 @@ class BoxListener implements Listener
     public function onAmmoBoxEffect(AmmoBoxEffectOnEvent $event): void {
         $owner = $event->getOwner();
         $receiver = $event->getReceiver();
-        if ($receiver !== Player::ADVENTURE) return;
+        if ($receiver->getGamemode() !== Player::ADVENTURE) return;
 
         $receiverData = TeamGameSystem::getPlayerData($receiver);
         $ownerData = TeamGameSystem::getPlayerData($owner);
@@ -63,7 +63,7 @@ class BoxListener implements Listener
     public function onMedicineBoxEffect(MedicineBoxEffectOnEvent $event): void {
         $receiver = $event->getReceiver();
         $owner = $event->getOwner();
-        if ($receiver !== Player::ADVENTURE) return;
+        if ($receiver->getGamemode() !== Player::ADVENTURE) return;
 
         $receiverData = TeamGameSystem::getPlayerData($receiver);
         $ownerData = TeamGameSystem::getPlayerData($owner);
@@ -77,7 +77,7 @@ class BoxListener implements Listener
     public function onFlareBoxEffect(FlareBoxEffectOnEvent $event): void {
         $owner = $event->getOwner();
         $receiver = $event->getReceiver();
-        if ($receiver !== Player::ADVENTURE) return;
+        if ($receiver->getGamemode() !== Player::ADVENTURE) return;
 
         $receiverData = TeamGameSystem::getPlayerData($receiver);
         $ownerData = TeamGameSystem::getPlayerData($owner);
