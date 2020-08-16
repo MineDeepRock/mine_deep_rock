@@ -31,15 +31,8 @@ class SetPrivateNameTagPMMPService
         }
 
         $playerData = TeamGameSystem::getPlayerData($player);
-        $teamId = $playerData->getTeamId();
-        $playerTeam = null;
         if ($playerData->getGameId() === null) return;
-        $game = TeamGameSystem::getGame($playerData->getGameId());
-        foreach ($game->getTeams() as $team) {
-            if ($team->getId()->equals($teamId)) {
-                $playerTeam = $team;
-            }
-        }
+        $playerTeam = TeamGameSystem::getTeam($playerData->getGameId(), $playerData->getTeamId());
 
         $tag = new PrivateNameTag($player, $playerTeam->getTeamColorFormat() . "{$player->getName()} \n {$hpGauge}", []);
         $tag->set();

@@ -20,17 +20,10 @@ class SendKillLogPMMPService
 
         $weapon = $attacker->getInventory()->getItemInHand();
 
-        $game = TeamGameSystem::getGame($victimData->getGameId());
+        $gameID = $victimData->getGameId();
 
-        $attackerTeam = null;
-        $victimTeam = null;
-        foreach ($game->getTeams() as $team) {
-            if ($team->getId()->equals($victimData->getTeamId())) {
-                $victimTeam = $team;
-            } else if ($team->getId()->equals($attackerData->getTeamId())) {
-                $attackerTeam = $team;
-            }
-        }
+        $attackerTeam = TeamGameSystem::getTeam($gameID, $attackerData->getTeamId());
+        $victimTeam = TeamGameSystem::getTeam($gameID, $victimData->getTeamId());;
 
         if ($attackerTeam === null || $victimTeam === null) return;
 

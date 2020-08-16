@@ -15,22 +15,19 @@ class ParticipantsListForm extends SimpleForm
 {
     public function __construct(Game $game) {
 
-        $teams = $game->getTeams();
-        $buttons = array_map(function (PlayerData $participant) use ($teams) {
-            $participantTeam = null;
-            foreach ($teams as $team) {
-                if ($participant->getTeamId()->equals($team->getId())) $participantTeam = $team;
-            }
+        $gameId = $game->getId();
+        $buttons = array_map(function (PlayerData $participant) use ($gameId) {
+            $participantTeam = TeamGameSystem::getTeam($gameId, $participant->getTeamId());
 
             return new SimpleFormButton(
                 $participantTeam->getTeamColorFormat() . $participant->getName(),
                 null,
-                function (Player $player) {});
+                function (Player $player) { });
         }, TeamGameSystem::getGamePlayersData($game->getId()));
 
 
         parent::__construct("参加者リスト", "", $buttons);
     }
 
-    function onClickCloseButton(Player $player): void {}
+    function onClickCloseButton(Player $player): void { }
 }

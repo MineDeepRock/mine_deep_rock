@@ -17,10 +17,7 @@ class GetPlayerReadyToTDMPMMPService
     static function execute(PlayerData $playerData, GameId $gameId): void {
         $game = TeamGameSystem::getGame($gameId);
         $player = Server::getInstance()->getPlayer($playerData->getName());
-        $playerTeam = null;
-        foreach ($game->getTeams() as $team) {
-            if ($playerData->getTeamId()->equals($team->getId())) $playerTeam = $team;
-        }
+        $playerTeam = TeamGameSystem::getTeam($gameId, $playerData->getTeamId());
 
         //テレポート
         TeamGameSystem::setSpawnPoint($player);

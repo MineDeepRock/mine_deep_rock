@@ -29,15 +29,8 @@ class UpdatePrivateNameTagPMMPService
         }
 
         $playerData = TeamGameSystem::getPlayerData($target);
-        $teamId = $playerData->getTeamId();
-        $playerTeam = null;
         if ($playerData->getGameId() === null) return;
-        $game = TeamGameSystem::getGame($playerData->getGameId());
-        foreach ($game->getTeams() as $team) {
-            if ($team->getId()->equals($teamId)) {
-                $playerTeam = $team;
-            }
-        }
+        $playerTeam = TeamGameSystem::getTeam($playerData->getGameId(), $playerData->getTeamId());
 
         $tag->updateNameTag($playerTeam->getTeamColorFormat() . "{$target->getName()} \n {$hpGauge}");
     }

@@ -58,24 +58,21 @@ class InitTDMEquipmentsPMMPService
         $inventory->setItem(8, new Arrow());
 
         //防具のセット
-        //TODO:リファクタリング
+        //TODO:リファクタリング ２チームしか想定してない
         $playerData = TeamGameSystem::getPlayerData($player);
-        $game = TeamGameSystem::getGame($playerData->getGameId());
-        $teams = $game->getTeams();
-        foreach ($teams as $team) {
-            if ($team->getId()->equals($playerData->getTeamId())) {
-                $armorInventory = $player->getArmorInventory();
-                if ($team->getName() === "Red") {
-                    $armorInventory->setHelmet(new GoldHelmet());
-                    $armorInventory->setChestplate(new GoldChestplate());
-                    $armorInventory->setLeggings(new GoldLeggings());
-                    $armorInventory->setBoots(new GoldBoots());
-                } else {
-                    $armorInventory->setHelmet(new IronHelmet());
-                    $armorInventory->setChestplate(new IronChestplate());
-                    $armorInventory->setLeggings(new IronLeggings());
-                    $armorInventory->setBoots(new IronBoots());
-                }
+        $team = TeamGameSystem::getTeam($playerData->getGameId(), $playerData->getTeamId());
+        if ($team->getId()->equals($playerData->getTeamId())) {
+            $armorInventory = $player->getArmorInventory();
+            if ($team->getName() === "Red") {
+                $armorInventory->setHelmet(new GoldHelmet());
+                $armorInventory->setChestplate(new GoldChestplate());
+                $armorInventory->setLeggings(new GoldLeggings());
+                $armorInventory->setBoots(new GoldBoots());
+            } else {
+                $armorInventory->setHelmet(new IronHelmet());
+                $armorInventory->setChestplate(new IronChestplate());
+                $armorInventory->setLeggings(new IronLeggings());
+                $armorInventory->setBoots(new IronBoots());
             }
         }
     }
