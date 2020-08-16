@@ -5,6 +5,7 @@ namespace mine_deep_rock\model;
 
 
 use pocketmine\level\Position;
+use team_game_system\model\TeamId;
 
 class DominationFlag
 {
@@ -19,42 +20,50 @@ class DominationFlag
     private $position;
 
     /**
-     * @var float
+     * @var DominationFlagGauge
      */
     private $gauge;
 
-    public function __construct(string $name, Position $position, int $gauge) {
+
+    public function __construct(string $name, Position $position, DominationFlagGauge $gauge) {
         $this->name = $name;
         $this->position = $position;
         $this->gauge = $gauge;
     }
 
     static function asNew(string $name, Position $position): DominationFlag {
-        return new DominationFlag($name, $position, 0);
+        return new DominationFlag($name, $position, DominationFlagGauge::asNew());
     }
 
-    public function makeProgress(int $value): void {
-        $this->gauge += $value;
-        if ($this->gauge > 100) {
-            $this->gauge = 100;
-        } else if ($this->gauge < -100) {
-            $this->gauge = -100;
+    public function makeProgress(TeamId $teamId, int $value): void {
+        if ($this->gauge->isEmpty()) {
+            $this->gauge->add($teamId, $value);
+            return;
+        }
+
+        $owingTeamId = $this->gauge->getOwingTeamId();
+        if ($owingTeamId->equals($teamId)) {
+            if ($this->gauge->isOccupied()) return;
+
+            $this->gauge->add($teamId, $value);
+        } else {
+            $this->gauge->reduce($teamId, $value);
         }
     }
 
     public function resetGauge(): void {
-        $this->gauge = 0;
+        $this->gauge = [];
     }
 
     public function isOccupied(): bool {
-        return $this->gauge > 100 || $this->gauge < -100;
+        return $this->gauge->isOccupied();
     }
 
     /**
-     * @return float
+     * @return int
      */
-    public function getGauge(): float {
-        return $this->gauge;
+    public function getGaugeAsInt(): int {
+        return $this->gauge->asInt();
     }
 
     /**
@@ -62,5 +71,12 @@ class DominationFlag
      */
     public function getPosition(): Position {
         return $this->position;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return $this->name;
     }
 }
