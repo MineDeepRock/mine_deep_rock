@@ -51,21 +51,6 @@ class DominationFlag
         }
     }
 
-    public function resetGauge(): void {
-        $this->gauge = [];
-    }
-
-    public function isOccupied(): bool {
-        return $this->gauge->isOccupied();
-    }
-
-    /**
-     * @return int
-     */
-    public function getGaugeAsInt(): int {
-        return $this->gauge->asInt();
-    }
-
     /**
      * @return Position
      */
@@ -78,5 +63,12 @@ class DominationFlag
      */
     public function getName(): string {
         return $this->name;
+    }
+
+    /**
+     * @return DominationFlagGauge
+     */
+    public function getGauge(): DominationFlagGauge {
+        return $this->gauge;
     }
 }

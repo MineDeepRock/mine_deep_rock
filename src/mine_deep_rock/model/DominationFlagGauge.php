@@ -90,6 +90,11 @@ class DominationFlagGauge
         return $this->occupyingTeamId !== null;
     }
 
+    //TODO:正しい英語？
+    public function isOwned(): bool {
+        return $this->owingTeamId !== null;
+    }
+
     /**
      * @return TeamId|null
      */
