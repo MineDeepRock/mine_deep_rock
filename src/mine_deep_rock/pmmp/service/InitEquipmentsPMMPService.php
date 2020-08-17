@@ -11,7 +11,6 @@ use gun_system\model\attachment\Scope;
 use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use pocketmine\item\Arrow;
-use pocketmine\item\ChainHelmet;
 use pocketmine\item\GoldBoots;
 use pocketmine\item\GoldChestplate;
 use pocketmine\item\GoldHelmet;
@@ -23,7 +22,7 @@ use pocketmine\item\IronLeggings;
 use pocketmine\Player;
 use team_game_system\TeamGameSystem;
 
-class InitTDMEquipmentsPMMPService
+class InitEquipmentsPMMPService
 {
     static function execute(Player $player): void {
         $player->getInventory()->setContents([]);

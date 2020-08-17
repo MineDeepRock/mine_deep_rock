@@ -5,6 +5,7 @@ namespace mine_deep_rock\model;
 
 
 use pocketmine\level\Position;
+use team_game_system\model\GameId;
 use team_game_system\model\TeamId;
 
 class DominationFlag
@@ -13,6 +14,11 @@ class DominationFlag
      * @var string
      */
     private $name;
+
+    /**
+     * @var GameId
+     */
+    private $gameId;
 
     /**
      * @var Position
@@ -25,14 +31,14 @@ class DominationFlag
     private $gauge;
 
 
-    public function __construct(string $name, Position $position, DominationFlagGauge $gauge) {
+    public function __construct(string $name, GameId $gameId, Position $position, DominationFlagGauge $gauge) {
         $this->name = $name;
         $this->position = $position;
         $this->gauge = $gauge;
     }
 
-    static function asNew(string $name, Position $position): DominationFlag {
-        return new DominationFlag($name, $position, DominationFlagGauge::asNew());
+    static function asNew(string $name, GameId $gameId, Position $position): DominationFlag {
+        return new DominationFlag($name, $gameId, $position, DominationFlagGauge::asNew());
     }
 
     public function makeProgress(TeamId $teamId, int $value): void {
@@ -70,5 +76,12 @@ class DominationFlag
      */
     public function getGauge(): DominationFlagGauge {
         return $this->gauge;
+    }
+
+    /**
+     * @return GameId
+     */
+    public function getGameId(): GameId {
+        return $this->gameId;
     }
 }

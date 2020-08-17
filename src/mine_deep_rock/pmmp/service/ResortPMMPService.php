@@ -10,7 +10,7 @@ use pocketmine\Player;
 use team_game_system\model\Score;
 use team_game_system\TeamGameSystem;
 
-class ResortToTDMPMMPService
+class ResortPMMPService
 {
     static function execute(Player $player, Position $pos = null, bool $addScore = false): void {
         $playerData = TeamGameSystem::getPlayerData($player);
@@ -46,7 +46,7 @@ class ResortToTDMPMMPService
 
         RemoveCadaverEntityPMMPService::execute($player);
 
-        InitTDMEquipmentsPMMPService::execute($player);
+        InitEquipmentsPMMPService::execute($player);
 
         InitEffectsPMMPService::execute($player);
 

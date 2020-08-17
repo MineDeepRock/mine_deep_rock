@@ -20,7 +20,7 @@ use mine_deep_rock\pmmp\form\TDMListToJoinForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
-use mine_deep_rock\pmmp\listener\TDMListener;
+use mine_deep_rock\pmmp\listener\TeamGameCommonListener;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
 use mine_deep_rock\pmmp\service\SpawnTeamDeathMatchNPCPMMPService;
@@ -54,7 +54,7 @@ class Main extends PluginBase implements Listener
         PlayerStatusDAO::init();
         MilitaryDepartmentsStore::init();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getPluginManager()->registerEvents(new TDMListener($this->getScheduler()), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new TeamGameCommonListener($this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GunListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new BoxListener($this->getServer(), $this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GrenadeListener($this->getScheduler()), $this);

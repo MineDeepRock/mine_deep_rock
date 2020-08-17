@@ -6,18 +6,18 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
-use mine_deep_rock\store\TDMGameIdsStore;
+use mine_deep_rock\GameTypeList;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
-use team_game_system\model\GameId;
+use team_game_system\model\Game;
 use team_game_system\TeamGameSystem;
 
 class TDMListForm extends SimpleForm
 {
 
     public function __construct() {
-        $buttons = array_map(function (GameId $gameId) {
-            $game = TeamGameSystem::getGame($gameId);
+        $buttons = array_map(function (Game $game) {
+            $gameId = $game->getId();
             $map = $game->getMap();
             $participantsCount = count(TeamGameSystem::getGamePlayersData($gameId));
             return new SimpleFormButton(
@@ -27,7 +27,7 @@ class TDMListForm extends SimpleForm
                     $player->sendForm(new ParticipantsListForm($game));
                 }
             );
-        }, TDMGameIdsStore::getAll());
+        }, TeamGameSystem::findGamesByType(GameTypeList::TDM()));
 
         parent::__construct("チームデスマッチ一覧", "", $buttons);
     }

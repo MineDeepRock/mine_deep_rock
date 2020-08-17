@@ -4,8 +4,7 @@
 namespace mine_deep_rock\service;
 
 
-use mine_deep_rock\store\DominationGameIdsStore;
-use mine_deep_rock\store\TDMGameIdsStore;
+use mine_deep_rock\GameTypeList;
 use pocketmine\utils\TextFormat;
 use team_game_system\model\Game;
 use team_game_system\model\Score;
@@ -21,9 +20,8 @@ class CreateDominationService
             Team::asNew("Blue", TextFormat::BLUE),
         ];
         $map = TeamGameSystem::selectMap("BrokenCity", $teams);
-        $game = Game::asNew($map, $teams, $maxScore, $maxPlayersCount, $timeLimit);
+        $game = Game::asNew(GameTypeList::Domination(), $map, $teams, $maxScore, $maxPlayersCount, $timeLimit);
 
         TeamGameSystem::registerGame($game);
-        DominationGameIdsStore::add($game->getId());
     }
 }

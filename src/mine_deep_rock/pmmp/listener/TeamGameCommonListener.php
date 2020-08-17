@@ -10,30 +10,42 @@ use grenade_system\pmmp\entities\GrenadeEntity;
 use gun_system\pmmp\item\ItemGun;
 use mine_deep_rock\pmmp\BossBarTypes;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
+use mine_deep_rock\pmmp\service\GetPlayerReadyToGamePMMPService;
+use mine_deep_rock\pmmp\service\GetPlayersReadyToGamePMMPService;
 use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
+use mine_deep_rock\pmmp\service\ResortPMMPService;
+use mine_deep_rock\pmmp\service\SendBossBarOnGamePMMPService;
 use mine_deep_rock\pmmp\service\SendGameScoreToParticipantsPMMPService;
 use mine_deep_rock\pmmp\service\SendKillLogPMMPService;
 use mine_deep_rock\pmmp\service\SendKillMessagePMMPService;
 use mine_deep_rock\pmmp\service\SendParticipantsToLobbyPMMPService;
+use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\SpawnCadaverEntityPMMPService;
 use mine_deep_rock\pmmp\service\UpdatePrivateNameTagPMMPService;
+use mine_deep_rock\pmmp\service\UpdateScoreboardOnGamePMMPService;
+use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnGameMenu;
 use mine_deep_rock\service\AddKillCountInGameService;
 use mine_deep_rock\service\AddKillCountToGunRecordService;
 use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\service\ResetPlayerGameStatusService;
-use mine_deep_rock\store\TDMGameIdsStore;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use private_name_tag\models\PrivateNameTag;
+use slot_menu_system\SlotMenuSystem;
+use team_game_system\pmmp\event\AddedScoreEvent;
 use team_game_system\pmmp\event\FinishedGameEvent;
+use team_game_system\pmmp\event\PlayerJoinedGameEvent;
 use team_game_system\pmmp\event\PlayerKilledPlayerEvent;
+use team_game_system\pmmp\event\StartedGameEvent;
+use team_game_system\pmmp\event\UpdatedGameTimerEvent;
 use team_game_system\TeamGameSystem;
 
 class TeamGameCommonListener implements Listener
@@ -48,10 +60,49 @@ class TeamGameCommonListener implements Listener
         $this->scheduler = $scheduler;
     }
 
+    public function onAddedScore(AddedScoreEvent $event): void {
+        $gameId = $event->getGameId();
+        UpdateScoreboardOnGamePMMPService::execute($gameId);
+    }
+
+    public function onUpdatedTime(UpdatedGameTimerEvent $event): void {
+        $gameId = $event->getGameId();
+        $game = TeamGameSystem::getGame($gameId);
+
+        $playersData = TeamGameSystem::getGamePlayersData($gameId);
+        $timeLimit = $event->getTimeLimit();
+        $elapsedTime = $event->getElapsedTime();
+        SendBossBarOnGamePMMPService::execute($game->getType(), $playersData, $timeLimit, $elapsedTime);
+    }
+
+    public function onJoinGame(PlayerJoinedGameEvent $event) {
+        $gameId = $event->getGameId();
+        $game = TeamGameSystem::getGame($gameId);
+        $player = $event->getPlayer();
+        if ($game->isStarted()) {
+            //ネームタグをセット
+            $player->setNameTagAlwaysVisible(false);
+            $playerData = TeamGameSystem::getPlayerData($player);
+            ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
+            GetPlayerReadyToGamePMMPService::execute($playerData, $gameId);
+        }
+        //else {
+        //    //10人でスタート
+        //    $playersCount = TeamGameSystem::getGamePlayersData($gameId);
+        //    if ($playersCount === 10) {
+        //        TeamGameSystem::startGame($this->scheduler, $gameId);
+        //    }
+        //}
+    }
+
+    public function onStartedGame(StartedGameEvent $event) {
+        $gameId = $event->getGameId();
+        GetPlayersReadyToGamePMMPService::execute($gameId);
+    }
+
     public function onFinishedGame(FinishedGameEvent $event): void {
         $game = $event->getGame();
         $playersData = $event->getPlayersData();
-        TDMGameIdsStore::delete($game->getId());
 
         //TODO:終わった試合の参加者のエンティティだったらKillにする
         $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
@@ -187,5 +238,38 @@ class TeamGameCommonListener implements Listener
 
         //死体を出す
         SpawnCadaverEntityPMMPService::execute($victim);
+    }
+
+    public function onRespawn(PlayerRespawnEvent $event) {
+        $player = $event->getPlayer();
+        $playerData = TeamGameSystem::getPlayerData($player);
+        $game = TeamGameSystem::getGame($playerData->getGameId());
+        if ($game->isClosed()) return;
+
+        $player->setGamemode(Player::SPECTATOR);
+        $player->setImmobile(true);
+
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player, $game): void {
+            if ($game->isClosed()) {
+                $player->setGamemode(Player::ADVENTURE);
+                $player->setImmobile(false);
+            }
+
+            if ($player->isOnline()) {
+                if ($player->getGamemode() === Player::SPECTATOR) {
+                    SlotMenuSystem::send($player, new SettingEquipmentsOnGameMenu($this->scheduler));
+                }
+            }
+        }), 20 * 5);
+
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($player, $game): void {
+            if ($game->isClosed()) return;
+
+            if ($player->isOnline()) {
+                if ($player->getGamemode() === Player::SPECTATOR) {
+                    ResortPMMPService::execute($player);
+                }
+            }
+        }), 20 * 30);
     }
 }
