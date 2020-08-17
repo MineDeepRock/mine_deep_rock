@@ -243,6 +243,8 @@ class TeamGameCommonListener implements Listener
     public function onRespawn(PlayerRespawnEvent $event) {
         $player = $event->getPlayer();
         $playerData = TeamGameSystem::getPlayerData($player);
+        if ($playerData->getGameId() === null) return;
+        
         $game = TeamGameSystem::getGame($playerData->getGameId());
         if ($game->isClosed()) return;
 
