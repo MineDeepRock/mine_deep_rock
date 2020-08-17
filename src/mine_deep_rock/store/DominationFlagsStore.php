@@ -23,6 +23,10 @@ class DominationFlagsStore
         return self::$flags;
     }
 
+    /**
+     * @param GameId $gameId
+     * @return DominationFlag[]
+     */
     static function findByGameId(GameId $gameId): array {
         $result = [];
 
