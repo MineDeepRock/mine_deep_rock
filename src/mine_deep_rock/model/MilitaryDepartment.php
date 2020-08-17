@@ -91,4 +91,5 @@ class MilitaryDepartment
     const NursingSoldier = "NursingSoldier";
     const Engineer = "Engineer";
     const Scout = "Scout";
+    const Sentry = "Sentry";
 }
