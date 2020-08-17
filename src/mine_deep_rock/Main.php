@@ -12,6 +12,7 @@ use mine_deep_rock\pmmp\entity\GunDealerNPC;
 use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
+use mine_deep_rock\pmmp\form\DominationMapListForm;
 use mine_deep_rock\pmmp\form\GunTypeListForSaleForm;
 use mine_deep_rock\pmmp\form\ParticipantsListForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
@@ -159,6 +160,9 @@ class Main extends PluginBase implements Listener
                         break;
                 }
                 return false;
+            } else if ($label === "flag") {
+                $sender->sendForm(new DominationMapListForm());
+                return true;
             }
         }
         return false;
