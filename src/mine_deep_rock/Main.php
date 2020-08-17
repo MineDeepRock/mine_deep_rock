@@ -10,22 +10,22 @@ use mine_deep_rock\model\PlayerGameStatus;
 use mine_deep_rock\model\PlayerStatus;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\GunDealerNPC;
-use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
+use mine_deep_rock\pmmp\entity\GameMaster;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\DominationMapListForm;
 use mine_deep_rock\pmmp\form\GunTypeListForSaleForm;
 use mine_deep_rock\pmmp\form\ParticipantsListForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
-use mine_deep_rock\pmmp\form\TDMListForm;
-use mine_deep_rock\pmmp\form\TDMListToJoinForm;
+use mine_deep_rock\pmmp\form\GameListForm;
+use mine_deep_rock\pmmp\form\GameListToJoinForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
 use mine_deep_rock\pmmp\listener\TeamGameCommonListener;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
-use mine_deep_rock\pmmp\service\SpawnTeamDeathMatchNPCPMMPService;
+use mine_deep_rock\pmmp\service\SpawnGameMasterPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use mine_deep_rock\store\PlayerGameStatusStore;
@@ -47,7 +47,7 @@ use team_game_system\TeamGameSystem;
 class Main extends PluginBase implements Listener
 {
     public function onEnable() {
-        Entity::registerEntity(TeamDeathMatchNPC::class, true, ['TeamDeathMatchNPC']);
+        Entity::registerEntity(GameMaster::class, true, ['GameMaster']);
         Entity::registerEntity(GunDealerNPC::class, true, ['GunDealerNPC']);
         Entity::registerEntity(CadaverEntity::class, true, ['Cadaver']);
 
@@ -96,11 +96,9 @@ class Main extends PluginBase implements Listener
         $player->sendDataPacket($pk);
         PlayerStatusScoreboard::send($player);
 
-        $player->sendMessage("
-        ようこそMineDeepRockへ\n
-        BF1をリスペクトしたPVPサーバーです！\n
-        兵科と銃を選択して、ゲームに参加しましょう！
-        ");
+        $player->sendMessage("ようこそMineDeepRockへ
+BF1をリスペクトしたPVPサーバーです！
+兵科と銃を選択して、ゲームに参加しましょう！");
     }
 
     public function onUpdatedPlayerStatus(UpdatedPlayerStatusEvent $event): void {
@@ -118,13 +116,13 @@ class Main extends PluginBase implements Listener
         if ($sender instanceof Player) {
             if ($label === "spawnnpc") {
                 if (count($args) !== 1) {
-                    $sender->sendMessage("/spawnnpc [tdm,gun]");
+                    $sender->sendMessage("/spawnnpc [gm,gun]");
                     return false;
                 }
 
                 switch ($args[0]) {
-                    case "tdm":
-                        SpawnTeamDeathMatchNPCPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
+                    case "gm":
+                        SpawnGameMasterPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
                         return true;
                         break;
                     case "gun":
@@ -157,7 +155,11 @@ class Main extends PluginBase implements Listener
 
                 switch ($args[0]) {
                     case "tdm":
-                        $sender->sendForm(new TDMListForm());
+                        $sender->sendForm(new GameListForm(GameTypeList::TDM()));
+                        return true;
+                        break;
+                    case "domination":
+                        $sender->sendForm(new GameListForm(GameTypeList::Domination()));
                         return true;
                         break;
                 }
@@ -174,11 +176,11 @@ class Main extends PluginBase implements Listener
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
         if ($attacker instanceof Player) {
-            if ($victim instanceof TeamDeathMatchNPC) {
+            if ($victim instanceof GameMaster) {
                 if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD) {
                     $victim->kill();
                 } else {
-                    $attacker->sendForm(new TDMListToJoinForm());
+                    $attacker->sendForm(new GameListToJoinForm());
                     $event->setCancelled();
                 }
             } else if ($victim instanceof GunDealerNPC) {

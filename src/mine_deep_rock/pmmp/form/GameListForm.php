@@ -10,12 +10,13 @@ use mine_deep_rock\GameTypeList;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use team_game_system\model\Game;
+use team_game_system\model\GameType;
 use team_game_system\TeamGameSystem;
 
-class TDMListForm extends SimpleForm
+class GameListForm extends SimpleForm
 {
 
-    public function __construct() {
+    public function __construct(GameType $gameType) {
         $buttons = array_map(function (Game $game) {
             $gameId = $game->getId();
             $map = $game->getMap();
@@ -27,7 +28,7 @@ class TDMListForm extends SimpleForm
                     $player->sendForm(new ParticipantsListForm($game));
                 }
             );
-        }, TeamGameSystem::findGamesByType(GameTypeList::TDM()));
+        }, TeamGameSystem::findGamesByType($gameType));
 
         parent::__construct("チームデスマッチ一覧", "", $buttons);
     }

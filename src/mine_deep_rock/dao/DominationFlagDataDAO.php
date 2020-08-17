@@ -81,6 +81,6 @@ class DominationFlagDataDAO
             $data[] = DominationFlagDataJsonAdapter::encode($flag);
         }
 
-        file_put_contents(DataFolderPath::DominationFlagData . $mapName . ".json", json_encode($flags));
+        file_put_contents(DataFolderPath::DominationFlagData . $mapName . ".json", json_encode($data));
     }
 }

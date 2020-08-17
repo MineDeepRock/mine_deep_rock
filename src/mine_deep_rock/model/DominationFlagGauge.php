@@ -4,6 +4,7 @@
 namespace mine_deep_rock\model;
 
 
+use LogicException;
 use team_game_system\model\TeamId;
 
 class DominationFlagGauge
@@ -36,7 +37,7 @@ class DominationFlagGauge
 
     public function add(TeamId $teamId, int $value): void {
         if ($value < 0) {
-            throw new \LogicException("value < 0");
+            throw new LogicException("value < 0");
         }
 
         $add = array_fill(0, $value - 1, $teamId);
@@ -57,7 +58,7 @@ class DominationFlagGauge
 
     public function reduce(TeamId $teamId, int $value): void {
         if ($value < 0) {
-            throw new \LogicException("value < 0");
+            throw new LogicException("value < 0");
         }
 
         $remainder = count($this->gauge) - $value;

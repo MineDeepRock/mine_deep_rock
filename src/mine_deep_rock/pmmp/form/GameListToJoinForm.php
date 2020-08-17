@@ -6,14 +6,13 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
-use mine_deep_rock\GameTypeList;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use team_game_system\model\Game;
 use team_game_system\TeamGameSystem;
 
-class TDMListToJoinForm extends SimpleForm
+class GameListToJoinForm extends SimpleForm
 {
 
     public function __construct() {
@@ -24,15 +23,15 @@ class TDMListToJoinForm extends SimpleForm
             return new SimpleFormButton(
                 "Players:" . TextFormat::BOLD . $participantsCount . TextFormat::RESET . ",map:" . TextFormat::BOLD . $map->getName(),
                 null,
-                function (Player $player) use ($gameId) {
+                function (Player $player) use ($game, $gameId) {
 
                     $result = TeamGameSystem::joinGame($player, $gameId);
 
                     if ($result) {
                         $level = Server::getInstance()->getLevelByName("lobby");
-                        $player->sendMessage("TDMに参加しました");
+                        $player->sendMessage(strval($game->getType()) . "に参加しました");
                         foreach ($level->getPlayers() as $lobbyPlayer) {
-                            $lobbyPlayer->sendMessage($player->getName() . "がTDMに参加しました");
+                            $lobbyPlayer->sendMessage($player->getName() . "が" . strval($game->getType()) . "に参加しました");
                         }
 
                     } else {
@@ -40,9 +39,9 @@ class TDMListToJoinForm extends SimpleForm
                     }
                 }
             );
-        }, TeamGameSystem::findGamesByType(GameTypeList::TDM()));
+        }, TeamGameSystem::getAllGames());
 
-        parent::__construct("チームデスマッチ一覧", "チームデスマッチに参加", $buttons);
+        parent::__construct("ゲーム一覧", "ゲームに参加", $buttons);
     }
 
     function onClickCloseButton(Player $player): void {

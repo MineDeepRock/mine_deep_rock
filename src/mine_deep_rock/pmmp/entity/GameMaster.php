@@ -7,7 +7,7 @@ namespace mine_deep_rock\pmmp\entity;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
 
-class TeamDeathMatchNPC extends NPCBase
+class GameMaster extends NPCBase
 {
     const NAME = "TeamDeathMatch";
     public $width = 0.6;

@@ -4,7 +4,7 @@
 namespace mine_deep_rock\pmmp\service;
 
 
-use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
+use mine_deep_rock\pmmp\entity\GameMaster;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
@@ -12,7 +12,7 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 
-class SpawnTeamDeathMatchNPCPMMPService
+class SpawnGameMasterPMMPService
 {
     static function execute(Level $level, Vector3 $vector3, int $yaw): void {
         $nbt = new CompoundTag('', [
@@ -31,7 +31,7 @@ class SpawnTeamDeathMatchNPCPMMPService
                 new FloatTag("", 0)
             ]),
         ]);
-        $npc = new TeamDeathMatchNPC($level, $nbt);
+        $npc = new GameMaster($level, $nbt);
         $npc->setNameTag("チームデスマッチに参加");
         $npc->spawnToAll();
     }

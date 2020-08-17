@@ -8,7 +8,7 @@ use gun_system\GunSystem;
 use gun_system\pmmp\event\BulletHitEvent;
 use gun_system\pmmp\event\BulletHitNearEvent;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
-use mine_deep_rock\pmmp\entity\TeamDeathMatchNPC;
+use mine_deep_rock\pmmp\entity\GameMaster;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
@@ -22,7 +22,7 @@ class GunListener implements Listener
         $victim = $event->getVictim();
 
         if ($victim instanceof Player && $victim->getLevel()->getName() === "lobby") return;
-        if ($victim instanceof TeamDeathMatchNPC) return;
+        if ($victim instanceof GameMaster) return;
         if ($victim instanceof CadaverEntity) return;
 
         if ($attacker instanceof Player && $victim instanceof Player) {
