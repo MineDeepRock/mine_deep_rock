@@ -5,8 +5,6 @@ namespace mine_deep_rock\adapter;
 
 
 use mine_deep_rock\model\DominationFlagData;
-use mine_deep_rock\model\PlayerStatus;
-use mine_deep_rock\store\MilitaryDepartmentsStore;
 use pocketmine\level\Position;
 
 class DominationFlagDataJsonAdapter
