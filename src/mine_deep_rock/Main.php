@@ -2,6 +2,7 @@
 
 namespace mine_deep_rock;
 
+use mine_deep_rock\dao\DominationFlagDataDAO;
 use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\GunRecord;
@@ -37,7 +38,6 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\item\ItemIds;
-use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
@@ -54,6 +54,8 @@ class Main extends PluginBase implements Listener
         GunRecordDAO::init();
         PlayerStatusDAO::init();
         MilitaryDepartmentsStore::init();
+        DominationFlagDataDAO::init();
+
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getPluginManager()->registerEvents(new TeamGameCommonListener($this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GunListener(), $this);
