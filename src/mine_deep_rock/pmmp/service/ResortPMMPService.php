@@ -4,6 +4,9 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\model\MilitaryDepartment;
+use mine_deep_rock\service\SelectMilitaryDepartmentService;
 use mine_deep_rock\service\UpdatePlayerGameStatusIsResuscitated;
 use pocketmine\level\Position;
 use pocketmine\Player;
@@ -12,20 +15,26 @@ use team_game_system\TeamGameSystem;
 
 class ResortPMMPService
 {
-    static function execute(Player $player, Position $pos = null, bool $addScore = false): void {
+    static function execute(Player $player, Position $pos = null, bool $byRescue = false): void {
         $playerData = TeamGameSystem::getPlayerData($player);
         if ($playerData->getTeamId() === null) {
             return;
         }
 
-        //TODO:２チームしか想定していない
-        if ($addScore) {
+        if ($byRescue) {
+            //TODO:２チームしか想定していない
             $game = TeamGameSystem::getGame($playerData->getGameId());
             foreach ($game->getTeams() as $team) {
                 if (!$team->getId()->equals($playerData->getTeamId())) {
                     TeamGameSystem::addScore($game->getId(), $team->getId(), new Score(1));
                 }
             }
+        } else {
+            $status = PlayerStatusDAO::get($playerData->getName());
+            if ($status->getMilitaryDepartment()->getName() === MilitaryDepartment::Sentry) {
+                SelectMilitaryDepartmentService::execute($player->getName(), MilitaryDepartment::AssaultSoldier);
+            }
+
         }
 
         $player->setGamemode(Player::ADVENTURE);
