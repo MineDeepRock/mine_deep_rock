@@ -18,21 +18,21 @@ class DominationScoreboard extends Scoreboard
 {
     /**
      * @param Game $game
-     * @param int $redTeamScore
-     * @param int $blueTeamScore
      * @param DominationFlag[] $flags
      * @return Scoreboard
      */
-    private static function create(Game $game, int $redTeamScore, int $blueTeamScore, array $flags): Scoreboard {
+    private static function create(Game $game, array $flags): Scoreboard {
         $slot = ScoreboardSlot::sideBar();
         $scores = [
             new Score($slot, "====Domination====", 0, 0),
             new Score($slot, "Map:" . $game->getMap()->getName(), 1, 1),
-            new Score($slot, TextFormat::RED . "RedTeam:" . $redTeamScore, 2, 2),
-            new Score($slot, TextFormat::BLUE . "BlueTeam:" . $blueTeamScore, 3, 3),
         ];
 
         $index = count($scores) - 1;
+        foreach ($game->getTeams() as $team) {
+            $scores[] = new Score($slot, $team->getTeamColorFormat() . $team->getName() . ":" . $team->getScore()->getValue(), $index, $index);
+        }
+
         foreach ($flags as $flag) {
             $gauge = $flag->getGauge();
             if ($gauge->isOccupied()) {
@@ -50,13 +50,13 @@ class DominationScoreboard extends Scoreboard
         return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
     }
 
-    static function send(Player $player, Game $game, int $redTeamScore, int $blueTeamScore, array $flags) {
-        $scoreboard = self::create($game, $redTeamScore, $blueTeamScore, $flags);
+    static function send(Player $player, Game $game, array $flags) {
+        $scoreboard = self::create($game, $flags);
         parent::__send($player, $scoreboard);
     }
 
-    static function update(Player $player, Game $game, int $redTeamScore, int $blueTeamScore, array $flags) {
-        $scoreboard = self::create($game, $redTeamScore, $blueTeamScore, $flags);
+    static function update(Player $player, Game $game, array $flags) {
+        $scoreboard = self::create($game, $flags);
         parent::__update($player, $scoreboard);
     }
 }
