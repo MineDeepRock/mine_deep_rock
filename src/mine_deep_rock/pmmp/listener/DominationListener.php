@@ -31,6 +31,11 @@ class DominationListener
             }
 
             OccupyFlagService::execute($flag, $aroundPlayersData);
+
+            //TODO:$flagが更新されるか確認
+            if ($flag->getGauge()->isOccupied()) {
+                TeamGameSystem::addScore($flag->getGameId(), $flag->getGauge()->getOccupyingTeamId(), 1);
+            }
         }
 
         $server = Server::getInstance();
