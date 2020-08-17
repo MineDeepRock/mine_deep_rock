@@ -21,7 +21,7 @@ class DominationFlagDataDAO
         return file_exists(DataFolderPath::DominationFlagData . $mapName . ".json");
     }
 
-    static function initMap(string $mapName): void {
+    static function registerMap(string $mapName): void {
         file_put_contents(DataFolderPath::DominationFlagData . $mapName . ".json", json_encode([]));
     }
 
