@@ -7,6 +7,7 @@ namespace mine_deep_rock\dao;
 use mine_deep_rock\adapter\DominationFlagDataJsonAdapter;
 use mine_deep_rock\DataFolderPath;
 use mine_deep_rock\model\DominationFlagData;
+use team_game_system\adapter\MapJsonAdapter;
 
 class DominationFlagDataDAO
 {
@@ -22,6 +23,23 @@ class DominationFlagDataDAO
 
     static function initMap(string $mapName): void {
         file_put_contents(DataFolderPath::DominationFlagData . $mapName . ".json", json_encode([]));
+    }
+
+    /**
+     * @return string[]
+     */
+    static function getRegisteredMapNames(): array {
+        $names = [];
+        $dh = opendir(DataFolderPath::DominationFlagData);
+        while (($fileName = readdir($dh)) !== false) {
+            if (filetype(DataFolderPath::DominationFlagData . $fileName) === "file") {
+                $names[] = $fileName;
+            }
+        }
+
+        closedir($dh);
+
+        return $names;
     }
 
     /**
