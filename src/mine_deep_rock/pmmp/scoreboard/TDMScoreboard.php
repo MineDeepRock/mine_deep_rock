@@ -24,6 +24,7 @@ class TDMScoreboard extends Scoreboard
         $index = count($scores) - 1;
         foreach ($game->getTeams() as $team) {
             $scores[] = new Score($slot, $team->getTeamColorFormat() . $team->getName() . ":" . $team->getScore()->getValue(), $index, $index);
+            $index++;
         }
 
         return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());

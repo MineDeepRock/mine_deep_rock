@@ -20,6 +20,7 @@ use mine_deep_rock\pmmp\form\StartGameForm;
 use mine_deep_rock\pmmp\form\GameListForm;
 use mine_deep_rock\pmmp\form\GameListToJoinForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
+use mine_deep_rock\pmmp\listener\DominationListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
 use mine_deep_rock\pmmp\listener\TeamGameCommonListener;
@@ -57,6 +58,8 @@ class Main extends PluginBase implements Listener
         DominationFlagDataDAO::init();
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+
+        $this->getServer()->getPluginManager()->registerEvents(new DominationListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new TeamGameCommonListener($this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GunListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new BoxListener($this->getServer(), $this->getScheduler()), $this);

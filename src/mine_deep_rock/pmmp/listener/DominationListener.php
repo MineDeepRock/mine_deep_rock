@@ -9,12 +9,13 @@ use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
 use mine_deep_rock\pmmp\service\SummonFlagParticlePMMPService;
 use mine_deep_rock\service\OccupyFlagService;
 use mine_deep_rock\store\DominationFlagsStore;
+use pocketmine\event\Listener;
 use pocketmine\Server;
 use team_game_system\model\Score;
 use team_game_system\pmmp\event\UpdatedGameTimerEvent;
 use team_game_system\TeamGameSystem;
 
-class DominationListener
+class DominationListener implements Listener
 {
     public function onUpdatedTime(UpdatedGameTimerEvent $event): void {
         $gameId = $event->getGameId();

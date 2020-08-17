@@ -28,21 +28,23 @@ class DominationScoreboard extends Scoreboard
             new Score($slot, "Map:" . $game->getMap()->getName(), 1, 1),
         ];
 
-        $index = count($scores) - 1;
+        $index = count($scores);
         foreach ($game->getTeams() as $team) {
             $scores[] = new Score($slot, $team->getTeamColorFormat() . $team->getName() . ":" . $team->getScore()->getValue(), $index, $index);
+            $index++;
         }
 
         foreach ($flags as $flag) {
             $gauge = $flag->getGauge();
-            if ($gauge->isOccupied()) {
+
+            if ($gauge->isEmpty()) {
+                $scores[] = new Score($slot, $flag->getName() . ":0", $index, $index);
+            } else if ($gauge->isOccupied()) {
                 $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOccupyingTeamId());
                 $scores[] = new Score($slot, $team->getTeamColorFormat() . $flag->getName() . ":" . $gauge->asInt(), $index, $index);
             } else if ($gauge->isOwned()) {
-                $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOccupyingTeamId());
+                $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOwingTeamId());
                 $scores[] = new Score($slot, $team->getTeamColorFormat() . $flag->getName() . ":" . TextFormat::RESET . $gauge->asInt(), $index, $index);
-            } else {
-                $scores[] = new Score($slot, $flag->getName() . ":0", $index, $index);
             }
             $index++;
         }
