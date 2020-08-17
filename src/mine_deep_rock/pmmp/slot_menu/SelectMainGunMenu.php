@@ -29,6 +29,8 @@ class SelectMainGunMenu extends SlotMenu
             $gun = GunSystem::findGunByName($gunRecord->getName());
 
             if ($gun->getType()->equals($gunType)) {
+                if ($gun->getName() === "MG0815") continue;
+
                 $menus[] = new SlotMenuElement(ItemIds::BOW, $gunRecord->getName(), $index, function (Player $player) use ($gun) {
                     $player->sendForm(new GunDetailForm($player, $gun));
                 });

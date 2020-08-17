@@ -31,6 +31,8 @@ class GunForSaleListForm extends SimpleForm
         /** @var Gun $gun */
         foreach (GunSystem::loadAllGuns() as $gun) {
             if ($gun->getType()->equals($gunType) && !in_array($gun->getName(), $ownGunsName)) {
+                if ($gun->getName() === "MG0815") continue;
+
                 $buttons[] = new SimpleFormButton(
                     $gun->getName(),
                     new SimpleFormImage(
