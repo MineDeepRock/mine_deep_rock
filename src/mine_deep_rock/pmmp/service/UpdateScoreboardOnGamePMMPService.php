@@ -18,15 +18,11 @@ class UpdateScoreboardOnGamePMMPService
         $playersData = TeamGameSystem::getGamePlayersData($gameId);
         $game = TeamGameSystem::getGame($gameId);
 
-        $redTeam = $game->getTeams()[0];
-        $blueTeam = $game->getTeams()[1];
-
-
         $server = Server::getInstance();
         if ($game->getType()->equals(GameTypeList::TDM())) {
             foreach ($playersData as $playerData) {
                 $player = $server->getPlayer($playerData->getName());
-                TDMScoreboard::update($player, $game->getMap()->getName(), $redTeam->getScore()->getValue(), $blueTeam->getScore()->getValue());
+                TDMScoreboard::update($player, $game);
             }
         } else {
             foreach ($playersData as $playerData) {
@@ -34,8 +30,6 @@ class UpdateScoreboardOnGamePMMPService
                 DominationScoreboard::update(
                     $player,
                     $game,
-                    $redTeam->getScore()->getValue(),
-                    $blueTeam->getScore()->getValue(),
                     DominationFlagsStore::findByGameId($gameId));
             }
         }

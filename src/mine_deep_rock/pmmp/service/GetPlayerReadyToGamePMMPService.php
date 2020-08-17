@@ -33,10 +33,10 @@ class GetPlayerReadyToGamePMMPService
         PlayerStatusScoreboard::delete($player);
         $gameType = $game->getType();
         if ($gameType->equals(GameTypeList::TDM())) {
-            TDMScoreboard::send($player, $game->getMap()->getName(), 0, 0);
+            TDMScoreboard::send($player, $game);
 
         } else if ($gameType->equals(GameTypeList::Domination())) {
-            DominationScoreboard::send($player, $game, 0, 0, DominationFlagsStore::findByGameId($gameId));
+            DominationScoreboard::send($player, $game, DominationFlagsStore::findByGameId($gameId));
         }
 
         //アイテムのセット
