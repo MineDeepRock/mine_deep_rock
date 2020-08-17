@@ -30,6 +30,7 @@ class CreateDominationFlagDataForm extends CustomForm
             $this->mapName,
             new DominationFlagData($this->nameElement->getResult(), $player->getPosition())
         );
+        $player->sendForm(new SettingDominationFlagForm($this->mapName));
     }
 
     function onClickCloseButton(Player $player): void {
