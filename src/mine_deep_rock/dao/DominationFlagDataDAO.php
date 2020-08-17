@@ -33,7 +33,7 @@ class DominationFlagDataDAO
         $dh = opendir(DataFolderPath::DominationFlagData);
         while (($fileName = readdir($dh)) !== false) {
             if (filetype(DataFolderPath::DominationFlagData . $fileName) === "file") {
-                $names[] = $fileName;
+                $names[] = str_replace(".json", "", $fileName);
             }
         }
 
@@ -50,6 +50,7 @@ class DominationFlagDataDAO
         if (!file_exists(DataFolderPath::DominationFlagData . $mapName . ".json")) return [];
 
         $data = json_decode(file_get_contents(DataFolderPath::DominationFlagData . $mapName . ".json"), true);
+
         return array_map(function (array $json) {
             return DominationFlagDataJsonAdapter::decode($json);
         }, $data);
@@ -64,7 +65,7 @@ class DominationFlagDataDAO
             $data[] = DominationFlagDataJsonAdapter::encode($flag);
         }
 
-        file_put_contents(DataFolderPath::DominationFlagData . $mapName . ".json", json_encode($flags));
+        file_put_contents(DataFolderPath::DominationFlagData . $mapName . ".json", json_encode($data));
     }
 
     static function removeFlagData(string $mapName, DominationFlagData $flagData): void {

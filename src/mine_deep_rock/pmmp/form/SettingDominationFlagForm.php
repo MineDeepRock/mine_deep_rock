@@ -17,7 +17,7 @@ class SettingDominationFlagForm extends SimpleForm
                 "追加",
                 null,
                 function (Player $player) use ($mapName) {
-                    $player->sendForm(new CreateDominationFlagDataForm($mapName));
+                    $player->sendForm(new AddDominationFlagDataForm($mapName));
                 }
             )
         ];

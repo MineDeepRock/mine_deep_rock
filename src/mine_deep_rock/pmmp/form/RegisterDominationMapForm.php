@@ -7,7 +7,6 @@ namespace mine_deep_rock\pmmp\form;
 use form_builder\models\custom_form_elements\Input;
 use form_builder\models\CustomForm;
 use mine_deep_rock\dao\DominationFlagDataDAO;
-use mine_deep_rock\model\DominationFlagData;
 use pocketmine\Player;
 
 class RegisterDominationMapForm extends CustomForm
@@ -22,7 +21,7 @@ class RegisterDominationMapForm extends CustomForm
     }
 
     function onSubmit(Player $player): void {
-        DominationFlagDataDAO::registerMap($this->mapNameElement->getText());
+        DominationFlagDataDAO::registerMap($this->mapNameElement->getResult());
         $player->sendForm(new DominationMapListForm());
     }
 

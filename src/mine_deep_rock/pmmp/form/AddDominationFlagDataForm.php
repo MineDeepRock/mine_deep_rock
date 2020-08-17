@@ -10,7 +10,7 @@ use mine_deep_rock\dao\DominationFlagDataDAO;
 use mine_deep_rock\model\DominationFlagData;
 use pocketmine\Player;
 
-class CreateDominationFlagDataForm extends CustomForm
+class AddDominationFlagDataForm extends CustomForm
 {
     private $mapName;
 
