@@ -33,6 +33,7 @@ class DominationFlag
 
     public function __construct(string $name, GameId $gameId, Position $position, DominationFlagGauge $gauge) {
         $this->name = $name;
+        $this->gameId = $gameId;
         $this->position = $position;
         $this->gauge = $gauge;
     }
