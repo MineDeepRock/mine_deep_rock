@@ -12,7 +12,15 @@ use pocketmine\Player;
 class DominationMapListForm extends SimpleForm
 {
     public function __construct() {
-        $buttons = [];
+        $buttons = [
+            new SimpleFormButton(
+                "追加",
+                null,
+                function (Player $player) {
+                    $player->sendForm(new RegisterDominationMapForm());
+                }
+            )
+        ];
         foreach (DominationFlagDataDAO::getRegisteredMapNames() as $name) {
             $buttons[] = new SimpleFormButton(
                 $name,
