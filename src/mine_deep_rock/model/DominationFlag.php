@@ -30,6 +30,7 @@ class DominationFlag
      */
     private $gauge;
 
+    const Range = 10;
 
     public function __construct(string $name, GameId $gameId, Position $position, DominationFlagGauge $gauge) {
         $this->name = $name;

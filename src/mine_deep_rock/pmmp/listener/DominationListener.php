@@ -5,11 +5,13 @@ namespace mine_deep_rock\pmmp\listener;
 
 
 use mine_deep_rock\GameTypeList;
+use mine_deep_rock\model\DominationFlag;
 use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
 use mine_deep_rock\pmmp\service\SummonFlagParticlePMMPService;
 use mine_deep_rock\service\OccupyFlagService;
 use mine_deep_rock\store\DominationFlagsStore;
 use pocketmine\event\Listener;
+use pocketmine\Player;
 use pocketmine\Server;
 use team_game_system\model\Score;
 use team_game_system\pmmp\event\UpdatedGameTimerEvent;
@@ -31,7 +33,8 @@ class DominationListener implements Listener
             $aroundPlayersData = [];
             foreach ($levelPlayers as $player) {
                 if (!$player->isOnline()) continue;
-                if ($player->getPosition()->distance($flag->getPosition()) <= 10) {
+                if ($player->getGamemode() !== Player::ADVENTURE) return;
+                if ($player->getPosition()->distance($flag->getPosition()) <= DominationFlag::Range) {
                     $aroundPlayersData[] = TeamGameSystem::getPlayerData($player);
                 }
             }

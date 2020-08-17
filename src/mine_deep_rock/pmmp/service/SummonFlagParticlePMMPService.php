@@ -7,6 +7,7 @@ namespace mine_deep_rock\pmmp\service;
 use mine_deep_rock\model\DominationFlag;
 use pocketmine\level\Level;
 use pocketmine\level\particle\DustParticle;
+use pocketmine\math\Math;
 use pocketmine\utils\Color;
 use team_game_system\TeamGameSystem;
 
@@ -27,6 +28,21 @@ class SummonFlagParticlePMMPService
 
         if ($color === null) return;
 
-        $level->addParticle(new DustParticle($flag->getPosition(), $color->getR(), $color->getG(), $color->getB()));
+        for ($i = 0; $i < 360; $i += 3) {
+            $center = $flag->getPosition();
+
+            $x = DominationFlag::Range * sin(deg2rad($i));
+            $z = DominationFlag::Range * cos(deg2rad($i));
+
+            $pos = $center->add($x, 0, $z);
+
+            if ($flag->getGauge()->isOwned()) {
+                if ($i % 2 === 1) {
+                    $level->addParticle(new DustParticle($pos, 255, 255, 255));
+                }
+            }
+
+            $level->addParticle(new DustParticle($pos, $color->getR(), $color->getG(), $color->getB()));
+        }
     }
 }
