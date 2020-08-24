@@ -6,6 +6,7 @@ namespace mine_deep_rock\pmmp\service;
 
 use mine_deep_rock\GameTypeList;
 use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
+use mine_deep_rock\pmmp\scoreboard\OneOnOneScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
 use mine_deep_rock\store\DominationFlagsStore;
 use pocketmine\Server;
@@ -24,13 +25,18 @@ class UpdateScoreboardOnGamePMMPService
                 $player = $server->getPlayer($playerData->getName());
                 TDMScoreboard::update($player, $game);
             }
-        } else {
+        } else if ($game->getType()->equals(GameTypeList::Domination())) {
             foreach ($playersData as $playerData) {
                 $player = $server->getPlayer($playerData->getName());
                 DominationScoreboard::update(
                     $player,
                     $game,
                     DominationFlagsStore::findByGameId($gameId));
+            }
+        } else if ($game->getType()->equals(GameTypeList::OneOnOne())) {
+            foreach ($playersData as $playerData) {
+                $player = $server->getPlayer($playerData->getName());
+                OneOnOneScoreboard::update($player, $game);
             }
         }
     }

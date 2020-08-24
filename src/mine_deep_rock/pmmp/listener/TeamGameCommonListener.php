@@ -149,8 +149,9 @@ class TeamGameCommonListener implements Listener
         }
 
         //15秒後にロビーに送る
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($playersData, $game): void {
-            SendParticipantsToLobbyPMMPService::execute($playersData, $this->scheduler);
+        $gameType = $game->getType();
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($gameType, $playersData, $game): void {
+            SendParticipantsToLobbyPMMPService::execute($gameType, $playersData, $this->scheduler);
         }), 20 * 15);
     }
 
@@ -244,7 +245,7 @@ class TeamGameCommonListener implements Listener
         $player = $event->getPlayer();
         $playerData = TeamGameSystem::getPlayerData($player);
         if ($playerData->getGameId() === null) return;
-        
+
         $game = TeamGameSystem::getGame($playerData->getGameId());
         if ($game->isClosed()) return;
 

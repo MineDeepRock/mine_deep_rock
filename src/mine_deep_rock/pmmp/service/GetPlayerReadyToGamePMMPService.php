@@ -6,6 +6,7 @@ namespace mine_deep_rock\pmmp\service;
 
 use mine_deep_rock\GameTypeList;
 use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
+use mine_deep_rock\pmmp\scoreboard\OneOnOneScoreboard;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
 use mine_deep_rock\store\DominationFlagsStore;
@@ -37,6 +38,10 @@ class GetPlayerReadyToGamePMMPService
 
         } else if ($gameType->equals(GameTypeList::Domination())) {
             DominationScoreboard::send($player, $game, DominationFlagsStore::findByGameId($gameId));
+
+        } else if ($gameType->equals(GameTypeList::OneOnOne())) {
+            OneOnOneScoreboard::send($player, $game);
+
         }
 
         //アイテムのセット

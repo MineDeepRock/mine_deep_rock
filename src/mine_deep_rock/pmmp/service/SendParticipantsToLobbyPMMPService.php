@@ -4,20 +4,26 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\GameTypeList;
+use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
+use mine_deep_rock\pmmp\scoreboard\OneOnOneScoreboard;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
+use mine_deep_rock\store\DominationFlagsStore;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
 use scoreboard_system\models\Scoreboard;
 use team_game_system\data_model\PlayerData;
+use team_game_system\model\GameType;
 
 class SendParticipantsToLobbyPMMPService
 {
     /**
+     * @param GameType $gameType
      * @param PlayerData[] $participants
      * @param TaskScheduler $taskScheduler
      */
-    static function execute(array $participants, TaskScheduler $taskScheduler): void {
+    static function execute(GameType $gameType, array $participants, TaskScheduler $taskScheduler): void {
         $server = Server::getInstance();
         $lobby = $server->getLevelByName("lobby");
 
@@ -30,8 +36,15 @@ class SendParticipantsToLobbyPMMPService
                     //ロビーに入るときはロビー用アイテムを渡す
                     SendLobbyItemsPMMPService::execute($player, $taskScheduler);
 
-                    //TODO:TDMとは限らない
                     TDMScoreboard::delete($player);
+                    if ($gameType->equals(GameTypeList::TDM())) {
+                        TDMScoreboard::delete($player);
+                    } else if ($gameType->equals(GameTypeList::Domination())) {
+                        DominationScoreboard::delete($player);
+                    } else if ($gameType->equals(GameTypeList::OneOnOne())) {
+                        OneOnOneScoreboard::delete($player);
+                    }
+
                     PlayerStatusScoreboard::send($player);
                 }
             }
