@@ -35,14 +35,16 @@ class SummonFlagParticlePMMPService
             $z = DominationFlag::Range * cos(deg2rad($i));
 
             $pos = $center->add($x, 0, $z);
-
-            if ($flag->getGauge()->isOwned()) {
+            $gauge = $flag->getGauge();
+            if ($gauge->isOwned() && !$gauge->isOccupied()) {
                 if ($i % 2 === 1) {
                     $level->addParticle(new DustParticle($pos, 255, 255, 255));
+                } else {
+                    $level->addParticle(new DustParticle($pos, $color->getR(), $color->getG(), $color->getB()));
                 }
+            } else {
+                $level->addParticle(new DustParticle($pos, $color->getR(), $color->getG(), $color->getB()));
             }
-
-            $level->addParticle(new DustParticle($pos, $color->getR(), $color->getG(), $color->getB()));
         }
     }
 }

@@ -40,7 +40,7 @@ class DominationFlagGauge
             throw new LogicException("value < 0");
         }
 
-        $add = array_fill(0, $value - 1, $teamId);
+        $add = array_fill(0, $value, $teamId);
         $this->gauge = array_merge($this->gauge, $add);
         if (count($this->gauge) > 100) {
             $this->gauge = array_slice($this->gauge, 0, 99);
@@ -75,10 +75,10 @@ class DominationFlagGauge
         }
         if ($remainder < 0) {
             $this->gauge = [];
-            $this->add($teamId, $remainder);
+            $this->add($teamId, -$remainder);
 
         } else {
-            $this->gauge = array_slice($this->gauge, 0, $value - 1);
+            $this->gauge = array_slice($this->gauge, 0, $remainder);
 
         }
     }
