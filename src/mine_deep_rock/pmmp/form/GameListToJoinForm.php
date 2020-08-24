@@ -19,9 +19,17 @@ class GameListToJoinForm extends SimpleForm
         $buttons = array_map(function (Game $game) {
             $gameId = $game->getId();
             $map = $game->getMap();
+
+            $maxScoreText = $game->getMaxScore() === null ? "無し" : $game->getMaxScore()->getValue();
+            $timeLimitText = $game->getTimeLimit() === null ? "無し" : $game->getTimeLimit() . "秒";
             $participantsCount = count(TeamGameSystem::getGamePlayersData($gameId));
+            $participantsCountText = $game->getMaxPlayersCount() === null ? $participantsCount : "{$participantsCount}/{$game->getMaxPlayersCount()}";
             return new SimpleFormButton(
-                "Players:" . TextFormat::BOLD . $participantsCount . TextFormat::RESET . ",map:" . TextFormat::BOLD . $map->getName(),
+                "ゲームモード:" . TextFormat::BOLD . strval($game->getType()) . TextFormat::RESET .
+                ",マップ:" . TextFormat::BOLD . $map->getName() . TextFormat::RESET .
+                "\n勝利判定:" . TextFormat::BOLD . $maxScoreText . TextFormat::RESET .
+                ",時間制限:" . TextFormat::BOLD . $timeLimitText . TextFormat::RESET .
+                ",参加人数:" . TextFormat::BOLD . $participantsCountText . TextFormat::RESET ,
                 null,
                 function (Player $player) use ($game, $gameId) {
 
