@@ -34,6 +34,9 @@ class DominationScoreboard extends Scoreboard
             $index++;
         }
 
+        $scores[] = new Score($slot, "====Flags====", $index, $index);
+        $index++;
+
         foreach ($flags as $flag) {
             $gauge = $flag->getGauge();
 
