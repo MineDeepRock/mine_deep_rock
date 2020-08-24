@@ -25,8 +25,8 @@ class ResortPMMPService
         if ($byRescue) {
             //TODO:２チームしか想定していない
             $game = TeamGameSystem::getGame($playerData->getGameId());
-            //TODO:ここでTDMの判定するべき？
-            if ($game->getType()->equals(GameTypeList::TDM())) {
+            //TODO:ここでGameTypeの判定するべきじゃないと思う？
+            if ($game->getType()->equals(GameTypeList::TDM()) || $game->getType()->equals(GameTypeList::OneOnOne())) {
                 foreach ($game->getTeams() as $team) {
                     if (!$team->getId()->equals($playerData->getTeamId())) {
                         TeamGameSystem::addScore($game->getId(), $team->getId(), new Score(1));
