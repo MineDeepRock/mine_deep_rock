@@ -6,6 +6,7 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
+use mine_deep_rock\GameTypeList;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
@@ -16,7 +17,13 @@ class GameListToJoinForm extends SimpleForm
 {
 
     public function __construct() {
-        $buttons = array_map(function (Game $game) {
+
+
+        $buttons = [];
+        /** @var Game $game */
+        foreach (TeamGameSystem::getAllGames() as $game) {
+            if ($game->getType()->equals(GameTypeList::OneOnOne())) continue;
+
             $gameId = $game->getId();
             $map = $game->getMap();
 
@@ -24,7 +31,7 @@ class GameListToJoinForm extends SimpleForm
             $timeLimitText = $game->getTimeLimit() === null ? "無し" : $game->getTimeLimit() . "秒";
             $participantsCount = count(TeamGameSystem::getGamePlayersData($gameId));
             $participantsCountText = $game->getMaxPlayersCount() === null ? $participantsCount : "{$participantsCount}/{$game->getMaxPlayersCount()}";
-            return new SimpleFormButton(
+            $buttons[] = new SimpleFormButton(
                 "ゲームモード:" . TextFormat::BOLD . strval($game->getType()) . TextFormat::RESET .
                 ",マップ:" . TextFormat::BOLD . $map->getName() . TextFormat::RESET .
                 "\n勝利判定:" . TextFormat::BOLD . $maxScoreText . TextFormat::RESET .
@@ -47,7 +54,7 @@ class GameListToJoinForm extends SimpleForm
                     }
                 }
             );
-        }, TeamGameSystem::getAllGames());
+        }
 
         parent::__construct("ゲーム一覧", "ゲームに参加", $buttons);
     }
