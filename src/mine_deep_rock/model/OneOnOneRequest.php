@@ -4,7 +4,7 @@
 namespace mine_deep_rock\model;
 
 
-class OneOnOneQue
+class OneOnOneRequest
 {
     private $ownerName;
     private $receiverName;
@@ -14,9 +14,9 @@ class OneOnOneQue
         $this->receiverName = $receiverName;
     }
 
-    static function create(string $ownerName, string $receiverName): ?OneOnOneQue {
+    static function create(string $ownerName, string $receiverName): ?OneOnOneRequest {
         if ($ownerName === $receiverName) return null;
-        return new OneOnOneQue($ownerName, $receiverName);
+        return new OneOnOneRequest($ownerName, $receiverName);
     }
 
     /**
