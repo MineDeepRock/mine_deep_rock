@@ -41,9 +41,9 @@ class OneOnOneQuesStore
         return null;
     }
 
-    static function deleteByOwnerName(string $name): void {
+    static function delete(OneOnOneQue $targetQue): void {
         foreach (self::$ques as $key => $que) {
-            if ($que->getOwnerName() === $name) {
+            if ($que->getOwnerName() === $targetQue->getOwnerName()) {
                 unset(self::$ques[$key]);
             }
         }
