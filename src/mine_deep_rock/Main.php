@@ -28,6 +28,7 @@ use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
 use mine_deep_rock\pmmp\service\SpawnGameMasterPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
+use mine_deep_rock\service\SendOneOnOneRequestService;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\command\Command;
@@ -169,6 +170,18 @@ BF1をリスペクトしたPVPサーバーです！
                 return false;
             } else if ($label === "flag") {
                 $sender->sendForm(new DominationMapListForm());
+                return true;
+            } else if ($label === "vs") {
+                if (count($args) !== 1) return false;
+                if ($this->getServer()->getPlayer($args[0]) === null) {
+                    $sender->sendMessage("{$args[0]}は存在しません");
+                    return true;
+                }
+                if (!$this->getServer()->getPlayer($args[0])->isOnline()) {
+                    $sender->sendMessage("{$args[0]}はオフラインです");
+                    return true;
+                }
+                //TODO:formを送る
                 return true;
             }
         }
