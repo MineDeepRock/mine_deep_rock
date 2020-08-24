@@ -20,8 +20,7 @@ class SendBossBarOnGamePMMPService
      * @param int $elapsedTime
      */
     static function execute(GameType $gameType, array $participants, ?int $timeLimit, int $elapsedTime): void {
-        $bossBarType = $gameType->equals(GameTypeList::TDM()) ? BossBarTypes::TDM() : BossBarTypes::Domination();
-
+        $bossBarType = BossBarTypes::fromGameType($gameType);
         foreach ($participants as $participant) {
             $player = Server::getInstance()->getPlayer($participant->getName());
             $bossBar = BossBar::findByType($player, $bossBarType);
@@ -31,12 +30,14 @@ class SendBossBarOnGamePMMPService
                 $bossBar->send();
             }
 
+            //制限時間がなかったら
             if ($timeLimit === null) {
                 $bossBar->updateTitle("経過時間:" . $elapsedTime);
-            } else {
-                $bossBar->updateTitle("残り時間:" . ($timeLimit - $elapsedTime));
-                $bossBar->updatePercentage($elapsedTime / $timeLimit);
+                continue;
             }
+
+            $bossBar->updatePercentage($elapsedTime / $timeLimit);
+            $bossBar->updateTitle($elapsedTime . "/" . $timeLimit);
         }
     }
 }

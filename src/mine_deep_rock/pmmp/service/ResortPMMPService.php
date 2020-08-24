@@ -5,13 +5,12 @@ namespace mine_deep_rock\pmmp\service;
 
 
 use mine_deep_rock\dao\PlayerStatusDAO;
-use mine_deep_rock\GameTypeList;
 use mine_deep_rock\model\MilitaryDepartment;
+use mine_deep_rock\pmmp\event\PlayerResortedEvent;
 use mine_deep_rock\service\SelectMilitaryDepartmentService;
 use mine_deep_rock\service\UpdatePlayerGameStatusIsResuscitated;
 use pocketmine\level\Position;
 use pocketmine\Player;
-use team_game_system\model\Score;
 use team_game_system\TeamGameSystem;
 
 class ResortPMMPService
@@ -22,23 +21,10 @@ class ResortPMMPService
             return;
         }
 
-        if ($byRescue) {
-            //TODO:２チームしか想定していない
-            $game = TeamGameSystem::getGame($playerData->getGameId());
-            //TODO:ここでGameTypeの判定するべきじゃないと思う？
-            if ($game->getType()->equals(GameTypeList::TDM()) || $game->getType()->equals(GameTypeList::OneOnOne())) {
-                foreach ($game->getTeams() as $team) {
-                    if (!$team->getId()->equals($playerData->getTeamId())) {
-                        TeamGameSystem::addScore($game->getId(), $team->getId(), new Score(1));
-                    }
-                }
-            }
-        } else {
-            $status = PlayerStatusDAO::get($playerData->getName());
-            if ($status->getMilitaryDepartment()->getName() === MilitaryDepartment::Sentry) {
-                SelectMilitaryDepartmentService::execute($player->getName(), MilitaryDepartment::AssaultSoldier);
-            }
-
+        //SentryだったらAssaultSoldierに戻す
+        $status = PlayerStatusDAO::get($playerData->getName());
+        if ($status->getMilitaryDepartment()->getName() === MilitaryDepartment::Sentry) {
+            SelectMilitaryDepartmentService::execute($player->getName(), MilitaryDepartment::AssaultSoldier);
         }
 
         $player->setGamemode(Player::ADVENTURE);
@@ -48,7 +34,6 @@ class ResortPMMPService
         if ($game === null) return;
 
         if ($pos !== null) {
-            //蘇生判定
             $player->teleport($pos);
         } else {
             TeamGameSystem::setSpawnPoint($player);
@@ -64,5 +49,8 @@ class ResortPMMPService
         InitEffectsPMMPService::execute($player);
 
         ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
+
+        $event = new PlayerResortedEvent($player, $byRescue);
+        $event->call();
     }
 }

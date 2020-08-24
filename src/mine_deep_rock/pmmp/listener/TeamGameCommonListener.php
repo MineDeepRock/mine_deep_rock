@@ -136,7 +136,7 @@ class TeamGameCommonListener implements Listener
             $tag = PrivateNameTag::get($player);
             if ($tag !== null) $tag->remove();
 
-            $bossBar = BossBar::findByType($player, BossBarTypes::TDM());
+            $bossBar = BossBar::findByType($player, BossBarTypes::fromGameType($game->getType()));
             if ($bossBar !== null) $bossBar->remove();
 
             //PlayerGameStatusをリセット

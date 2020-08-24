@@ -25,7 +25,7 @@ class RescuePlayerPMMPService
             $playerStatus = PlayerStatusDAO::get($player->getName());
             if ($playerStatus->getMilitaryDepartment()->getName() === MilitaryDepartment::NursingSoldier) {
                 UpdatePlayerGameStatusIsResuscitated::execute($target->getName());
-                ResortPMMPService::execute($target, $target->getPosition());
+                ResortPMMPService::execute($target, $target->getPosition(), true);
 
                 $player->sendMessage($target->getName() . "を蘇生した");
                 $target->sendMessage($player->getName() . "に蘇生されました");

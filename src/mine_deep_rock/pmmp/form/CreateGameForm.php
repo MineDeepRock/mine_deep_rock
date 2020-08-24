@@ -24,9 +24,9 @@ class CreateGameForm extends CustomForm
 
     public function __construct() {
         $this->gameType = new Dropdown("GameType", ["TeamDeathMatch","Domination"]);
-        $this->maxScore = new Input("勝利判定スコア", "", "");
+        $this->maxScore = new Input("勝利判定スコア", "", "30");
         $this->maxPlayersCount = new Input("人数制限", "", "");
-        $this->timeLimit = new Input("制限時間(秒)", "", "");
+        $this->timeLimit = new Input("制限時間(秒)", "", "600");
 
         parent::__construct("", [
             new Label("無い場合は空白でお願いします"),

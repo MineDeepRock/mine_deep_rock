@@ -24,6 +24,8 @@ use mine_deep_rock\pmmp\listener\BoxListener;
 use mine_deep_rock\pmmp\listener\DominationListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
+use mine_deep_rock\pmmp\listener\OneOnOneListener;
+use mine_deep_rock\pmmp\listener\TDMListener;
 use mine_deep_rock\pmmp\listener\TeamGameCommonListener;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
@@ -61,6 +63,8 @@ class Main extends PluginBase implements Listener
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
 
+        $this->getServer()->getPluginManager()->registerEvents(new OneOnOneListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new TDMListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new DominationListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new TeamGameCommonListener($this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GunListener(), $this);

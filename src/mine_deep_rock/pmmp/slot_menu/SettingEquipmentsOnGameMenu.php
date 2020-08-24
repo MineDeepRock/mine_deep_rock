@@ -26,7 +26,7 @@ class SettingEquipmentsOnGameMenu extends SlotMenu
                 SlotMenuSystem::send($player, new SelectSubGunTypeMenu($this, $taskScheduler));
             }),
             new SlotMenuElement(ItemIds::EMERALD, "再出撃", 8, function (Player $player) {
-                ResortPMMPService::execute($player, null, true);
+                ResortPMMPService::execute($player, null);
             }),
         ];
         parent::__construct($menus);
