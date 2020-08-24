@@ -5,6 +5,7 @@ namespace mine_deep_rock\pmmp\service;
 
 
 use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\GameTypeList;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\service\SelectMilitaryDepartmentService;
 use mine_deep_rock\service\UpdatePlayerGameStatusIsResuscitated;
@@ -24,9 +25,12 @@ class ResortPMMPService
         if ($byRescue) {
             //TODO:２チームしか想定していない
             $game = TeamGameSystem::getGame($playerData->getGameId());
-            foreach ($game->getTeams() as $team) {
-                if (!$team->getId()->equals($playerData->getTeamId())) {
-                    TeamGameSystem::addScore($game->getId(), $team->getId(), new Score(1));
+            //TODO:ここでTDMの判定するべき？
+            if ($game->getType()->equals(GameTypeList::TDM())) {
+                foreach ($game->getTeams() as $team) {
+                    if (!$team->getId()->equals($playerData->getTeamId())) {
+                        TeamGameSystem::addScore($game->getId(), $team->getId(), new Score(1));
+                    }
                 }
             }
         } else {
