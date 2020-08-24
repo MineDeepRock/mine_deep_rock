@@ -10,12 +10,9 @@ use mine_deep_rock\store\OneOnOneRequestsStore;
 class SendOneOnOneRequestService
 {
     static function execute(string $ownerName, string $receiverName): bool {
+        //知識:リクエストは一つしか送れない
         $request = OneOnOneRequest::create($ownerName, $receiverName);
         if (OneOnOneRequestsStore::findByOwnerName($request->getOwnerName()) !== null) return false;
-        if (OneOnOneRequestsStore::findByReceiverName($request->getOwnerName()) !== null) return false;
-
-        if (OneOnOneRequestsStore::findByOwnerName($request->getReceiverName()) !== null) return false;
-        if (OneOnOneRequestsStore::findByReceiverName($request->getReceiverName()) !== null) return false;
 
         OneOnOneRequestsStore::add($request);
         return true;
