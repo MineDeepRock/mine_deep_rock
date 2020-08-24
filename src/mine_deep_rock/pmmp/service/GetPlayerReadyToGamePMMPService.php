@@ -27,7 +27,7 @@ class GetPlayerReadyToGamePMMPService
         TeamGameSystem::setSpawnPoint($player);
         $player->teleport($player->getSpawn());
 
-        $player->sendTitle("チームデスマッチ スタート");
+        $player->sendTitle(strval($game->getType()) . " スタート");
         $player->sendMessage("あなたは" . $playerTeam->getTeamColorFormat() . $playerTeam->getName() . TextFormat::RESET . "チームです");
 
         //Scoreboardのセット
