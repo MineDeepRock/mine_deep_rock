@@ -15,4 +15,8 @@ class GameTypeList
     static function Domination(): GameType {
         return new GameType("Domination");
     }
+
+    static function OneOnOne():GameType {
+        return new GameType("OneOnOne");
+    }
 }
