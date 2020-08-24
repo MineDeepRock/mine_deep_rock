@@ -10,7 +10,11 @@ use team_game_system\model\Score;
 
 class SendOneOnOneRequestService
 {
-    static function execute(string $ownerName, string $receiverName, string $mapName, ?Score $maxScore, int $timeLimit = 600): bool {
+    static function execute(string $ownerName, string $receiverName, ?string $mapName, ?Score $maxScore, ?int $timeLimit = 600): bool {
+        if ($mapName === null) {
+            //TODO:実装
+        }
+
         //知識:リクエストは一つしか送れない
         $request = OneOnOneRequest::create($ownerName, $receiverName, $mapName, $maxScore, $timeLimit);
         if (OneOnOneRequestsStore::findByOwnerName($request->getOwnerName()) !== null) return false;
