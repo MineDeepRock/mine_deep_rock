@@ -16,6 +16,7 @@ use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\DominationMapListForm;
 use mine_deep_rock\pmmp\form\GunTypeListForSaleForm;
 use mine_deep_rock\pmmp\form\ParticipantsListForm;
+use mine_deep_rock\pmmp\form\SendOneOnOneRequestForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
 use mine_deep_rock\pmmp\form\GameListForm;
 use mine_deep_rock\pmmp\form\GameListToJoinForm;
@@ -173,15 +174,16 @@ BF1をリスペクトしたPVPサーバーです！
                 return true;
             } else if ($label === "vs") {
                 if (count($args) !== 1) return false;
-                if ($this->getServer()->getPlayer($args[0]) === null) {
-                    $sender->sendMessage("{$args[0]}は存在しません");
+                $receiverName = $args[0];
+                if ($this->getServer()->getPlayer($receiverName) === null) {
+                    $sender->sendMessage("{$receiverName}は存在しません");
                     return true;
                 }
-                if (!$this->getServer()->getPlayer($args[0])->isOnline()) {
-                    $sender->sendMessage("{$args[0]}はオフラインです");
+                if (!$this->getServer()->getPlayer($receiverName)->isOnline()) {
+                    $sender->sendMessage("{$receiverName}はオフラインです");
                     return true;
                 }
-                //TODO:formを送る
+                $sender->sendForm(new SendOneOnOneRequestForm($receiverName));
                 return true;
             }
         }
