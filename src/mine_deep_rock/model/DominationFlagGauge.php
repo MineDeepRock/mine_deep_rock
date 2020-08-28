@@ -75,7 +75,7 @@ class DominationFlagGauge
         if ($remainder === 0) {
             $this->gauge = [];
         }
-        
+
         if ($remainder < 0) {
             $this->gauge = [];
             $this->add($teamId, -$remainder);
