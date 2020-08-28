@@ -86,8 +86,8 @@ class BoxListener implements Listener
         if ($receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
 
         ShowPrivateNameTagToParticipantsPMMPService::execute($receiver, $receiverData->getGameId());
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver, $receiverData) : void {
-            ShowPrivateNameTagToAllyPMMPService::execute($receiver, $receiverData->getTeamId());
+        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver) : void {
+            ShowPrivateNameTagToAllyPMMPService::execute($receiver);
         }), 20 * 3);
 
         $receiver->sendTip("スポットされました！３秒間相手に居場所がばれます！");

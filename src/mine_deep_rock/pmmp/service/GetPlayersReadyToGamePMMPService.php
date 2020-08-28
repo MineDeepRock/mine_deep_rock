@@ -19,7 +19,7 @@ class GetPlayersReadyToGamePMMPService
             $player = Server::getInstance()->getPlayer($playerData->getName());
             //ネームタグをセット
             $player->setNameTagAlwaysVisible(false);
-            ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
+            ShowPrivateNameTagToAllyPMMPService::execute($player);
         }
     }
 }

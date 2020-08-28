@@ -48,7 +48,7 @@ class ResortPMMPService
 
         InitEffectsPMMPService::execute($player);
 
-        ShowPrivateNameTagToAllyPMMPService::execute($player, $playerData->getTeamId());
+        ShowPrivateNameTagToAllyPMMPService::execute($player);
 
         $event = new PlayerResortedEvent($player, $byRescue);
         $event->call();
