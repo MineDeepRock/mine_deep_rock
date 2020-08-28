@@ -38,7 +38,12 @@ class SendOneOnOneRequestForm extends CustomForm
         $timeLimit = $this->timeLimit->getResult();
         $timeLimit = $timeLimit === "" ? null : intval($timeLimit);
 
-        SendOneOnOneRequestService::execute($player->getName(), $this->receiverName, null, $maxScore, $timeLimit);
+        $result = SendOneOnOneRequestService::execute($player->getName(), $this->receiverName, null, $maxScore, $timeLimit);
+        if ($result) {
+            $player->sendMessage($this->receiverName . "に1on1のリクエストを送りました");
+        } else {
+            $player->sendMessage("すでにそのプレイヤーにリクエストを送っています");
+        }
     }
 
     function onClickCloseButton(Player $player): void { }

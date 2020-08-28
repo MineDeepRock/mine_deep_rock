@@ -15,10 +15,10 @@ class SendOneOnOneRequestService
             //TODO:実装
         }
 
-        //知識:リクエストは一つしか送れない
-        $request = OneOnOneRequest::create($ownerName, $receiverName, $mapName, $maxScore, $timeLimit);
-        if (OneOnOneRequestsStore::findByOwnerName($request->getOwnerName()) !== null) return false;
+        //同じ人に１つ以上送れないように
+        if (!empty(OneOnOneRequestsStore::findByReceiverName($receiverName))) return false;
 
+        $request = OneOnOneRequest::create($ownerName, $receiverName, $mapName, $maxScore, $timeLimit);
         OneOnOneRequestsStore::add($request);
         return true;
     }

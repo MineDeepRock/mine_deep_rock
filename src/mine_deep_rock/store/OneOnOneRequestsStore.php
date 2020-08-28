@@ -23,22 +23,26 @@ class OneOnOneRequestsStore
         return self::$requests;
     }
 
-    static function findByOwnerName(string $name): ?OneOnOneRequest {
+    static function findByOwnerName(string $name): array {
+        $result = [];
+
         foreach (self::$requests as $request) {
             if ($request->getOwnerName() === $name) {
-                return $request;
+                $result[] =  $request;
             }
         }
-        return null;
+        return $result;
     }
 
-    static function findByReceiverName(string $name): ?OneOnOneRequest {
+    static function findByReceiverName(string $name): array {
+        $result = [];
+
         foreach (self::$requests as $request) {
             if ($request->getReceiverName() === $name) {
-                return $request;
+                $result[] =  $request;
             }
         }
-        return null;
+        return $result;
     }
 
     static function delete(OneOnOneRequest $targetQue): void {
