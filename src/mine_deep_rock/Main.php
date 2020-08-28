@@ -16,6 +16,7 @@ use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\DominationMapListForm;
 use mine_deep_rock\pmmp\form\GunTypeListForSaleForm;
 use mine_deep_rock\pmmp\form\ParticipantsListForm;
+use mine_deep_rock\pmmp\form\ReceivedOneOnOneRequestsForm;
 use mine_deep_rock\pmmp\form\SendOneOnOneRequestForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
 use mine_deep_rock\pmmp\form\GameListForm;
@@ -189,6 +190,8 @@ BF1をリスペクトしたPVPサーバーです！
                 }
                 $sender->sendForm(new SendOneOnOneRequestForm($receiverName));
                 return true;
+            } else if ($label === "requests") {
+                $sender->sendForm(new ReceivedOneOnOneRequestsForm($sender));
             }
         }
         return false;

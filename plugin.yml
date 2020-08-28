@@ -25,5 +25,7 @@ commands:
   vs:
     usage: "/vs [username]"
     description: "send OneOnOne request"
-
+  requests:
+    usage: "/requests"
+    description: "one on one request list"
 
