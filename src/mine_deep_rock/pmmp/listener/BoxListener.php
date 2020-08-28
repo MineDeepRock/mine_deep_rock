@@ -11,6 +11,7 @@ use box_system\pmmp\events\FlareBoxEffectOnEvent;
 use box_system\pmmp\events\MedicineBoxEffectOnEvent;
 use box_system\pmmp\items\BoxItem;
 use gun_system\GunSystem;
+use gun_system\pmmp\item\ItemGun;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToParticipantsPMMPService;
@@ -52,12 +53,17 @@ class BoxListener implements Listener
         if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
         if (!$receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
 
-        GunSystem::giveAmmo($receiver, 0, 10);
-        GunSystem::giveAmmo($receiver, 1, 10);
+        $itemGun = $receiver->getInventory()->getItem(0);
+        $itemSubGun = $receiver->getInventory()->getItem(1);
+        if ($itemGun instanceof ItemGun && $itemSubGun instanceof ItemGun) {
 
-        $receiver->sendTip("{$owner->getName()}から弾薬を供給");
-        $owner->sendTip("{$receiver->getName()}に弾薬を供給");
-        //TODO:オーナーに経験値の処理
+            GunSystem::giveAmmo($receiver, 0, $itemGun->getGun()->getMagazineData()->getCapacity());
+            GunSystem::giveAmmo($receiver, 1, $itemSubGun->getGun()->getMagazineData()->getCapacity());
+
+            $receiver->sendTip("{$owner->getName()}から弾薬を供給");
+            $owner->sendTip("{$receiver->getName()}に弾薬を供給");
+            //TODO:オーナーに経験値の処理
+        }
     }
 
     public function onMedicineBoxEffect(MedicineBoxEffectOnEvent $event): void {
