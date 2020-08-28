@@ -36,11 +36,11 @@ class DominationScoreboard extends Scoreboard
                 $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ":" . $team->getScore()->getValue() . "/" . $maxScoreAsStr,
                 $index,
                 $index);
-            
+
             $index++;
         }
 
-        $scores[] = new Score($slot, "====Flags====", $index, $index);
+        $scores[] = new Score($slot, "======Flag=======", $index, $index);
         $index++;
 
         foreach ($flags as $flag) {

@@ -24,7 +24,7 @@ class TDMScoreboard extends Scoreboard
         $index = count($scores);
         foreach ($game->getTeams() as $team) {
             $maxScoreAsStr = $game->getMaxScore()->getValue() ?? "";
-            
+
             $scores[] = new Score($slot,
                 $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ":" . $team->getScore()->getValue() . "/" . $maxScoreAsStr,
                 $index,
