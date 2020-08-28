@@ -43,7 +43,7 @@ class DominationFlagGauge
         $add = array_fill(0, $value, $teamId);
         $this->gauge = array_merge($this->gauge, $add);
         if (count($this->gauge) > 100) {
-            $this->gauge = array_slice($this->gauge, 0, 99);
+            $this->gauge = array_slice($this->gauge, 0, 100);
         }
 
 

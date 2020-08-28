@@ -32,12 +32,12 @@ use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
 use mine_deep_rock\pmmp\service\SpawnGameMasterPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
-use mine_deep_rock\service\SendOneOnOneRequestService;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\event\block\BlockBurnEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
@@ -229,6 +229,10 @@ BF1をリスペクトしたPVPサーバーです！
     }
 
     public function onExhaust(PlayerExhaustEvent $event) {
+        $event->setCancelled();
+    }
+
+    public function onFireSpread(BlockBurnEvent $event){
         $event->setCancelled();
     }
 }
