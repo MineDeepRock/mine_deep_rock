@@ -199,14 +199,14 @@ BF1をリスペクトしたPVPサーバーです！
         $victim = $event->getEntity();
         if ($attacker instanceof Player) {
             if ($victim instanceof GameMaster) {
-                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD) {
+                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD && $attacker->isOp()) {
                     $victim->kill();
                 } else {
                     $attacker->sendForm(new GameListToJoinForm());
                     $event->setCancelled();
                 }
             } else if ($victim instanceof GunDealerNPC) {
-                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD) {
+                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD  && $attacker->isOp()) {
                     $victim->kill();
                 } else {
                     $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
