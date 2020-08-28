@@ -60,22 +60,24 @@ class BoxListener implements Listener
             $gun = $itemGun->getGun();
             $subGun = $itemSubGun->getGun();
 
-            $this->giveAmmo($receiver, $gun, 0);
-            $this->giveAmmo($receiver, $subGun, 1);
-
-            $receiver->sendTip("{$owner->getName()}から弾薬を供給");
-            $owner->sendTip("{$receiver->getName()}に弾薬を供給");
+            $this->giveAmmo($owner, $receiver, $gun, 0);
+            $this->giveAmmo($owner, $receiver, $subGun, 1);
             //TODO:オーナーに経験値の処理
         }
     }
 
-    private function giveAmmo(Player $player, Gun $gun, int $slot) {
+    private function giveAmmo(Player $owner, Player $receiver, Gun $gun, int $slot) {
         $remain = $gun->getInitialAmmo() - $gun->getMagazineData()->getCurrentAmmo();
+        if ($remain === 0) return;
+
         if ($remain >= $gun->getMagazineData()->getCapacity()) {
-            GunSystem::giveAmmo($player, $slot, $gun->getMagazineData()->getCapacity());
+            GunSystem::giveAmmo($receiver, $slot, $gun->getMagazineData()->getCapacity());
         } else {
-            GunSystem::giveAmmo($player, $slot, $remain);
+            GunSystem::giveAmmo($receiver, $slot, $remain);
         }
+
+        $receiver->sendTip("{$owner->getName()}から弾薬を供給");
+        $owner->sendTip("{$receiver->getName()}に弾薬を供給");
     }
 
     public function onMedicineBoxEffect(MedicineBoxEffectOnEvent $event): void {
