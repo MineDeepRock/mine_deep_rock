@@ -47,6 +47,9 @@ class DominationListener implements Listener
                 TeamGameSystem::addScore($flag->getGameId(), $flag->getGauge()->getOccupyingTeamId(), new Score(1));
             }
 
+            $game = TeamGameSystem::getGame($gameId);
+            if ($game === null) return;
+
             SummonFlagParticlePMMPService::execute($flag, $level);
         }
 
