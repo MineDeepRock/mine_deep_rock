@@ -68,6 +68,7 @@ class TeamGameCommonListener implements Listener
     public function onUpdatedTime(UpdatedGameTimerEvent $event): void {
         $gameId = $event->getGameId();
         $game = TeamGameSystem::getGame($gameId);
+        if ($game === null) return;
 
         $playersData = TeamGameSystem::getGamePlayersData($gameId);
         $timeLimit = $event->getTimeLimit();
