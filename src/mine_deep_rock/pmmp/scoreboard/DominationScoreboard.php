@@ -30,7 +30,13 @@ class DominationScoreboard extends Scoreboard
 
         $index = count($scores);
         foreach ($game->getTeams() as $team) {
-            $scores[] = new Score($slot, $team->getTeamColorFormat() . $team->getName() . ":" . $team->getScore()->getValue(), $index, $index);
+            $maxScoreAsStr = $game->getMaxScore()->getValue() ?? "";
+
+            $scores[] = new Score($slot,
+                $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ":" . $team->getScore()->getValue() . "/" . $maxScoreAsStr,
+                $index,
+                $index);
+            
             $index++;
         }
 
@@ -47,7 +53,7 @@ class DominationScoreboard extends Scoreboard
                 $scores[] = new Score($slot, $team->getTeamColorFormat() . $flag->getName() . ":" . $gauge->asInt(), $index, $index);
             } else if ($gauge->isOwned()) {
                 $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOwingTeamId());
-                $scores[] = new Score($slot,  $flag->getName() . ":" . $team->getTeamColorFormat() . $gauge->asInt(), $index, $index);
+                $scores[] = new Score($slot, $flag->getName() . ":" . $team->getTeamColorFormat() . $gauge->asInt(), $index, $index);
             }
             $index++;
         }
