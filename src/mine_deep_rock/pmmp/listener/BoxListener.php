@@ -11,6 +11,7 @@ use box_system\pmmp\events\FlareBoxEffectOnEvent;
 use box_system\pmmp\events\MedicineBoxEffectOnEvent;
 use box_system\pmmp\items\BoxItem;
 use gun_system\GunSystem;
+use gun_system\model\Gun;
 use gun_system\pmmp\item\ItemGun;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
@@ -56,13 +57,24 @@ class BoxListener implements Listener
         $itemGun = $receiver->getInventory()->getItem(0);
         $itemSubGun = $receiver->getInventory()->getItem(1);
         if ($itemGun instanceof ItemGun && $itemSubGun instanceof ItemGun) {
+            $gun = $itemGun->getGun();
+            $subGun = $itemSubGun->getGun();
 
-            GunSystem::giveAmmo($receiver, 0, $itemGun->getGun()->getMagazineData()->getCapacity());
-            GunSystem::giveAmmo($receiver, 1, $itemSubGun->getGun()->getMagazineData()->getCapacity());
+            $this->giveAmmo($receiver, $gun, 0);
+            $this->giveAmmo($receiver, $subGun, 1);
 
             $receiver->sendTip("{$owner->getName()}から弾薬を供給");
             $owner->sendTip("{$receiver->getName()}に弾薬を供給");
             //TODO:オーナーに経験値の処理
+        }
+    }
+
+    private function giveAmmo(Player $player, Gun $gun, int $slot) {
+        $remain = $gun->getInitialAmmo() - $gun->getMagazineData()->getCurrentAmmo();
+        if ($remain >= $gun->getMagazineData()->getCapacity()) {
+            GunSystem::giveAmmo($player, $slot, $gun->getMagazineData()->getCapacity());
+        } else {
+            GunSystem::giveAmmo($player, $slot, $remain);
         }
     }
 
