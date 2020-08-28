@@ -34,7 +34,7 @@ class SummonFlagParticlePMMPService
             $x = DominationFlag::Range * sin(deg2rad($i));
             $z = DominationFlag::Range * cos(deg2rad($i));
 
-            $pos = $center->add($x, 0, $z);
+            $pos = $center->add($x, 3, $z);
             $gauge = $flag->getGauge();
             if ($gauge->isOwned() && !$gauge->isOccupied()) {
                 if ($i % 2 === 1) {

@@ -14,6 +14,7 @@ use pocketmine\event\Listener;
 use pocketmine\Player;
 use pocketmine\Server;
 use team_game_system\model\Score;
+use team_game_system\pmmp\event\FinishedGameEvent;
 use team_game_system\pmmp\event\UpdatedGameTimerEvent;
 use team_game_system\TeamGameSystem;
 
@@ -58,5 +59,9 @@ class DominationListener implements Listener
                 $game,
                 DominationFlagsStore::findByGameId($gameId));
         }
+    }
+
+    public function onFinishedGame(FinishedGameEvent $event) {
+        DominationFlagsStore::delete($event->getGame()->getId());
     }
 }
