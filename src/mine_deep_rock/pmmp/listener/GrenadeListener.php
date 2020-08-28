@@ -6,6 +6,7 @@ namespace mine_deep_rock\pmmp\listener;
 
 use grenade_system\pmmp\events\ConsumedGrenadeEvent;
 use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
+use grenade_system\pmmp\events\PlayerBurnedByFlameEvent;
 use grenade_system\pmmp\items\GrenadeItem;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -37,6 +38,25 @@ class GrenadeListener implements Listener
             } else {
                 $damage = 20 - $event->getDistance();
             }
+
+            $source = new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 0.4);
+            $source->call();
+            $victim->setLastDamageCause($source);
+
+            $victim->setHealth($victim->getHealth() - $damage);
+        }
+    }
+
+    public function onPlayerBurnedByFlame(PlayerBurnedByFlameEvent $event) {
+        $owner = $event->getOwner();
+        $victim = $event->getVictim();
+
+        $ownerTeamId = TeamGameSystem::getPlayerData($owner)->getTeamId();
+        $victimTeamId = TeamGameSystem::getPlayerData($victim)->getTeamId();
+        if ($ownerTeamId === null || $victimTeamId === null) return;
+        if (!$ownerTeamId->equals($victimTeamId)) {
+
+            $damage = 6;
 
             $source = new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 0.4);
             $source->call();
