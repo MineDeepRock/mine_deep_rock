@@ -64,15 +64,18 @@ class DominationFlagGauge
         $remainder = count($this->gauge) - $value;
 
         //先にやる
-        if ($remainder <= 0) {
+        if (count($this->gauge) < 100) {
             $this->occupyingTeamId = null;
+        }
+
+        if ($remainder <= 0) {
             $this->owingTeamId = null;
         }
 
         if ($remainder === 0) {
             $this->gauge = [];
-
         }
+        
         if ($remainder < 0) {
             $this->gauge = [];
             $this->add($teamId, -$remainder);
