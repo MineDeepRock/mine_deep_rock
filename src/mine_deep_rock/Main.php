@@ -14,6 +14,7 @@ use mine_deep_rock\pmmp\entity\GameMaster;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\DominationMapListForm;
+use mine_deep_rock\pmmp\form\GameDetailPlayerJoinedForm;
 use mine_deep_rock\pmmp\form\GunTypeListForSaleForm;
 use mine_deep_rock\pmmp\form\ParticipantsListForm;
 use mine_deep_rock\pmmp\form\ReceivedOneOnOneRequestsForm;
@@ -205,11 +206,17 @@ BF1をリスペクトしたPVPサーバーです！
                 if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD && $attacker->isOp()) {
                     $victim->kill();
                 } else {
-                    $attacker->sendForm(new GameListToJoinForm());
+                    $attackerData = TeamGameSystem::getPlayerData($attacker);
+                    if ($attackerData->getGameId() === null) {
+                        $attacker->sendForm(new GameListToJoinForm());
+                    } else {
+                        $attacker->sendForm(new GameDetailPlayerJoinedForm($attacker));
+                    }
+
                     $event->setCancelled();
                 }
             } else if ($victim instanceof GunDealerNPC) {
-                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD  && $attacker->isOp()) {
+                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD && $attacker->isOp()) {
                     $victim->kill();
                 } else {
                     $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
@@ -232,7 +239,7 @@ BF1をリスペクトしたPVPサーバーです！
         $event->setCancelled();
     }
 
-    public function onFireSpread(BlockBurnEvent $event){
+    public function onFireSpread(BlockBurnEvent $event) {
         $event->setCancelled();
     }
 }
