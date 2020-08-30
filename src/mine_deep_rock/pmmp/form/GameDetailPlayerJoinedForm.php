@@ -44,7 +44,7 @@ class GameDetailPlayerJoinedForm extends SimpleForm
                 $team->getTeamColorFormat() . $team->getName(),
                 null,
                 function (Player $player) use ($game, $onMove, $team) {
-                    $result = TeamGameSystem::joinGame($player, $game->getId(), $team->getId());
+                    $result = TeamGameSystem::moveTeam($player, $game->getId(), $team->getId());
                     $onMove($player, $game->getType(), $team, $result);
                 }
             );
