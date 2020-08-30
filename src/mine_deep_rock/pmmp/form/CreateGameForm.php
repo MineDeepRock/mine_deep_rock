@@ -18,12 +18,14 @@ class CreateGameForm extends CustomForm
 {
 
     private $gameType;
-    private $timeLimit;
-    private $maxPlayersCount;
+    private $mapName;
     private $maxScore;
+    private $maxPlayersCount;
+    private $timeLimit;
 
     public function __construct() {
-        $this->gameType = new Dropdown("GameType", ["TeamDeathMatch","Domination"]);
+        $this->gameType = new Dropdown("GameType", ["TeamDeathMatch", "Domination"]);
+        $this->mapName = new Input("マップ名", "", "BrokenCity");
         $this->maxScore = new Input("勝利判定スコア", "", "30");
         $this->maxPlayersCount = new Input("人数制限", "", "");
         $this->timeLimit = new Input("制限時間(秒)", "", "600");
@@ -31,6 +33,7 @@ class CreateGameForm extends CustomForm
         parent::__construct("", [
             new Label("無い場合は空白でお願いします"),
             $this->gameType,
+            $this->mapName,
             $this->maxScore,
             $this->maxPlayersCount,
             $this->timeLimit,
@@ -39,6 +42,8 @@ class CreateGameForm extends CustomForm
 
     function onSubmit(Player $player): void {
         $gameType = $this->gameType->getResult();
+
+        $mapName = $this->mapName->getResult();
 
         $maxScore = $this->maxScore->getResult();
         $maxScore = $maxScore === "" ? null : new Score(intval($maxScore));
@@ -51,9 +56,9 @@ class CreateGameForm extends CustomForm
 
 
         if ($gameType === "TeamDeathMatch") {
-            CreateTDMService::execute($maxScore, $maxPlayersCount, $timeLimit);
+            CreateTDMService::execute($mapName, $maxScore, $maxPlayersCount, $timeLimit);
         } else if ($gameType === "Domination") {
-            CreateDominationService::execute($maxScore, $maxPlayersCount, $timeLimit);
+            CreateDominationService::execute($mapName, $maxScore, $maxPlayersCount, $timeLimit);
         }
 
         InformLobbyPlayersOpenGame::execute($gameType);
