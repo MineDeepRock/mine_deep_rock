@@ -6,33 +6,29 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
+use mine_deep_rock\service\GenerateGameDescriptionService;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use team_game_system\model\Game;
 use team_game_system\model\GameType;
+use team_game_system\model\Team;
 use team_game_system\TeamGameSystem;
 
 class GameDetailToJoinForm extends SimpleForm
 {
 
     public function __construct(Game $game) {
-        $gameId = $game->getId();
-        $map = $game->getMap();
-
-        $maxScoreText = $game->getMaxScore() === null ? "無し" : $game->getMaxScore()->getValue();
-        $timeLimitText = $game->getTimeLimit() === null ? "無し" : $game->getTimeLimit() . "秒";
-        $participantsCount = count(TeamGameSystem::getGamePlayersData($gameId));
-        $participantsCountText = $game->getMaxPlayersCount() === null ? $participantsCount : "{$participantsCount}/{$game->getMaxPlayersCount()}";
-
         $buttons = [];
 
-        $onJoin = function (Player $player, GameType $gameTyp, bool $result) {
+        $onJoin = function (Player $player, GameType $gameTyp, ?Team $team, bool $result) {
             if ($result) {
                 $level = Server::getInstance()->getLevelByName("lobby");
-                $player->sendMessage(strval($gameTyp) . "に参加しました");
+                $player->sendMessage(strval($gameTyp) . "の" . $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . "に参加しました");
                 foreach ($level->getPlayers() as $lobbyPlayer) {
-                    $lobbyPlayer->sendMessage($player->getName() . "が" . strval($gameTyp) . "に参加しました");
+                    $lobbyPlayer->sendMessage(
+                        $player->getName() . "が" . strval($gameTyp) . "の" . $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . "に参加しました"
+                    );
                 }
 
             } else {
@@ -46,28 +42,29 @@ class GameDetailToJoinForm extends SimpleForm
                 null,
                 function (Player $player) use ($game, $onJoin, $team) {
                     $result = TeamGameSystem::joinGame($player, $game->getId(), $team->getId());
-                    $onJoin($player, $game->getType(), $result);
+                    $onJoin($player, $game->getType(), $team, $result);
                 }
             );
         }
-
+        
         $buttons[] = new SimpleFormButton(
             "ランダム",
             null,
             function (Player $player) use ($game, $onJoin) {
                 $result = TeamGameSystem::joinGame($player, $game->getId());
-                $onJoin($player, $game->getType(), $result);
+                $team = null;
+                if ($result) {
+                    $playerData = TeamGameSystem::getPlayerData($player);
+                    $team = TeamGameSystem::getTeam($playerData->getGameId(), $playerData->getTeamId());
+                }
+                $onJoin($player, $game->getType(), $team, $result);
             }
         );
 
         parent::__construct(
             "ゲームに参加",
-            "\nゲームモード:" . TextFormat::BOLD . strval($game->getType()) . TextFormat::RESET .
-            "\nマップ:" . TextFormat::BOLD . $map->getName() . TextFormat::RESET .
-            "\n勝利判定:" . TextFormat::BOLD . $maxScoreText . TextFormat::RESET .
-            "\n時間制限:" . TextFormat::BOLD . $timeLimitText . TextFormat::RESET .
-            "\n参加人数:" . TextFormat::BOLD . $participantsCountText . TextFormat::RESET
-            , $buttons);
+            GenerateGameDescriptionService::execute($game),
+            $buttons);
     }
 
     function onClickCloseButton(Player $player): void {
