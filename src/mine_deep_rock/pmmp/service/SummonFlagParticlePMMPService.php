@@ -31,8 +31,8 @@ class SummonFlagParticlePMMPService
         for ($i = 0; $i < 360; $i += 3) {
             $center = $flag->getPosition();
 
-            $x = DominationFlag::Range * sin(deg2rad($i));
-            $z = DominationFlag::Range * cos(deg2rad($i));
+            $x = $flag->getRange() * sin(deg2rad($i));
+            $z = $flag->getRange() * cos(deg2rad($i));
 
             $pos = $center->add($x, 3, $z);
             $gauge = $flag->getGauge();

@@ -30,17 +30,18 @@ class DominationFlag
      */
     private $gauge;
 
-    const Range = 10;
+    private $range;
 
-    public function __construct(string $name, GameId $gameId, Position $position, DominationFlagGauge $gauge) {
+    public function __construct(string $name, GameId $gameId, Position $position, DominationFlagGauge $gauge, int $range) {
         $this->name = $name;
         $this->gameId = $gameId;
         $this->position = $position;
         $this->gauge = $gauge;
+        $this->range = $range;
     }
 
-    static function asNew(string $name, GameId $gameId, Position $position): DominationFlag {
-        return new DominationFlag($name, $gameId, $position, DominationFlagGauge::asNew());
+    static function asNew(string $name, GameId $gameId, Position $position, int $range): DominationFlag {
+        return new DominationFlag($name, $gameId, $position, DominationFlagGauge::asNew(), $range);
     }
 
     public function makeProgress(TeamId $teamId, int $value): void {
@@ -85,5 +86,12 @@ class DominationFlag
      */
     public function getGameId(): GameId {
         return $this->gameId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRange(): int {
+        return $this->range;
     }
 }

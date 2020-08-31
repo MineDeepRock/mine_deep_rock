@@ -35,7 +35,7 @@ class DominationListener implements Listener
             foreach ($levelPlayers as $player) {
                 if (!$player->isOnline()) continue;
                 if ($player->getGamemode() !== Player::ADVENTURE) continue;
-                if ($player->getPosition()->distance($flag->getPosition()) <= DominationFlag::Range) {
+                if ($player->getPosition()->distance($flag->getPosition()) <= $flag->getRange()) {
                     if (abs($player->getPosition()->getY() - $flag->getPosition()->getY()) <= 3) {
                         $aroundPlayersData[] = TeamGameSystem::getPlayerData($player);
                     }

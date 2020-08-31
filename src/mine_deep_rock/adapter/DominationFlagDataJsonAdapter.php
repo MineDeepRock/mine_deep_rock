@@ -17,7 +17,8 @@ class DominationFlagDataJsonAdapter
                 "x" => $pos->getX(),
                 "y" => $pos->getY(),
                 "z" => $pos->getZ(),
-            ]
+            ],
+            "range" => $flagData->getRange()
         ];
     }
 
@@ -29,7 +30,8 @@ class DominationFlagDataJsonAdapter
                 $pos["x"],
                 $pos["y"],
                 $pos["z"]
-            )
+            ),
+            intval($json["range"])
         );
     }
 }
