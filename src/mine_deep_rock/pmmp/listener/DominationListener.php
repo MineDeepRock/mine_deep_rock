@@ -36,7 +36,9 @@ class DominationListener implements Listener
                 if (!$player->isOnline()) continue;
                 if ($player->getGamemode() !== Player::ADVENTURE) continue;
                 if ($player->getPosition()->distance($flag->getPosition()) <= DominationFlag::Range) {
-                    $aroundPlayersData[] = TeamGameSystem::getPlayerData($player);
+                    if (abs($player->getPosition()->getY() - $flag->getPosition()->getY()) <= 3) {
+                        $aroundPlayersData[] = TeamGameSystem::getPlayerData($player);
+                    }
                 }
             }
 
