@@ -9,6 +9,7 @@ use gun_system\pmmp\event\BulletHitEvent;
 use gun_system\pmmp\event\BulletHitNearEvent;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\MilitaryDepartment;
+use mine_deep_rock\model\skill\assault_soldier\DontGiveUp;
 use mine_deep_rock\model\skill\normal\Cover;
 use mine_deep_rock\model\skill\normal\QuickRunAway;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
@@ -26,6 +27,7 @@ class GunListener implements Listener
     public function onBulletHit(BulletHitEvent $event) {
         $attacker = $event->getAttacker();
         $victim = $event->getVictim();
+        $damage = $event->getDamage();
 
         if ($victim instanceof Player && $victim->getLevel()->getName() === "lobby") return;
         if ($victim instanceof GameMaster) return;
@@ -36,18 +38,25 @@ class GunListener implements Listener
             $victimData = TeamGameSystem::getPlayerData($victim);
             if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
             if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
-                $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $event->getDamage(), [], 0);
+
+                if ($attacker->getHealth() <= 4) {
+                    if (PlayerStatusDAO::get($attacker->getName())->isSelectedSkill(new DontGiveUp())) {
+                        $damage += ($damage / 10);
+                    }
+                }
+
+                $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 0);
                 $source->call();
                 $victim->setLastDamageCause($source);
 
-                $victim->setHealth($victim->getHealth() - $event->getDamage());
+                $victim->setHealth($victim->getHealth() - $damage);
             }
         } else {
-            $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $event->getDamage(), [], 0);
+            $source = new EntityDamageByEntityEvent($attacker, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 0);
             $source->call();
             $victim->setLastDamageCause($source);
 
-            $victim->setHealth($victim->getHealth() - $event->getDamage());
+            $victim->setHealth($victim->getHealth() - $damage);
         }
     }
 
