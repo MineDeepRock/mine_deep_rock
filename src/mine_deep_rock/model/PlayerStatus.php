@@ -4,6 +4,7 @@
 namespace mine_deep_rock\model;
 
 
+use mine_deep_rock\model\skill\normal\Frack;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 
 class PlayerStatus
@@ -36,7 +37,16 @@ class PlayerStatus
 
     static function asNew(string $name): PlayerStatus {
         $militaryDepartment = MilitaryDepartmentsStore::get(MilitaryDepartment::AssaultSoldier);
-        return new PlayerStatus($name, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903", [], [], 3000);
+        return new PlayerStatus(
+            $name,
+            $militaryDepartment,
+            $militaryDepartment->getDefaultGunName(),
+            "Mle1903",
+            [
+                new Frack(),
+            ],
+            [],
+            3000);
     }
 
     /**
