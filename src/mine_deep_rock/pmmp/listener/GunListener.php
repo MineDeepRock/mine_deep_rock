@@ -13,18 +13,27 @@ use mine_deep_rock\model\skill\assault_soldier\DontGiveUp;
 use mine_deep_rock\model\skill\engineer\StopProgress;
 use mine_deep_rock\model\skill\normal\Cover;
 use mine_deep_rock\model\skill\normal\QuickRunAway;
+use mine_deep_rock\model\skill\scout\LuminescentBullet;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\GameMaster;
+use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\Player;
+use pocketmine\scheduler\TaskScheduler;
 use team_game_system\TeamGameSystem;
 
 class GunListener implements Listener
 {
+    private $scheduler;
+
+    public function __construct(TaskScheduler $scheduler) {
+        $this->scheduler = $scheduler;
+    }
+
     public function onBulletHit(BulletHitEvent $event) {
         $attacker = $event->getAttacker();
         $victim = $event->getVictim();
@@ -39,10 +48,17 @@ class GunListener implements Listener
             $victimData = TeamGameSystem::getPlayerData($victim);
             if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
             if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
+                $attackerStatus = PlayerStatusDAO::get($attacker->getName());
 
                 if ($attacker->getHealth() <= 4) {
-                    if (PlayerStatusDAO::get($attacker->getName())->isSelectedSkill(new DontGiveUp())) {
+                    if ($attackerStatus->isSelectedSkill(new DontGiveUp())) {
                         $damage += ($damage / 10);
+                    }
+                }
+
+                if ($attackerStatus->isSelectedSkill(new LuminescentBullet())) {
+                    if ($attacker->distance($victim) >= 20) {
+                        SpotEnemyPMMPService::execute($attacker, $victim, 2 * 20, $this->scheduler);
                     }
                 }
 
