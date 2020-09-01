@@ -10,6 +10,7 @@ use gun_system\pmmp\event\BulletHitNearEvent;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\model\skill\assault_soldier\DontGiveUp;
+use mine_deep_rock\model\skill\engineer\StopProgress;
 use mine_deep_rock\model\skill\normal\Cover;
 use mine_deep_rock\model\skill\normal\QuickRunAway;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
@@ -68,13 +69,20 @@ class GunListener implements Listener
         $victimData = TeamGameSystem::getPlayerData($victim);
         if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
         if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
+            $attackerStatus = PlayerStatusDAO::get($attacker->getName());
             $victimStatus = PlayerStatusDAO::get($victim->getName());
             $tick = 5;
-            if ($victimStatus->isSelectedSkill(new Cover())) $tick = 3;
+
+            if ($victimStatus->isSelectedSkill(new Cover())) $tick -= 2;
+
             if ($victimStatus->isSelectedSkill(new QuickRunAway())) {
                 $level = $victimStatus->getMilitaryDepartment()->getName() === MilitaryDepartment::AssaultSoldier ?
                     1 : 0;
                 $victim->addEffect(new EffectInstance(Effect::getEffect(Effect::SPEED), 3 * 20, $level, false));
+            }
+
+            if ($attackerStatus->isSelectedSkill(new StopProgress())) {
+                $tick += 2;
             }
 
             GunSystem::giveScare($victim, $tick);
