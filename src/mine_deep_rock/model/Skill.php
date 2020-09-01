@@ -38,8 +38,6 @@ class Skill
             case QuickRunAway::Name:
                 return new QuickRunAway();
 
-            case ClickRegainHealth::Name:
-                return new ClickRegainHealth();
             case DontGiveUp::Name:
                 return new DontGiveUp();
             case SecondChance::Name:
