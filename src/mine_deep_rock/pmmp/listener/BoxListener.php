@@ -16,6 +16,7 @@ use gun_system\pmmp\item\ItemGun;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToParticipantsPMMPService;
+use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -105,13 +106,7 @@ class BoxListener implements Listener
         if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
         if ($receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
 
-        ShowPrivateNameTagToParticipantsPMMPService::execute($receiver, $receiverData->getGameId());
-        $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($receiver) : void {
-            ShowPrivateNameTagToAllyPMMPService::execute($receiver);
-        }), 20 * 3);
-
-        $receiver->sendTip("スポットされました！３秒間相手に居場所がばれます！");
-        //TODO:オーナーに経験値の処理
+        SpotEnemyPMMPService::execute($owner, $receiver, 20 * 3, $this->scheduler);
     }
 
     public function onStopBox(BoxStopEvent $event) {
