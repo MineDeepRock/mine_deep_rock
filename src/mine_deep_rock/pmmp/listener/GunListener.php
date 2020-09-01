@@ -71,9 +71,10 @@ class GunListener implements Listener
         if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
             $attackerStatus = PlayerStatusDAO::get($attacker->getName());
             $victimStatus = PlayerStatusDAO::get($victim->getName());
-            $tick = 5;
+            $second = 5 * 20;
+            $level = 1;
 
-            if ($victimStatus->isSelectedSkill(new Cover())) $tick -= 2;
+            if ($victimStatus->isSelectedSkill(new Cover())) $second -= 2;
 
             if ($victimStatus->isSelectedSkill(new QuickRunAway())) {
                 $level = $victimStatus->getMilitaryDepartment()->getName() === MilitaryDepartment::AssaultSoldier ?
@@ -82,10 +83,10 @@ class GunListener implements Listener
             }
 
             if ($attackerStatus->isSelectedSkill(new StopProgress())) {
-                $tick += 2;
+                $level += 3;
             }
 
-            GunSystem::giveScare($victim, $tick);
+            GunSystem::giveScare($victim, $second * 20, $level);
         }
     }
 }
