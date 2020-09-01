@@ -8,9 +8,13 @@ use gun_system\GunSystem;
 use gun_system\pmmp\event\BulletHitEvent;
 use gun_system\pmmp\event\BulletHitNearEvent;
 use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\model\skill\normal\Cover;
+use mine_deep_rock\model\skill\normal\QuickRunAway;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\GameMaster;
+use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
@@ -58,6 +62,11 @@ class GunListener implements Listener
             $victimStatus = PlayerStatusDAO::get($victim->getName());
             $tick = 5;
             if ($victimStatus->isSelectedSkill(new Cover())) $tick = 3;
+            if ($victimStatus->isSelectedSkill(new QuickRunAway())) {
+                $level = $victimStatus->getMilitaryDepartment()->getName() === MilitaryDepartment::AssaultSoldier ?
+                    1 : 0;
+                $victim->addEffect(new EffectInstance(Effect::getEffect(Effect::SPEED), 3 * 20, $level, false));
+            }
 
             GunSystem::giveScare($victim, $tick);
         }
