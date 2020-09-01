@@ -9,6 +9,7 @@ use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
 use grenade_system\pmmp\events\PlayerBurnedByFlameEvent;
 use grenade_system\pmmp\items\GrenadeItem;
 use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\model\skill\normal\Frack;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
@@ -37,6 +38,10 @@ class GrenadeListener implements Listener
                 $damage = 20;
             } else {
                 $damage = 20 - $event->getDistance();
+            }
+
+            if (PlayerStatusDAO::get($victim->getName())->isSelectedSkill(new Frack())) {
+                $damage -= intval($damage/5);
             }
 
             $source = new EntityDamageByEntityEvent($owner, $victim, EntityDamageEvent::CAUSE_CONTACT, $damage, [], 0.4);
