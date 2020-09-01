@@ -4,6 +4,7 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
+use box_system\models\AmmoBox;
 use box_system\pmmp\entities\BoxEntity;
 use box_system\pmmp\events\AmmoBoxEffectOnEvent;
 use box_system\pmmp\events\BoxStopEvent;
@@ -14,6 +15,7 @@ use gun_system\GunSystem;
 use gun_system\model\Gun;
 use gun_system\pmmp\item\ItemGun;
 use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\model\skill\engineer\LoveAmmo;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToParticipantsPMMPService;
 use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
@@ -113,6 +115,14 @@ class BoxListener implements Listener
         $box = $event->getBox();
         $owner = $event->getOwner();
 
+        $tick = 20 * 15;
+        $ownerStatus = PlayerStatusDAO::get($owner->getName());
+        if ($box instanceof AmmoBox) {
+            if ($ownerStatus->isSelectedSkill(new LoveAmmo())) {
+                $tick = 20 * 7;
+            }
+        }
+
         $this->scheduler->scheduleDelayedTask(new ClosureTask(function (int $tick) use ($owner, $box): void {
             $playerData = TeamGameSystem::getPlayerData($owner);
             if ($playerData->getGameId() === null) return;
@@ -127,7 +137,7 @@ class BoxListener implements Listener
                     $owner->getInventory()->addItem($boxItem);
                 }
             }
-        }), 20 * 15);
+        }), $tick);
     }
 
     public function onDamaged(EntityDamageByEntityEvent $event) {
