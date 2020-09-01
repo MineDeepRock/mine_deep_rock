@@ -7,6 +7,7 @@ namespace mine_deep_rock\pmmp\service;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\model\skill\assault_soldier\SecondChance;
+use mine_deep_rock\model\skill\nursing_soldier\StimulantSyringe;
 use mine_deep_rock\service\UpdatePlayerGameStatusIsResuscitated;
 use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\entity\Effect;
@@ -30,10 +31,18 @@ class RescuePlayerPMMPService
                 UpdatePlayerGameStatusIsResuscitated::execute($target->getName());
                 ResortPMMPService::execute($target, $target->getPosition(), true);
 
+                $health = 10;
+
                 $targetStatus = PlayerStatusDAO::get($target->getName());
                 if ($targetStatus->isSelectedSkill(new SecondChance())) {
                     $target->addEffect(new EffectInstance(Effect::getEffect(Effect::SPEED), null, 1, false));
                 }
+
+                if($playerStatus->isSelectedSkill(new StimulantSyringe())) {
+                    $health = 16;
+                }
+
+                $target->setHealth($health);
 
                 $player->sendMessage($target->getName() . "を蘇生した");
                 $target->sendMessage($player->getName() . "に蘇生されました");
