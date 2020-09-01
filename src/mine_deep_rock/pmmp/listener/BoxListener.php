@@ -16,6 +16,7 @@ use gun_system\model\Gun;
 use gun_system\pmmp\item\ItemGun;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\skill\engineer\LoveAmmo;
+use mine_deep_rock\model\skill\nursing_soldier\HelpEachOther;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
 use mine_deep_rock\pmmp\service\ShowPrivateNameTagToParticipantsPMMPService;
 use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
@@ -93,6 +94,13 @@ class BoxListener implements Listener
 
         if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
         if (!$receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
+
+        $ownerStatus = PlayerStatusDAO::get($owner->getName());
+        //助け合い
+        if ($ownerStatus->isSelectedSkill(new HelpEachOther())) {
+            $health = $owner->getHealth()+2;
+            $owner->setHealth($health);
+        }
 
         $receiver->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 2, 2));
     }
