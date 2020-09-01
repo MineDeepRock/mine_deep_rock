@@ -36,13 +36,19 @@ class MilitaryDepartment
      */
     private $effectInstances;
 
-    public function __construct(string $name, array $gunTypes, string $defaultGunName, array $boxes, array $effectInstances, array $grenades) {
+    /**
+     * @var Skill[]
+     */
+    private $skills;
+
+    public function __construct(string $name, array $gunTypes, string $defaultGunName, array $boxes, array $effectInstances, array $grenades, array $skills) {
         $this->name = $name;
         $this->gunTypes = $gunTypes;
         $this->defaultGunName = $defaultGunName;
         $this->boxes = $boxes;
         $this->effectInstances = $effectInstances;
         $this->grenades = $grenades;
+        $this->skills = $skills;
     }
 
     /**

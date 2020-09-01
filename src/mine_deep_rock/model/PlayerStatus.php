@@ -13,19 +13,24 @@ class PlayerStatus
     private $mainGunName;
     private $subGunName;
 
+    private $owningSkills;
+    private $selectedSkills;
+
     private $money;
 
-    public function __construct(string $name, MilitaryDepartment $militaryDepartment, string $mainGunName, string $subGunName, int $money) {
+    public function __construct(string $name, MilitaryDepartment $militaryDepartment, string $mainGunName, string $subGunName, array $owningSkills, array $selectedSkills, int $money) {
         $this->name = $name;
         $this->militaryDepartment = $militaryDepartment;
         $this->mainGunName = $mainGunName;
         $this->subGunName = $subGunName;
+        $this->owningSkills = $owningSkills;
+        $this->selectedSkills = $selectedSkills;
         $this->money = $money;
     }
 
     static function asNew(string $name): PlayerStatus {
         $militaryDepartment = MilitaryDepartmentsStore::get(MilitaryDepartment::AssaultSoldier);
-        return new PlayerStatus($name, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903", 3000);
+        return new PlayerStatus($name, $militaryDepartment, $militaryDepartment->getDefaultGunName(), "Mle1903", [], [], 3000);
     }
 
     /**
@@ -61,5 +66,19 @@ class PlayerStatus
      */
     public function getMoney(): int {
         return $this->money;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOwningSkills(): array {
+        return $this->owningSkills;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSelectedSkills(): array {
+        return $this->selectedSkills;
     }
 }
