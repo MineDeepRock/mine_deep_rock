@@ -9,5 +9,5 @@ use mine_deep_rock\model\Skill;
 class SavingBullet extends Skill
 {
     const Name = "節約家";
-    const Description = "敵を倒すと１発補給される";
+    const Description = "銃を撃つと確率で弾が補給される";
 }

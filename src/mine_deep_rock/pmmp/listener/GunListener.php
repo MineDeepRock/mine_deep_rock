@@ -14,6 +14,7 @@ use mine_deep_rock\model\skill\engineer\StopProgress;
 use mine_deep_rock\model\skill\normal\Cover;
 use mine_deep_rock\model\skill\normal\QuickRunAway;
 use mine_deep_rock\model\skill\scout\LuminescentBullet;
+use mine_deep_rock\model\skill\scout\SavingBullet;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\GameMaster;
 use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
@@ -59,6 +60,12 @@ class GunListener implements Listener
                 if ($attackerStatus->isSelectedSkill(new LuminescentBullet())) {
                     if ($attacker->distance($victim) >= 20) {
                         SpotEnemyPMMPService::execute($attacker, $victim, 2 * 20, $this->scheduler);
+                    }
+                }
+
+                if ($attackerStatus->isSelectedSkill(new SavingBullet())) {
+                    if (rand(0, 6) === 1) {
+                        GunSystem::giveAmmo($attacker, $attacker->getInventory()->getHeldItemIndex(), 1);
                     }
                 }
 
