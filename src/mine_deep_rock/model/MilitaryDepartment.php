@@ -98,4 +98,19 @@ class MilitaryDepartment
     const Engineer = "Engineer";
     const Scout = "Scout";
     const Sentry = "Sentry";
+
+    /**
+     * @return Skill[]
+     */
+    public function getSkills(): array {
+        return $this->skills;
+    }
+
+    public function canEquipSkill(Skill $target): bool {
+        foreach ($this->skills as $skill) {
+            if ($skill::Name === $target::Name) return true;
+        }
+
+        return false;;
+    }
 }
