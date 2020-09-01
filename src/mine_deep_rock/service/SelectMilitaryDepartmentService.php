@@ -13,6 +13,14 @@ class SelectMilitaryDepartmentService
     static function execute(string $name, string $militaryDepartmentName): void {
         $status = PlayerStatusDAO::get($name);
         $militaryDepartment = MilitaryDepartmentsStore::get($militaryDepartmentName);
-        PlayerStatusDAO::update(new PlayerStatus($name, $militaryDepartment, $militaryDepartment->getDefaultGunName(), $status->getSubGunName(), $status->getMoney()));
+        PlayerStatusDAO::update(new PlayerStatus(
+                $name,
+                $militaryDepartment,
+                $militaryDepartment->getDefaultGunName(),
+                $status->getSubGunName(),
+                $status->getOwningSkills(),
+                $status->getSelectedSkills(),
+                $status->getMoney())
+        );
     }
 }

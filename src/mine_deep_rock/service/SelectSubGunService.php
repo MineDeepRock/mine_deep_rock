@@ -14,7 +14,15 @@ class SelectSubGunService
     static function execute(string $name, string $gunName, int $scopeMagnification): void {
         $status = PlayerStatusDAO::get($name);
         $militaryDepartment = $status->getMilitaryDepartment();
-        PlayerStatusDAO::update(new PlayerStatus($name, $militaryDepartment, $status->getMainGunName(), $gunName, $status->getMoney()));
+        PlayerStatusDAO::update(new PlayerStatus(
+                $name,
+                $militaryDepartment,
+                $status->getMainGunName(),
+                $gunName,
+                $status->getOwningSkills(),
+                $status->getSelectedSkills(),
+                $status->getMoney())
+        );
 
         $gunRecord = GunRecordDAO::get($name, $gunName);
         if ($gunRecord->getScopeMagnification() !== $scopeMagnification) {

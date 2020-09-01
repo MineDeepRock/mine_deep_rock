@@ -25,6 +25,8 @@ class PlayerStatusJsonAdapter
             MilitaryDepartmentsStore::get($json["military_department"]),
             $json["main_gun"],
             $json["sub_gun"],
+            $json["owning_skills"],
+            $json["selected_skills"],
             $json["money"]
         );
     }

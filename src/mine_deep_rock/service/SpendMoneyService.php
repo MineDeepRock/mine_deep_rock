@@ -12,10 +12,12 @@ class SpendMoneyService
     static function execute(string $name, int $amount): void {
         $status = PlayerStatusDAO::get($name);
         PlayerStatusDAO::update(new PlayerStatus(
-                $status->getName(),
+                $name,
                 $status->getMilitaryDepartment(),
                 $status->getMainGunName(),
                 $status->getSubGunName(),
+                $status->getOwningSkills(),
+                $status->getSelectedSkills(),
                 $status->getMoney() - $amount)
         );
     }

@@ -16,6 +16,8 @@ class GivePlayerMoneyService
                 $status->getMilitaryDepartment(),
                 $status->getMainGunName(),
                 $status->getSubGunName(),
+                $status->getOwningSkills(),
+                $status->getSelectedSkills(),
                 $status->getMoney() + $amount)
         );
     }
