@@ -111,6 +111,6 @@ class MilitaryDepartment
             if ($skill::Name === $target::Name) return true;
         }
 
-        return false;;
+        return false;
     }
 }

@@ -4,9 +4,7 @@
 namespace mine_deep_rock\model\skill\normal;
 
 
-use mine_deep_rock\model\Skill;
-
-class Cover extends Skill
+class Cover extends NormalSkill
 {
     const Name = "カバー";
     const Description = "相手から受ける制圧効果の時間を短縮";

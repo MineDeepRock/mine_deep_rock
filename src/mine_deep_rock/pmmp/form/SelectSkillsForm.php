@@ -4,10 +4,12 @@
 namespace mine_deep_rock\pmmp\form;
 
 
+use form_builder\models\custom_form_elements\Label;
 use form_builder\models\custom_form_elements\Toggle;
 use form_builder\models\CustomForm;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\Skill;
+use mine_deep_rock\model\skill\normal\NormalSkill;
 use mine_deep_rock\service\SetSkillsService;
 use pocketmine\Player;
 
@@ -21,35 +23,46 @@ class SelectSkillsForm extends CustomForm
 
     public function __construct(Player $player) {
         $playerStatus = PlayerStatusDAO::get($player->getName());
-        $this->list = [];
+        $this->list = [
+            new Label("専門技能")
+        ];
+        $normals = [
+            new Label("汎用技能")
+        ];
 
         foreach ($playerStatus->getOwningSkills() as $owningSkill) {
+            $default = false;
+            if ($playerStatus->isSelectedSkill(Skill::fromString($owningSkill::Name))) $default = true;
+
+            if ($owningSkill instanceof NormalSkill) {
+                $normals[] = new Toggle($owningSkill::Name, $default);
+                continue;
+            }
+
             if ($playerStatus->getMilitaryDepartment()->canEquipSkill($owningSkill)) {
-                $default = false;
-                if ($playerStatus->isSelectedSkill(Skill::fromString($owningSkill::Name))) {
-                    $default = true;
-                }
                 $this->list[] = new Toggle($owningSkill::Name, $default);
+                continue;
             }
         }
+
+        $this->list = array_merge($this->list, $normals);
 
         parent::__construct("専門技能の選択", $this->list);
     }
 
     function onSubmit(Player $player): void {
         $skills = [];
-        $count = 0;
         foreach ($this->list as $toggle) {
             if ($toggle->getResult()) {
-                $count++;
-                if ($count > 3) {
-                    return;
-                }
                 $skills[] = Skill::fromString($toggle->getText());
             }
         }
 
-        SetSkillsService::execute($player->getName(), $skills);
+        if (count($skills) > 3) {
+            $player->sendMessage("３つまでしか選べません");
+        } else {
+            SetSkillsService::execute($player->getName(), $skills);
+        }
     }
 
     function onClickCloseButton(Player $player): void { }

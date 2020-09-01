@@ -32,8 +32,12 @@ class PlayerStatusJsonAdapter
             MilitaryDepartmentsStore::get($json["military_department"]),
             $json["main_gun"],
             $json["sub_gun"],
-            $json["owning_skills"],
-            $json["selected_skills"],
+            array_map(function ($name) {
+                return Skill::fromString($name);
+            }, $json["owning_skills"]),
+            array_map(function ($name) {
+                return Skill::fromString($name);
+            }, $json["selected_skills"]),
             $json["money"]
         );
     }
