@@ -107,4 +107,14 @@ class PlayerStatus
 
         return false;
     }
+
+    public function isOwingSkill(Skill $skill): bool {
+        foreach ($this->owningSkills as $owningSkill) {
+            if ($owningSkill::Name === $skill::Name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
