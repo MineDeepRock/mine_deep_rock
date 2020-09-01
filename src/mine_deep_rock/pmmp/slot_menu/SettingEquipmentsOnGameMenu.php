@@ -20,7 +20,7 @@ class SettingEquipmentsOnGameMenu extends SlotMenu
             new SlotMenuElement(ItemIds::COMPASS, "兵科", 0, function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SelectMilitaryDepartmentMenu($this));
             }),
-            new SlotMenuElement(ItemIds::WOODEN_SWORD, "専門技能", 1, function (Player $player) use ($taskScheduler) {
+            new SlotMenuElement(ItemIds::RECORD_MALL, "専門技能", 1, function (Player $player) use ($taskScheduler) {
                 $player->sendForm(new SelectSkillsForm($player));
             }),
             new SlotMenuElement(ItemIds::DIAMOND_SWORD, "メインウェポン", 2, function (Player $player) use ($taskScheduler) {
