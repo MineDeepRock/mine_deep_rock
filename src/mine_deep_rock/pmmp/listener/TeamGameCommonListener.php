@@ -5,9 +5,12 @@ namespace mine_deep_rock\pmmp\listener;
 
 
 use bossbar_system\BossBar;
+use box_system\interpreters\BoxInterpreter;
 use box_system\pmmp\entities\BoxEntity;
 use grenade_system\pmmp\entities\GrenadeEntity;
 use gun_system\pmmp\item\ItemGun;
+use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\model\skill\nursing_soldier\Entrusting;
 use mine_deep_rock\pmmp\BossBarTypes;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\service\GetPlayerReadyToGamePMMPService;
@@ -28,6 +31,8 @@ use mine_deep_rock\service\AddKillCountInGameService;
 use mine_deep_rock\service\AddKillCountToGunRecordService;
 use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\service\ResetPlayerGameStatusService;
+use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityRegainHealthEvent;
@@ -240,6 +245,24 @@ class TeamGameCommonListener implements Listener
 
         //死体を出す
         SpawnCadaverEntityPMMPService::execute($victim);
+
+        //Entrusting
+        $victimStatus = PlayerStatusDAO::get($victim->getName());
+        if ($victimStatus->isSelectedSkill(new Entrusting())) {
+            $players = $victim->getLevel()->getPlayers();
+
+            foreach ($players as $player) {
+                if ($victim->distance($player->getPosition()) <= 5) {
+                    $playerData =TeamGameSystem::getPlayerData($player);
+                    $victimData =TeamGameSystem::getPlayerData($player);
+
+                    if ($playerData->getGameId() === null) continue;
+                    if ($playerData->getTeamId()->equals($victimData->getTeamId())) {
+                        $player->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 2 * 30, 3));
+                    }
+                }
+            }
+        }
     }
 
     public function onRespawn(PlayerRespawnEvent $event) {
