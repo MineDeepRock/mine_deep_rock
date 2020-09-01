@@ -7,6 +7,8 @@ namespace mine_deep_rock\pmmp\listener;
 use gun_system\GunSystem;
 use gun_system\pmmp\event\BulletHitEvent;
 use gun_system\pmmp\event\BulletHitNearEvent;
+use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\model\skill\normal\Cover;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\GameMaster;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -53,7 +55,11 @@ class GunListener implements Listener
         $victimData = TeamGameSystem::getPlayerData($victim);
         if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
         if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
-            GunSystem::giveScare($victim);
+            $victimStatus = PlayerStatusDAO::get($victim->getName());
+            $tick = 5;
+            if ($victimStatus->isSelectedSkill(new Cover())) $tick = 3;
+
+            GunSystem::giveScare($victim, $tick);
         }
     }
 }

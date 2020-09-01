@@ -13,7 +13,13 @@ class PlayerStatus
     private $mainGunName;
     private $subGunName;
 
+    /**
+     * @var Skill[]
+     */
     private $owningSkills;
+    /**
+     * @var Skill[]
+     */
     private $selectedSkills;
 
     private $money;
@@ -80,5 +86,15 @@ class PlayerStatus
      */
     public function getSelectedSkills(): array {
         return $this->selectedSkills;
+    }
+
+    public function isSelectedSkill(Skill $skill): bool {
+        foreach ($this->selectedSkills as $selectedSkill) {
+            if ($selectedSkill::Name === $skill::Name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
