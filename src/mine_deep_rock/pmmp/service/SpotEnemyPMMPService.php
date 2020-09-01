@@ -4,6 +4,8 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\model\skill\normal\AntiSpot;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
@@ -14,7 +16,14 @@ class SpotEnemyPMMPService
 {
     static function execute(Player $player, Player $enemy, float $tick, TaskScheduler $scheduler): void {
         $enemyData = TeamGameSystem::getPlayerData($enemy);
+        $enemyStatus = PlayerStatusDAO::get($enemy->getName());
         ShowPrivateNameTagToParticipantsPMMPService::execute($enemy, $enemyData->getGameId());
+
+        foreach ($enemyStatus->getSelectedSkills() as $skill) {
+            if ($skill instanceof AntiSpot) {
+                $tick /= 2;
+            }
+        }
 
         $scheduler->scheduleDelayedTask(new ClosureTask(function (int $i) use ($enemy) : void {
             $enemy = Server::getInstance()->getPlayer($enemy->getName());
