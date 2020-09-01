@@ -5,6 +5,7 @@ namespace mine_deep_rock\adapter;
 
 
 use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\model\Skill;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 
 class PlayerStatusJsonAdapter
@@ -15,6 +16,12 @@ class PlayerStatusJsonAdapter
             "military_department" => $playerStatus->getMilitaryDepartment()->getName(),
             "main_gun" => $playerStatus->getMainGunName(),
             "sub_gun" => $playerStatus->getSubGunName(),
+            "owning_skills" => array_map(function (Skill $skill) {
+                return $skill::Name;
+            }, $playerStatus->getOwningSkills()),
+            "selected_skills" => array_map(function (Skill $skill) {
+                return $skill::Name;
+            }, $playerStatus->getSelectedSkills()),
             "money" => $playerStatus->getMoney(),
         ];
     }
