@@ -25,24 +25,25 @@ class SelectSkillsForm extends CustomForm
     public function __construct(Player $player) {
         $playerStatus = PlayerStatusDAO::get($player->getName());
         $this->list = [
-            new Label(TextFormat::BOLD .  "専門技能")
+            new Label(TextFormat::BOLD . "専門技能")
         ];
         $normals = [
             new Label(TextFormat::BOLD . "汎用技能")
         ];
 
         foreach ($playerStatus->getOwningSkills() as $owningSkill) {
-            $default = $playerStatus->isSelectedSkill($owningSkill);
+            $isSelected = $playerStatus->isSelectedSkill($owningSkill);
+            $format = $isSelected ? TextFormat::GREEN : TextFormat::RESET;
 
             if ($owningSkill instanceof NormalSkill) {
-                $normals[] = new Toggle($owningSkill::Name, $default);
-                $normals[] = new Label($owningSkill::Description);
+                $normals[] = new Label($format . $owningSkill::Name . ":" . $owningSkill::Description);
+                $normals[] = new Toggle("", $isSelected);
                 continue;
             }
 
             if ($playerStatus->getMilitaryDepartment()->canEquipSkill($owningSkill)) {
-                $this->list[] = new Toggle($owningSkill::Name, $default);
-                $this->list[] = new Label($owningSkill::Description);
+                $this->list[] = new Label($format . $owningSkill::Name . ":" . $owningSkill::Description);
+                $normals[] = new Toggle("", $isSelected);
                 continue;
             }
         }
@@ -56,7 +57,12 @@ class SelectSkillsForm extends CustomForm
         $skills = [];
         foreach ($this->list as $toggle) {
             if ($toggle->getResult()) {
-                $skills[] = Skill::fromString($toggle->getText());
+                $name = $toggle->getText();
+                $name = str_split(":", $name)[0];
+                $name = str_replace(TextFormat::BOLD, "", $name);
+                var_dump($name);
+
+                $skills[] = Skill::fromString($name);
             }
         }
 
