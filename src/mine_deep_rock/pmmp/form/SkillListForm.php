@@ -30,7 +30,7 @@ class SkillListForm extends SimpleForm
                 $buttons[] = new SimpleFormButton(
                     $normalSkill::Name,
                     null,
-                    function (Player $player) use ($normalSkill, $militaryDepartment) {
+                    function (Player $player) use ($normalSkill) {
                         $player->sendForm(new SkillDetailForm($normalSkill, null));
                     }
                 );
@@ -52,7 +52,7 @@ class SkillListForm extends SimpleForm
 
         parent::__construct(
             "スキルを購入",
-            $militaryDepartment->getName(),
+            $militaryDepartment === null ? "汎用技能" : $militaryDepartment->getName(),
             $buttons
         );
     }

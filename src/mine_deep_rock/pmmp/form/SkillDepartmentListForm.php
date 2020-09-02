@@ -22,6 +22,8 @@ class SkillDepartmentListForm extends SimpleForm
                 }
             )
         ];
+
+
         foreach (MilitaryDepartmentsStore::getAll() as $militaryDepartment) {
             $buttons[] = new SimpleFormButton(
                 $militaryDepartment->getName(),
