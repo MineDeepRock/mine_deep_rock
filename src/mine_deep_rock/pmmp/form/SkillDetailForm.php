@@ -8,6 +8,7 @@ use form_builder\models\modal_form_elements\ModalFormButton;
 use form_builder\models\ModalForm;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\model\Skill;
+use mine_deep_rock\service\BuySkillService;
 use pocketmine\Player;
 
 class SkillDetailForm extends ModalForm
@@ -26,7 +27,12 @@ class SkillDetailForm extends ModalForm
     }
 
     public function onClickButton1(Player $player): void {
-        $player->sendMessage($this->skill::Name . " を購入しました");
+        $result = BuySkillService::execute($player->getName(), $this->skill);
+        if ($result) {
+            $player->sendMessage($this->skill::Name . " を購入しました");
+        } else {
+            $player->sendMessage("所持金が不足しているか、すでに所有しています");
+        }
     }
 
     public function onClickButton2(Player $player): void {
