@@ -6,6 +6,7 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
+use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use pocketmine\Player;
 
@@ -25,8 +26,10 @@ class SkillDepartmentListForm extends SimpleForm
 
 
         foreach (MilitaryDepartmentsStore::getAll() as $militaryDepartment) {
+            if ($militaryDepartment->getName() === MilitaryDepartment::Sentry) continue;
+
             $buttons[] = new SimpleFormButton(
-                $militaryDepartment->getName(),
+                $militaryDepartment->getNameJp(),
                 null,
                 function (Player $player) use ($militaryDepartment) {
                     $player->sendForm(new SkillListForm($player, $militaryDepartment));

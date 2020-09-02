@@ -24,7 +24,6 @@ class BuySkillService
         $skills = $status->getOwningSkills();
         $skills[] = $skill;
 
-        SpendMoneyService::execute($name, 2000);
         PlayerStatusDAO::update(new PlayerStatus(
                 $name,
                 $status->getMilitaryDepartment(),
@@ -34,6 +33,7 @@ class BuySkillService
                 $status->getSelectedSkills(),
                 $status->getMoney())
         );
+        SpendMoneyService::execute($name, 2000);
         return true;
     }
 }

@@ -31,8 +31,7 @@ class SelectSkillsForm extends CustomForm
         ];
 
         foreach ($playerStatus->getOwningSkills() as $owningSkill) {
-            $default = false;
-            if ($playerStatus->isSelectedSkill(Skill::fromString($owningSkill::Name))) $default = true;
+            $default = $playerStatus->isSelectedSkill($owningSkill);
 
             if ($owningSkill instanceof NormalSkill) {
                 $normals[] = new Toggle($owningSkill::Name, $default);

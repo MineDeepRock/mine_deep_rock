@@ -16,6 +16,10 @@ class MilitaryDepartment
      */
     private $name;
     /**
+     * @var string
+     */
+    private $nameJp;
+    /**
      * @var GunType[]
      */
     private $gunTypes;
@@ -41,8 +45,9 @@ class MilitaryDepartment
      */
     private $skills;
 
-    public function __construct(string $name, array $gunTypes, string $defaultGunName, array $boxes, array $effectInstances, array $grenades, array $skills) {
+    public function __construct(string $name,string $nameJp, array $gunTypes, string $defaultGunName, array $boxes, array $effectInstances, array $grenades, array $skills) {
         $this->name = $name;
+        $this->nameJp = $nameJp;
         $this->gunTypes = $gunTypes;
         $this->defaultGunName = $defaultGunName;
         $this->boxes = $boxes;
@@ -112,5 +117,12 @@ class MilitaryDepartment
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameJp(): string {
+        return $this->nameJp;
     }
 }

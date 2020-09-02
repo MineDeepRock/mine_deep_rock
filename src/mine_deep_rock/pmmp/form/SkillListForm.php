@@ -45,7 +45,6 @@ class SkillListForm extends SimpleForm
                             $player->sendForm(new SkillDetailForm($skill, $militaryDepartment));
                         }
                     );
-                    break;
                 }
             }
         }
@@ -58,5 +57,6 @@ class SkillListForm extends SimpleForm
     }
 
     function onClickCloseButton(Player $player): void {
+        $player->sendForm(new SkillDepartmentListForm());
     }
 }

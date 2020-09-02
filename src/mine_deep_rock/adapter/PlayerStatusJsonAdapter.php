@@ -36,10 +36,10 @@ class PlayerStatusJsonAdapter
         }
 
         $selectedSkills = [];
-        if (key_exists("owning_skills", $json)) {
+        if (key_exists("selected_skills", $json)) {
             $selectedSkills = array_map(function ($name) {
                 return Skill::fromString($name);
-            }, $json["owning_skills"]);
+            }, $json["selected_skills"]);
         }
 
         return new PlayerStatus(

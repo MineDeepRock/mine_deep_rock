@@ -37,6 +37,7 @@ class MilitaryDepartmentJsonAdapter
 
         return new MilitaryDepartment(
             $json["name"],
+            $json["name_jp"],
             $gunTypes,
             $json["default_gun_name"],
             $boxes,
