@@ -30,7 +30,7 @@ class SkillListForm extends SimpleForm
             foreach ($normals as $normalSkill) {
                 if (!$playerStatus->isOwingSkill($normalSkill)) {
                     $buttons[] = new SimpleFormButton(
-                        $normalSkill::Name,
+                        $normalSkill::Name . "\n" . $normalSkill::Description,
                         null,
                         function (Player $player) use ($normalSkill) {
                             $player->sendForm(new SkillDetailForm($normalSkill, null));
@@ -42,7 +42,7 @@ class SkillListForm extends SimpleForm
             foreach ($militaryDepartment->getSkills() as $skill) {
                 if (!$playerStatus->isOwingSkill($skill)) {
                     $buttons[] = new SimpleFormButton(
-                        $skill::Name,
+                        $skill::Name . "\n" . $skill::Description,
                         null,
                         function (Player $player) use ($skill, $militaryDepartment) {
                             $player->sendForm(new SkillDetailForm($skill, $militaryDepartment));
@@ -60,6 +60,6 @@ class SkillListForm extends SimpleForm
     }
 
     function onClickCloseButton(Player $player): void {
-        $player->sendForm(new SkillDepartmentListForm());
+        $player->sendForm(new SkillDepartmentListForm($player));
     }
 }

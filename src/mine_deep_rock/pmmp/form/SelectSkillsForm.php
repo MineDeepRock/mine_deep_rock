@@ -12,6 +12,7 @@ use mine_deep_rock\model\Skill;
 use mine_deep_rock\model\skill\normal\NormalSkill;
 use mine_deep_rock\service\SetSkillsService;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 
 class SelectSkillsForm extends CustomForm
 {
@@ -24,10 +25,10 @@ class SelectSkillsForm extends CustomForm
     public function __construct(Player $player) {
         $playerStatus = PlayerStatusDAO::get($player->getName());
         $this->list = [
-            new Label("専門技能")
+            new Label(TextFormat::BOLD .  "専門技能")
         ];
         $normals = [
-            new Label("汎用技能")
+            new Label(TextFormat::BOLD . "汎用技能")
         ];
 
         foreach ($playerStatus->getOwningSkills() as $owningSkill) {
@@ -35,16 +36,18 @@ class SelectSkillsForm extends CustomForm
 
             if ($owningSkill instanceof NormalSkill) {
                 $normals[] = new Toggle($owningSkill::Name, $default);
+                $normals[] = new Label($owningSkill::Description);
                 continue;
             }
 
             if ($playerStatus->getMilitaryDepartment()->canEquipSkill($owningSkill)) {
                 $this->list[] = new Toggle($owningSkill::Name, $default);
+                $this->list[] = new Label($owningSkill::Description);
                 continue;
             }
         }
 
-        $this->list = array_merge($this->list, $normals);
+        $this->list = array_merge($normals, $this->list);
 
         parent::__construct("専門技能の選択", $this->list);
     }

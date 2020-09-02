@@ -229,7 +229,7 @@ class Main extends PluginBase implements Listener
                 $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
 
             } else if ($victim instanceof SkillDealerNPC) {
-                $attacker->sendForm(new SkillDepartmentListForm());
+                $attacker->sendForm(new SkillDepartmentListForm($attacker));
             }
         }
     }

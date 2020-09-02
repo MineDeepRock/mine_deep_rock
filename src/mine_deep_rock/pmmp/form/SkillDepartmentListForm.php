@@ -6,14 +6,16 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
+use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 
 class SkillDepartmentListForm extends SimpleForm
 {
 
-    public function __construct() {
+    public function __construct(Player $player) {
         $buttons = [
             new SimpleFormButton(
                 "汎用技能",
@@ -25,11 +27,17 @@ class SkillDepartmentListForm extends SimpleForm
         ];
 
 
+        $playerStatus = PlayerStatusDAO::get($player->getName());
         foreach (MilitaryDepartmentsStore::getAll() as $militaryDepartment) {
             if ($militaryDepartment->getName() === MilitaryDepartment::Sentry) continue;
 
+            $text = $militaryDepartment->getNameJp() . "の専門技能";
+            if ($playerStatus->getMilitaryDepartment()->getName() === $militaryDepartment->getName()) {
+                $text = TextFormat::BOLD . TextFormat::AQUA . $text;
+            }
+
             $buttons[] = new SimpleFormButton(
-                $militaryDepartment->getNameJp(),
+                $text,
                 null,
                 function (Player $player) use ($militaryDepartment) {
                     $player->sendForm(new SkillListForm($player, $militaryDepartment));
