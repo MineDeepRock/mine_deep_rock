@@ -6,6 +6,7 @@ namespace mine_deep_rock\service;
 
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\model\skill\normal\NormalSkill;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 
 class SelectMilitaryDepartmentService
@@ -14,11 +15,14 @@ class SelectMilitaryDepartmentService
         $status = PlayerStatusDAO::get($name);
         $militaryDepartment = MilitaryDepartmentsStore::get($militaryDepartmentName);
         $skills = [];
-        foreach ($status->getSelectedSkills() as $selectedSkill) {
-            if ($militaryDepartment->canEquipSkill($selectedSkill)) {
-                $skills[] = $selectedSkill;
+        if ($status->getMilitaryDepartment()->getName() !== $militaryDepartmentName) {
+            foreach ($status->getSelectedSkills() as $selectedSkill) {
+                if ($selectedSkill instanceof NormalSkill) {
+                    $skills[] = $selectedSkill;
+                }
             }
         }
+
         PlayerStatusDAO::update(new PlayerStatus(
                 $name,
                 $militaryDepartment,
