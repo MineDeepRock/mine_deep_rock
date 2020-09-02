@@ -16,7 +16,7 @@ class SkillDetailForm extends ModalForm
     private $skill;
     private $militaryDepartment;
 
-    public function __construct(Skill $skill, MilitaryDepartment $militaryDepartment) {
+    public function __construct(Skill $skill, ?MilitaryDepartment $militaryDepartment) {
         $this->skill = $skill;
         $this->militaryDepartment = $militaryDepartment;
         parent::__construct($skill::Name, $skill::Description, new ModalFormButton("購入"), new ModalFormButton("キャンセル"));

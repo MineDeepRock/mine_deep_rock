@@ -21,6 +21,7 @@ use mine_deep_rock\pmmp\form\GunTypeListForSaleForm;
 use mine_deep_rock\pmmp\form\ParticipantsListForm;
 use mine_deep_rock\pmmp\form\ReceivedOneOnOneRequestsForm;
 use mine_deep_rock\pmmp\form\SendOneOnOneRequestForm;
+use mine_deep_rock\pmmp\form\SkillDepartmentListForm;
 use mine_deep_rock\pmmp\form\StartGameForm;
 use mine_deep_rock\pmmp\form\GameListForm;
 use mine_deep_rock\pmmp\form\GameListToJoinForm;
@@ -228,7 +229,7 @@ class Main extends PluginBase implements Listener
                 $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
 
             } else if ($victim instanceof SkillDealerNPC) {
-                $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
+                $attacker->sendForm(new SkillDepartmentListForm($attacker));
             }
         }
     }
