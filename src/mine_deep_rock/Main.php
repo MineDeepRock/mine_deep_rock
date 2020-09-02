@@ -42,7 +42,6 @@ use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
-use pocketmine\entity\NPC;
 use pocketmine\event\block\BlockBurnEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -62,6 +61,7 @@ class Main extends PluginBase implements Listener
         Entity::registerEntity(GameMaster::class, true, ['GameMaster']);
         Entity::registerEntity(GunDealerNPC::class, true, ['GunDealerNPC']);
         Entity::registerEntity(CadaverEntity::class, true, ['Cadaver']);
+        Entity::registerEntity(SkillDealerNPC::class, true, ['SkillDealer']);
 
         GunRecordDAO::init();
         PlayerStatusDAO::init();
@@ -229,7 +229,7 @@ class Main extends PluginBase implements Listener
                 $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
 
             } else if ($victim instanceof SkillDealerNPC) {
-                $attacker->sendForm(new SkillDepartmentListForm($attacker));
+                $attacker->sendForm(new SkillDepartmentListForm());
             }
         }
     }
