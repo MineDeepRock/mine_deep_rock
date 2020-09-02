@@ -11,6 +11,8 @@ use mine_deep_rock\model\PlayerStatus;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\GunDealerNPC;
 use mine_deep_rock\pmmp\entity\GameMaster;
+use mine_deep_rock\pmmp\entity\NPCBase;
+use mine_deep_rock\pmmp\entity\SkillDealerNPC;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\DominationMapListForm;
@@ -32,12 +34,14 @@ use mine_deep_rock\pmmp\listener\TeamGameCommonListener;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
 use mine_deep_rock\pmmp\service\SpawnGameMasterPMMPService;
+use mine_deep_rock\pmmp\service\SpawnSkillDealerNPCPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\NPC;
 use pocketmine\event\block\BlockBurnEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -107,9 +111,7 @@ class Main extends PluginBase implements Listener
         $player->sendDataPacket($pk);
         PlayerStatusScoreboard::send($player);
 
-        $player->sendMessage("ようこそMineDeepRockへ
-BF1をリスペクトしたPVPサーバーです！
-兵科と銃を選択して、ゲームに参加しましょう！");
+        $player->sendMessage("ようこそMineDeepRockへ\nBF1をリスペクトしたPVPサーバーです！\n兵科と銃、技能を選択して、ゲームに参加しましょう！");
     }
 
     public function onUpdatedPlayerStatus(UpdatedPlayerStatusEvent $event): void {
@@ -138,6 +140,10 @@ BF1をリスペクトしたPVPサーバーです！
                         break;
                     case "gun":
                         SpawnGunDealerNPCPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
+                        return true;
+                        break;
+                    case "skill":
+                        SpawnSkillDealerNPCPMMPService::execute($sender->getLevel(), $sender->getPosition(), $sender->getYaw());
                         return true;
                         break;
                 }
@@ -202,26 +208,27 @@ BF1をリスペクトしたPVPサーバーです！
         $attacker = $event->getDamager();
         $victim = $event->getEntity();
         if ($attacker instanceof Player) {
-            if ($victim instanceof GameMaster) {
+            if ($victim instanceof NPCBase) {
                 if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD && $attacker->isOp()) {
                     $victim->kill();
+                    return;
                 } else {
-                    $attackerData = TeamGameSystem::getPlayerData($attacker);
-                    if ($attackerData->getGameId() === null) {
-                        $attacker->sendForm(new GameListToJoinForm());
-                    } else {
-                        $attacker->sendForm(new GameDetailPlayerJoinedForm($attacker));
-                    }
-
                     $event->setCancelled();
+                }
+            }
+
+            if ($victim instanceof GameMaster) {
+                $attackerData = TeamGameSystem::getPlayerData($attacker);
+                if ($attackerData->getGameId() === null) {
+                    $attacker->sendForm(new GameListToJoinForm());
+                } else {
+                    $attacker->sendForm(new GameDetailPlayerJoinedForm($attacker));
                 }
             } else if ($victim instanceof GunDealerNPC) {
-                if ($attacker->getInventory()->getItemInHand()->getId() === ItemIds::WOODEN_SWORD && $attacker->isOp()) {
-                    $victim->kill();
-                } else {
-                    $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
-                    $event->setCancelled();
-                }
+                $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
+
+            } else if ($victim instanceof SkillDealerNPC) {
+                $attacker->sendForm(new GunTypeListForSaleForm($this->getScheduler()));
             }
         }
     }

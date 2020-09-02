@@ -17,6 +17,7 @@ use mine_deep_rock\model\skill\scout\LuminescentBullet;
 use mine_deep_rock\model\skill\scout\SavingBullet;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
 use mine_deep_rock\pmmp\entity\GameMaster;
+use mine_deep_rock\pmmp\entity\NPCBase;
 use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
@@ -41,7 +42,7 @@ class GunListener implements Listener
         $damage = $event->getDamage();
 
         if ($victim instanceof Player && $victim->getLevel()->getName() === "lobby") return;
-        if ($victim instanceof GameMaster) return;
+        if ($victim instanceof NPCBase) return;
         if ($victim instanceof CadaverEntity) return;
 
         if ($attacker instanceof Player && $victim instanceof Player) {
