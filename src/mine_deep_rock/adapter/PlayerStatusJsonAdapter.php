@@ -27,17 +27,28 @@ class PlayerStatusJsonAdapter
     }
 
     static function decode(array $json): PlayerStatus {
+
+        $owingSkills = [];
+        if (key_exists("owning_skills", $json)) {
+            $owingSkills = array_map(function ($name) {
+                return Skill::fromString($name);
+            }, $json["owning_skills"]);
+        }
+
+        $selectedSkills = [];
+        if (key_exists("owning_skills", $json)) {
+            $selectedSkills = array_map(function ($name) {
+                return Skill::fromString($name);
+            }, $json["owning_skills"]);
+        }
+
         return new PlayerStatus(
             $json["name"],
             MilitaryDepartmentsStore::get($json["military_department"]),
             $json["main_gun"],
             $json["sub_gun"],
-            array_map(function ($name) {
-                return Skill::fromString($name);
-            }, $json["owning_skills"]),
-            array_map(function ($name) {
-                return Skill::fromString($name);
-            }, $json["selected_skills"]),
+            $owingSkills,
+            $selectedSkills,
             $json["money"]
         );
     }
