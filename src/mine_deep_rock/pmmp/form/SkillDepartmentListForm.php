@@ -33,7 +33,7 @@ class SkillDepartmentListForm extends SimpleForm
 
             $text = $militaryDepartment->getNameJp() . "の専門技能";
             if ($playerStatus->getMilitaryDepartment()->getName() === $militaryDepartment->getName()) {
-                $text = TextFormat::BOLD . TextFormat::AQUA . $text;
+                $text = TextFormat::BOLD . $text;
             }
 
             $buttons[] = new SimpleFormButton(

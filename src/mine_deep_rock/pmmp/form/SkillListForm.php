@@ -54,7 +54,7 @@ class SkillListForm extends SimpleForm
 
         parent::__construct(
             "スキルを購入",
-            $militaryDepartment === null ? "汎用技能" : $militaryDepartment->getName(),
+            $militaryDepartment === null ? "汎用技能" : $militaryDepartment->getNameJp() . "の専門技能",
             $buttons
         );
     }

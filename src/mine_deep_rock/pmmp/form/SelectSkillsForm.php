@@ -4,6 +4,7 @@
 namespace mine_deep_rock\pmmp\form;
 
 
+use form_builder\models\custom_form_elements\CustomFormElement;
 use form_builder\models\custom_form_elements\Label;
 use form_builder\models\custom_form_elements\Toggle;
 use form_builder\models\CustomForm;
@@ -17,7 +18,7 @@ use pocketmine\utils\TextFormat;
 class SelectSkillsForm extends CustomForm
 {
     /**
-     * @var Toggle[]
+     * @var CustomFormElement[]
      */
     private $list;
 
@@ -36,14 +37,14 @@ class SelectSkillsForm extends CustomForm
             $format = $isSelected ? TextFormat::GREEN : TextFormat::RESET;
 
             if ($owningSkill instanceof NormalSkill) {
-                $normals[] = new Label($format . $owningSkill::Name . ":" . $owningSkill::Description);
+                $normals[] = new Label($format . $owningSkill::Name . ":" . TextFormat::RESET . $owningSkill::Description);
                 $normals[] = new Toggle("", $isSelected);
                 continue;
             }
 
             if ($playerStatus->getMilitaryDepartment()->canEquipSkill($owningSkill)) {
-                $this->list[] = new Label($format . $owningSkill::Name . ":" . $owningSkill::Description);
-                $normals[] = new Toggle("", $isSelected);
+                $this->list[] = new Label($format . $owningSkill::Name . ":" . TextFormat::RESET . $owningSkill::Description);
+                $this->list[] = new Toggle("", $isSelected);
                 continue;
             }
         }
@@ -55,14 +56,16 @@ class SelectSkillsForm extends CustomForm
 
     function onSubmit(Player $player): void {
         $skills = [];
-        foreach ($this->list as $toggle) {
-            if ($toggle->getResult()) {
-                $name = $toggle->getText();
-                $name = str_split(":", $name)[0];
-                $name = str_replace(TextFormat::BOLD, "", $name);
-                var_dump($name);
+        foreach ($this->list as $index => $toggle) {
+            if ($toggle instanceof Toggle) {
+                if ($toggle->getResult()) {
+                    $name = $this->list[$index-1]->getText();
+                    $name = explode(":", $name)[0];
+                    $name = str_replace(TextFormat::GREEN, "", $name);
+                    $name = str_replace(TextFormat::RESET, "", $name);
 
-                $skills[] = Skill::fromString($name);
+                    $skills[] = Skill::fromString($name);
+                }
             }
         }
 
