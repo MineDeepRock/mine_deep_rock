@@ -26,14 +26,17 @@ class SkillListForm extends SimpleForm
                 new Frack(),
                 new QuickRunAway(),
             ];
+
             foreach ($normals as $normalSkill) {
-                $buttons[] = new SimpleFormButton(
-                    $normalSkill::Name,
-                    null,
-                    function (Player $player) use ($normalSkill) {
-                        $player->sendForm(new SkillDetailForm($normalSkill, null));
-                    }
-                );
+                if (!$playerStatus->isOwingSkill($normalSkill)) {
+                    $buttons[] = new SimpleFormButton(
+                        $normalSkill::Name,
+                        null,
+                        function (Player $player) use ($normalSkill) {
+                            $player->sendForm(new SkillDetailForm($normalSkill, null));
+                        }
+                    );
+                }
             }
         } else {
             foreach ($militaryDepartment->getSkills() as $skill) {
