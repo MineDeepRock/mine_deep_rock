@@ -12,9 +12,11 @@ class GivePlayerMoneyService
     static function execute(string $name, int $amount): void {
         $status = PlayerStatusDAO::get($name);
         PlayerStatusDAO::update(new PlayerStatus(
-                $status->getName(),
-                $status->getOwningSkills(),
-                $status->getMoney() + $amount)
+                $name,
+                $status->getLevel(),
+                $status->getMoney() + $amount,
+                $status->getOwningSkills()
+            )
         );
     }
 }

@@ -9,14 +9,16 @@ use mine_deep_rock\model\skill\normal\Frack;
 class PlayerStatus
 {
     private $name;
+    private $level;
     /**
      * @var Skill[]
      */
     private $owningSkills;
     private $money;
 
-    public function __construct(string $name,  array $owningSkills, int $money) {
+    public function __construct(string $name, PlayerLevel $level, int $money, array $owningSkills) {
         $this->name = $name;
+        $this->level = $level;
         $this->owningSkills = $owningSkills;
         $this->money = $money;
     }
@@ -24,10 +26,12 @@ class PlayerStatus
     static function asNew(string $name): PlayerStatus {
         return new PlayerStatus(
             $name,
+            PlayerLevel::asNew(),
+            3000,
             [
                 new Frack(),
-            ],
-            3000);
+            ]
+        );
     }
 
     /**
@@ -60,5 +64,12 @@ class PlayerStatus
         }
 
         return false;
+    }
+
+    /**
+     * @return PlayerLevel
+     */
+    public function getLevel(): PlayerLevel {
+        return $this->level;
     }
 }

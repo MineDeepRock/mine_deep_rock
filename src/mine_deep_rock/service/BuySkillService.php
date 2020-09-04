@@ -26,8 +26,10 @@ class BuySkillService
 
         PlayerStatusDAO::update(new PlayerStatus(
                 $name,
-                $skills,
-                $status->getMoney())
+                $status->getLevel(),
+                $status->getMoney(),
+                $skills
+            )
         );
         SpendMoneyService::execute($name, 2000);
         return true;

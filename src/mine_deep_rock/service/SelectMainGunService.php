@@ -15,8 +15,10 @@ class SelectMainGunService
         $status = PlayerStatusDAO::get($name);
         PlayerStatusDAO::update(new PlayerStatus(
                 $name,
-                $status->getOwningSkills(),
-                $status->getMoney())
+                $status->getLevel(),
+                $status->getMoney(),
+                $status->getOwningSkills()
+            )
         );
 
         $gunRecord = GunRecordDAO::get($name, $gunName);

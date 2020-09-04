@@ -13,8 +13,10 @@ class SpendMoneyService
         $status = PlayerStatusDAO::get($name);
         PlayerStatusDAO::update(new PlayerStatus(
                 $name,
-                $status->getOwningSkills(),
-                $status->getMoney() - $amount)
+                $status->getLevel(),
+                $status->getMoney() - $amount,
+                $status->getOwningSkills()
+            )
         );
     }
 }
