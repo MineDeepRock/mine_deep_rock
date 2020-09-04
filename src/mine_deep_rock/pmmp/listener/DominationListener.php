@@ -5,7 +5,6 @@ namespace mine_deep_rock\pmmp\listener;
 
 
 use mine_deep_rock\GameTypeList;
-use mine_deep_rock\model\DominationFlag;
 use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
 use mine_deep_rock\pmmp\service\SummonFlagParticlePMMPService;
 use mine_deep_rock\service\OccupyFlagService;

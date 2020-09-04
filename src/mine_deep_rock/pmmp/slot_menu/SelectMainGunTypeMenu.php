@@ -5,6 +5,7 @@ namespace mine_deep_rock\pmmp\slot_menu;
 
 
 use gun_system\model\GunType;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
@@ -16,7 +17,7 @@ use slot_menu_system\SlotMenuSystem;
 class SelectMainGunTypeMenu extends SlotMenu
 {
     public function __construct(Player $player, SlotMenu $previousMenu, TaskScheduler $taskScheduler) {
-        $status = PlayerStatusDAO::get($player->getName());
+        $equipments = PlayerEquipmentsDAO::get($player->getName());
         $sendGunSelectMenu = function (Player $player, GunType $gunType) use ($taskScheduler) {
             SlotMenuSystem::send($player, new SelectMainGunMenu($player->getName(), $gunType, $this));
         };
@@ -27,7 +28,7 @@ class SelectMainGunTypeMenu extends SlotMenu
             }),
         ];
 
-        foreach ($status->getMilitaryDepartment()->getGunTypes() as $index => $gunType) {
+        foreach ($equipments->getMilitaryDepartment()->getGunTypes() as $index => $gunType) {
             $menus[] = new SlotMenuElement(ItemIds::BOW, $gunType->getTypeText(), $index, function (Player $player) use ($sendGunSelectMenu, $gunType) {
                 $sendGunSelectMenu($player, $gunType);
             });

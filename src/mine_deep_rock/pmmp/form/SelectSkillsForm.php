@@ -8,6 +8,7 @@ use form_builder\models\custom_form_elements\CustomFormElement;
 use form_builder\models\custom_form_elements\Label;
 use form_builder\models\custom_form_elements\Toggle;
 use form_builder\models\CustomForm;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\Skill;
 use mine_deep_rock\model\skill\normal\NormalSkill;
@@ -25,6 +26,7 @@ class SelectSkillsForm extends CustomForm
 
     public function __construct(Player $player) {
         $playerStatus = PlayerStatusDAO::get($player->getName());
+        $equipments = PlayerEquipmentsDAO::get($player->getName());
         $this->list = [
             new Label(TextFormat::BOLD . "専門技能")
         ];
@@ -33,7 +35,7 @@ class SelectSkillsForm extends CustomForm
         ];
 
         foreach ($playerStatus->getOwningSkills() as $owningSkill) {
-            $isSelected = $playerStatus->isSelectedSkill($owningSkill);
+            $isSelected = $equipments->isSelectedSkill($owningSkill);
             $format = $isSelected ? TextFormat::GREEN : TextFormat::RESET;
 
             if ($owningSkill instanceof NormalSkill) {
@@ -42,7 +44,7 @@ class SelectSkillsForm extends CustomForm
                 continue;
             }
 
-            if ($playerStatus->getMilitaryDepartment()->canEquipSkill($owningSkill)) {
+            if ($equipments->getMilitaryDepartment()->canEquipSkill($owningSkill)) {
                 $this->list[] = new Label($format . $owningSkill::Name . ":" . TextFormat::RESET . $owningSkill::Description);
                 $this->list[] = new Toggle("", $isSelected);
                 continue;

@@ -5,11 +5,10 @@ namespace mine_deep_rock\pmmp\listener;
 
 
 use bossbar_system\BossBar;
-use box_system\interpreters\BoxInterpreter;
 use box_system\pmmp\entities\BoxEntity;
 use grenade_system\pmmp\entities\GrenadeEntity;
 use gun_system\pmmp\item\ItemGun;
-use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\model\skill\nursing_soldier\Entrusting;
 use mine_deep_rock\pmmp\BossBarTypes;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
@@ -247,8 +246,8 @@ class TeamGameCommonListener implements Listener
         SpawnCadaverEntityPMMPService::execute($victim);
 
         //Entrusting
-        $victimStatus = PlayerStatusDAO::get($victim->getName());
-        if ($victimStatus->isSelectedSkill(new Entrusting())) {
+        $victimEquipments = PlayerEquipmentsDAO::get($victim->getName());
+        if ($victimEquipments->isSelectedSkill(new Entrusting())) {
             $players = $victim->getLevel()->getPlayers();
 
             foreach ($players as $player) {

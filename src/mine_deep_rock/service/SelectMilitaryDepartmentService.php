@@ -4,33 +4,31 @@
 namespace mine_deep_rock\service;
 
 
-use mine_deep_rock\dao\PlayerStatusDAO;
-use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
+use mine_deep_rock\model\PlayerEquipments;
 use mine_deep_rock\model\skill\normal\NormalSkill;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 
 class SelectMilitaryDepartmentService
 {
     static function execute(string $name, string $militaryDepartmentName): void {
-        $status = PlayerStatusDAO::get($name);
+        $equipments = PlayerEquipmentsDAO::get($name);
         $militaryDepartment = MilitaryDepartmentsStore::get($militaryDepartmentName);
         $skills = [];
-        if ($status->getMilitaryDepartment()->getName() !== $militaryDepartmentName) {
-            foreach ($status->getSelectedSkills() as $selectedSkill) {
+        if ($equipments->getMilitaryDepartment()->getName() !== $militaryDepartmentName) {
+            foreach ($equipments->getSelectedSkills() as $selectedSkill) {
                 if ($selectedSkill instanceof NormalSkill) {
                     $skills[] = $selectedSkill;
                 }
             }
         }
 
-        PlayerStatusDAO::update(new PlayerStatus(
+        PlayerEquipmentsDAO::update(new PlayerEquipments(
                 $name,
                 $militaryDepartment,
                 $militaryDepartment->getDefaultGunName(),
-                $status->getSubGunName(),
-                $status->getOwningSkills(),
-                $skills,
-                $status->getMoney())
+                $equipments->getSubGunName(),
+                $equipments->getSelectedSkills())
         );
     }
 }

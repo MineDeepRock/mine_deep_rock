@@ -10,7 +10,6 @@ use mine_deep_rock\service\GenerateGameDescriptionService;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
-use team_game_system\model\Game;
 use team_game_system\model\GameType;
 use team_game_system\model\Team;
 use team_game_system\TeamGameSystem;

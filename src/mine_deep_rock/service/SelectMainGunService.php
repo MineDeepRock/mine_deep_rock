@@ -13,14 +13,9 @@ class SelectMainGunService
 {
     static function execute(string $name, string $gunName, int $scopeMagnification): void {
         $status = PlayerStatusDAO::get($name);
-        $militaryDepartment = $status->getMilitaryDepartment();
         PlayerStatusDAO::update(new PlayerStatus(
                 $name,
-                $militaryDepartment,
-                $gunName,
-                $status->getSubGunName(),
                 $status->getOwningSkills(),
-                $status->getSelectedSkills(),
                 $status->getMoney())
         );
 

@@ -9,10 +9,8 @@ use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
 use mine_deep_rock\pmmp\scoreboard\OneOnOneScoreboard;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
-use mine_deep_rock\store\DominationFlagsStore;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
-use scoreboard_system\models\Scoreboard;
 use team_game_system\data_model\PlayerData;
 use team_game_system\model\GameType;
 

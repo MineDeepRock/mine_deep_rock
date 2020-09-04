@@ -4,7 +4,6 @@
 namespace mine_deep_rock\pmmp\service;
 
 
-use LogicException;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use private_name_tag\models\PrivateNameTag;

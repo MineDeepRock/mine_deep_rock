@@ -7,7 +7,6 @@ namespace mine_deep_rock\dao;
 use mine_deep_rock\adapter\DominationFlagDataJsonAdapter;
 use mine_deep_rock\DataFolderPath;
 use mine_deep_rock\model\DominationFlagData;
-use team_game_system\adapter\MapJsonAdapter;
 
 class DominationFlagDataDAO
 {

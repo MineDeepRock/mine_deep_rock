@@ -4,8 +4,10 @@ namespace mine_deep_rock;
 
 use mine_deep_rock\dao\DominationFlagDataDAO;
 use mine_deep_rock\dao\GunRecordDAO;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\GunRecord;
+use mine_deep_rock\model\PlayerEquipments;
 use mine_deep_rock\model\PlayerGameStatus;
 use mine_deep_rock\model\PlayerStatus;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
@@ -89,6 +91,10 @@ class Main extends PluginBase implements Listener
         SlotMenuSystem::send($player, new SettingEquipmentsMenu($this->getScheduler()));
 
         $playerName = $player->getName();
+
+        if (!PlayerEquipmentsDAO::isExist($playerName)) {
+            PlayerEquipmentsDAO::save(PlayerEquipments::asNew($playerName));
+        }
 
         if (!PlayerStatusDAO::isExist($playerName)) {
             PlayerStatusDAO::save(PlayerStatus::asNew($playerName));

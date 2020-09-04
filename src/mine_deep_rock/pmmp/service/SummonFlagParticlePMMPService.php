@@ -7,7 +7,6 @@ namespace mine_deep_rock\pmmp\service;
 use mine_deep_rock\model\DominationFlag;
 use pocketmine\level\Level;
 use pocketmine\level\particle\DustParticle;
-use pocketmine\math\Math;
 use pocketmine\utils\Color;
 use team_game_system\TeamGameSystem;
 

@@ -4,7 +4,6 @@
 namespace mine_deep_rock\model;
 
 
-use mine_deep_rock\model\skill\assault_soldier\ClickRegainHealth;
 use mine_deep_rock\model\skill\assault_soldier\DontGiveUp;
 use mine_deep_rock\model\skill\assault_soldier\SecondChance;
 use mine_deep_rock\model\skill\engineer\LoveAmmo;

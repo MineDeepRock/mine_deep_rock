@@ -4,7 +4,7 @@
 namespace mine_deep_rock\pmmp\service;
 
 
-use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\pmmp\event\PlayerResortedEvent;
 use mine_deep_rock\service\SelectMilitaryDepartmentService;
@@ -22,8 +22,8 @@ class ResortPMMPService
         }
 
         //SentryだったらAssaultSoldierに戻す
-        $status = PlayerStatusDAO::get($playerData->getName());
-        if ($status->getMilitaryDepartment()->getName() === MilitaryDepartment::Sentry) {
+        $equipments = PlayerEquipmentsDAO::get($playerData->getName());
+        if ($equipments->getMilitaryDepartment()->getName() === MilitaryDepartment::Sentry) {
             SelectMilitaryDepartmentService::execute($player->getName(), MilitaryDepartment::AssaultSoldier);
         }
 

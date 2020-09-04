@@ -23,7 +23,7 @@ class SendKillLogPMMPService
         $gameID = $victimData->getGameId();
 
         $attackerTeam = TeamGameSystem::getTeam($gameID, $attackerData->getTeamId());
-        $victimTeam = TeamGameSystem::getTeam($gameID, $victimData->getTeamId());;
+        $victimTeam = TeamGameSystem::getTeam($gameID, $victimData->getTeamId());
 
         if ($attackerTeam === null || $victimTeam === null) return;
 

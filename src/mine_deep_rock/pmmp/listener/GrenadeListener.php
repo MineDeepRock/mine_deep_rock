@@ -8,6 +8,7 @@ use grenade_system\pmmp\events\ConsumedGrenadeEvent;
 use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
 use grenade_system\pmmp\events\PlayerBurnedByFlameEvent;
 use grenade_system\pmmp\items\GrenadeItem;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\skill\normal\Frack;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -40,7 +41,7 @@ class GrenadeListener implements Listener
                 $damage = 20 - $event->getDistance();
             }
 
-            if (PlayerStatusDAO::get($victim->getName())->isSelectedSkill(new Frack())) {
+            if (PlayerEquipmentsDAO::get($victim->getName())->isSelectedSkill(new Frack())) {
                 $damage -= intval($damage/5);
             }
 
@@ -80,8 +81,8 @@ class GrenadeListener implements Listener
             $playerData = TeamGameSystem::getPlayerData($owner);
             if ($playerData->getGameId() === null) return;
 
-            $status = PlayerStatusDAO::get($owner->getName());
-            $grenades = $status->getMilitaryDepartment()->getGrenades();
+            $equipments = PlayerEquipmentsDAO::get($owner->getName());
+            $grenades = $equipments->getMilitaryDepartment()->getGrenades();
             if (in_array($grenade, $grenades)) {
                 $grenadeItem = GrenadeItem::fromGrenade($grenade);
                 if ($owner->getGamemode() === Player::SPECTATOR) return;

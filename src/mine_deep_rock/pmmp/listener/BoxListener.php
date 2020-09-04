@@ -14,16 +14,13 @@ use box_system\pmmp\items\BoxItem;
 use gun_system\GunSystem;
 use gun_system\model\Gun;
 use gun_system\pmmp\item\ItemGun;
-use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\model\skill\engineer\LoveAmmo;
 use mine_deep_rock\model\skill\nursing_soldier\HelpEachOther;
-use mine_deep_rock\pmmp\service\ShowPrivateNameTagToAllyPMMPService;
-use mine_deep_rock\pmmp\service\ShowPrivateNameTagToParticipantsPMMPService;
 use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -95,9 +92,9 @@ class BoxListener implements Listener
         if ($receiverData->getGameId() === null || $ownerData->getGameId() === null) return;
         if (!$receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
 
-        $ownerStatus = PlayerStatusDAO::get($owner->getName());
+        $ownerEquipments = PlayerEquipmentsDAO::get($owner->getName());
         //助け合い
-        if ($ownerStatus->isSelectedSkill(new HelpEachOther())) {
+        if ($ownerEquipments->isSelectedSkill(new HelpEachOther())) {
             $health = $owner->getHealth()+2;
             $owner->setHealth($health);
         }
@@ -124,9 +121,9 @@ class BoxListener implements Listener
         $owner = $event->getOwner();
 
         $tick = 20 * 15;
-        $ownerStatus = PlayerStatusDAO::get($owner->getName());
+        $ownerEquipments = PlayerEquipmentsDAO::get($owner->getName());
         if ($box instanceof AmmoBox) {
-            if ($ownerStatus->isSelectedSkill(new LoveAmmo())) {
+            if ($ownerEquipments->isSelectedSkill(new LoveAmmo())) {
                 $tick = 20 * 7;
             }
         }
@@ -135,8 +132,8 @@ class BoxListener implements Listener
             $playerData = TeamGameSystem::getPlayerData($owner);
             if ($playerData->getGameId() === null) return;
 
-            $status = PlayerStatusDAO::get($owner->getName());
-            $boxes = $status->getMilitaryDepartment()->getBoxes();
+            $equipments = PlayerEquipmentsDAO::get($owner->getName());
+            $boxes = $equipments->getMilitaryDepartment()->getBoxes();
             if (in_array($box, $boxes)) {
                 $boxItem = BoxItem::fromBox($box);
 

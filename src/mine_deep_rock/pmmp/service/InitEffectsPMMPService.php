@@ -4,7 +4,7 @@
 namespace mine_deep_rock\pmmp\service;
 
 
-use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use pocketmine\Player;
 
 class InitEffectsPMMPService
@@ -12,8 +12,8 @@ class InitEffectsPMMPService
     static function execute(Player $player): void {
         $player->removeAllEffects();
 
-        $militaryDepartment = PlayerStatusDAO::get($player->getName());
-        foreach ($militaryDepartment->getMilitaryDepartment()->getEffectInstances() as $effectInstance) {
+        $militaryDepartment = PlayerEquipmentsDAO::get($player->getName())->getMilitaryDepartment();
+        foreach ($militaryDepartment->getEffectInstances() as $effectInstance) {
             $player->addEffect($effectInstance);
         }
     }

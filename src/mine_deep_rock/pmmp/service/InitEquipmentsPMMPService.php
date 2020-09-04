@@ -9,6 +9,7 @@ use grenade_system\pmmp\items\GrenadeItem;
 use gun_system\GunSystem;
 use gun_system\model\attachment\Scope;
 use mine_deep_rock\dao\GunRecordDAO;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use pocketmine\item\Arrow;
 use pocketmine\item\GoldBoots;
@@ -28,14 +29,14 @@ class InitEquipmentsPMMPService
         $player->getInventory()->setContents([]);
         $player->getArmorInventory()->setContents([]);
 
-        $status = PlayerStatusDAO::get($player->getName());
+        $equipments = PlayerEquipmentsDAO::get($player->getName());
 
         //銃のセット
-        $mainGunRecord = GunRecordDAO::get($player->getName(), $status->getMainGunName());
+        $mainGunRecord = GunRecordDAO::get($player->getName(), $equipments->getMainGunName());
         $mainGun = GunSystem::findGunByName($mainGunRecord->getName());
         $mainGun->setScope(new Scope($mainGunRecord->getScopeMagnification()));
 
-        $subGunRecord = GunRecordDAO::get($player->getName(), $status->getSubGunName());
+        $subGunRecord = GunRecordDAO::get($player->getName(), $equipments->getSubGunName());
         $subGun = GunSystem::findGunByName($subGunRecord->getName());
         $subGun->setScope(new Scope($subGunRecord->getScopeMagnification()));
 
@@ -46,11 +47,11 @@ class InitEquipmentsPMMPService
         );
 
         //箱のセット
-        $boxes = $status->getMilitaryDepartment()->getBoxes();
+        $boxes = $equipments->getMilitaryDepartment()->getBoxes();
         foreach ($boxes as $box) $inventory->addItem(BoxItem::fromBox($box));
 
         //グレネードのセット
-        $grenades = $status->getMilitaryDepartment()->getGrenades();
+        $grenades = $equipments->getMilitaryDepartment()->getGrenades();
         foreach ($grenades as $grenade) $inventory->addItem(GrenadeItem::fromGrenade($grenade));
 
         //矢のセット

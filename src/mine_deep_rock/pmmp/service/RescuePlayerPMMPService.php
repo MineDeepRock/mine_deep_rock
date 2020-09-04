@@ -4,6 +4,7 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\model\skill\assault_soldier\SecondChance;
@@ -26,19 +27,19 @@ class RescuePlayerPMMPService
         if ($playerGameStatus->isResuscitated()) return;
 
         if ($playerData->getTeamId()->equals($targetData->getTeamId())) {
-            $playerStatus = PlayerStatusDAO::get($player->getName());
-            if ($playerStatus->getMilitaryDepartment()->getName() === MilitaryDepartment::NursingSoldier) {
+            $playerEquipments = PlayerEquipmentsDAO::get($player->getName());
+            if ($playerEquipments->getMilitaryDepartment()->getName() === MilitaryDepartment::NursingSoldier) {
                 UpdatePlayerGameStatusIsResuscitated::execute($target->getName());
                 ResortPMMPService::execute($target, $target->getPosition(), true);
 
                 $health = 10;
 
-                $targetStatus = PlayerStatusDAO::get($target->getName());
-                if ($targetStatus->isSelectedSkill(new SecondChance())) {
+                $targetEquipments = PlayerEquipmentsDAO::get($target->getName());
+                if ($targetEquipments->isSelectedSkill(new SecondChance())) {
                     $target->addEffect(new EffectInstance(Effect::getEffect(Effect::SPEED), null, 1, false));
                 }
 
-                if($playerStatus->isSelectedSkill(new StimulantSyringe())) {
+                if($playerEquipments->isSelectedSkill(new StimulantSyringe())) {
                     $health = 16;
                 }
 

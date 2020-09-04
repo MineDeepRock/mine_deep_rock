@@ -5,23 +5,21 @@ namespace mine_deep_rock\service;
 
 
 use mine_deep_rock\dao\GunRecordDAO;
-use mine_deep_rock\dao\PlayerStatusDAO;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\model\GunRecord;
-use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\model\PlayerEquipments;
 
 class SelectSubGunService
 {
     static function execute(string $name, string $gunName, int $scopeMagnification): void {
-        $status = PlayerStatusDAO::get($name);
-        $militaryDepartment = $status->getMilitaryDepartment();
-        PlayerStatusDAO::update(new PlayerStatus(
+        $equipments = PlayerEquipmentsDAO::get($name);
+        $militaryDepartment = $equipments->getMilitaryDepartment();
+        PlayerEquipmentsDAO::update(new PlayerEquipments(
                 $name,
                 $militaryDepartment,
-                $status->getMainGunName(),
+                $equipments->getMainGunName(),
                 $gunName,
-                $status->getOwningSkills(),
-                $status->getSelectedSkills(),
-                $status->getMoney())
+                $equipments->getSelectedSkills())
         );
 
         $gunRecord = GunRecordDAO::get($name, $gunName);

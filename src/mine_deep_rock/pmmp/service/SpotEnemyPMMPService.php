@@ -4,6 +4,7 @@
 namespace mine_deep_rock\pmmp\service;
 
 
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\skill\normal\AntiSpot;
 use pocketmine\Player;
@@ -16,10 +17,10 @@ class SpotEnemyPMMPService
 {
     static function execute(Player $player, Player $enemy, float $tick, TaskScheduler $scheduler): void {
         $enemyData = TeamGameSystem::getPlayerData($enemy);
-        $enemyStatus = PlayerStatusDAO::get($enemy->getName());
+        $enemyEquipments = PlayerEquipmentsDAO::get($enemy->getName());
         ShowPrivateNameTagToParticipantsPMMPService::execute($enemy, $enemyData->getGameId());
 
-        foreach ($enemyStatus->getSelectedSkills() as $skill) {
+        foreach ($enemyEquipments->getSelectedSkills() as $skill) {
             if ($skill instanceof AntiSpot) {
                 $tick /= 2;
             }

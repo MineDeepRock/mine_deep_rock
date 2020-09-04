@@ -7,6 +7,7 @@ namespace mine_deep_rock\pmmp\listener;
 use gun_system\GunSystem;
 use gun_system\pmmp\event\BulletHitEvent;
 use gun_system\pmmp\event\BulletHitNearEvent;
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\MilitaryDepartment;
 use mine_deep_rock\model\skill\assault_soldier\DontGiveUp;
@@ -16,7 +17,6 @@ use mine_deep_rock\model\skill\normal\QuickRunAway;
 use mine_deep_rock\model\skill\scout\LuminescentBullet;
 use mine_deep_rock\model\skill\scout\SavingBullet;
 use mine_deep_rock\pmmp\entity\CadaverEntity;
-use mine_deep_rock\pmmp\entity\GameMaster;
 use mine_deep_rock\pmmp\entity\NPCBase;
 use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
 use pocketmine\entity\Effect;
@@ -50,21 +50,21 @@ class GunListener implements Listener
             $victimData = TeamGameSystem::getPlayerData($victim);
             if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
             if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
-                $attackerStatus = PlayerStatusDAO::get($attacker->getName());
+                $attackerEquipments = PlayerEquipmentsDAO::get($attacker->getName());
 
                 if ($attacker->getHealth() <= 4) {
-                    if ($attackerStatus->isSelectedSkill(new DontGiveUp())) {
+                    if ($attackerEquipments->isSelectedSkill(new DontGiveUp())) {
                         $damage += ($damage / 10);
                     }
                 }
 
-                if ($attackerStatus->isSelectedSkill(new LuminescentBullet())) {
+                if ($attackerEquipments->isSelectedSkill(new LuminescentBullet())) {
                     if ($attacker->distance($victim) >= 20) {
                         SpotEnemyPMMPService::execute($attacker, $victim, 2 * 20, $this->scheduler);
                     }
                 }
 
-                if ($attackerStatus->isSelectedSkill(new SavingBullet())) {
+                if ($attackerEquipments->isSelectedSkill(new SavingBullet())) {
                     if (rand(0, 6) === 1) {
                         GunSystem::giveAmmo($attacker, $attacker->getInventory()->getHeldItemIndex(), 1);
                     }
@@ -93,20 +93,20 @@ class GunListener implements Listener
         $victimData = TeamGameSystem::getPlayerData($victim);
         if ($attackerData->getTeamId() === null || $victimData->getTeamId() === null) return;
         if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
-            $attackerStatus = PlayerStatusDAO::get($attacker->getName());
-            $victimStatus = PlayerStatusDAO::get($victim->getName());
+            $attackerEquipments = PlayerEquipmentsDAO::get($attacker->getName());
+            $victimEquipments = PlayerEquipmentsDAO::get($attacker->getName());
             $second = 5 * 20;
             $level = 1;
 
-            if ($victimStatus->isSelectedSkill(new Cover())) $second -= 2;
+            if ($victimEquipments->isSelectedSkill(new Cover())) $second -= 2;
 
-            if ($victimStatus->isSelectedSkill(new QuickRunAway())) {
-                $level = $victimStatus->getMilitaryDepartment()->getName() === MilitaryDepartment::AssaultSoldier ?
+            if ($victimEquipments->isSelectedSkill(new QuickRunAway())) {
+                $level = $victimEquipments->getMilitaryDepartment()->getName() === MilitaryDepartment::AssaultSoldier ?
                     1 : 0;
                 $victim->addEffect(new EffectInstance(Effect::getEffect(Effect::SPEED), 3 * 20, $level, false));
             }
 
-            if ($attackerStatus->isSelectedSkill(new StopProgress())) {
+            if ($attackerEquipments->isSelectedSkill(new StopProgress())) {
                 $level += 3;
             }
 

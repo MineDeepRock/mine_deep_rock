@@ -5,7 +5,6 @@ namespace mine_deep_rock\pmmp\service;
 
 
 use bossbar_system\BossBar;
-use mine_deep_rock\GameTypeList;
 use mine_deep_rock\pmmp\BossBarTypes;
 use pocketmine\Server;
 use team_game_system\data_model\PlayerData;

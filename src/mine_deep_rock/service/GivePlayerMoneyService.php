@@ -13,11 +13,7 @@ class GivePlayerMoneyService
         $status = PlayerStatusDAO::get($name);
         PlayerStatusDAO::update(new PlayerStatus(
                 $status->getName(),
-                $status->getMilitaryDepartment(),
-                $status->getMainGunName(),
-                $status->getSubGunName(),
                 $status->getOwningSkills(),
-                $status->getSelectedSkills(),
                 $status->getMoney() + $amount)
         );
     }

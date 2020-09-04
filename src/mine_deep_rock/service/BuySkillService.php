@@ -26,11 +26,7 @@ class BuySkillService
 
         PlayerStatusDAO::update(new PlayerStatus(
                 $name,
-                $status->getMilitaryDepartment(),
-                $status->getMainGunName(),
-                $status->getSubGunName(),
                 $skills,
-                $status->getSelectedSkills(),
                 $status->getMoney())
         );
         SpendMoneyService::execute($name, 2000);

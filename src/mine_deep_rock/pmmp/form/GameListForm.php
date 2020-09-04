@@ -6,7 +6,6 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
-use mine_deep_rock\GameTypeList;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use team_game_system\model\Game;
