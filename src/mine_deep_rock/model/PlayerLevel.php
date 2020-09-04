@@ -14,14 +14,16 @@ class PlayerLevel
      * @var int
      */
     private $totalXp;
+    private $xpToNextLevel;
 
-    public function __construct(int $rank, int $totalXp) {
+    public function __construct(int $rank, int $totalXp, int $xpToNextLevel) {
         $this->rank = $rank;
         $this->totalXp = $totalXp;
+        $this->xpToNextLevel = $xpToNextLevel;
     }
 
     static function asNew(): PlayerLevel {
-        return new PlayerLevel(1, 0);
+        return new PlayerLevel(1, 0, 500);
     }
 
     /**
@@ -36,5 +38,12 @@ class PlayerLevel
      */
     public function getTotalXp(): int {
         return $this->totalXp;
+    }
+
+    /**
+     * @return int
+     */
+    public function getXpToNextLevel(): int {
+        return $this->xpToNextLevel;
     }
 }
