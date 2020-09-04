@@ -24,7 +24,8 @@ class PlayerStatusScoreboard extends Scoreboard
             new Score($slot, "兵科:" . TextFormat::BOLD . $equipments->getMilitaryDepartment()->getNameJp(), 1, 1),
             new Score($slot, "メインウェポン:" . TextFormat::BOLD . $equipments->getMainGunName(), 2, 2),
             new Score($slot, "サブウェポン:" . TextFormat::BOLD . $equipments->getSubGunName(), 3, 3),
-            new Score($slot, "Money:" . TextFormat::BOLD . $status->getMoney(), 4, 4),
+            new Score($slot, "Level:" . TextFormat::BOLD . $status->getLevel()->getRank(), 4, 4),
+            new Score($slot, "Money:" . TextFormat::BOLD . $status->getMoney(), 5, 5),
         ];
         return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
     }
