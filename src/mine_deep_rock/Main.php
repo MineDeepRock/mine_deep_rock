@@ -15,6 +15,7 @@ use mine_deep_rock\pmmp\entity\GunDealerNPC;
 use mine_deep_rock\pmmp\entity\GameMaster;
 use mine_deep_rock\pmmp\entity\NPCBase;
 use mine_deep_rock\pmmp\entity\SkillDealerNPC;
+use mine_deep_rock\pmmp\event\PlayerLevelUpEvent;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\DominationMapListForm;
@@ -54,6 +55,7 @@ use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\GameRulesChangedPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\TextFormat;
 use slot_menu_system\SlotMenuSystem;
 use team_game_system\TeamGameSystem;
 
@@ -128,6 +130,17 @@ class Main extends PluginBase implements Listener
         if ($player->getLevel() !== null) {
             if ($playerData->getGameId() === null) {
                 PlayerStatusScoreboard::update($player);
+            }
+        }
+    }
+
+    public function onPlayerLevelUp(PlayerLevelUpEvent $event): void {
+        $status = $event->getPlayerStatus();
+        $rank = $status->getLevel()->getRank();
+        $player = $this->getServer()->getPlayer($status->getName());
+        if ($player !== null) {
+            if ($player->isOnline()) {
+                $player->sendMessage(TextFormat::GREEN . "LevelUP![" . $rank - 1 . "→" . $rank . "]");
             }
         }
     }

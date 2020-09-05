@@ -11,6 +11,8 @@ use mine_deep_rock\model\GunRecord;
 class BuyGunService
 {
     static function execute(string $name, string $gunName) {
+        $price = 3500;
+
         $status = PlayerStatusDAO::get($name);
 
         foreach (GunRecordDAO::getOwn($name) as $gunRecord) {
@@ -19,11 +21,11 @@ class BuyGunService
             }
         }
 
-        if ($status->getMoney() <= 2000) {
+        if ($status->getMoney() <= $price) {
             return false;
         }
 
-        SpendMoneyService::execute($name, 2000);
+        SpendMoneyService::execute($name, $price);
         GunRecordDAO::add($name, GunRecord::asNew($gunName));
         return true;
     }

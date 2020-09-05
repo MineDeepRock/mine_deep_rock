@@ -29,6 +29,7 @@ use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsOnGameMenu;
 use mine_deep_rock\service\AddKillCountInGameService;
 use mine_deep_rock\service\AddKillCountToGunRecordService;
 use mine_deep_rock\service\GivePlayerMoneyService;
+use mine_deep_rock\service\GivePlayerXpService;
 use mine_deep_rock\service\ResetPlayerGameStatusService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
@@ -129,9 +130,13 @@ class TeamGameCommonListener implements Listener
             if ($wonTeam === null) {
                 $player->sendMessage("引き分け");
                 $player->sendTitle("引き分け");
+                GivePlayerMoneyService::execute($player->getName(), 300);
+                GivePlayerXpService::execute($player->getName(), 300);
             } else if ($wonTeam->getId()->equals($playerData->getTeamId())) {
                 $player->sendMessage("勝ち！");
                 $player->sendTitle("勝ち！");
+                GivePlayerMoneyService::execute($player->getName(), 600);
+                GivePlayerXpService::execute($player->getName(), 600);
             } else {
                 $player->sendMessage("負け...");
                 $player->sendTitle("負け...");
@@ -238,6 +243,9 @@ class TeamGameCommonListener implements Listener
             AddKillCountToGunRecordService::execute($attacker->getName(), $item->getCustomName());
         }
 
+        //アタッカーに経験値を付与
+        GivePlayerXpService::execute($attacker->getName(), 100);
+
         //その場をスポーン地点に
         $victim = $event->getTarget();
         $victim->setSpawn($victim->getPosition());
@@ -252,8 +260,8 @@ class TeamGameCommonListener implements Listener
 
             foreach ($players as $player) {
                 if ($victim->distance($player->getPosition()) <= 5) {
-                    $playerData =TeamGameSystem::getPlayerData($player);
-                    $victimData =TeamGameSystem::getPlayerData($player);
+                    $playerData = TeamGameSystem::getPlayerData($player);
+                    $victimData = TeamGameSystem::getPlayerData($player);
 
                     if ($playerData->getGameId() === null) continue;
                     if ($playerData->getTeamId()->equals($victimData->getTeamId())) {

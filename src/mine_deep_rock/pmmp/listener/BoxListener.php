@@ -18,6 +18,7 @@ use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\model\skill\engineer\LoveAmmo;
 use mine_deep_rock\model\skill\nursing_soldier\HelpEachOther;
 use mine_deep_rock\pmmp\service\SpotEnemyPMMPService;
+use mine_deep_rock\service\GivePlayerXpService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -63,11 +64,12 @@ class BoxListener implements Listener
 
             $this->giveAmmo($owner, $receiver, $gun, 0);
             $this->giveAmmo($owner, $receiver, $subGun, 1);
-            //TODO:オーナーに経験値の処理
+
+
         }
     }
 
-    private function giveAmmo(Player $owner, Player $receiver, Gun $gun, int $slot) {
+    private function giveAmmo(Player $owner, Player $receiver, Gun $gun, int $slot): void {
         $remain = $gun->getInitialAmmo() - $gun->getMagazineData()->getCurrentAmmo();
         if ($remain === 0) return;
 
@@ -79,6 +81,7 @@ class BoxListener implements Listener
 
         $receiver->sendTip("{$owner->getName()}から弾薬を供給");
         $owner->sendTip("{$receiver->getName()}に弾薬を供給");
+        GivePlayerXpService::execute($owner->getName(), 10);
     }
 
     public function onMedicineBoxEffect(MedicineBoxEffectOnEvent $event): void {
@@ -95,11 +98,12 @@ class BoxListener implements Listener
         $ownerEquipments = PlayerEquipmentsDAO::get($owner->getName());
         //助け合い
         if ($ownerEquipments->isSelectedSkill(new HelpEachOther())) {
-            $health = $owner->getHealth()+2;
+            $health = $owner->getHealth() + 2;
             $owner->setHealth($health);
         }
 
         $receiver->addEffect(new EffectInstance(Effect::getEffect(Effect::REGENERATION), 20 * 2, 2));
+        GivePlayerXpService::execute($owner->getName(), 10);
     }
 
     public function onFlareBoxEffect(FlareBoxEffectOnEvent $event): void {
@@ -114,6 +118,7 @@ class BoxListener implements Listener
         if ($receiverData->getTeamId()->equals($ownerData->getTeamId())) return;
 
         SpotEnemyPMMPService::execute($owner, $receiver, 20 * 3, $this->scheduler);
+        GivePlayerXpService::execute($owner->getName(), 5);
     }
 
     public function onStopBox(BoxStopEvent $event) {

@@ -19,7 +19,7 @@ class ConfirmBuyGunForm extends ModalForm
     public function __construct(Gun $gun, TaskScheduler $taskScheduler) {
         $this->gun = $gun;
         parent::__construct($gun->getName(),
-            "{$gun->getName()}を2000円で購入しますか",
+            "{$gun->getName()}を3500円で購入しますか",
             new ModalFormButton("はい"),
             new ModalFormButton("キャンセル")
         );
