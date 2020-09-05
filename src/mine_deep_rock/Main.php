@@ -128,7 +128,7 @@ class Main extends PluginBase implements Listener
         $player = $this->getServer()->getPlayer($status->getName());
         $playerData = TeamGameSystem::getPlayerData($player);
         if ($player->getLevel() !== null) {
-            if ($playerData->getGameId() === null) {
+            if ($playerData->getGameId() === null && $player->getLevel()->getName() === "lobby") {
                 PlayerStatusScoreboard::update($player);
             }
         }
