@@ -23,7 +23,7 @@ class PlayerLevel
     }
 
     static function asNew(): PlayerLevel {
-        return new PlayerLevel(1, 0, 500);
+        return new PlayerLevel(1, 0, 1000);
     }
 
     /**
