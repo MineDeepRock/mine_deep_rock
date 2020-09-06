@@ -69,6 +69,7 @@ class Main extends PluginBase implements Listener
 
         GunRecordDAO::init();
         PlayerStatusDAO::init();
+        PlayerEquipmentsDAO::init();
         MilitaryDepartmentsStore::init();
         DominationFlagDataDAO::init();
 

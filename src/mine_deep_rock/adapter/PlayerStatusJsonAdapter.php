@@ -11,12 +11,17 @@ use pocketmine\Player;
 
 class PlayerStatusJsonAdapter
 {
+    /**
+     * @param PlayerStatus $playerStatus
+     * @return array
+     */
     static function encode(PlayerStatus $playerStatus): array {
         return [
             "name" => $playerStatus->getName(),
             "player_level" => [
                 "rank" => $playerStatus->getLevel()->getRank(),
                 "total_xp" => $playerStatus->getLevel()->getTotalXp(),
+                "xp_to_next" => $playerStatus->getLevel()->getXpToNextLevel(),
             ],
             "money" => $playerStatus->getMoney(),
             "owning_skills" => array_map(function (Skill $skill) {
@@ -35,8 +40,9 @@ class PlayerStatusJsonAdapter
         }
 
         $playerLevel = new PlayerLevel(
-            intval($json["player_level"]["level"]),
-            intval($json["player_level"]["total_xp"])
+            intval($json["player_level"]["rank"]),
+            intval($json["player_level"]["total_xp"]),
+            intval($json["player_level"]["xp_to_next"])
         );
 
         return new PlayerStatus(
