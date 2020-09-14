@@ -24,8 +24,11 @@ class DominationScoreboard extends Scoreboard
     private static function create(Game $game, array $flags): Scoreboard {
         $slot = ScoreboardSlot::sideBar();
         $scores = [
-            new Score($slot, "====Domination====", 0, 0),
-            new Score($slot, "Map:" . $game->getMap()->getName(), 1, 1),
+            new Score($slot, "----Domination----", 0, 0),
+            new Score($slot, TextFormat::YELLOW . "Map:", 1, 1),
+            new Score($slot, TextFormat::BOLD . "> " . $game->getMap()->getName(), 2, 2),
+            new Score($slot, "", 3, 3),
+            new Score($slot, TextFormat::LIGHT_PURPLE . "Score:", 4, 4),
         ];
 
         $index = count($scores);
@@ -33,30 +36,37 @@ class DominationScoreboard extends Scoreboard
             $maxScoreAsStr = $game->getMaxScore()->getValue() ?? "";
 
             $scores[] = new Score($slot,
-                $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ":" . $team->getScore()->getValue() . "/" . $maxScoreAsStr,
+                TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ": " . $team->getScore()->getValue() . " / " . $maxScoreAsStr,
                 $index,
                 $index);
 
             $index++;
         }
-
-        $scores[] = new Score($slot, "======Flag=======", $index, $index);
+        $scores[] = new Score($slot, "", $index, $index);
+        $index++;
+        $scores[] = new Score($slot, TextFormat::GREEN . "Flags:", $index, $index);
         $index++;
 
         foreach ($flags as $flag) {
             $gauge = $flag->getGauge();
 
             if ($gauge->isEmpty()) {
-                $scores[] = new Score($slot, $flag->getName() . ":0", $index, $index);
-            } else if ($gauge->isOccupied()) {
-                $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOccupyingTeamId());
-                $scores[] = new Score($slot, $team->getTeamColorFormat() . $flag->getName() . ":" . $gauge->asInt(), $index, $index);
-            } else if ($gauge->isOwned()) {
-                $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOwingTeamId());
-                $scores[] = new Score($slot, $flag->getName() . ":" . $team->getTeamColorFormat() . $gauge->asInt(), $index, $index);
+                $scores[] = new Score($slot, TextFormat::BOLD . "> " . $flag->getName() . ": 0", $index, $index);
+            } else {
+
+
+                if ($gauge->isOccupied()) {
+                    $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOccupyingTeamId());
+                    $scores[] = new Score($slot, TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $flag->getName() . ": " . $gauge->asInt() . " / 100", $index, $index);
+                } else if ($gauge->isOwned()) {
+                    $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOwingTeamId());
+                    $scores[] = new Score($slot, TextFormat::BOLD . "> " . $flag->getName() . ": " . $team->getTeamColorFormat() . $gauge->asInt() . " / 100", $index, $index);
+                }
             }
             $index++;
         }
+
+        $scores[] = new Score($slot, "------------------", $index, $index);
 
         return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
     }
