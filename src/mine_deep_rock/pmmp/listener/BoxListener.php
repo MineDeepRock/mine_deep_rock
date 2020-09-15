@@ -22,6 +22,7 @@ use mine_deep_rock\service\GivePlayerXpService;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -150,9 +151,19 @@ class BoxListener implements Listener
         }), $tick);
     }
 
-    public function onDamaged(EntityDamageByEntityEvent $event) {
+
+    public function onDamaged(EntityDamageEvent $event) {
+        $victim = $event->getEntity();
+
+        if ($victim instanceof BoxEntity) {
+            if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) $event->setCancelled();
+        }
+    }
+
+    public function onDamagedByPlayer(EntityDamageByEntityEvent $event) {
         $victim = $event->getEntity();
         $attacker = $event->getDamager();
+
         if ($attacker instanceof Player && $victim instanceof BoxEntity) {
             $owner = $victim->getOwner();
 

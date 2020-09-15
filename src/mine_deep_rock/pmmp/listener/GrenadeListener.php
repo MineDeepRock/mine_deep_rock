@@ -4,12 +4,12 @@
 namespace mine_deep_rock\pmmp\listener;
 
 
+use grenade_system\pmmp\entities\GrenadeEntity;
 use grenade_system\pmmp\events\ConsumedGrenadeEvent;
 use grenade_system\pmmp\events\FragGrenadeExplodeEvent;
 use grenade_system\pmmp\events\PlayerBurnedByFlameEvent;
 use grenade_system\pmmp\items\GrenadeItem;
 use mine_deep_rock\dao\PlayerEquipmentsDAO;
-use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\skill\normal\Frack;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -92,5 +92,13 @@ class GrenadeListener implements Listener
                 }
             }
         }), 20 * 10);
+    }
+
+    public function onDamaged(EntityDamageEvent $event) {
+        $victim = $event->getEntity();
+
+        if ($victim instanceof GrenadeEntity) {
+            if ($event->getCause() === EntityDamageEvent::CAUSE_FALL) $event->setCancelled();
+        }
     }
 }
