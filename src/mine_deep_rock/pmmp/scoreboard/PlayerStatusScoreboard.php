@@ -20,17 +20,18 @@ class PlayerStatusScoreboard extends Scoreboard
         $equipments = PlayerEquipmentsDAO::get($player->getName());
         $slot = ScoreboardSlot::sideBar();
         $scores = [
-            new Score($slot, TextFormat::BOLD . TextFormat::YELLOW . "装備:", 0, 0),
-            new Score($slot, TextFormat::BOLD . "> 兵科:" . $equipments->getMilitaryDepartment()->getNameJp(), 1, 1),
-            new Score($slot, TextFormat::BOLD . "> メイン:" . $equipments->getMainGunName(), 2, 2),
-            new Score($slot, TextFormat::BOLD . "> サブ:" . $equipments->getSubGunName(), 3, 3),
-            new Score($slot, "", 4, 4),
-            new Score($slot, TextFormat::BOLD . TextFormat::YELLOW . "ステータス:", 5, 5),
-            new Score($slot, TextFormat::BOLD ."> レベル:" .  $status->getLevel()->getRank(), 6, 6),
-            new Score($slot, TextFormat::BOLD ."> 所持金:" .  $status->getMoney(), 7, 7),
-            new Score($slot, "----------------------", 8, 8),
+            new Score($slot, TextFormat::RESET . "----------------------"),
+            new Score($slot, TextFormat::BOLD . TextFormat::YELLOW . "装備:"),
+            new Score($slot, TextFormat::BOLD . "> 兵科:" . $equipments->getMilitaryDepartment()->getNameJp()),
+            new Score($slot, TextFormat::BOLD . "> メイン:" . $equipments->getMainGunName()),
+            new Score($slot, TextFormat::BOLD . "> サブ:" . $equipments->getSubGunName()),
+            new Score($slot, ""),
+            new Score($slot, TextFormat::BOLD . TextFormat::YELLOW . "ステータス:"),
+            new Score($slot, TextFormat::BOLD ."> レベル:" .  $status->getLevel()->getRank()),
+            new Score($slot, TextFormat::BOLD ."> 所持金:" .  $status->getMoney()),
+            new Score($slot, "----------------------"),
         ];
-        return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
+        return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge(), true);
     }
 
     static function send(Player $player) {

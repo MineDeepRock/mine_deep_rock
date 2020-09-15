@@ -24,51 +24,42 @@ class DominationScoreboard extends Scoreboard
     private static function create(Game $game, array $flags): Scoreboard {
         $slot = ScoreboardSlot::sideBar();
         $scores = [
-            new Score($slot, "----Domination----", 0, 0),
-            new Score($slot, TextFormat::YELLOW . "Map:", 1, 1),
-            new Score($slot, TextFormat::BOLD . "> " . $game->getMap()->getName(), 2, 2),
-            new Score($slot, "", 3, 3),
-            new Score($slot, TextFormat::LIGHT_PURPLE . "Score:", 4, 4),
+            new Score($slot, "----Domination----"),
+            new Score($slot, TextFormat::YELLOW . "Map:"),
+            new Score($slot, TextFormat::BOLD . "> " . $game->getMap()->getName()),
+            new Score($slot, ""),
+            new Score($slot, TextFormat::LIGHT_PURPLE . "Score:"),
         ];
 
-        $index = count($scores);
         foreach ($game->getTeams() as $team) {
             $maxScoreAsStr = $game->getMaxScore()->getValue() ?? "";
 
             $scores[] = new Score($slot,
-                TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ": " . $team->getScore()->getValue() . " / " . $maxScoreAsStr,
-                $index,
-                $index);
+                TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ": " . $team->getScore()->getValue() . " / " . $maxScoreAsStr);
 
-            $index++;
         }
-        $scores[] = new Score($slot, "", $index, $index);
-        $index++;
-        $scores[] = new Score($slot, TextFormat::GREEN . "Flags:", $index, $index);
-        $index++;
+        $scores[] = new Score($slot, "");
+        $scores[] = new Score($slot, TextFormat::GREEN . "Flags:");
 
         foreach ($flags as $flag) {
             $gauge = $flag->getGauge();
 
             if ($gauge->isEmpty()) {
-                $scores[] = new Score($slot, TextFormat::BOLD . "> " . $flag->getName() . ": 0", $index, $index);
+                $scores[] = new Score($slot, TextFormat::BOLD . "> " . $flag->getName() . ": 0");
             } else {
-
-
                 if ($gauge->isOccupied()) {
                     $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOccupyingTeamId());
-                    $scores[] = new Score($slot, TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $flag->getName() . ": " . $gauge->asInt() . " / 100", $index, $index);
+                    $scores[] = new Score($slot, TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $flag->getName() . ": " . $gauge->asInt() . " / 100");
                 } else if ($gauge->isOwned()) {
                     $team = TeamGameSystem::getTeam($game->getId(), $gauge->getOwingTeamId());
-                    $scores[] = new Score($slot, TextFormat::BOLD . "> " . $flag->getName() . ": " . $team->getTeamColorFormat() . $gauge->asInt() . " / 100", $index, $index);
+                    $scores[] = new Score($slot, TextFormat::BOLD . "> " . $flag->getName() . ": " . $team->getTeamColorFormat() . $gauge->asInt() . " / 100");
                 }
             }
-            $index++;
         }
 
-        $scores[] = new Score($slot, "------------------", $index, $index);
+        $scores[] = new Score($slot, "------------------");
 
-        return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
+        return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge(), true);
     }
 
     static function send(Player $player, Game $game, array $flags) {

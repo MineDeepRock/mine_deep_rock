@@ -17,28 +17,25 @@ class TDMScoreboard extends Scoreboard
     private static function create(Game $game): Scoreboard {
         $slot = ScoreboardSlot::sideBar();
         $scores = [
-            new Score($slot, "----TeamDeathMatch----", 0, 0),
-            new Score($slot, TextFormat::YELLOW . "Map:", 1, 1),
-            new Score($slot,  TextFormat::BOLD . "> " . $game->getMap()->getName(), 2, 2),
-            new Score($slot, TextFormat::LIGHT_PURPLE . "", 3, 3),
-            new Score($slot, TextFormat::LIGHT_PURPLE . "Score:", 4, 4),
+            new Score($slot, "----TeamDeathMatch----"),
+            new Score($slot, TextFormat::YELLOW . "Map:"),
+            new Score($slot, TextFormat::BOLD . "> " . $game->getMap()->getName()),
+            new Score($slot, TextFormat::LIGHT_PURPLE . ""),
+            new Score($slot, TextFormat::LIGHT_PURPLE . "Score:"),
         ];
 
-        $index = count($scores);
         foreach ($game->getTeams() as $team) {
             $maxScoreAsStr = $game->getMaxScore()->getValue() ?? "";
 
-            $scores[] = new Score($slot,
-                TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ": " . $team->getScore()->getValue() . " / " . $maxScoreAsStr,
-                $index,
-                $index);
-
-            $index++;
+            $scores[] = new Score(
+                $slot,
+                TextFormat::BOLD . "> " . $team->getTeamColorFormat() . $team->getName() . TextFormat::RESET . ": " . $team->getScore()->getValue() . " / " . $maxScoreAsStr
+            );
         }
 
-        $scores[] = new Score($slot, "----------------------", $index, $index);
+        $scores[] = new Score($slot, "----------------------");
 
-        return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge());
+        return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge(), true);
     }
 
     static function send(Player $player, Game $game) {
