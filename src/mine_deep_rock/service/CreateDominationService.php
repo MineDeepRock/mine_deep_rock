@@ -29,7 +29,11 @@ class CreateDominationService
             $map = TeamGameSystem::selectMap($mapName, $teams);
 
 
-            $game = Game::asNew(GameTypeList::Domination(), $map, $teams, $maxScore, $maxPlayersCount, $timeLimit);
+            $game = Game::asNew(GameTypeList::Domination(), $map, $teams);
+            $game->setMaxScore($maxScore);
+            $game->setMaxPlayersCount($maxPlayersCount);
+            $game->setMaxPlayersDifference(1);
+            $game->setTimeLimit($timeLimit);
 
             foreach (DominationFlagDataDAO::getFlagDataList($map->getName()) as $flagData) {
                 $flag = DominationFlag::asNew($flagData->getName(), $game->getId(), $flagData->getPosition(), $flagData->getRange());

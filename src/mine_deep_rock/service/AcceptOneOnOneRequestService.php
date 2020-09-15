@@ -22,7 +22,11 @@ class AcceptOneOnOneRequestService
             Team::asNew($request->getReceiverName(), TextFormat::BLUE),
         ];
         $map = TeamGameSystem::selectMap($request->getMapName(), $teams);
-        $game = Game::asNew(GameTypeList::TDM(), $map, $teams, $request->getMaxScore(), 2, $request->getTimeLimit());
+        $game = Game::asNew(GameTypeList::TDM(), $map, $teams);
+        $game->setMaxScore($request->getMaxScore());
+        $game->setMaxPlayersCount(2);
+        $game->setMaxPlayersDifference(1);
+        $game->setTimeLimit($request->getTimeLimit());
 
         TeamGameSystem::registerGame($game);
     }

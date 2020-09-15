@@ -25,7 +25,12 @@ class CreateTDMService
         try {
             $map = TeamGameSystem::selectMap($mapName, $teams);
 
-            $game = Game::asNew(GameTypeList::TDM(), $map, $teams, $maxScore, $maxPlayersCount, $timeLimit);
+            $game = Game::asNew(GameTypeList::TDM(), $map, $teams);
+            $game->setMaxScore($maxScore);
+            $game->setMaxPlayersCount($maxPlayersCount);
+            $game->setMaxPlayersDifference(1);
+            $game->setTimeLimit($timeLimit);
+
             TeamGameSystem::registerGame($game);
         } catch (Exception $e) {
             Server::getInstance()->getLogger()->info("{$mapName}は存在しません");
