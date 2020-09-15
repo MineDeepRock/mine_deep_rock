@@ -95,7 +95,7 @@ class GunListener implements Listener
         if (!$attackerData->getTeamId()->equals($victimData->getTeamId())) {
             $attackerEquipments = PlayerEquipmentsDAO::get($attacker->getName());
             $victimEquipments = PlayerEquipmentsDAO::get($attacker->getName());
-            $second = 5 * 20;
+            $second = 5;
             $level = 1;
 
             if ($victimEquipments->isSelectedSkill(new Cover())) $second -= 2;
