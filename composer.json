@@ -1,5 +1,5 @@
 {
-  "name": "suinua/mine_deep_rock",
+  "name": "mine_deep_rock/mine_deep_rock",
   "authors": [
     {
       "name": "suinua"
@@ -15,121 +15,67 @@
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/pmmp/PocketMine-MP"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/RakLib"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/SPL"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/BinaryUtils"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/NBT"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/Math"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/Snooze"
-    },
-    {
-      "type": "git",
-      "name": "suinua/team_game_system",
+      "name": "mine_deep_rock/team_game_system",
       "url": "https://github.com/MineDeepRock/team_game_system"
     },
     {
       "type": "git",
-      "name": "suinua/bossbar_system",
+      "name": "mine_deep_rock/bossbar_system",
       "url": "https://github.com/MineDeepRock/bossbar_system"
     },
     {
       "type": "git",
-      "name": "suinua/military_department_system",
-      "url": "https://github.com/MineDeepRock/military_department_system"
-    },
-    {
-      "type": "git",
-      "name": "suinua/slot_menu_system",
+      "name": "mine_deep_rock/slot_menu_system",
       "url": "https://github.com/MineDeepRock/slot_menu_system"
     },
     {
       "type": "git",
-      "name": "suinua/gun_system",
+      "name": "mine_deep_rock/gun_system",
       "url": "https://github.com/MineDeepRock/gun_system"
     },
     {
       "type": "git",
-      "name": "suinua/box_system",
+      "name": "mine_deep_rock/box_system",
       "url": "https://github.com/MineDeepRock/box_system"
     },
     {
       "type": "git",
-      "name": "suinua/grenade_system",
+      "name": "mine_deep_rock/grenade_system",
       "url": "https://github.com/MineDeepRock/grenade_system"
     },
     {
       "type": "git",
-      "name": "suinua/private_name_tag",
+      "name": "mine_deep_rock/private_name_tag",
       "url": "https://github.com/MineDeepRock/private_name_tag"
     },
     {
       "type": "git",
-      "name": "suinua/sandbag_system",
+      "name": "mine_deep_rock/sandbag_system",
       "url": "https://github.com/MineDeepRock/sandbag_system"
     },
     {
       "type": "git",
-      "name": "suinua/scoreboard_system",
-      "url": "https://github.com/MineDeepRock/scoreboard_system"
+      "name": "mine_deep_rock/scoreboard_builder",
+      "url": "https://github.com/MineDeepRock/scoreboard_builder"
     },
     {
       "type": "git",
-      "name": "suinua/form_builder",
+      "name": "mine_deep_rock/form_builder",
       "url": "https://github.com/MineDeepRock/form_builder"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/LogPthreads"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/Log"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/pmmp/classloader"
     }
   ],
   "require": {
-    "pocketmine/pocketmine-mp": "3.14.2",
-    "pocketmine/raklib": "*",
-    "pocketmine/spl": "*",
-    "pocketmine/binaryutils": "*",
-    "pocketmine/nbt": "*",
-    "pocketmine/math": "*",
-    "pocketmine/snooze": "*",
+    "pocketmine/pocketmine-mp": "*",
     "ext-json": "*",
-    "suinua/team_game_system": "dev-master",
-    "suinua/bossbar_system": "dev-master",
-    "suinua/slot_menu_system": "dev-master",
-    "suinua/gun_system": "dev-master",
-    "suinua/box_system": "dev-master",
-    "suinua/grenade_system": "dev-master",
-    "suinua/private_name_tag": "dev-master",
-    "suinua/sandbag_system": "dev-master",
-    "suinua/scoreboard_system": "dev-master",
-    "suinua/form_builder": "dev-master",
-    "pocketmine/log-pthreads": "^0.1.0",
-    "pocketmine/log": "^0.2.0",
-    "pocketmine/classloader": "^0.1.0"
+    "mine_deep_rock/team_game_system": "dev-master",
+    "mine_deep_rock/bossbar_system": "dev-master",
+    "mine_deep_rock/slot_menu_system": "dev-master",
+    "mine_deep_rock/gun_system": "dev-master",
+    "mine_deep_rock/box_system": "dev-master",
+    "mine_deep_rock/grenade_system": "dev-master",
+    "mine_deep_rock/private_name_tag": "dev-master",
+    "mine_deep_rock/sandbag_system": "dev-master",
+    "mine_deep_rock/scoreboard_builder": "dev-master",
+    "mine_deep_rock/form_builder": "dev-master"
   }
 }
