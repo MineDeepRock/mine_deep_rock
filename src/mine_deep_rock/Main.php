@@ -18,6 +18,7 @@ use mine_deep_rock\pmmp\entity\NPCBase;
 use mine_deep_rock\pmmp\entity\SkillDealerNPC;
 use mine_deep_rock\pmmp\event\PlayerLevelUpEvent;
 use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
+use mine_deep_rock\pmmp\form\CorePvPMapDataListForm;
 use mine_deep_rock\pmmp\form\CreateGameForm;
 use mine_deep_rock\pmmp\form\DominationMapListForm;
 use mine_deep_rock\pmmp\form\GameDetailPlayerJoinedForm;
@@ -206,6 +207,9 @@ class Main extends PluginBase implements Listener
                 return false;
             } else if ($label === "flag") {
                 $sender->sendForm(new DominationMapListForm());
+                return true;
+            } else if ($label === "core") {
+                $sender->sendForm(new CorePvPMapDataListForm());
                 return true;
             } else if ($label === "vs") {
                 if (count($args) !== 1) return false;
