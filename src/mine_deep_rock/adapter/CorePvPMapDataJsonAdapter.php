@@ -11,11 +11,16 @@ use team_game_system\store\MapsStore;
 class CorePvPMapDataJsonAdapter
 {
     static function encode(CorePvPMapData $corePvPMapData): array {
+
+
+        $groups = [];
+        foreach ($corePvPMapData->getCandidateCorePositionsGroups() as $group) {
+            $groups[] = CandidateCorePositionsGroupJsonAdapter::encode($group);
+        }
+
         return [
             "map_name" => $corePvPMapData->getMapName(),
-            "candidate_core_positions_groups" => array_map(function ($group) {
-                return CandidateCorePositionsGroupJsonAdapter::encode($group);
-            }, $corePvPMapData->getCandidateCorePositionsGroups()),
+            "candidate_core_positions_groups" => $groups,
         ];
     }
 
@@ -23,11 +28,14 @@ class CorePvPMapDataJsonAdapter
         $levelName = MapsStore::findByName($json["map_name"])->getLevelName();
         $level = Server::getInstance()->getLevelByName($levelName);
 
+        $groups = [];
+        foreach ($json["candidate_core_positions_groups"] as $group) {
+            $groups[] = CandidateCorePositionsGroupJsonAdapter::decode($level, $group);
+        }
+
         return new CorePvPMapData(
             $json["map_name"],
-            array_map(function ($group) use ($level) {
-                CandidateCorePositionsGroupJsonAdapter::decode($level, $group);
-            }, $json["candidate_core_positions_groups"])
+            $groups
         );
     }
 }

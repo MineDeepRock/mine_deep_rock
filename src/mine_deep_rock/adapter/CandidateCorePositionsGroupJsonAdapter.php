@@ -11,20 +11,26 @@ use pocketmine\level\Position;
 class CandidateCorePositionsGroupJsonAdapter
 {
     static function encode(CandidateCorePositionsGroup $group): array {
-        return [array_map(function ($position) {
-            return [
+        $positions = [];
+
+        foreach ($group->getPositions() as $position) {
+            $positions[] = [
                 "x" => $position->getX(),
                 "y" => $position->getY(),
                 "z" => $position->getZ()
             ];
-        }, $group->getPositions())];
+        }
+
+        return $positions;
     }
 
     static function decode(Level $level, array $json): CandidateCorePositionsGroup {
-        return new CandidateCorePositionsGroup(
-            array_map(function ($position) use ($level) {
-                return new Position($position["x"], $position["y"], $position["z"], $level);
-            }, $json)
-        );
+        $positions = [];
+
+        foreach ($json as $value) {
+            $positions[] = new Position($value["x"], $value["y"], $value["z"], $level);
+        }
+
+        return new CandidateCorePositionsGroup($positions);
     }
 }
