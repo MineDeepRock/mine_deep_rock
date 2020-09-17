@@ -22,9 +22,11 @@ commands:
   flag:
     usage: "/flag"
     description: "setting flag"
-  core:
+    permission: op
+core:
     usage: "/core"
     description: "setting core"
+    permission: op
   vs:
     usage: "/vs [username]"
     description: "send OneOnOne request"
