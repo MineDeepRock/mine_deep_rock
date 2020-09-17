@@ -6,10 +6,10 @@ namespace mine_deep_rock\pmmp\scoreboard;
 
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
-use scoreboard_system\models\Score;
-use scoreboard_system\models\Scoreboard;
-use scoreboard_system\models\ScoreboardSlot;
-use scoreboard_system\models\ScoreSortType;
+use scoreboard_builder\Score;
+use scoreboard_builder\Scoreboard;
+use scoreboard_builder\ScoreboardSlot;
+use scoreboard_builder\ScoreSortType;
 use team_game_system\model\Game;
 
 class OneOnOneScoreboard extends Scoreboard
@@ -17,11 +17,11 @@ class OneOnOneScoreboard extends Scoreboard
     private static function create(Game $game): Scoreboard {
         $slot = ScoreboardSlot::sideBar();
         $scores = [
-            new Score($slot, "----OneOnOne----"),
-            new Score($slot, TextFormat::YELLOW . "Map:"),
-            new Score($slot, TextFormat::BOLD . "> " . $game->getMap()->getName()),
-            new Score($slot, TextFormat::LIGHT_PURPLE . ""),
-            new Score($slot, TextFormat::LIGHT_PURPLE . "Score:"),
+            new Score("----OneOnOne----"),
+            new Score(TextFormat::YELLOW . "Map:"),
+            new Score(TextFormat::BOLD . "> " . $game->getMap()->getName()),
+            new Score(TextFormat::LIGHT_PURPLE . ""),
+            new Score(TextFormat::LIGHT_PURPLE . "Score:"),
         ];
 
         foreach ($game->getTeams() as $team) {
