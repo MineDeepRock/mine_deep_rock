@@ -14,4 +14,5 @@ class DataFolderPath
     const Geometry = self::PATH . "geometry/";
     const Skin = self::PATH . "skin/";
     const DominationFlagData = self::PATH . "domination_flag_data/";
+    const CorePvPMapData = self::PATH . "core_pvp_map_data/";
 }
