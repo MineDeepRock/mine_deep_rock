@@ -16,7 +16,11 @@ class GameTypeList
         return new GameType("Domination");
     }
 
-    static function OneOnOne():GameType {
+    static function OneOnOne(): GameType {
         return new GameType("OneOnOne");
+    }
+
+    static function CorePvP(): GameType {
+        return new GameType("CorePvP");
     }
 }
