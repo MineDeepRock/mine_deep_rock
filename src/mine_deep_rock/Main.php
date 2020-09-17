@@ -2,6 +2,7 @@
 
 namespace mine_deep_rock;
 
+use mine_deep_rock\dao\CorePvPMapDataDAO;
 use mine_deep_rock\dao\DominationFlagDataDAO;
 use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\dao\PlayerEquipmentsDAO;
@@ -72,6 +73,7 @@ class Main extends PluginBase implements Listener
         PlayerEquipmentsDAO::init();
         MilitaryDepartmentsStore::init();
         DominationFlagDataDAO::init();
+        CorePvPMapDataDAO::init();
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
 
