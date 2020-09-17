@@ -21,4 +21,18 @@ class CorePvPMapData
         $this->mapName = $mapName;
         $this->candidateCorePositionsGroups = $candidateCorePositionsGroups;
     }
+
+    /**
+     * @return string
+     */
+    public function getMapName(): string {
+        return $this->mapName;
+    }
+
+    /**
+     * @return CandidateCorePositionsGroup[]
+     */
+    public function getCandidateCorePositionsGroups(): array {
+        return $this->candidateCorePositionsGroups;
+    }
 }

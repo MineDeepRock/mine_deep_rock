@@ -16,4 +16,11 @@ class CandidateCorePositionsGroup
     public function __construct(array $positions) {
         $this->positions = $positions;
     }
+
+    /**
+     * @return Position[]
+     */
+    public function getPositions(): array {
+        return $this->positions;
+    }
 }
