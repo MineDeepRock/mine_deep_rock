@@ -15,8 +15,8 @@ class CoresStore
      */
     private static $cores = [];
 
-    static function add(Core $flag): void {
-        self::$cores[] = $flag;
+    static function add(Core $core): void {
+        self::$cores[] = $core;
     }
 
     static function getAll(): array {
