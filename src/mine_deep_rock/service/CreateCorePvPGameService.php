@@ -19,8 +19,7 @@ use team_game_system\TeamGameSystem;
 
 class CreateCorePvPGameService
 {
-    //TODO:複数のコアと一つのコアで処理をわける。今は複数しか対応していない
-    static function execute(string $mapName, ?int $maxPlayersCount = null): void {
+    static function execute(string $mapName, int $coreHealth, ?int $maxPlayersCount = null): void {
         /** @var Team[] $teams */
         $teams = [
             Team::asNew("Red", TextFormat::RED),
@@ -41,7 +40,12 @@ class CreateCorePvPGameService
             foreach (CorePvPMapDataDAO::getMapData($mapName)->getCoreDataList() as $coreData) {
                 foreach ($game->getTeams() as $team) {
                     if ($team->getTeamColorFormat() === $coreData->getTeamColor()) {
-                        CoresStore::add(new Core($game->getId(), $team->getId(), Position::fromObject($coreData->getCoordinate(),$level)));
+                        CoresStore::add(new Core(
+                            $game->getId(),
+                            $team->getId(),
+                            Position::fromObject($coreData->getCoordinate(),$level),
+                            $coreHealth
+                        ));
                     }
                 }
             }
