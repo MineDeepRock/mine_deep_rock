@@ -13,29 +13,26 @@ class CorePvPMapDataJsonAdapter
     static function encode(CorePvPMapData $corePvPMapData): array {
 
 
-        $groups = [];
-        foreach ($corePvPMapData->getCandidateCorePositionsGroups() as $group) {
-            $groups[] = CandidateCorePositionsGroupJsonAdapter::encode($group);
+        $coreDataList = [];
+        foreach ($corePvPMapData->getCoreDataList() as $coreData) {
+            $coreDataList[] = CoreDataJsonAdapter::encode($coreData);
         }
 
         return [
             "map_name" => $corePvPMapData->getMapName(),
-            "candidate_core_positions_groups" => $groups,
+            "core_data_list" => $coreDataList,
         ];
     }
 
     static function decode(array $json): CorePvPMapData {
-        $levelName = MapsStore::findByName($json["map_name"])->getLevelName();
-        $level = Server::getInstance()->getLevelByName($levelName);
-
-        $groups = [];
-        foreach ($json["candidate_core_positions_groups"] as $group) {
-            $groups[] = CandidateCorePositionsGroupJsonAdapter::decode($level, $group);
+        $coreDataList = [];
+        foreach ($json["core_data_list"] as $coreData) {
+            $coreDataList[] = CoreDataJsonAdapter::decode($coreData);
         }
 
         return new CorePvPMapData(
             $json["map_name"],
-            $groups
+            $coreDataList
         );
     }
 }

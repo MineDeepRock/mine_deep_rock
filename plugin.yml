@@ -23,7 +23,7 @@ commands:
     usage: "/flag"
     description: "setting flag"
     permission: op
-core:
+  core:
     usage: "/core"
     description: "setting core"
     permission: op

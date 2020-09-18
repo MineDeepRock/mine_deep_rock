@@ -27,7 +27,7 @@ class CorePvPMapDataListForm extends SimpleForm
                 $name,
                 null,
                 function (Player $player) use ($name) {
-                    $player->sendForm(new CandidateCorePositionsGroupListForm($name));
+                    $player->sendForm(new CoreDataListForm($name));
                 }
             );
         }

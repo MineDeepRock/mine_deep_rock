@@ -10,34 +10,37 @@ use mine_deep_rock\dao\GunRecordDAO;
 use mine_deep_rock\pmmp\form\GunDetailForm;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
-use slot_menu_system\models\SlotMenu;
-use slot_menu_system\models\SlotMenuElement;
+use slot_menu_system\SlotMenu;
+use slot_menu_system\SlotMenuElement;
 use slot_menu_system\SlotMenuSystem;
 
 class SelectMainGunMenu extends SlotMenu
 {
     public function __construct(string $playerName, GunType $gunType, SlotMenu $previousMenu) {
+        $back = function (Player $player) use ($gunType, $previousMenu) {
+            SlotMenuSystem::send($player, $previousMenu);
+        };
         $menus = [
-            //Back
-            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($gunType, $previousMenu) {
-                SlotMenuSystem::send($player, $previousMenu);
-            }),
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", $back, $back, 8),
         ];
 
-        $index = 0;
         foreach (GunRecordDAO::getOwn($playerName) as $gunRecord) {
             $gun = GunSystem::findGunByName($gunRecord->getName());
 
             if ($gun->getType()->equals($gunType)) {
                 if ($gun->getName() === "MG0815") continue;
 
-                $menus[] = new SlotMenuElement(ItemIds::BOW, $gunRecord->getName(), $index, function (Player $player) use ($gun) {
+                $sendForm = function (Player $player) use ($gun) {
                     $player->sendForm(new GunDetailForm($player, $gun));
-                });
-                $index++;
+                };
+                $menus[] = new SlotMenuElement(
+                    ItemIds::BOW,
+                    $gunRecord->getName(),
+                    $sendForm,
+                    $sendForm);
             }
         }
 
-        parent::__construct($menus);
+        parent::__construct($menus, false);
     }
 }

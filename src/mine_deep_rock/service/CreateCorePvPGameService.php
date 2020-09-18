@@ -30,18 +30,10 @@ class CreateCorePvPGameService
 
 
             $game = Game::asNew(GameTypeList::CorePvP(), $map, $teams);
+            $game->setMaxScore(new Score(1));
             $game->setMaxPlayersCount($maxPlayersCount);
             $game->setMaxPlayersDifference(1);
 
-            $groups = CorePvPMapDataDAO::getMapData($mapName)->getCandidateCorePositionsGroups();
-            $game->setMaxScore(new Score(count($groups[0]->getPositions())));
-
-
-            foreach ($teams as $index => $team) {
-                foreach ($groups[$index]->getPositions() as $position) {
-                    CoresStore::add(new Core($game->getId(), $team->getId, $position));
-                }
-            }
 
             TeamGameSystem::registerGame($game);
         } catch (Exception $e) {

@@ -13,13 +13,13 @@ class CorePvPMapData
      */
     private $mapName;
     /**
-     * @var CandidateCorePositionsGroup[]
+     * @var CoreData[]
      */
-    private $candidateCorePositionsGroups;
+    private $coreDataList;
 
-    public function __construct(string $mapName, array $candidateCorePositionsGroups) {
+    public function __construct(string $mapName, array $coreDataList) {
         $this->mapName = $mapName;
-        $this->candidateCorePositionsGroups = $candidateCorePositionsGroups;
+        $this->coreDataList = $coreDataList;
     }
 
     /**
@@ -30,9 +30,9 @@ class CorePvPMapData
     }
 
     /**
-     * @return CandidateCorePositionsGroup[]
+     * @return CoreData[]
      */
-    public function getCandidateCorePositionsGroups(): array {
-        return $this->candidateCorePositionsGroups;
+    public function getCoreDataList(): array {
+        return $this->coreDataList;
     }
 }

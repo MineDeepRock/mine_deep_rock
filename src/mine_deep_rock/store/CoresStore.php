@@ -6,6 +6,7 @@ namespace mine_deep_rock\store;
 
 use mine_deep_rock\model\Core;
 use team_game_system\model\GameId;
+use team_game_system\model\TeamId;
 
 class CoresStore
 {
@@ -36,6 +37,20 @@ class CoresStore
             }
         }
         return $result;
+    }
+
+    /**
+     * @param TeamId $teamId
+     * @return Core
+     */
+    static function findByTeamId(TeamId $teamId): ?Core {
+        foreach (self::$cores as $core) {
+            if ($core->getTeamId()->equals($teamId)) {
+                return $core;
+            }
+        }
+
+        return null;
     }
 
     static function delete(GameId $gameId): void {

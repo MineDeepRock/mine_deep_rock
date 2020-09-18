@@ -10,8 +10,8 @@ use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
-use slot_menu_system\models\SlotMenu;
-use slot_menu_system\models\SlotMenuElement;
+use slot_menu_system\SlotMenu;
+use slot_menu_system\SlotMenuElement;
 use slot_menu_system\pmmp\items\SlotMenuElementItem;
 use slot_menu_system\SlotMenuSystem;
 
@@ -28,40 +28,40 @@ class SelectTrialGunTypesMenu extends SlotMenu
             }
 
             $player->getInventory()->setContents($items);
-            $player->getInventory()->setItem(8, new SlotMenuElementItem(new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($taskScheduler) {
+            $player->getInventory()->setItem(8, new SlotMenuElementItem(new SlotMenuElement(ItemIds::HOPPER, "戻る", function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SelectTrialGunTypesMenu($taskScheduler));
             }), ItemIds::HOPPER, 0));
             $player->getInventory()->setItem(7, ItemFactory::get(ItemIds::ARROW, 0, 1));
         };
 
         $menus = [
-            new SlotMenuElement(ItemIds::BOW, GunType::AssaultRifle()->getTypeText(), 0, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::AssaultRifle()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::AssaultRifle());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::Shotgun()->getTypeText(), 1, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::Shotgun()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::Shotgun());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::SMG()->getTypeText(), 2, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::SMG()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::SMG());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::LMG()->getTypeText(), 3, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::LMG()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::LMG());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::SniperRifle()->getTypeText(), 4, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::SniperRifle()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::SniperRifle());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::DMR()->getTypeText(), 5, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::DMR()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::DMR());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::HandGun()->getTypeText(), 6, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::HandGun()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::HandGun());
             }),
-            new SlotMenuElement(ItemIds::BOW, GunType::Revolver()->getTypeText(), 7, function (Player $player) use ($onSelected) {
+            new SlotMenuElement(ItemIds::BOW, GunType::Revolver()->getTypeText(), function (Player $player) use ($onSelected) {
                 $onSelected($player, GunType::Revolver());
             }),
-            new SlotMenuElement(ItemIds::HOPPER, "戻る", 8, function (Player $player) use ($taskScheduler) {
+            new SlotMenuElement(ItemIds::HOPPER, "戻る", function (Player $player) use ($taskScheduler) {
                 SlotMenuSystem::send($player, new SettingEquipmentsMenu($taskScheduler));
-            }),
+            }, null, 8),
         ];
         parent::__construct($menus);
     }
