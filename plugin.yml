@@ -30,6 +30,7 @@ commands:
   vs:
     usage: "/vs [username]"
     description: "send OneOnOne request"
+    permission: op
   requests:
     usage: "/requests"
     description: "one on one request list"
