@@ -20,6 +20,10 @@ class BossBarTypes
         return new BossBarType("OneOnOne");
     }
 
+    static function CorePvP(): BossBarType {
+        return new BossBarType("CorePvP");
+    }
+
     static function fromGameType(GameType $gameType): ?BossBarType {
         switch (strval($gameType)) {
             case strval(BossBarTypes::TDM()):
@@ -30,6 +34,9 @@ class BossBarTypes
 
             case strval(BossBarTypes::OneOnOne()):
                 return BossBarTypes::OneOnOne();
+
+            case strval(BossBarTypes::CorePvP()):
+                return BossBarTypes::CorePvP();
         }
 
         return null;
