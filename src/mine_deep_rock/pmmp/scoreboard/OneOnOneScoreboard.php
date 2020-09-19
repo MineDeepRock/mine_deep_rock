@@ -33,7 +33,7 @@ class OneOnOneScoreboard extends Scoreboard
             );
         }
 
-        $scores[] = new Score($slot, "----------------------");
+        $scores[] = new Score("----------------------");
 
         return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge(), true);
     }

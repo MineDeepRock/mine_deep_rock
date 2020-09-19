@@ -30,7 +30,7 @@ class CorePvPGameScoreboard extends Scoreboard
             $scores[] = new Score($team->getTeamColorFormat() . " > {$team->getName()}:" . $core->getHealth());
         }
 
-        $scores[] = new Score($slot, "------------------");
+        $scores[] = new Score("------------------");
 
         return parent::__create($slot, "MineDeepRock", $scores, ScoreSortType::smallToLarge(), true);
     }
