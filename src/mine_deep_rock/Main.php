@@ -31,6 +31,7 @@ use mine_deep_rock\pmmp\form\StartGameForm;
 use mine_deep_rock\pmmp\form\GameListForm;
 use mine_deep_rock\pmmp\form\GameListToJoinForm;
 use mine_deep_rock\pmmp\listener\BoxListener;
+use mine_deep_rock\pmmp\listener\CorePvPListener;
 use mine_deep_rock\pmmp\listener\DominationListener;
 use mine_deep_rock\pmmp\listener\GrenadeListener;
 use mine_deep_rock\pmmp\listener\GunListener;
@@ -78,6 +79,7 @@ class Main extends PluginBase implements Listener
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
 
+        $this->getServer()->getPluginManager()->registerEvents(new CorePvPListener($this->getScheduler()), $this);
         $this->getServer()->getPluginManager()->registerEvents(new OneOnOneListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new TDMListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new DominationListener(), $this);
