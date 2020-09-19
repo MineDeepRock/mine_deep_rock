@@ -7,6 +7,7 @@ namespace mine_deep_rock\model;
 use mine_deep_rock\pmmp\event\CoreBlockBrokeEvent;
 use mine_deep_rock\pmmp\event\CoreBrokeEvent;
 use pocketmine\level\Position;
+use pocketmine\Player;
 use team_game_system\model\GameId;
 use team_game_system\model\TeamId;
 
@@ -65,15 +66,15 @@ class Core
     }
 
     /**
-     * @param int $health
+     * @param Player $player
+     * @param int $damage
      */
-    public function setHealth(int $health): void {
-        if ($this->health <= 0) return;
+    public function attack(Player $player, int $damage): void {
+        $this->health -= $damage;
 
-        $this->health = $health;
         if ($this->health <= 0) {
             $this->health = 0;
-            $event = new CoreBrokeEvent($this->gameId, $this->teamId);
+            $event = new CoreBrokeEvent($player, $this->gameId, $this->teamId);
             $event->call();
         }
     }
@@ -92,11 +93,11 @@ class Core
         return $this->blockHealth;
     }
 
-    public function attackCoreBlock(int $damage): void {
+    public function attackCoreBlock(Player $player, int $damage): void {
         $this->blockHealth -= $damage;
         if ($this->blockHealth <= 0) {
             $this->blockHealth = 100;
-            $event = new CoreBlockBrokeEvent($this->gameId, $this->teamId);
+            $event = new CoreBlockBrokeEvent($player, $this->gameId, $this->teamId);
             $event->call();
         }
     }
