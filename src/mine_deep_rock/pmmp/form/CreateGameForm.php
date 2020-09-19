@@ -9,6 +9,7 @@ use form_builder\models\custom_form_elements\Input;
 use form_builder\models\custom_form_elements\Label;
 use form_builder\models\CustomForm;
 use mine_deep_rock\pmmp\service\InformLobbyPlayersOpenGame;
+use mine_deep_rock\service\CreateCorePvPGameService;
 use mine_deep_rock\service\CreateDominationService;
 use mine_deep_rock\service\CreateTDMService;
 use pocketmine\Player;
@@ -24,9 +25,9 @@ class CreateGameForm extends CustomForm
     private $timeLimit;
 
     public function __construct() {
-        $this->gameType = new Dropdown("GameType", ["TeamDeathMatch", "Domination"]);
+        $this->gameType = new Dropdown("GameType", ["TeamDeathMatch", "Domination", "CorePvP"]);
         $this->mapName = new Input("マップ名", "", "BrokenCity");
-        $this->maxScore = new Input("勝利判定スコア", "", "30");
+        $this->maxScore = new Input("勝利判定スコア(Coreの場合は,CoreのHP)", "", "30");
         $this->maxPlayersCount = new Input("人数制限", "", "");
         $this->timeLimit = new Input("制限時間(秒)", "", "600");
 
@@ -59,6 +60,8 @@ class CreateGameForm extends CustomForm
             CreateTDMService::execute($mapName, $maxScore, $maxPlayersCount, $timeLimit);
         } else if ($gameType === "Domination") {
             CreateDominationService::execute($mapName, $maxScore, $maxPlayersCount, $timeLimit);
+        } else if ($gameType === "CorePvP") {
+            CreateCorePvPGameService::execute($mapName, $maxScore->getValue(), $maxPlayersCount);
         }
 
         InformLobbyPlayersOpenGame::execute($gameType);
