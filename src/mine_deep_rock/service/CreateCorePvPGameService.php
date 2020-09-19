@@ -8,6 +8,7 @@ use Exception;
 use mine_deep_rock\dao\CorePvPMapDataDAO;
 use mine_deep_rock\GameTypeList;
 use mine_deep_rock\model\Core;
+use mine_deep_rock\pmmp\block\CoreBlock;
 use mine_deep_rock\store\CoresStore;
 use pocketmine\level\Position;
 use pocketmine\Server;
@@ -35,15 +36,18 @@ class CreateCorePvPGameService
             $game->setMaxPlayersDifference(1);
 
             Server::getInstance()->loadLevel($map->getLevelName());
-            $level = Server::getInstance()->getLevelByName($mapName);
+            $level = Server::getInstance()->getLevelByName($map->getLevelName());
 
             foreach (CorePvPMapDataDAO::getMapData($mapName)->getCoreDataList() as $coreData) {
                 foreach ($game->getTeams() as $team) {
                     if ($team->getTeamColorFormat() === $coreData->getTeamColor()) {
+                        $pos = Position::fromObject($coreData->getCoordinate(), $level);
+                        $level->setBlock($pos, new CoreBlock());
+
                         CoresStore::add(new Core(
                             $game->getId(),
                             $team->getId(),
-                            Position::fromObject($coreData->getCoordinate(),$level),
+                            $pos,
                             $coreHealth
                         ));
                     }
