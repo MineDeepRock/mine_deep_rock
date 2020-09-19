@@ -5,6 +5,7 @@ namespace mine_deep_rock\pmmp\service;
 
 
 use mine_deep_rock\GameTypeList;
+use mine_deep_rock\pmmp\scoreboard\CorePvPGameScoreboard;
 use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
 use mine_deep_rock\pmmp\scoreboard\OneOnOneScoreboard;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
@@ -41,6 +42,8 @@ class SendParticipantsToLobbyPMMPService
                         DominationScoreboard::delete($player);
                     } else if ($gameType->equals(GameTypeList::OneOnOne())) {
                         OneOnOneScoreboard::delete($player);
+                    } else if ($gameType->equals(GameTypeList::OneOnOne())) {
+                        CorePvPGameScoreboard::delete($player);
                     }
 
                     PlayerStatusScoreboard::send($player);

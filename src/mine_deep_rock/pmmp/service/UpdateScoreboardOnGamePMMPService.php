@@ -5,6 +5,7 @@ namespace mine_deep_rock\pmmp\service;
 
 
 use mine_deep_rock\GameTypeList;
+use mine_deep_rock\pmmp\scoreboard\CorePvPGameScoreboard;
 use mine_deep_rock\pmmp\scoreboard\DominationScoreboard;
 use mine_deep_rock\pmmp\scoreboard\OneOnOneScoreboard;
 use mine_deep_rock\pmmp\scoreboard\TDMScoreboard;
@@ -37,6 +38,11 @@ class UpdateScoreboardOnGamePMMPService
             foreach ($playersData as $playerData) {
                 $player = $server->getPlayer($playerData->getName());
                 OneOnOneScoreboard::update($player, $game);
+            }
+        }  else if ($game->getType()->equals(GameTypeList::CorePvP())) {
+            foreach ($playersData as $playerData) {
+                $player = $server->getPlayer($playerData->getName());
+                CorePvPGameScoreboard::update($player, $game);
             }
         }
     }
