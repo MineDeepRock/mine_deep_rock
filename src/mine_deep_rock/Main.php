@@ -240,13 +240,22 @@ class Main extends PluginBase implements Listener
                 if (!PlayerStatusDAO::isExist($playerName)) return false;
 
                 GivePlayerMoneyService::execute($playerName, $amount);
-            }  else if ($label === "givexp") {
+            } else if ($label === "givexp") {
                 if (count($args) !== 2) return false;
                 $playerName = $args[0];
                 $amount = $args[1];
                 if (!PlayerStatusDAO::isExist($playerName)) return false;
 
                 GivePlayerXpService::execute($playerName, $amount);
+            } else if ($label === "playsound") {
+                if (count($args) < 1) return false;
+                $soundName = $args[0];
+                $volume = 10;
+                $pitch = 1;
+                if (key_exists(1, $args)) $volume = intval($args[1]);
+                if (key_exists(2, $args)) $pitch = intval($args[2]);
+
+                PlaySoundPMMPService::execute($sender, $soundName, $volume, $pitch);
             }
         }
         return false;

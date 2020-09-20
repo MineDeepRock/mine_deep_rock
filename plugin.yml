@@ -35,10 +35,14 @@ commands:
     usage: "/requests"
     description: "one on one request list"
   givemoney:
-    usage: "/givemoney [player name] amount"
+    usage: "/givemoney [player name] [amount]"
     description: "givemoney"
     permission: op
   givexp:
-    usage: "/givexp [player name] amount"
+    usage: "/givexp [player name] [amount]"
     description: "givexp"
+    permission: op
+  playsound:
+    usage: "/playsound [sound name] [volume=10] [pitch=1]"
+    description: "playsound"
     permission: op
