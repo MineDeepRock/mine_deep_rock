@@ -2,6 +2,7 @@
 
 namespace mine_deep_rock;
 
+use gun_system\pmmp\service\PlaySoundsService;
 use mine_deep_rock\dao\CorePvPMapDataDAO;
 use mine_deep_rock\dao\DominationFlagDataDAO;
 use mine_deep_rock\dao\GunRecordDAO;
@@ -39,10 +40,12 @@ use mine_deep_rock\pmmp\listener\OneOnOneListener;
 use mine_deep_rock\pmmp\listener\TDMListener;
 use mine_deep_rock\pmmp\listener\TeamGameCommonListener;
 use mine_deep_rock\pmmp\scoreboard\PlayerStatusScoreboard;
+use mine_deep_rock\pmmp\service\PlaySoundPMMPService;
 use mine_deep_rock\pmmp\service\SpawnGunDealerNPCPMMPService;
 use mine_deep_rock\pmmp\service\SpawnGameMasterPMMPService;
 use mine_deep_rock\pmmp\service\SpawnSkillDealerNPCPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
+use mine_deep_rock\service\GivePlayerMoneyService;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\command\Command;
@@ -147,6 +150,7 @@ class Main extends PluginBase implements Listener
         if ($player !== null) {
             if ($player->isOnline()) {
                 $player->sendMessage(TextFormat::GREEN . "LevelUP![" . $rank - 1 . "→" . $rank . "]");
+                PlaySoundPMMPService::execute($player, $player, "random.levelup", $rank);
             }
         }
     }
@@ -228,6 +232,13 @@ class Main extends PluginBase implements Listener
                 return true;
             } else if ($label === "requests") {
                 $sender->sendForm(new ReceivedOneOnOneRequestsForm($sender));
+            } else if ($label === "givemoney") {
+                if (count($args) !== 2) return false;
+                $playerName = $args[0];
+                $amount = $args[1];
+                if (!PlayerStatusDAO::isExist($playerName)) return false;
+
+                GivePlayerMoneyService::execute($playerName, $amount);
             }
         }
         return false;

@@ -34,4 +34,7 @@ commands:
   requests:
     usage: "/requests"
     description: "one on one request list"
-
+  givemoney:
+    usage: "/givemoney [player name] amount"
+    description: "givemoney"
+    permission: op
