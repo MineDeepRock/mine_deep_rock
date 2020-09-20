@@ -12,6 +12,8 @@ use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\Skill;
 use mine_deep_rock\model\skill\normal\NormalSkill;
+use mine_deep_rock\pmmp\service\PlaySoundPMMPService;
+use mine_deep_rock\pmmp\SoundNameList;
 use mine_deep_rock\service\SetSkillsService;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
@@ -73,6 +75,7 @@ class SelectSkillsForm extends CustomForm
 
         if (count($skills) > 3) {
             $player->sendMessage("３つまでしか選べません");
+            PlaySoundPMMPService::execute($player, $player, SoundNameList::Failure);
         } else {
             SetSkillsService::execute($player->getName(), $skills);
         }

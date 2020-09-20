@@ -6,6 +6,8 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
+use mine_deep_rock\pmmp\service\PlaySoundPMMPService;
+use mine_deep_rock\pmmp\SoundNameList;
 use mine_deep_rock\service\GenerateGameDescriptionService;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -35,6 +37,7 @@ class GameDetailPlayerJoinedForm extends SimpleForm
 
             } else {
                 $player->sendMessage("移動できませんでした");
+                PlaySoundPMMPService::execute($player, $player, SoundNameList::Failure);
             }
         };
 
@@ -64,5 +67,5 @@ class GameDetailPlayerJoinedForm extends SimpleForm
             $buttons);
     }
 
-    function onClickCloseButton(Player $player): void {}
+    function onClickCloseButton(Player $player): void { }
 }
