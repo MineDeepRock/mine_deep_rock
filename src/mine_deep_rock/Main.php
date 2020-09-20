@@ -151,7 +151,7 @@ class Main extends PluginBase implements Listener
         if ($player !== null) {
             if ($player->isOnline()) {
                 $player->sendMessage(TextFormat::GREEN . "LevelUP![" . $rank - 1 . "→" . $rank . "]");
-                PlaySoundPMMPService::execute($player, $player, "random.levelup", $rank);
+                PlaySoundPMMPService::execute($player, $player, "random.levelup", 0x10000000 * (min(30, $rank) / 5));
             }
         }
     }
