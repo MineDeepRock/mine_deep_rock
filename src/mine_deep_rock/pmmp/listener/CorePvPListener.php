@@ -104,7 +104,7 @@ class CorePvPListener implements Listener
 
                 $this->playSound($event->getShooter(), $event->getShooter(), "random.break");
                 $damage = CalculateDamageService::execute($event->getShooter(), $event->getBlock());
-                $core->attackCoreBlock($event->getShooter(), $damage);
+                $core->attackCoreBlock($event->getShooter(), $damage * 5);
             }
         }
     }
