@@ -6,6 +6,8 @@ namespace mine_deep_rock\pmmp\form;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
+use mine_deep_rock\pmmp\service\PlaySoundPMMPService;
+use mine_deep_rock\pmmp\SoundNameList;
 use mine_deep_rock\service\GenerateGameDescriptionService;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -32,7 +34,8 @@ class GameDetailToJoinForm extends SimpleForm
                 }
 
             } else {
-                $player->sendMessage("試合に参加出来ませんでした。\nすでに試合に参加しているか、試合が満員です");
+                PlaySoundPMMPService::execute($player, $player, SoundNameList::Failure);
+                $player->sendMessage("試合に参加出来ませんでした");
             }
         };
 
@@ -46,7 +49,7 @@ class GameDetailToJoinForm extends SimpleForm
                 }
             );
         }
-        
+
         $buttons[] = new SimpleFormButton(
             "ランダム",
             null,
