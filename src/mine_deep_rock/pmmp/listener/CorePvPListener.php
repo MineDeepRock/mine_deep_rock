@@ -11,6 +11,7 @@ use mine_deep_rock\pmmp\block\CoreBlock;
 use mine_deep_rock\pmmp\event\CoreBlockBrokeEvent;
 use mine_deep_rock\pmmp\event\CoreBrokeEvent;
 use mine_deep_rock\pmmp\scoreboard\CorePvPGameScoreboard;
+use mine_deep_rock\pmmp\service\PlaySoundPMMPService;
 use mine_deep_rock\store\CoresStore;
 use pocketmine\block\Air;
 use pocketmine\block\EndStone;
@@ -52,12 +53,20 @@ class CorePvPListener implements Listener
         $playerDataList = TeamGameSystem::getGamePlayersData($gameId);
         foreach ($playerDataList as $playerData) {
             $player = Server::getInstance()->getPlayer($playerData->getName());
+
+            //音:半径20m以下なら、以外でコアのチームなら
+            if ($player->distance($core->getPosition()) <= 20) {
+                PlaySoundPMMPService::execute($player, $core->getPosition(), "random.anvil_land", 50, 3);
+            } else if ($playerData->getTeamId()->equals($core->getTeamId())) {
+                PlaySoundPMMPService::execute($player, $player->getPosition(), "note.pling", 50, 2);
+            }
+
+            //TIP:
             if ($playerData->getTeamId()->equals($core->getTeamId())) {
                 $player->sendTip("コアが攻撃されています");
             } else {
                 $player->sendTip($attackerTeam->getTeamColorFormat() . $event->getPlayer()->getName() . TextFormat::RESET . "が" . $coreTeam->getTeamColorFormat() . $coreTeam->getName() . TextFormat::RESET . "を攻撃中");
             }
-            $this->playSound($player, $core->getPosition(), "random.anvil_land");
         }
 
         $core->attack($event->getPlayer(), 1);
@@ -102,7 +111,7 @@ class CorePvPListener implements Listener
                 if ($shooterData->getGameId() === null) return;
                 if ($shooterData->getTeamId()->equals($core->getTeamId())) return;
 
-                $this->playSound($event->getShooter(), $event->getShooter(), "random.break");
+                PlaySoundPMMPService::execute($event->getShooter(), $core->getPosition(), "dig.stone", 50, 2);
                 $damage = CalculateDamageService::execute($event->getShooter(), $event->getBlock());
                 $core->attackCoreBlock($event->getShooter(), $damage * 5);
             }
@@ -111,16 +120,5 @@ class CorePvPListener implements Listener
 
     public function onFinishedGame(FinishedGameEvent $event) {
         CoresStore::delete($event->getGame()->getId());
-    }
-
-    private function playSound(Player $player, Vector3 $pos, string $name) {
-        $packet = new PlaySoundPacket();
-        $packet->x = $pos->x;
-        $packet->y = $pos->y;
-        $packet->z = $pos->z;
-        $packet->volume = 50;
-        $packet->pitch = 1;
-        $packet->soundName = $name;
-        $player->sendDataPacket($packet);
     }
 }
