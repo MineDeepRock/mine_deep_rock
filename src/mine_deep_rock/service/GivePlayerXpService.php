@@ -25,7 +25,7 @@ class GivePlayerXpService
         }
 
         $playerLevel = new PlayerLevel(
-            $status->getLevel()->getRank(),
+            $rank,
             $totalXp,
             $nextXP
         );
