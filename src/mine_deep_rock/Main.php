@@ -46,6 +46,7 @@ use mine_deep_rock\pmmp\service\SpawnGameMasterPMMPService;
 use mine_deep_rock\pmmp\service\SpawnSkillDealerNPCPMMPService;
 use mine_deep_rock\pmmp\slot_menu\SettingEquipmentsMenu;
 use mine_deep_rock\service\GivePlayerMoneyService;
+use mine_deep_rock\service\GivePlayerXpService;
 use mine_deep_rock\store\MilitaryDepartmentsStore;
 use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\command\Command;
@@ -239,6 +240,13 @@ class Main extends PluginBase implements Listener
                 if (!PlayerStatusDAO::isExist($playerName)) return false;
 
                 GivePlayerMoneyService::execute($playerName, $amount);
+            }  else if ($label === "givexp") {
+                if (count($args) !== 2) return false;
+                $playerName = $args[0];
+                $amount = $args[1];
+                if (!PlayerStatusDAO::isExist($playerName)) return false;
+
+                GivePlayerXpService::execute($playerName, $amount);
             }
         }
         return false;

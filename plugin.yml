@@ -38,3 +38,7 @@ commands:
     usage: "/givemoney [player name] amount"
     description: "givemoney"
     permission: op
+  givexp:
+    usage: "/givexp [player name] amount"
+    description: "givexp"
+    permission: op
