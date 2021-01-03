@@ -150,7 +150,7 @@ class Main extends PluginBase implements Listener
         $player = $this->getServer()->getPlayer($status->getName());
         if ($player !== null) {
             if ($player->isOnline()) {
-                $player->sendMessage(TextFormat::GREEN . "LevelUP![" . $rank - 1 . "→" . $rank . "]");
+                $player->sendMessage(TextFormat::GREEN . "LevelUP![" . ($rank - 1) . "→" . $rank . "]");
                 PlaySoundPMMPService::execute($player, $player, "random.levelup", 0x10000000 * (min(30, $rank) / 5));
             }
         }
@@ -240,6 +240,7 @@ class Main extends PluginBase implements Listener
                 if (!PlayerStatusDAO::isExist($playerName)) return false;
 
                 GivePlayerMoneyService::execute($playerName, $amount);
+                return true;
             } else if ($label === "givexp") {
                 if (count($args) !== 2) return false;
                 $playerName = $args[0];
@@ -247,6 +248,7 @@ class Main extends PluginBase implements Listener
                 if (!PlayerStatusDAO::isExist($playerName)) return false;
 
                 GivePlayerXpService::execute($playerName, $amount);
+                return true;
             } else if ($label === "playsound") {
                 if (count($args) < 1) return false;
                 $soundName = $args[0];
@@ -256,6 +258,7 @@ class Main extends PluginBase implements Listener
                 if (key_exists(2, $args)) $pitch = intval($args[2]);
 
                 PlaySoundPMMPService::execute($sender, $soundName, $volume, $pitch);
+                return true;
             }
         }
         return false;
