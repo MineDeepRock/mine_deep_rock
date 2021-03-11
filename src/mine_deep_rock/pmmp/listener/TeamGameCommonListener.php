@@ -165,24 +165,6 @@ class TeamGameCommonListener implements Listener
         }), 20 * 15);
     }
 
-    public function onTapCadaverEntity(EntityDamageByEntityEvent $event) {
-        $player = $event->getDamager();
-        $cadaverEntity = $event->getEntity();
-        if ($player instanceof Player) {
-            if ($cadaverEntity instanceof CadaverEntity) {
-                if ($cadaverEntity->getOwner() === null) return;
-                $owner = $cadaverEntity->getOwner();
-                if (!$owner->isOnline()) return;
-                if ($owner->getName() === $player->getName()) return;
-                $playerData = TeamGameSystem::getPlayerData($player);
-                $ownerData = TeamGameSystem::getPlayerData($owner);
-                if ($playerData->getGameId() === null || $ownerData->getGameId() === null) return;
-
-                RescuePlayerPMMPService::execute($player, $cadaverEntity->getOwner());
-                $event->setCancelled();
-            }
-        }
-    }
 
     public function onRegainHealth(EntityRegainHealthEvent $event) {
         $player = $event->getEntity();
@@ -251,7 +233,7 @@ class TeamGameCommonListener implements Listener
         $victim->setSpawn($victim->getPosition());
 
         //死体を出す
-        SpawnCadaverEntityPMMPService::execute($victim);
+        SpawnCadaverEntityPMMPService::execute($victim, $this->scheduler);
 
         //Entrusting
         $victimEquipments = PlayerEquipmentsDAO::get($victim->getName());

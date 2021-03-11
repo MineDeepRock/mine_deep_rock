@@ -3,16 +3,28 @@
 namespace mine_deep_rock\pmmp\entity;
 
 
+use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\DataFolderPath;
+use mine_deep_rock\model\MilitaryDepartment;
+use mine_deep_rock\model\PlayerGameStatus;
+use mine_deep_rock\pmmp\service\RescuePlayerPMMPService;
+use mine_deep_rock\store\MilitaryDepartmentsStore;
+use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\entity\Human;
 use pocketmine\entity\Skin;
 use pocketmine\level\Level;
+use pocketmine\level\particle\CriticalParticle;
+use pocketmine\level\particle\HappyVillagerParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\scheduler\TaskHandler;
+use pocketmine\scheduler\TaskScheduler;
 use pocketmine\utils\UUID;
+use team_game_system\TeamGameSystem;
 
 class CadaverEntity extends Human
 {
@@ -25,7 +37,34 @@ class CadaverEntity extends Human
 
     private $owner;
 
-    public function __construct(Level $level, Player $owner) {
+    private const RescueRange = 2;
+    private const MaxRescueGauge = 5;
+
+    /**
+     * @var Player
+     */
+    private $rescuingPlayer;
+    /**
+     * @var int
+     */
+    private $rescueGauge;
+
+
+    /**
+     * @var TaskScheduler
+     */
+    private $scheduler;
+    /**
+     * @var TaskHandler
+     */
+    private $limitTaskHandler;
+    /**
+     * @var TaskHandler
+     */
+    private $rescueTaskHandler;
+
+    public function __construct(Level $level, Player $owner, TaskScheduler $scheduler) {
+        $this->scheduler = $scheduler;
         $this->owner = $owner;
         $nbt = new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
@@ -60,6 +99,102 @@ class CadaverEntity extends Human
             $this->geometryId,
             file_get_contents(DataFolderPath::Geometry . $this->geometryName)
         ));
+    }
+
+    public function spawnToAll(): void {
+        parent::spawnToAll();
+        $ownerGameStatus = PlayerGameStatusStore::findByName($this->owner->getName());
+        if ($ownerGameStatus->isResuscitated()) return;
+
+        $this->limitTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(
+            function (int $currentTick): void {
+                if ($this->isAlive()) $this->kill();
+            }
+        ), 20 * 15);
+
+
+        $this->rescueTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(
+            function (int $currentTick): void {
+                if ($this->rescuingPlayer === null) {
+                    $this->rescueGauge = 0;
+                    $this->findRescuingPlayer();
+
+                } else if (!$this->rescuingPlayer->isOnline()) {
+                    $this->rescueGauge = 0;
+                    $this->findRescuingPlayer();
+
+                } else {
+                    //距離が適正
+                    if ($this->distance($this->rescuingPlayer) <= self::RescueRange) {
+                        $this->rescueGauge++;
+                        if ($this->rescueGauge === self::MaxRescueGauge) {
+                            if (!$this->owner->isOnline()) return;
+                            RescuePlayerPMMPService::execute($this->rescuingPlayer, $this->owner);
+                        }
+
+                        //距離が不適
+                    } else {
+                        $this->rescueGauge = 0;
+                        $this->rescuingPlayer = null;
+
+                    }
+                }
+
+                $this->sendCircleParticle();
+            }
+        ), 20 * 1);
+
+    }
+
+    private function findRescuingPlayer() {
+        $ownerData = TeamGameSystem::getPlayerData($this->owner);
+        foreach ($this->getLevel()->getPlayers() as $player) {
+            if ($player->isSneaking() and $player->distance($this) <= 2) {
+                $playerData = TeamGameSystem::getPlayerData($player);
+                $playerEquipment = PlayerEquipmentsDAO::get($playerData->getName());
+                if ($playerEquipment === null)  continue;
+                if ($playerEquipment->getMilitaryDepartment()->getName() !== MilitaryDepartment::NursingSoldier) continue;
+
+                if ($ownerData->getTeamId() === null || $playerData->getTeamId() === null) continue;
+                if ($ownerData->getTeamId()->equals($playerData->getTeamId())) {
+                    $this->rescuingPlayer = $player;
+                    break;
+                }
+            }
+        }
+    }
+
+    private function sendCircleParticle() {
+        for ($degree = 0; $degree < 360; $degree += 10) {
+            $center = $this->getPosition();
+
+            $x = self::RescueRange * sin(deg2rad($degree));
+            $z = self::RescueRange * cos(deg2rad($degree));
+
+            $pos = $center->add($x, 1, $z);
+            if ($this->rescuingPlayer === null) {
+                $this->getLevel()->addParticle(new CriticalParticle($pos));
+
+            } else if (!$this->rescuingPlayer->isOnline()) {
+                $this->getLevel()->addParticle(new CriticalParticle($pos));
+
+            } else {
+                if ($degree <= floor($this->rescueGauge / self::MaxRescueGauge * 360)) {
+                    $this->getLevel()->addParticle(new HappyVillagerParticle($pos));
+
+                } else {
+                    $this->getLevel()->addParticle(new HappyVillagerParticle($pos));
+
+                }
+            }
+        }
+    }
+
+    protected function onDeath(): void {
+        if ($this->limitTaskHandler !== null) $this->limitTaskHandler->cancel();
+        if ($this->rescueTaskHandler !== null) $this->rescueTaskHandler->cancel();
+
+        parent::onDeath();
     }
 
     /**
