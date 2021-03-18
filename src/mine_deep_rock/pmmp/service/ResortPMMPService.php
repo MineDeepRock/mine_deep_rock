@@ -6,9 +6,11 @@ namespace mine_deep_rock\pmmp\service;
 
 use mine_deep_rock\dao\PlayerEquipmentsDAO;
 use mine_deep_rock\model\MilitaryDepartment;
+use mine_deep_rock\model\PlayerGameStatus;
 use mine_deep_rock\pmmp\event\PlayerResortedEvent;
 use mine_deep_rock\service\SelectMilitaryDepartmentService;
 use mine_deep_rock\service\UpdatePlayerGameStatusIsResuscitated;
+use mine_deep_rock\store\PlayerGameStatusStore;
 use pocketmine\level\Position;
 use pocketmine\Player;
 use team_game_system\TeamGameSystem;
@@ -39,7 +41,12 @@ class ResortPMMPService
             TeamGameSystem::setSpawnPoint($player);
             $player->teleport($player->getSpawn());
 
-            UpdatePlayerGameStatusIsResuscitated::execute($player->getName());
+            $playerGameStatus = PlayerGameStatusStore::findByName($player->getName());
+            PlayerGameStatusStore::update(new PlayerGameStatus(
+                $playerGameStatus->getName(),
+                false,
+                $playerGameStatus->getKillCountInGame()
+            ));
         }
 
         RemoveCadaverEntityPMMPService::execute($player);

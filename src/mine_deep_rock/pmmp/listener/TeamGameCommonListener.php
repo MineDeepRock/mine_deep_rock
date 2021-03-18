@@ -287,4 +287,9 @@ class TeamGameCommonListener implements Listener
             }
         }), 20 * 30);
     }
+
+    public function onTapCadaverEntity(EntityDamageEvent $event) {
+        $cadaverEntity = $event->getEntity();
+        if ($cadaverEntity instanceof CadaverEntity) $event->setCancelled();
+    }
 }

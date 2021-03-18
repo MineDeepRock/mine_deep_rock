@@ -14,6 +14,7 @@ use pocketmine\entity\Human;
 use pocketmine\entity\Skin;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
+use pocketmine\level\particle\DustParticle;
 use pocketmine\level\particle\HappyVillagerParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
@@ -47,7 +48,7 @@ class CadaverEntity extends Human
     /**
      * @var int
      */
-    private $rescueGauge;
+    private $rescueGauge = 0;
 
 
     /**
@@ -110,10 +111,10 @@ class CadaverEntity extends Human
             function (int $currentTick): void {
                 if ($this->isAlive()) $this->kill();
             }
-        ), 20 * 15);
+        ), 20 * 30);
 
 
-        $this->rescueTaskHandler = $this->scheduler->scheduleDelayedTask(new ClosureTask(
+        $this->rescueTaskHandler = $this->scheduler->scheduleDelayedRepeatingTask(new ClosureTask(
             function (int $currentTick): void {
                 if ($this->rescuingPlayer === null) {
                     $this->rescueGauge = 0;
@@ -125,7 +126,7 @@ class CadaverEntity extends Human
 
                 } else {
                     //距離が適正
-                    if ($this->distance($this->rescuingPlayer) <= self::RescueRange) {
+                    if (($this->distance($this->rescuingPlayer) <= self::RescueRange) and $this->rescuingPlayer->isSneaking()) {
                         $this->rescueGauge++;
                         if ($this->rescueGauge === self::MaxRescueGauge) {
                             if (!$this->owner->isOnline()) return;
@@ -142,17 +143,17 @@ class CadaverEntity extends Human
 
                 $this->sendCircleParticle();
             }
-        ), 20 * 1);
+        ), 20 * 1, 20 * 1);
 
     }
 
     private function findRescuingPlayer() {
         $ownerData = TeamGameSystem::getPlayerData($this->owner);
         foreach ($this->getLevel()->getPlayers() as $player) {
-            if ($player->isSneaking() and $player->distance($this) <= 2) {
+            if ($player->isSneaking() and $player->distance($this) <= self::RescueRange) {
                 $playerData = TeamGameSystem::getPlayerData($player);
                 $playerEquipment = PlayerEquipmentsDAO::get($playerData->getName());
-                if ($playerEquipment === null)  continue;
+                if ($playerEquipment === null) continue;
                 if ($playerEquipment->getMilitaryDepartment()->getName() !== MilitaryDepartment::NursingSoldier) continue;
 
                 if ($ownerData->getTeamId() === null || $playerData->getTeamId() === null) continue;
@@ -165,7 +166,7 @@ class CadaverEntity extends Human
     }
 
     private function sendCircleParticle() {
-        for ($degree = 0; $degree < 360; $degree += 10) {
+        for ($degree = 0; $degree <= 360; $degree += 20) {
             $center = $this->getPosition();
 
             $x = self::RescueRange * sin(deg2rad($degree));
@@ -179,13 +180,12 @@ class CadaverEntity extends Human
                 $this->getLevel()->addParticle(new CriticalParticle($pos));
 
             } else {
-                if ($degree <= floor($this->rescueGauge / self::MaxRescueGauge * 360)) {
-                    $this->getLevel()->addParticle(new HappyVillagerParticle($pos));
-
+                if ($degree <= ($this->rescueGauge / self::MaxRescueGauge * 360)) {
+                    $this->getLevel()->addParticle(new DustParticle($pos, 0, 255, 0));
                 } else {
-                    $this->getLevel()->addParticle(new HappyVillagerParticle($pos));
-
+                    $this->getLevel()->addParticle(new CriticalParticle($pos));
                 }
+
             }
         }
     }

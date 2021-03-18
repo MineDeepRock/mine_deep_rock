@@ -17,9 +17,10 @@ class ShowPrivateNameTagToAllyPMMPService
 
 
         $tag = PrivateNameTag::get($target);
-        if ($tag === null) SetPrivateNameTagPMMPService::execute($target);
-
-        $tag = PrivateNameTag::get($target);
+        if ($tag === null) {
+            SetPrivateNameTagPMMPService::execute($target);
+            $tag = PrivateNameTag::get($target);
+        }
         $server = Server::getInstance();
 
         $allyPlayers = [];
