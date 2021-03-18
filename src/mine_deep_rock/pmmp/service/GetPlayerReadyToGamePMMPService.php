@@ -53,5 +53,8 @@ class GetPlayerReadyToGamePMMPService
 
         //エフェクトをセット
         InitEffectsPMMPService::execute($player);
+
+        $player->setNameTagAlwaysVisible(false);
+        ShowPrivateNameTagToAllyPMMPService::execute($player);
     }
 }

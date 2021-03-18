@@ -15,11 +15,5 @@ class GetPlayersReadyToGamePMMPService
         foreach ($playersData as $playerData) {
             GetPlayerReadyToGamePMMPService::execute($playerData, $gameId);
         }
-        foreach ($playersData as $playerData) {
-            $player = Server::getInstance()->getPlayer($playerData->getName());
-            //ネームタグをセット
-            $player->setNameTagAlwaysVisible(false);
-            ShowPrivateNameTagToAllyPMMPService::execute($player);
-        }
     }
 }

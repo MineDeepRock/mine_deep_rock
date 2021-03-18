@@ -89,7 +89,6 @@ class TeamGameCommonListener implements Listener
             //ネームタグをセット
             $player->setNameTagAlwaysVisible(false);
             $playerData = TeamGameSystem::getPlayerData($player);
-            ShowPrivateNameTagToAllyPMMPService::execute($player);
             GetPlayerReadyToGamePMMPService::execute($playerData, $gameId);
         }
         //else {
