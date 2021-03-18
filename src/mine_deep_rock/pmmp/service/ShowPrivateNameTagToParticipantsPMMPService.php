@@ -6,7 +6,7 @@ namespace mine_deep_rock\pmmp\service;
 
 use pocketmine\Player;
 use pocketmine\Server;
-use private_name_tag\models\PrivateNameTag;
+use private_name_tag\PrivateNameTag;
 use team_game_system\model\GameId;
 use team_game_system\TeamGameSystem;
 

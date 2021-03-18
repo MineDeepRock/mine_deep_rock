@@ -43,7 +43,7 @@ use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\Server;
-use private_name_tag\models\PrivateNameTag;
+use private_name_tag\PrivateNameTag;
 use slot_menu_system\SlotMenuSystem;
 use team_game_system\pmmp\event\AddedScoreEvent;
 use team_game_system\pmmp\event\FinishedGameEvent;
