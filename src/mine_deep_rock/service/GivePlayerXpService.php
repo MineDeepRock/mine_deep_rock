@@ -22,6 +22,8 @@ class GivePlayerXpService
         if ($difference <= 0) {
             $rank++;
             $nextXP = 1000*1.3**($rank-1) + $difference;
+        } else {
+            $nextXP -= $amount;
         }
 
         $playerLevel = new PlayerLevel(
