@@ -22,8 +22,6 @@ class SelectMainGunService
         );
 
         $gunRecord = GunRecordDAO::get($name, $gunName);
-        if ($gunRecord->getScopeMagnification() !== $scopeMagnification) {
-            GunRecordDAO::update($name, new GunRecord($gunRecord->getName(), $gunRecord->getKillCount(), $scopeMagnification));
-        }
+        GunRecordDAO::update($name, new GunRecord($gunRecord->getName(), $gunRecord->getKillCount(), $scopeMagnification));
     }
 }
