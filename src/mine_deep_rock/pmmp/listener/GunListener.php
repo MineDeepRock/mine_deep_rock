@@ -88,6 +88,8 @@ class GunListener implements Listener
     public function onBulletHitNear(BulletHitNearEvent $event) {
         $attacker = $event->getAttacker();
         $victim = $event->getVictim();
+        if (!($attacker instanceof Player)) return;
+        if (!($victim instanceof Player)) return;
 
         $attackerData = TeamGameSystem::getPlayerData($attacker);
         $victimData = TeamGameSystem::getPlayerData($victim);
