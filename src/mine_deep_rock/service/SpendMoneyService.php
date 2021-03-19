@@ -6,6 +6,7 @@ namespace mine_deep_rock\service;
 
 use mine_deep_rock\dao\PlayerStatusDAO;
 use mine_deep_rock\model\PlayerStatus;
+use mine_deep_rock\pmmp\event\UpdatedPlayerStatusEvent;
 
 class SpendMoneyService
 {
@@ -18,5 +19,9 @@ class SpendMoneyService
                 $status->getOwningSkills()
             )
         );
+
+        $status = PlayerStatusDAO::get($name);
+        $event = new UpdatedPlayerStatusEvent($status);
+        $event->call();
     }
 }

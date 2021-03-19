@@ -199,7 +199,10 @@ class TeamGameCommonListener implements Listener
 
         $victim = $event->getPlayer();
         $victimData = TeamGameSystem::getPlayerData($victim);
-        if ($victimData->getGameId() === null) return;
+        if ($victimData->getGameId() === null) {
+            $lobby = Server::getInstance()->getLevelByName("lobby");
+            $victim->setSpawn($lobby->getSpawnLocation());
+        }
 
         $cause = $victim->getLastDamageCause();
 
