@@ -41,6 +41,6 @@ class SelectMainGunMenu extends SlotMenu
             }
         }
 
-        parent::__construct($menus, false);
+        parent::__construct($menus);
     }
 }
